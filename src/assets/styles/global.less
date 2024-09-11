@@ -30,3 +30,43 @@
     background-color: #3370ff20 !important;
   }
 }
+
+.fade-enter {
+  opacity: 0;
+}
+.fade-enter-active {
+  opacity: 1;
+  transition: all 0.25s ease-in-out;
+}
+.fade-enter-done {
+}
+.fade-exit {
+  opacity: 1;
+}
+.fade-exit-active {
+  opacity: 0;
+  transition: all 0.25s ease-in-out;
+  background-color: #cecece;
+}
+
+.bounce-enter {
+  opacity: 0;
+  transform: translateY(-100%);
+}
+.bounce-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.4s ease-in-out;
+}
+.bounce-enter-done {
+}
+.bounce-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+.bounce-exit-active {
+  transform: translateY(-100%);
+  opacity: 0;
+  transition: all 0.4s ease-in-out;
+  background-color: #cecece;
+}

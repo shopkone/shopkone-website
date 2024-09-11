@@ -12,4 +12,50 @@
     outline: 2px solid #3370ff;
     outline-offset: 1px;
   }
+  .shopkone-picker-panel-container {
+    border-radius: 12px;
+    box-shadow: 0 0.5px 0 0 #dedede !important;
+    border: 1px solid #dedede;
+  }
+  .shopkone-picker-cell-hover .shopkone-picker-cell-inner{
+    background-color: #3370ff;
+    color: #fff;
+  }
+  .shopkone-picker-now-btn {
+    &:hover {
+      color: #3471ff;
+      text-decoration: underline;
+    }
+  }
+  .shopkone-picker-time-panel-cell-inner {
+    &:hover {
+      background-color: #e1e3e5;
+    }
+  }
+  .shopkone-picker-time-panel-cell-selected .shopkone-picker-time-panel-cell-inner {
+    background-color: #e1e3e5;
+  }
+  .shopkone-picker-cell-disabled .shopkone-picker-cell-inner {
+    background-color: #fff;
+    color: #bbbfc4;
+  }
+  .shopkone-picker-cell-disabled:before {
+    background-color: #fff;
+  }
+  .shopkone-picker-cell-inner {
+    min-width: 40px;
+    min-height: 32px;
+    line-height: 32px;
+    border-radius: 8px;
+    &:before {
+      border-radius: 8px;
+    }
+  }
+  .shopkone-picker-cell:not(.shopkone-picker-cell-in-view) {
+    display: none;
+  }
+  .shopkone-picker-panel .i-icon {
+    position: relative;
+    top: 4px;
+  }
 }

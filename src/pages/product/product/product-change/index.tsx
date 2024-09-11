@@ -1,4 +1,6 @@
+import { DoubleLeft, DoubleRight, Left, Right } from '@icon-park/react'
 import { Card, DatePicker, Flex, Form, Select } from 'antd'
+import dayjs from 'dayjs'
 
 import BaseInfo from '@/pages/product/product/product-change/base-info'
 import Insights from '@/pages/product/product/product-change/Insights'
@@ -22,7 +24,21 @@ export default function ProductChange () {
             </Form.Item>
 
             <Form.Item label={'Schedule availability'}>
-              <DatePicker className={'fit-width'} showTime />
+              <DatePicker
+                inputReadOnly
+                prevIcon={<Left style={{ fontSize: 16 }} />}
+                nextIcon={<Right style={{ fontSize: 16 }} />}
+                superPrevIcon={<DoubleLeft style={{ fontSize: 16 }} />}
+                superNextIcon={<DoubleRight style={{ fontSize: 16 }} />}
+                hideDisabledOptions
+                minuteStep={30}
+                allowClear={false}
+                suffixIcon={false}
+                minDate={dayjs()}
+                showTime={{ format: 'HH:mm' }}
+                showSecond={false}
+                className={'fit-width'}
+              />
             </Form.Item>
           </Card>
           <Insights />

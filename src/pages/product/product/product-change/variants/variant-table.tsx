@@ -1,17 +1,17 @@
 import { useState } from 'react'
-import { AddPicture, DeleteFour, FullScreen, HamburgerButton, OffScreen } from '@icon-park/react'
+import { AddPicture, DeleteFour, DoubleLeft, HamburgerButton, RightExpand } from '@icon-park/react'
 import { BaseTableProps } from 'ali-react-table'
 import { Button, Flex, InputNumber } from 'antd'
 import classNames from 'classnames'
-import { nanoid } from 'nanoid'
 
 import STable from '@/components/s-table'
 import Index from '@/components/table-filter'
+import { genId } from '@/utils/random'
 
 import styles from './index.module.less'
 
 export default function VariantTable () {
-  const [fullScreen, setFullScreen] = useState(false)
+  const [expand, setExpand] = useState(false)
 
   const [filter, setFilter] = useState<number>()
 
@@ -28,7 +28,8 @@ export default function VariantTable () {
           <div>asd</div>
         </Flex>
       ),
-      width: 200
+      width: 200,
+      lock: expand
     },
     {
       title: 'Price',
@@ -157,24 +158,35 @@ export default function VariantTable () {
   ]
 
   return (
-    <div className={classNames(styles['variant-table'], { [styles['full-screen']]: fullScreen })}>
+    <div className={classNames(styles['variant-table'])}>
       <Flex justify={'space-between'}>
         <Flex gap={6} align={'center'} style={{ marginBottom: 8 }}>
           <Index
             radio={{
               options: [
-                { label: 'Iphone15', value: 1 },
-                { label: 'Iphone16', value: 2 },
-                { label: 'Iphone17', value: 3 }
+                {
+                  label: 'Iphone15',
+                  value: 1
+                },
+                {
+                  label: 'Iphone16',
+                  value: 2
+                },
+                {
+                  label: 'Iphone17',
+                  value: 3
+                }
               ],
               value: filter,
-              onChange: (v) => { setFilter(Number(v || 0)) }
+              onChange: (v) => {
+                setFilter(Number(v || 0))
+              }
             }}
           >
             Style
           </Index>
 
-          <Index >Color: Blue</Index>
+          <Index>Color: Blue</Index>
 
           <Button style={{ fontWeight: 400 }} size={'small'} type={'text'}>
             Clear all
@@ -182,21 +194,49 @@ export default function VariantTable () {
         </Flex>
 
         <Flex gap={12}>
-          <Button style={{ height: 24, width: 24, padding: 0, borderRadius: 5 }}>
-            <HamburgerButton size={14} style={{ position: 'relative', top: 1 }} />
+          <Button style={{
+            height: 24,
+            width: 24,
+            padding: 0,
+            borderRadius: 5
+          }}
+          >
+            <HamburgerButton
+              size={14} style={{
+                position: 'relative',
+                top: 1
+              }}
+            />
           </Button>
 
           <Button
-            onClick={() => { setFullScreen(!fullScreen) }}
-            style={{ height: 24, width: 24, padding: 0, borderRadius: 5 }}
+            onClick={() => {
+              setExpand(!expand)
+            }}
+            style={{
+              height: 24,
+              width: 24,
+              padding: 0,
+              borderRadius: 5
+            }}
           >
             {
-                !fullScreen
+                !expand
                   ? (
-                    <FullScreen size={13} style={{ position: 'relative', top: 1 }} />
+                    <RightExpand
+                      size={13} style={{
+                        position: 'relative',
+                        top: 1
+                      }}
+                    />
                     )
                   : (
-                    <OffScreen size={13} style={{ position: 'relative', top: 1 }} />
+                    <DoubleLeft
+                      size={13} style={{
+                        position: 'relative',
+                        top: 1
+                      }}
+                    />
                     )
               }
           </Button>
@@ -205,12 +245,12 @@ export default function VariantTable () {
 
       <STable
         rowSelection={{}}
-        stickyTop={fullScreen ? -12 : undefined}
         style={{ margin: '0 -16px' }}
-        width={fullScreen ? undefined : 612}
+        width={expand ? 950 : 612}
         columns={columns}
-        data={Array(500).fill(1).map(i => ({ id: nanoid() }))}
+        data={Array(500).fill(1).map(i => ({ id: genId() }))}
       />
+
     </div>
   )
 }
