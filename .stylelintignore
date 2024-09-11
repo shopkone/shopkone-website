@@ -1,0 +1,6 @@
+node_modules/*
+.hbuilderx/*
+unpackage/*
+uni_modules/*
+
+/dist/
