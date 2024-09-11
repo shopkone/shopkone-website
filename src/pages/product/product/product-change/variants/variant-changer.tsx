@@ -26,7 +26,7 @@ export default function VariantChanger () {
   if (!options?.length) {
     return (
       <div>
-        <Button onClick={onAdd} style={{ marginLeft: -10 }} type={'text'} size={'small'}>
+        <Button className={'primary-text'} onClick={onAdd} style={{ marginLeft: -10 }} type={'text'} size={'small'}>
           <Flex gap={5} align={'center'}>
             <AddOne style={{ position: 'relative', top: 2 }} size={13} />
             <div>Add options like size or color</div>

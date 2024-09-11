@@ -3,7 +3,7 @@ import { Button, Flex, Input, Modal } from 'antd'
 import classNames from 'classnames'
 
 import { ReactComponent as SearchIcon } from '@/assets/icon/search.svg'
-import TableFilter from '@/components/table-plugin/table-filter'
+import Index from '@/components/table-filter'
 
 import styles from './index.module.less'
 
@@ -34,8 +34,8 @@ export default function SelectFiles () {
             />
           </div>
           <Flex align={'center'} gap={4}>
-            <TableFilter>File type</TableFilter>
-            <TableFilter>File size</TableFilter>
+            <Index>File type</Index>
+            <Index>File size</Index>
           </Flex>
         </div>
 

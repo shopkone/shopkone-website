@@ -9,7 +9,9 @@ export default function Media () {
     <Flex vertical gap={4} justify={'center'} align={'center'} className={styles.container}>
       <Flex gap={12}>
         <Button size={'small'}>Upload new</Button>
-        <Button type={'text'} size={'small'}>Select existing</Button>
+        <Button type={'text'} size={'small'} className={'primary-text'}>
+          Select existing
+        </Button>
       </Flex>
       <div className={'tips'}>Accepts images, videos, or 3D models</div>
 

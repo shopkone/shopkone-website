@@ -11,10 +11,11 @@ export interface STableProps {
   rowKey?: string
   style?: React.CSSProperties
   rowSelection?: TableProps['rowSelection']
+  stickyTop?: number
 }
 
 function STable (props: STableProps) {
-  const { columns: c = [], data, width, rowKey = 'id', style, rowSelection } = props
+  const { columns: c = [], data, width, rowKey = 'id', style, rowSelection, stickyTop } = props
 
   const selector = useSelector(rowKey, data)
 
@@ -25,6 +26,9 @@ function STable (props: STableProps) {
   return (
     <div style={{ width, ...style }}>
       <BaseTable
+        isStickyHeader
+        hasHeader
+        stickyTop={stickyTop}
         primaryKey={rowKey}
         columns={columns}
         dataSource={data}

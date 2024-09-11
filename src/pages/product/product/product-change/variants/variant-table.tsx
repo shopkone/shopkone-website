@@ -1,14 +1,20 @@
-import { AddPicture, Delete, FullScreen, HamburgerButton } from '@icon-park/react'
+import { useState } from 'react'
+import { AddPicture, DeleteFour, FullScreen, HamburgerButton, OffScreen } from '@icon-park/react'
 import { BaseTableProps } from 'ali-react-table'
 import { Button, Flex, InputNumber } from 'antd'
+import classNames from 'classnames'
 import { nanoid } from 'nanoid'
 
 import STable from '@/components/s-table'
-import TableFilter from '@/components/table-plugin/table-filter'
+import Index from '@/components/table-filter'
 
 import styles from './index.module.less'
 
 export default function VariantTable () {
+  const [fullScreen, setFullScreen] = useState(false)
+
+  const [filter, setFilter] = useState<number>()
+
   const columns: BaseTableProps['columns'] = [
     {
       title: 'Variant',
@@ -22,8 +28,7 @@ export default function VariantTable () {
           <div>asd</div>
         </Flex>
       ),
-      width: 200,
-      lock: true
+      width: 200
     },
     {
       title: 'Price',
@@ -31,7 +36,7 @@ export default function VariantTable () {
       code: 'price',
       render: () => (
         <InputNumber
-
+          placeholder={'0.00'}
           min={0}
           maxLength={16}
           precision={2}
@@ -47,6 +52,7 @@ export default function VariantTable () {
       code: 'compare_at_price',
       render: () => (
         <InputNumber
+          placeholder={'0.00'}
           min={0}
           maxLength={16}
           precision={2}
@@ -63,6 +69,7 @@ export default function VariantTable () {
       code: 'cost_per_item',
       render: () => (
         <InputNumber
+          placeholder={'0.00'}
           min={0}
           maxLength={16}
           precision={2}
@@ -79,10 +86,10 @@ export default function VariantTable () {
       code: 'inventory',
       render: () => (
         <InputNumber
+          placeholder={'0'}
           min={0}
           precision={0}
           maxLength={16}
-
           controls={false}
         />
       ),
@@ -94,12 +101,12 @@ export default function VariantTable () {
       code: 'weight',
       render: () => (
         <InputNumber
+          placeholder={'0.00'}
           min={0}
           maxLength={16}
           precision={2}
           controls={false}
           style={{ width: 80 }}
-
         />
       ),
       width: 120
@@ -140,43 +147,67 @@ export default function VariantTable () {
       code: 'action',
       render: () => (
         <Button type={'text'} style={{ height: 24, width: 24, padding: 0, borderRadius: 5 }}>
-          <Delete size={14} style={{ position: 'relative', top: 1 }} />
+          <DeleteFour fill={'#1f2329e0'} size={15} style={{ position: 'relative', top: 1 }} />
         </Button>
       ),
-      lock: true,
       width: 50,
-      align: 'center'
+      align: 'center',
+      lock: true
     }
   ]
 
   return (
-    <div className={styles['variant-table']}>
+    <div className={classNames(styles['variant-table'], { [styles['full-screen']]: fullScreen })}>
       <Flex justify={'space-between'}>
         <Flex gap={6} align={'center'} style={{ marginBottom: 8 }}>
-          <TableFilter>Style: Iphone 14 Pro</TableFilter>
+          <Index
+            radio={{
+              options: [
+                { label: 'Iphone15', value: 1 },
+                { label: 'Iphone16', value: 2 },
+                { label: 'Iphone17', value: 3 }
+              ],
+              value: filter,
+              onChange: (v) => { setFilter(Number(v || 0)) }
+            }}
+          >
+            Style
+          </Index>
 
-          <TableFilter >Color: Blue</TableFilter>
+          <Index >Color: Blue</Index>
 
           <Button style={{ fontWeight: 400 }} size={'small'} type={'text'}>
-            Clear All
+            Clear all
           </Button>
         </Flex>
 
-        <Flex gap={16}>
+        <Flex gap={12}>
           <Button style={{ height: 24, width: 24, padding: 0, borderRadius: 5 }}>
             <HamburgerButton size={14} style={{ position: 'relative', top: 1 }} />
           </Button>
 
-          <Button style={{ height: 24, width: 24, padding: 0, borderRadius: 5 }}>
-            <FullScreen size={14} style={{ position: 'relative', top: 1 }} />
+          <Button
+            onClick={() => { setFullScreen(!fullScreen) }}
+            style={{ height: 24, width: 24, padding: 0, borderRadius: 5 }}
+          >
+            {
+                !fullScreen
+                  ? (
+                    <FullScreen size={13} style={{ position: 'relative', top: 1 }} />
+                    )
+                  : (
+                    <OffScreen size={13} style={{ position: 'relative', top: 1 }} />
+                    )
+              }
           </Button>
         </Flex>
       </Flex>
 
       <STable
         rowSelection={{}}
+        stickyTop={fullScreen ? -12 : undefined}
         style={{ margin: '0 -16px' }}
-        width={612}
+        width={fullScreen ? undefined : 612}
         columns={columns}
         data={Array(500).fill(1).map(i => ({ id: nanoid() }))}
       />

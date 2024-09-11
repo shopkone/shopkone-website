@@ -1,9 +1,8 @@
-import { Card, Flex, Form, Select } from 'antd'
+import { Card, DatePicker, Flex, Form, Select } from 'antd'
 
 import BaseInfo from '@/pages/product/product/product-change/base-info'
 import Insights from '@/pages/product/product/product-change/Insights'
 import ProductOrganization from '@/pages/product/product/product-change/product-organization'
-import Publishing from '@/pages/product/product/product-change/publishing'
 import Variants from '@/pages/product/product/product-change/variants'
 import VariantsSettings from '@/pages/product/product/product-change/variants-settings'
 
@@ -17,10 +16,15 @@ export default function ProductChange () {
           <Variants />
         </Flex>
         <Flex vertical style={{ width: 320 }} gap={16}>
-          <Card title={'Status'} style={{ width: '100%' }}>
-            <Select style={{ width: '100%' }} />
+          <Card style={{ width: '100%' }}>
+            <Form.Item label={'Status'}>
+              <Select style={{ width: '100%' }} />
+            </Form.Item>
+
+            <Form.Item label={'Schedule availability'}>
+              <DatePicker className={'fit-width'} showTime />
+            </Form.Item>
           </Card>
-          <Publishing />
           <Insights />
           <ProductOrganization />
           <Card title={'Theme template'}>
