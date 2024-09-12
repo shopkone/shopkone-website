@@ -15,7 +15,9 @@ if (dom) {
       theme={{ token: { fontSize: 13, colorText: '#1f2329', motionDurationMid: '0.1s', colorPrimary: '#3370ff' } }}
       prefixCls={'shopkone'}
     >
-      <App><Index /></App>
+      <App>
+        <Index />
+      </App>
     </ConfigProvider>
   )
 }

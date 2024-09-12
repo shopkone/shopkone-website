@@ -20,6 +20,7 @@ export default function VariantChanger () {
   const [options, setOptions] = useState<Options[]>([])
   const [valuesError, setValuesError] = useState<Array<{ id: number, message: string }>>([])
   const [err, setErr] = useState < Array<{ id: number, message: string }>>()
+  const [loading, setLoading] = useState(false)
 
   // 添加
   const onAdd = useMemoizedFn(() => {

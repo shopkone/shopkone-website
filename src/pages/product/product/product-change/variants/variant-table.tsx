@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { AddPicture, DeleteFour, DoubleLeft, HamburgerButton, RightExpand } from '@icon-park/react'
+import { AddPicture, DeleteFour, DoubleLeft, HamburgerButton, LoadingFour, RightExpand } from '@icon-park/react'
 import { BaseTableProps } from 'ali-react-table'
 import { Button, Flex, InputNumber } from 'antd'
 import classNames from 'classnames'
@@ -193,7 +193,8 @@ export default function VariantTable () {
           </Button>
         </Flex>
 
-        <Flex gap={12}>
+        <Flex gap={12} align={'center'}>
+          <LoadingFour spin />
           <Button style={{
             height: 24,
             width: 24,

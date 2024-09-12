@@ -44,7 +44,5 @@ self.onmessage = (e) => {
     ...item,
     values: item.values.filter(item => item.value)
   }))
-  console.log({ data })
   const result = generateCombinations(data).filter(item => item.length)
-  console.log(result)
 }
