@@ -48,8 +48,7 @@ export default function ProductChange () {
               <BaseInfo />
               <VariantsSettings />
             </Flex>
-            {
-              expand
+            { expand
                 ? right
                 : null
             }
