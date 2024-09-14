@@ -1,3 +1,4 @@
+/*
 import { AddPicture, DeleteFour, Down, Up } from '@icon-park/react'
 import { useMemoizedFn } from 'ahooks'
 import { BaseTableProps } from 'ali-react-table'
@@ -5,7 +6,7 @@ import { Button, Checkbox, Flex, InputNumber, Select } from 'antd'
 
 import SInputNumber from '@/components/s-input-number'
 import { VariantType, WEIGHT_UNIT_OPTIONS } from '@/constant/product'
-import { Variant } from '@/pages/product/product/product-change/state'
+import { Variant } from '@/pages/product/product/product-change/variants/state'
 import styles from '@/pages/product/product/product-change/variants/variant-table/index.module.less'
 
 interface IsSelectType {
@@ -258,3 +259,4 @@ export const useColumns = (select: number[]) => {
 
   return columns
 }
+*/

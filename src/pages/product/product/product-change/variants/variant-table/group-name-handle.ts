@@ -1,4 +1,4 @@
-import { Variant } from '@/pages/product/product/product-change/state'
+import { Variant } from '@/pages/product/product/product-change/variants/state'
 import { genId } from '@/utils/random'
 
 self.onmessage = (e) => {
@@ -11,13 +11,20 @@ self.onmessage = (e) => {
   } = e.data || {}
   if (!groupName) {
     self.postMessage(variants)
+    return
   }
-  if (!groupName || !variants?.length) return []
+  if (!groupName || !variants?.length) {
+    self.postMessage(variants)
+    return
+  }
   let result: Variant[] = []
   variants?.forEach(item => {
     // 取出 groupLabel
     const groupLabel = item.name?.find(i => i.label === groupName)
-    if (!groupLabel) return
+    if (!groupLabel) {
+      self.postMessage(variants)
+      return
+    }
     // 是否存在
     let find = result?.find(i => {
       return i.name[0].value === groupLabel.value && i.name[0].label === groupLabel.label
@@ -38,7 +45,10 @@ self.onmessage = (e) => {
     }
     if (find?.children) {
       const noGroupNames = item.name?.filter(i => (i.label !== groupName))
-      if (!noGroupNames?.length) return
+      if (!noGroupNames?.length) {
+        self.postMessage(variants)
+        return
+      }
       const newItem: Variant = {
         ...item,
         isChild: true,

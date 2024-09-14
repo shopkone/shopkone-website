@@ -1,18 +1,14 @@
 import { useEffect, useState } from 'react'
 import { CSSTransition, TransitionGroup } from 'react-transition-group'
 import { AddOne, DeleteFour, Drag } from '@icon-park/react'
-import { useDebounceFn, useMemoizedFn } from 'ahooks'
+import { useMemoizedFn } from 'ahooks'
 import { Button, Flex, Form, Input, Modal } from 'antd'
-import { useAtom, useSetAtom } from 'jotai'
 
 import { VariantType } from '@/constant/product'
-import { loadingAtom, variantsAtom, variantsOptions } from '@/pages/product/product/product-change/state'
 import DoneItem from '@/pages/product/product/product-change/variants/variant-changer/done-item'
 import { errorCheck, ErrorResult } from '@/pages/product/product/product-change/variants/variant-changer/error-check'
 import { genId } from '@/utils/random'
 
-// @ts-expect-error
-import CalculateOptionsWorker from './calculate-options?worker'
 import styles from './index.module.less'
 
 export interface Options {
@@ -22,41 +18,35 @@ export interface Options {
   isDone: boolean
 }
 
-export default function VariantChanger () {
-  const [options = [], setOptions] = useAtom(variantsOptions)
+export interface VariantChangerProps {
+  onChange: (options: Options[]) => void
+}
+
+export default function VariantChanger (props: VariantChangerProps) {
+  const [options, setOptions] = useState<Options[]>([])
   const [err, setErr] = useState<ErrorResult>()
-  const setLoading = useSetAtom(loadingAtom)
-  const [variants, setVariants] = useAtom(variantsAtom)
   const form = Form.useFormInstance()
   const variantType: VariantType = Form.useWatch('variant_type', form)
 
-  // 计算
-  const onCalculate = useDebounceFn(() => {
-    if (variantType === VariantType.Single) return
-    if (!err?.noError) return
-    if (options.some(item => item.values?.every(i => !i.value))) {
-      return
-    }
-    const worker: Worker = new CalculateOptionsWorker()
-    worker.postMessage({
-      options,
-      variants
+  const onChangeOptions = () => {
+    setTimeout(() => {
+      if (variantType === VariantType.Single) {
+        props.onChange([])
+        return
+      }
+      if (!err?.noError) return
+      if (options.some(item => item.values?.every(i => !i.value))) {
+        return
+      }
+      props.onChange(options)
     })
-    worker.onmessage = (e) => {
-      setLoading(false)
-      setVariants(e.data)
-    }
-    setLoading(true)
-  }, { wait: 300 }).run
+  }
 
   // 添加
   const onAdd = useMemoizedFn(() => {
     setOptions([...options, {
       name: '',
-      values: [{
-        value: '',
-        id: genId()
-      }],
+      values: [{ value: '', id: genId() }],
       id: genId(),
       isDone: false
     }])
@@ -106,16 +96,10 @@ export default function VariantChanger () {
     // 设置值
     let newOptions = options.map(option => {
       if (option.id !== id) return option
-      const values = option.values.map((item) => item.id === valueId
-        ? {
-            ...item,
-            value
-          }
-        : item)
-      return {
-        ...option,
-        values
-      }
+      const values = option.values.map((item) => {
+        return item.id === valueId ? { ...item, value } : item
+      })
+      return { ...option, values }
     })
     // 自动添加下一行
     if (value && isLast) {
@@ -146,22 +130,10 @@ export default function VariantChanger () {
   useEffect(() => {
     if (options.some(item => !item.name)) return
     setErr(errorCheck(options))
-    setTimeout(() => {
-      onCalculate()
-    })
+    onChangeOptions()
   }, [options])
 
   useEffect(() => {
-    if (variantType === VariantType.Single || !variantType) {
-      setVariants([{
-        name: [],
-        id: genId(),
-        weight_uint: 'g',
-        price: 0
-      }])
-    } else if (variantType === 2) {
-      setVariants([])
-    }
     setOptions([])
   }, [variantType])
 
@@ -223,7 +195,7 @@ export default function VariantChanger () {
                           <Flex gap={4} vertical className={styles['option-name']}>
                             <div>Option name</div>
                             <Input
-                              onBlur={onCalculate}
+                              onBlur={onChangeOptions}
                               onChange={e => {
                                 onUpdateName(e.target.value, option.id)
                               }}

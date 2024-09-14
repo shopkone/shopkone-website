@@ -5,9 +5,9 @@ import { useAtomValue } from 'jotai'
 import Seo from '@/components/seo'
 import BaseInfo from '@/pages/product/product/product-change/base-info'
 import ProductOrganization from '@/pages/product/product/product-change/product-organization'
-import { expandAtom } from '@/pages/product/product/product-change/state'
 import Status from '@/pages/product/product/product-change/status'
 import Variants from '@/pages/product/product/product-change/variants'
+import { expandAtom } from '@/pages/product/product/product-change/variants/state'
 import VariantsSettings from '@/pages/product/product/product-change/variants-settings'
 
 import styles from './index.module.less'
@@ -48,10 +48,9 @@ export default function ProductChange () {
               <BaseInfo />
               <VariantsSettings />
             </Flex>
-            { expand
-                ? right
-                : null
-            }
+            {expand
+              ? right
+              : null}
           </Flex>
           <Variants />
         </Flex>

@@ -1,8 +1,6 @@
 import { App, Radio } from 'antd'
-import { useAtomValue } from 'jotai'
 
 import { useVariantTypeOptions, VariantType } from '@/constant/product'
-import { variantsAtom } from '@/pages/product/product/product-change/state'
 
 export interface TypeChangerProps {
   onChange?: (type: VariantType) => void
@@ -17,7 +15,7 @@ export default function TypeChanger (props: TypeChangerProps) {
   const options = useVariantTypeOptions()
   const { modal } = App.useApp()
 
-  const variants = useAtomValue(variantsAtom)
+  const variants = []
 
   const onChangeHandle = (v: number) => {
     const hasValue = variants?.some(i => i.id)

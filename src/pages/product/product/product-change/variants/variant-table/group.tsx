@@ -1,26 +1,29 @@
 import { useEffect } from 'react'
 import { Flex, Select } from 'antd'
-import { useAtom } from 'jotai'
 
-import { variantsOptions } from '@/pages/product/product/product-change/state'
+import { Options } from '@/pages/product/product/product-change/variants/variant-changer'
 
 export interface GroupProps {
-  onChange: (groupName: string) => void
+  onChange: (groupName?: string) => void
   value?: string
+  hide?: boolean
+  options: Options[]
 }
 
 export default function Group (props: GroupProps) {
-  const { value: groupName, onChange: setGroupName } = props
-  const [options] = useAtom(variantsOptions)
+  const { value: groupName, onChange: setGroupName, hide, options } = props
 
   useEffect(() => {
-    if (options.length <= 1) return
+    if (options.length <= 1) {
+      setGroupName()
+      return
+    }
     if (!groupName) {
       setGroupName(options[0]?.name)
     }
   }, [options])
 
-  if (options.length <= 1 || !groupName) {
+  if (options.length <= 1 || !groupName || hide) {
     return null
   }
 
@@ -29,7 +32,7 @@ export default function Group (props: GroupProps) {
       <div style={{ color: '#646a73', fontSize: 12, minWidth: 60 }}>Group by</div>
       <Select
         dropdownStyle={{ minWidth: 150 }}
-        options={options?.map(i => ({ label: i, value: i }))}
+        options={options?.map(i => ({ label: i.name, value: i.name }))}
         style={{ minWidth: 100 }}
         size={'small'}
         value={groupName}

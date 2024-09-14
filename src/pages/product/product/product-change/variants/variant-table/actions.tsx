@@ -1,27 +1,31 @@
 import { useEffect, useState } from 'react'
-import { LoadingOutlined } from '@ant-design/icons'
 import { DoubleLeft, DoubleRight, HamburgerButton } from '@icon-park/react'
-import { Button, Flex, Spin, Tooltip } from 'antd'
-import { useAtom, useAtomValue } from 'jotai'
+import { Button, Flex, Tooltip } from 'antd'
+import { useAtom } from 'jotai'
 
-import { expandAtom, loadingAtom } from '@/pages/product/product/product-change/state'
+import { expandAtom } from '@/pages/product/product/product-change/variants/state'
 
 import styles from './index.module.less'
 
-export default function Actions () {
+export interface ActionsProps {
+  hide?: boolean
+}
+
+export default function Actions (props: ActionsProps) {
+  const { hide } = props
   const [expand, setExpand] = useAtom(expandAtom)
   const [open, setOpen] = useState(false)
-  const loading = useAtomValue(loadingAtom)
 
   useEffect(() => {
     setOpen(false)
   }, [expand])
 
+  if (hide) {
+    return null
+  }
+
   return (
     <Flex gap={12}>
-      <div className={styles.actions}>
-        <Spin spinning={loading} indicator={<LoadingOutlined />} />
-      </div>
       <Tooltip title={'Edit Header'}>
         <Button
           size={'small'}
