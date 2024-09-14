@@ -1,27 +1,74 @@
 import { memo } from 'react'
-import { BaseTable, BaseTableProps } from 'ali-react-table'
-import { TableProps } from 'antd'
+import { BaseTable, BaseTableProps, features, useTablePipeline } from 'ali-react-table'
+import { Checkbox } from 'antd'
 
-import { useSelector } from '@/components/s-table/selector'
+type omit = 'columns' | 'dataSource' | 'primaryKey' | 'hasHeader' | 'isStickyHeader'
 
-export interface STableProps {
+export interface STableProps extends Omit<BaseTableProps, omit> {
   columns: BaseTableProps['columns']
   data: BaseTableProps['dataSource']
   width?: number
   rowKey?: string
   style?: React.CSSProperties
-  rowSelection?: TableProps['rowSelection']
+  rowSelection?: {
+    value: number[]
+    onChange: (value: number[]) => void
+  }
   stickyTop?: number
+  expand?: {
+    value: number[]
+    onChange: (value: number[]) => void
+  }
 }
 
 function STable (props: STableProps) {
-  const { columns: c = [], data, width, rowKey = 'id', style, rowSelection, stickyTop } = props
+  const {
+    columns = [],
+    data = [],
+    width,
+    rowKey = 'id',
+    style,
+    rowSelection,
+    expand,
+    stickyTop,
+    ...rest
+  } = props
 
-  const selector = useSelector(rowKey, data)
+  let pipeline = useTablePipeline({ components: { Checkbox } })
+    .input({
+      dataSource: data,
+      columns
+    })
+    .primaryKey(rowKey) // 每一行数据由 id 字段唯一标记
 
-  const columns: STableProps['columns'] = rowSelection
-    ? [selector.col, ...c]
-    : c
+  if (rowSelection) {
+    pipeline = pipeline.use(
+      features.multiSelect({
+        highlightRowWhenSelected: true,
+        checkboxPlacement: 'start',
+        checkboxColumn: { lock: true },
+        clickArea: 'cell'
+      })
+    )
+  }
+
+  if (expand) {
+    pipeline = pipeline
+      .use(features.treeMode({
+        openKeys: expand?.value as any,
+        onChangeOpenKeys (nextKeys: string[], key: string, action: 'expand' | 'collapse') {
+          expand?.onChange(nextKeys as any)
+        }
+      }))
+      .use(features.treeSelect({
+        tree: data,
+        rootKey: rowKey,
+        checkboxPlacement: 'start',
+        clickArea: 'checkbox',
+        checkboxColumn: { hidden: true },
+        highlightRowWhenSelected: true
+      }))
+  }
 
   return (
     <div style={{ width, ...style }}>
@@ -29,9 +76,8 @@ function STable (props: STableProps) {
         isStickyHeader
         hasHeader
         stickyTop={stickyTop}
-        primaryKey={rowKey}
-        columns={columns}
-        dataSource={data}
+        {...rest}
+        {...pipeline.getProps()}
       />
     </div>
   )

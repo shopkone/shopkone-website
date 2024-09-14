@@ -28,6 +28,7 @@ export default function SelectFiles () {
         <div className={classNames([styles.header, { [styles.shadow]: !showShadow }])}>
           <div className={styles.mb12}>
             <Input
+              autoComplete={'off'}
               prefix={<SearchIcon className={styles['filter-icon']} />}
               placeholder={'Search files'}
               className={styles['search-input']}

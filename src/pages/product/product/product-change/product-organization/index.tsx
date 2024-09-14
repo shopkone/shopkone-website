@@ -1,14 +1,23 @@
-import { Button, Card, Checkbox, Form, Input } from 'antd'
+import { Button, Card, Checkbox, Form, Input, Select } from 'antd'
+
+import SSelect from '@/components/s-select'
 
 import styles from './index.module.less'
 
 export default function ProductOrganization () {
   return (
     <Card title={'Product organization'}>
-      <Form.Item style={{ marginBottom: 8 }}>
+      <Form.Item
+        name={'requires_shipping'}
+        valuePropName={'checked'}
+        style={{ marginBottom: 8 }}
+      >
         <Checkbox>Requires shipping</Checkbox>
       </Form.Item>
-      <Form.Item>
+      <Form.Item
+        name={'taxable'}
+        valuePropName={'checked'}
+      >
         <Checkbox>Charge tax on this product</Checkbox>
       </Form.Item>
       <div className={styles.line} />
@@ -19,17 +28,21 @@ export default function ProductOrganization () {
         </Button>
       </Form.Item>
       <div className={styles.line} />
-      <Form.Item label={'Spu'}>
-        <Input />
+      <Form.Item name={'spu'} label={'Spu'}>
+        <Input autoComplete={'off'} />
       </Form.Item>
-      <Form.Item label={'Vendor'}>
-        <Input />
+      <Form.Item name={'vendor'} label={'Vendor'}>
+        <Input autoComplete={'off'} />
       </Form.Item>
-      <Form.Item label={'Collections'}>
-        <Input />
+      <Form.Item name={'collections'} label={'Collections'}>
+        <SSelect />
       </Form.Item>
-      <Form.Item className={'mb0'} label={'Tags'}>
-        <Input />
+      <Form.Item name={'tags'} className={'mb0'} label={'Tags'}>
+        <Select
+          open={false}
+          mode={'tags'}
+          suffixIcon={null}
+        />
       </Form.Item>
     </Card>
   )

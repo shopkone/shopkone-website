@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { CloseOutlined } from '@ant-design/icons'
 import { Down } from '@icon-park/react'
 import { Button, Checkbox, Flex, Popover } from 'antd'
 import { CheckboxGroupProps } from 'antd/es/checkbox'
@@ -17,11 +18,12 @@ export interface TableFilterProps {
   checkbox?: CheckboxGroup
 }
 
-export default function Index (props: TableFilterProps) {
+export default function TableFilter (props: TableFilterProps) {
   const { children, radio, checkbox } = props
   const [open, setOpen] = useState(false)
 
   const label = useMemo(() => {
+    setOpen(false)
     if (radio) {
       return radio?.options?.find((item) => {
         return item?.value === radio?.value
@@ -35,7 +37,6 @@ export default function Index (props: TableFilterProps) {
   }, [radio, checkbox])
 
   const onClear = () => {
-    setOpen(false)
     if (radio) {
       radio?.onChange?.(undefined)
     }
@@ -50,20 +51,44 @@ export default function Index (props: TableFilterProps) {
         <div className={styles.content}>
           {radio ? <FilterRadio{...radio} /> : null}
           {checkbox ? <Checkbox.Group {...checkbox} /> : null}
-          <div onClick={onClear} style={{ marginLeft: -8, height: 20, fontWeight: 400, marginTop: 8, marginBottom: 4 }}>
-            <Button type={'link'} size={'small'}>Clear</Button>
-          </div>
+          {
+            label
+              ? (
+                <div
+                  onClick={onClear} style={{
+                    marginLeft: -8,
+                    height: 20,
+                    fontWeight: 400,
+                    marginTop: 8,
+                    marginBottom: 4
+                  }}
+                >
+                  <Button type={'link'} size={'small'}>Clear</Button>
+                </div>
+                )
+              : null
+          }
         </div>
       }
       placement={'bottomLeft'}
       arrow={false}
     >
-      <Button type={label ? undefined : 'dashed'} size={'small'}>
+      <Button type={label ? undefined : 'dashed'} style={{ background: label ? '#f5f5f5' : undefined }} size={'small'}>
         <Flex gap={2} align={'center'} style={{ fontWeight: 400 }}>
           <div>
             {children}{label ? ':' : ''} {label}
           </div>
-          <Down style={{ position: 'relative', top: 3 }} size={13} strokeWidth={3} />
+          {
+            label
+              ? (
+                <div onClick={onClear}>
+                  <CloseOutlined style={{ fontSize: 10, fontWeight: 'bolder', marginLeft: 8 }} />
+                </div>
+                )
+              : (
+                <Down style={{ position: 'relative', top: 3 }} size={13} strokeWidth={3} />
+                )
+          }
         </Flex>
       </Button>
     </Popover>

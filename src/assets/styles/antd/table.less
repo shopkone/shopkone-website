@@ -6,13 +6,13 @@
     min-height: 36px;
     color: #646A73;
     background-color: #f2f3f5;
-    font-weight: 500;
+    font-weight: 550;
     &.first {
       padding-left: 12px;
     }
   }
   .art-table-cell {
-    padding: 8px 6px;
+    padding: 6px;
     border: none;
     line-height: 20px;
     min-height: 36px;
@@ -20,9 +20,20 @@
     &.first {
       padding-left: 12px;
     }
+    .expansion-icon {
+      display: none;
+    }
   }
   .art-table-row {
     border: none;
+    &:hover {
+      .variant-table-checkbox {
+        background-color: #f5f5f5;
+      }
+    }
+    &.highlight .variant-table-checkbox {
+      background-color: #eeeeee;
+    }
   }
   .show-shadow.art-lock-shadow {
     box-shadow: 0 0 8px 0 #00000030;

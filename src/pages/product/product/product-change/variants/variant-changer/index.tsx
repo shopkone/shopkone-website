@@ -1,0 +1,372 @@
+import { useEffect, useState } from 'react'
+import { CSSTransition, TransitionGroup } from 'react-transition-group'
+import { AddOne, DeleteFour, Drag } from '@icon-park/react'
+import { useDebounceFn, useMemoizedFn } from 'ahooks'
+import { Button, Flex, Form, Input, Modal } from 'antd'
+import { useAtom, useSetAtom } from 'jotai'
+
+import { VariantType } from '@/constant/product'
+import { loadingAtom, variantsAtom, variantsOptions } from '@/pages/product/product/product-change/state'
+import DoneItem from '@/pages/product/product/product-change/variants/variant-changer/done-item'
+import { errorCheck, ErrorResult } from '@/pages/product/product/product-change/variants/variant-changer/error-check'
+import { genId } from '@/utils/random'
+
+// @ts-expect-error
+import CalculateOptionsWorker from './calculate-options?worker'
+import styles from './index.module.less'
+
+export interface Options {
+  name: string
+  values: Array<{ value: string, id: number }>
+  id: number
+  isDone: boolean
+}
+
+export default function VariantChanger () {
+  const [options = [], setOptions] = useAtom(variantsOptions)
+  const [err, setErr] = useState<ErrorResult>()
+  const setLoading = useSetAtom(loadingAtom)
+  const [variants, setVariants] = useAtom(variantsAtom)
+  const form = Form.useFormInstance()
+  const variantType: VariantType = Form.useWatch('variant_type', form)
+
+  // 计算
+  const onCalculate = useDebounceFn(() => {
+    if (variantType === VariantType.Single) return
+    if (!err?.noError) return
+    if (options.some(item => item.values?.every(i => !i.value))) {
+      return
+    }
+    const worker: Worker = new CalculateOptionsWorker()
+    worker.postMessage({
+      options,
+      variants
+    })
+    worker.onmessage = (e) => {
+      setLoading(false)
+      setVariants(e.data)
+    }
+    setLoading(true)
+  }, { wait: 300 }).run
+
+  // 添加
+  const onAdd = useMemoizedFn(() => {
+    setOptions([...options, {
+      name: '',
+      values: [{
+        value: '',
+        id: genId()
+      }],
+      id: genId(),
+      isDone: false
+    }])
+  })
+
+  // 删除
+  const onRemove = useMemoizedFn((id: number) => {
+    const item = options.find(item => item.id === id)
+    if (!item?.name && !item?.values?.every(i => i.value)) {
+      setOptions(options.filter(item => item.id !== id))
+      return
+    }
+    Modal.confirm({
+      title: 'Are you sure to delete this option?',
+      onOk: () => {
+        setOptions(options.filter(item => item.id !== id))
+      },
+      centered: true
+    })
+  })
+
+  // 更新名称
+  const onUpdateName = useMemoizedFn((name: string, id: number) => {
+    setOptions(options.map(item => item.id === id
+      ? {
+          ...item,
+          name
+        }
+      : item))
+  })
+
+  // 删除值
+  const removeValue = useMemoizedFn((id: number, valueId: number) => {
+    const newOptions = options.map(item => {
+      if (item.id !== id) return item
+      const values = item.values.filter(value => value.id !== valueId)
+      return {
+        ...item,
+        values
+      }
+    })
+    setOptions(newOptions)
+  })
+
+  // 更新值
+  const onUpdateValue = useMemoizedFn((id: number, valueId: number, value: string, isLast: boolean) => {
+    // 设置值
+    let newOptions = options.map(option => {
+      if (option.id !== id) return option
+      const values = option.values.map((item) => item.id === valueId
+        ? {
+            ...item,
+            value
+          }
+        : item)
+      return {
+        ...option,
+        values
+      }
+    })
+    // 自动添加下一行
+    if (value && isLast) {
+      newOptions = newOptions?.map(item => {
+        if (item.id !== id) return item
+        return {
+          ...item,
+          values: [...item.values, {
+            value: '',
+            id: genId()
+          }]
+        }
+      })
+    }
+    setOptions(newOptions)
+  })
+
+  // 更新done
+  const onUpdateDone = useMemoizedFn((id: number, done: boolean) => {
+    setOptions(options.map(item => item.id === id
+      ? {
+          ...item,
+          isDone: done
+        }
+      : item))
+  })
+
+  useEffect(() => {
+    if (options.some(item => !item.name)) return
+    setErr(errorCheck(options))
+    setTimeout(() => {
+      onCalculate()
+    })
+  }, [options])
+
+  useEffect(() => {
+    if (variantType === VariantType.Single || !variantType) {
+      setVariants([{
+        name: [],
+        id: genId(),
+        weight_uint: 'g',
+        price: 0
+      }])
+    } else if (variantType === 2) {
+      setVariants([])
+    }
+    setOptions([])
+  }, [variantType])
+
+  if (variantType === VariantType.Single) {
+    return null
+  }
+
+  if (!options?.length) {
+    return (
+      <div>
+        <Button className={'primary-text'} onClick={onAdd} style={{ marginLeft: -10 }} type={'text'} size={'small'}>
+          <Flex gap={5} align={'center'}>
+            <AddOne
+              style={{
+                position: 'relative',
+                top: 2
+              }} size={13}
+            />
+            <div>Add options like size or color</div>
+          </Flex>
+        </Button>
+      </div>
+    )
+  }
+
+  return (
+    <div className={styles['variant-changer']}>
+      <TransitionGroup>
+        {
+          options?.map((option, index) => (
+            <CSSTransition
+              classNames={'fade'}
+              timeout={300}
+              key={option.id}
+              unmountOnExit
+            >
+              <div key={option.id}>
+                <Flex
+                  className={option?.isDone
+                    ? 'slide-in-blurred-left'
+                    : 'slide-in-blurred-left1'}
+                >
+                  <div style={{ top: option.isDone ? 17 : undefined }} className={styles.handle}>
+                    <div className={styles['handle-drag']}>
+                      <Drag />
+                    </div>
+                  </div>
+                  {
+                    option?.isDone
+                      ? (
+                        <DoneItem
+                          option={option} onClick={() => {
+                            onUpdateDone(option.id, false)
+                          }}
+                        />
+                        )
+                      : (
+                        <Flex flex={1} vertical className={styles.option}>
+                          <Flex gap={4} vertical className={styles['option-name']}>
+                            <div>Option name</div>
+                            <Input
+                              onBlur={onCalculate}
+                              onChange={e => {
+                                onUpdateName(e.target.value, option.id)
+                              }}
+                              value={option.name}
+                              placeholder={'Add option name'}
+                            />
+                            <div
+                              className={styles.error}
+                              style={{ display: err?.nameError?.find(i => i.id === option.id)?.message ? 'block' : 'none' }}
+                            >
+                              {err?.nameError?.find(i => i.id === option.id)?.message}
+                            </div>
+                          </Flex>
+                          <Flex align={'center'} className={styles['option-values']}>
+                            Option values
+                          </Flex>
+                          <TransitionGroup>
+                            {
+                              option?.values?.map((value, i) => (
+                                <CSSTransition
+                                  classNames={'fade'}
+                                  timeout={300}
+                                  key={value.id}
+                                  unmountOnExit
+                                >
+                                  <Flex
+                                    key={value.id}
+                                    style={{
+                                      marginRight: 16,
+                                      marginBottom: 12,
+                                      marginLeft: -4
+                                    }}
+                                    vertical
+                                    gap={2}
+                                  >
+                                    <Flex align={'center'}>
+                                      <div className={styles['handle-item']}>
+                                        <div className={styles['handle-drag']}>
+                                          <Drag />
+                                        </div>
+                                      </div>
+                                      <Input
+                                        value={value?.value}
+                                        onChange={e => {
+                                          onUpdateValue(option.id, value.id, e.target.value, i === option.values.length - 1)
+                                        }}
+                                        placeholder={'Add a value'}
+                                        rootClassName={'fit-width'}
+                                        suffix={
+                                          <Button
+                                            onClick={() => {
+                                              removeValue(option.id, value.id)
+                                            }}
+                                            style={{
+                                              height: 20,
+                                              width: 24,
+                                              padding: 0,
+                                              display: (
+                                                option.values.length !== i + 1
+                                              ) &&
+                                              (
+                                                option.values.length > 2
+                                              )
+                                                ? 'block'
+                                                : 'none'
+                                            }} size={'small'} type={'text'}
+                                          >
+                                            <DeleteFour fill={'#1f2329e0'} size={14} />
+                                          </Button>
+                                        }
+                                      />
+                                    </Flex>
+                                    <div style={{
+                                      marginLeft: 20,
+                                      color: '#f54a45',
+                                      fontSize: 12,
+                                      fontWeight: 450,
+                                      display: err?.valueError?.find(i => i.id === value.id)?.message ? 'block' : 'none'
+                                    }}
+                                    >
+                                      {err?.valueError?.find(i => i.id === value.id)?.message}
+                                    </div>
+                                  </Flex>
+                                </CSSTransition>
+                              ))
+                            }
+                          </TransitionGroup>
+                          <Flex className={styles.footer} justify={'space-between'}>
+                            <Button
+                              danger
+                              onClick={() => {
+                                onRemove(option.id)
+                              }}
+                            >
+                              Delete
+                            </Button>
+                            <Button
+                              onClick={() => {
+                                onUpdateDone(option.id, true)
+                              }}
+                              type={'primary'}
+                              disabled={
+                                !!err?.nameError?.find(i => i.id === option.id)?.message || (
+                                  !!err?.valueError?.find(i => i.nameId === option.id) || (
+                                    !option?.name || (
+                                      option?.values?.every(i => !i.value)
+                                    )
+                                  )
+                                )
+                              }
+                            >
+                              Done
+                            </Button>
+                          </Flex>
+                        </Flex>
+                        )
+                  }
+                </Flex>
+                {
+                  index !== 2 && (
+                    <div className={styles.line} />
+                  )
+                }
+              </div>
+            </CSSTransition>
+          ))
+        }
+      </TransitionGroup>
+      {
+        options?.length < 3 &&
+        <div className={styles['add-btn']}>
+          <Flex className={styles['add-btn-inner']} gap={5} align={'center'} onClick={onAdd}>
+            <AddOne
+              style={{
+                position: 'relative',
+                top: 2
+              }}
+              size={13}
+            />
+            <div>Add another option</div>
+          </Flex>
+        </div>
+      }
+    </div>
+  )
+}

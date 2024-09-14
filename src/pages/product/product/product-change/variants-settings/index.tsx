@@ -1,31 +1,46 @@
 import { Card, Checkbox, Form, Radio } from 'antd'
 
+import { useInventoryPolicyOptions } from '@/constant/product'
+import TypeChanger from '@/pages/product/product/product-change/variants-settings/type-changer'
+
 import styles from './index.module.less'
 
 export default function VariantsSettings () {
-  const options = [
-    { label: 'Single Variant', value: 1 },
-    { label: 'Multiple variants', value: 2 }
-  ]
+  const tackOptions = useInventoryPolicyOptions()
 
-  const tackOptions = [
-    { label: 'Stop selling when out of stock', value: 1 },
-    { label: 'Continue selling when out of stock', value: 2 },
-    { label: 'Set as draft when out of stock', value: 3 }
-  ]
+  const form = Form.useFormInstance()
+  const inventoryTracking = Form.useWatch('inventory_tracking', form)
 
   return (
-    <Card title={'Variants Settings'}>
-      <Form.Item>
-        <Radio.Group options={options} />
-      </Form.Item>
+    <Card style={{ width: 612 }} title={'Variants Settings'}>
+      <div>
+        <Form.Item name={'variant_type'}>
+          <TypeChanger />
+        </Form.Item>
 
-      <Form.Item style={{ marginTop: -8 }}>
-        <Checkbox>Inventory tracking</Checkbox>
-      </Form.Item>
-      <Form.Item style={{ marginBottom: 0, marginTop: -12 }}>
-        <Radio.Group className={styles.group} options={tackOptions} />
-      </Form.Item>
+        <Form.Item
+          name={'inventory_tracking'}
+          valuePropName={'checked'}
+          style={{ marginTop: -8 }}
+        >
+          <Checkbox>Inventory tracking</Checkbox>
+        </Form.Item>
+        {
+          inventoryTracking
+            ? (
+              <Form.Item
+                name={'inventory_policy'}
+                style={{
+                  marginBottom: 0,
+                  marginTop: -12
+                }}
+              >
+                <Radio.Group className={styles.group} options={tackOptions} />
+              </Form.Item>
+              )
+            : null
+        }
+      </div>
     </Card>
   )
 }
