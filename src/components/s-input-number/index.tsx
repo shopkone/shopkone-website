@@ -1,5 +1,5 @@
 import { memo, useEffect, useRef, useState } from 'react'
-import { useDebounceFn, useMemoizedFn } from 'ahooks'
+import { useMemoizedFn } from 'ahooks'
 import { Input, InputProps, InputRef } from 'antd'
 
 import { formatPrice, roundPrice } from '@/utils/num'
@@ -18,7 +18,6 @@ export interface SInputNumberProps extends Omit<InputProps, 'onChange' | 'value'
 
 function SInputNumber (props: SInputNumberProps) {
   const {
-    debounce,
     value,
     onChange,
     max = 9999999999,
@@ -31,10 +30,6 @@ function SInputNumber (props: SInputNumberProps) {
   const ref = useRef<InputRef>(null)
   const [isFocus, setIsFocus] = useState(false)
   const [num, setNum] = useState<string>()
-
-  const propsOnChange = useDebounceFn((n?: number) => {
-    onChange?.(n)
-  }, { wait: 100 }).run
 
   const onChangeHandle: InputProps['onChange'] = useMemoizedFn((e) => {
     let str = e.target.value
@@ -55,7 +50,7 @@ function SInputNumber (props: SInputNumberProps) {
       str = str.slice(1)
     }
     setNum(str)
-    debounce ? propsOnChange?.(num) : onChange?.(num)
+    onChange?.(num)
   })
 
   const select = useMemoizedFn(() => {
@@ -76,7 +71,7 @@ function SInputNumber (props: SInputNumberProps) {
         setIsFocus(false)
       }}
       ref={ref}
-      value={(!isFocus && money) ? formatPrice(num) : num}
+      value={(money && !isFocus) ? formatPrice(num) : num}
       style={{ width: '100%' }}
       autoComplete={'off'}
       onChange={onChangeHandle}

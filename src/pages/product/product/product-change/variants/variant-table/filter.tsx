@@ -5,26 +5,47 @@ import SRender from '@/components/s-render'
 import TableFilter from '@/components/table-filter'
 import { Options } from '@/pages/product/product/product-change/variants/variant-changer'
 import { Variant } from '@/pages/product/product/product-change/variants/variant-table/index'
+import { genId } from '@/utils/random'
 
 // @ts-expect-error
 import GroupNameHandle from './group-name-handle?worker'
 import styles from './index.module.less'
+// @ts-expect-error
+import OptionsHandle from './options-handle?worker'
 
 export interface FilterProps {
   onChange: (variants: Variant[]) => void
   options: Options[]
   hide?: boolean
   groupName?: string
+  isSingleVariantType: boolean
 }
 
 export default function Filter (props: FilterProps) {
-  const { onChange, hide, groupName, options } = props
+  const { onChange, hide, groupName, options, isSingleVariantType = true } = props
   const [variants, setVariants] = useState<Variant[]>([])
   const [filter, setFilter] = useState<Record<string, number>>()
 
   const onClearAllFilter = () => {
     setFilter(undefined)
   }
+
+  useEffect(() => {
+    if (isSingleVariantType) return
+    const worker: Worker = new OptionsHandle()
+    worker.postMessage({ options })
+    worker.onmessage = (e) => {
+      setVariants(e.data)
+    }
+  }, [options, isSingleVariantType])
+
+  useEffect(() => {
+    if (isSingleVariantType) {
+      setVariants([{ name: [], id: genId(), weight_uint: 'g', price: 0 }])
+    } else {
+      setVariants([])
+    }
+  }, [isSingleVariantType])
 
   useEffect(() => {
     if (!variants?.length || !groupName) {

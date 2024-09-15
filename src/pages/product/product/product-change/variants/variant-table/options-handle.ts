@@ -1,6 +1,4 @@
-import { isEqual } from 'lodash'
-
-import { Variant } from '@/pages/product/product/product-change/variants/state'
+import { Variant } from '@/pages/product/product/product-change/variants/variant-table/index'
 import { genId } from '@/utils/random'
 
 interface Options {
@@ -46,26 +44,12 @@ const combineOptions = function (options: Options[]): Result[][] {
 }
 
 self.onmessage = (e) => {
-  const {
-    options,
-    variants
-  }: { variants: Variant[], options: Options[] } = e.data || {}
+  const { options }: { options: Options[] } = e.data || {}
   let data = options?.filter(item => item.name)
-  data = data.map(item => ({
-    ...item,
-    values: item.values.filter(item => item.value)
-  }))
+  data = data.map(item => ({ ...item, values: item.values.filter(item => item.value) }))
   const list = combineOptions(data).filter(item => item.length)
   const result: Variant[] = list?.map(variant => {
-    const item: Variant = {
-      name: variant,
-      id: genId(),
-      weight_uint: 'g',
-      price: 0
-    }
-    const find = variants?.find(i => isEqual(i.name, item.name))
-    if (find) return find
-    return item
+    return { name: variant, id: genId(), weight_uint: 'g', price: 0 }
   })
   self.postMessage(result)
 }

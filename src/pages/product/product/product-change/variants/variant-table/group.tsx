@@ -14,16 +14,16 @@ export default function Group (props: GroupProps) {
   const { value: groupName, onChange: setGroupName, hide, options } = props
 
   useEffect(() => {
-    if (options.length <= 1) {
+    if ((options?.length || 0) <= 1) {
       setGroupName()
       return
     }
     if (!groupName) {
-      setGroupName(options[0]?.name)
+      setGroupName(options?.[0]?.name)
     }
   }, [options])
 
-  if (options.length <= 1 || !groupName || hide) {
+  if ((options?.length || 0) <= 1 || !groupName || hide) {
     return null
   }
 

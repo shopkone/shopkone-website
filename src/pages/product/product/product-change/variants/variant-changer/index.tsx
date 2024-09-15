@@ -134,7 +134,9 @@ export default function VariantChanger (props: VariantChangerProps) {
   }, [options])
 
   useEffect(() => {
-    setOptions([])
+    if (variantType === VariantType.Single) {
+      setOptions([])
+    }
   }, [variantType])
 
   if (variantType === VariantType.Single) {

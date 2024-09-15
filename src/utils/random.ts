@@ -10,6 +10,8 @@ export const genId = () => {
     const num = random(0, 999)
     str += String(num)
   })
-  str += dayjs().get('millisecond').toString()
+  const index = random(0, 3)
+  const m = dayjs().get('millisecond').toString()
+  str = str.split('').map((n, i) => i === index ? m : n).join('')
   return Number(str)
 }

@@ -1,4 +1,4 @@
-import { Variant } from '@/pages/product/product/product-change/variants/state'
+import { Variant } from '@/pages/product/product/product-change/variants/variant-table/index'
 import { genId } from '@/utils/random'
 
 self.onmessage = (e) => {
@@ -17,7 +17,7 @@ self.onmessage = (e) => {
     self.postMessage(variants)
     return
   }
-  let result: Variant[] = []
+  const result: Variant[] = []
   variants?.forEach(item => {
     // 取出 groupLabel
     const groupLabel = item.name?.find(i => i.label === groupName)
@@ -31,7 +31,6 @@ self.onmessage = (e) => {
     })
     if (!find) {
       const newItem: Variant = {
-        isParent: true,
         name: [groupLabel],
         price: 0,
         weight_uint: 'g',
@@ -51,13 +50,13 @@ self.onmessage = (e) => {
       }
       const newItem: Variant = {
         ...item,
-        isChild: true,
+        parentId: item.id,
         name: noGroupNames
       }
       find.children.push(newItem)
     }
   })
-  result = result.map(item => {
+  /*   result = result.map(item => {
     let id = 0
     item?.children?.forEach(i => {
       id += i.id
@@ -66,6 +65,6 @@ self.onmessage = (e) => {
       ...item,
       id: id || item.id
     }
-  })
+  }) */
   self.postMessage(result)
 }
