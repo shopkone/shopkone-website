@@ -1,4 +1,4 @@
-import { Tag } from 'antd'
+import { Flex, Tag } from 'antd'
 
 import { Options } from '@/pages/product/product/product-change/variants/variant-changer/index'
 
@@ -16,15 +16,15 @@ export default function DoneItem (props: DoneItemProps) {
       onClick={onClick} className={styles['done-item']}
     >
       <div className={styles['done-item-title']}>{option.name}</div>
-      <div style={{ marginTop: 8 }}>
+      <Flex wrap={'wrap'} gap={8} style={{ marginTop: 8 }}>
         {
             option.values?.filter(i => i.value).map(i => (
-              <Tag style={{ fontSize: 12 }} key={i.id} className={styles['done-item-value']}>
+              <Tag style={{ fontSize: 12, marginRight: -2 }} key={i.id}>
                 {i.value}
               </Tag>
             ))
           }
-      </div>
+      </Flex>
     </div>
   )
 }

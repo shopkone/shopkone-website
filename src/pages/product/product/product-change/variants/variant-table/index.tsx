@@ -25,6 +25,7 @@ export interface Variant {
   cost_per_item?: number
   children?: Variant[]
   parentId?: number
+  isParent: boolean
 }
 
 export interface VariantTableProps {
@@ -37,12 +38,13 @@ export default function VariantTable (props: VariantTableProps) {
   const [groupName, setGroupName] = useState<string>()
   const [dataSource, setDataSource] = useState<Variant[]>([])
 
-  const flat = (variants: Variant[]) => {
+  const flat = () => {
     const result: Variant[] = []
-    variants.forEach(item => {
+    dataSource.forEach(item => {
       if (item.children?.length) {
+        result.push({ ...item, children: [] })
         item.children.forEach(i => {
-          result.push({ ...i, children: [] })
+          result.push({ ...i })
         })
       } else {
         result.push(item)
@@ -52,27 +54,25 @@ export default function VariantTable (props: VariantTableProps) {
   }
 
   const onChangeDataSource = useMemoizedFn((v: Variant[]) => {
-    if (!dataSource?.length) {
-      setDataSource(v)
-      return
-    }
-    const oldList = flat(dataSource)
+    const f = flat()
     const list = v.map(item => {
       const children = item.children?.map(i => {
-        const find = oldList.find(ii => isEqual(ii.name, i.name))
-        if (find) return find
-        return i
+        const find = f.find(j => isEqual(i.name, j.name))
+        return find || i
       })
-      const find = oldList.find(i => isEqual(i.name, item.name))
-      if (find) return { ...find, children }
-      return { ...item, children }
+      if (children?.length) {
+        const find = f.find(i => isEqual(i.name, item.name) && i.isParent)
+        console.log(find)
+        return find ? { ...find, children } : { ...item, children }
+      }
+      const find = f.find(i => isEqual(item.name, i.name))
+      return find ? { ...find, children } : { ...item, children }
     })
-    console.log(list)
     setDataSource(list)
   })
 
   return (
-    <div style={{ height: dataSource?.length ? undefined : 0, overflow: 'hidden' }}>
+    <div style={{ height: dataSource?.length ? undefined : 0 }}>
       <Flex style={{ marginBottom: dataSource?.length ? 12 : 0 }} justify={'space-between'}>
         <Group options={options} hide={!groupName} onChange={setGroupName} value={groupName} />
         <Actions hide={!groupName} />
@@ -91,7 +91,7 @@ export default function VariantTable (props: VariantTableProps) {
         <Actions hide={!dataSource?.length || !!groupName} />
       </Flex>
 
-      <Table onChange={setDataSource} value={dataSource} />
+      <Table groupName={groupName} onChange={setDataSource} value={dataSource} />
     </div>
   )
 }

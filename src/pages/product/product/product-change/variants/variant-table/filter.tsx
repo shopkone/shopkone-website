@@ -41,7 +41,7 @@ export default function Filter (props: FilterProps) {
 
   useEffect(() => {
     if (isSingleVariantType) {
-      setVariants([{ name: [], id: genId(), weight_uint: 'g', price: 0 }])
+      setVariants([{ name: [], id: genId(), weight_uint: 'g', price: 0, isParent: false }])
     } else {
       setVariants([])
     }
@@ -57,7 +57,7 @@ export default function Filter (props: FilterProps) {
       return item.name?.every(i => !filter?.[i.label] || (filter[i.label] === i.id))
     })
     const worker: Worker = new GroupNameHandle()
-    worker.postMessage({ groupName, variants: v })
+    worker.postMessage({ groupName, variants: v, options })
     worker.onmessage = (e) => {
       onChange(e.data)
     }

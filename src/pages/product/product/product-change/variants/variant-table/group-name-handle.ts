@@ -1,70 +1,25 @@
+import { Options } from '@/pages/product/product/product-change/variants/variant-changer'
 import { Variant } from '@/pages/product/product/product-change/variants/variant-table/index'
 import { genId } from '@/utils/random'
 
 self.onmessage = (e) => {
-  const {
-    groupName,
-    variants
-  }: {
-    groupName: string
-    variants: Variant[]
-  } = e.data || {}
-  if (!groupName) {
-    self.postMessage(variants)
-    return
+  const { groupName, variants, options }: { groupName: string, variants: Variant[], options: Options[] } = e.data || {}
+  // 如果没有设置分组名称，直接返回
+  if (!groupName || !variants?.length || (options?.length < 2)) {
+    self.postMessage(variants); return
   }
-  if (!groupName || !variants?.length) {
-    self.postMessage(variants)
-    return
+  // 获取分组的options
+  const groupOption = options?.find(i => i.name === groupName)
+  // 如果找不到该分组，直接返回
+  if (!groupOption) {
+    self.postMessage(variants); return
   }
-  const result: Variant[] = []
-  variants?.forEach(item => {
-    // 取出 groupLabel
-    const groupLabel = item.name?.find(i => i.label === groupName)
-    if (!groupLabel) {
-      self.postMessage(variants)
-      return
-    }
-    // 是否存在
-    let find = result?.find(i => {
-      return i.name[0].value === groupLabel.value && i.name[0].label === groupLabel.label
+  // 开始设置分组
+  const groups: Variant[] = groupOption?.values?.filter(i => i.value)?.map(item => {
+    const children = variants?.filter(variant => {
+      return variant.name?.find(n => n.label === groupName && n.value === item.value)
     })
-    if (!find) {
-      const newItem: Variant = {
-        name: [groupLabel],
-        price: 0,
-        weight_uint: 'g',
-        id: genId(),
-        children: []
-      }
-      result.push(newItem)
-      find = result?.find(i => {
-        return i.name[0].value === groupLabel.value && i.name[0].label === groupLabel.label
-      })
-    }
-    if (find?.children) {
-      const noGroupNames = item.name?.filter(i => (i.label !== groupName))
-      if (!noGroupNames?.length) {
-        self.postMessage(variants)
-        return
-      }
-      const newItem: Variant = {
-        ...item,
-        parentId: item.id,
-        name: noGroupNames
-      }
-      find.children.push(newItem)
-    }
+    return { id: genId(), price: 0, weight_uint: 'g', children, parentId: item.id, name: [{ label: groupName, value: item.value, id: 0 }], isParent: true }
   })
-  /*   result = result.map(item => {
-    let id = 0
-    item?.children?.forEach(i => {
-      id += i.id
-    })
-    return {
-      ...item,
-      id: id || item.id
-    }
-  }) */
-  self.postMessage(result)
+  self.postMessage(groups)
 }

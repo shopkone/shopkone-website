@@ -129,8 +129,9 @@ export default function VariantChanger (props: VariantChangerProps) {
 
   useEffect(() => {
     if (options.some(item => !item.name)) return
-    setErr(errorCheck(options))
-    onChangeOptions()
+    const err = errorCheck(options)
+    setErr(err)
+    if (err.noError) onChangeOptions()
   }, [options])
 
   useEffect(() => {
@@ -227,7 +228,7 @@ export default function VariantChanger (props: VariantChangerProps) {
                                     key={value.id}
                                     style={{
                                       marginRight: 16,
-                                      marginBottom: 12,
+                                      marginBottom: 4,
                                       marginLeft: -4
                                     }}
                                     vertical
@@ -335,6 +336,7 @@ export default function VariantChanger (props: VariantChangerProps) {
                 position: 'relative',
                 top: 2
               }}
+              strokeWidth={5}
               size={13}
             />
             <div>Add another option</div>
