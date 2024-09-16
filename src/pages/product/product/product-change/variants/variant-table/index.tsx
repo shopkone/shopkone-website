@@ -23,6 +23,7 @@ export interface Variant {
   name: VariantName[]
   price: number
   weight_uint: 'kg' | 'lb' | 'oz' | 'g'
+  weight?: number
   compare_at_price?: number
   cost_per_item?: number
   barcode?: string
@@ -35,10 +36,11 @@ export interface Variant {
 export interface VariantTableProps {
   options: Options[]
   isSingle: boolean
+  hide?: boolean
 }
 
 export default function VariantTable (props: VariantTableProps) {
-  const { options, isSingle } = props
+  const { options, isSingle, hide } = props
   const [groupName, setGroupName] = useState<string>()
   const [dataSource, setDataSource] = useState<Variant[]>([])
   const form = Form.useFormInstance()
@@ -85,7 +87,7 @@ export default function VariantTable (props: VariantTableProps) {
   }, [dataSource])
 
   return (
-    <div className={styles['variant-table']}>
+    <div style={{ display: hide ? 'none' : 'block' }} className={styles['variant-table']}>
       <Flex align={'center'} style={{ marginBottom: 12 }} justify={'space-between'}>
         <SRender className={'tips'} style={{ fontSize: 13 }} render={isSingle}>
           Single Variant Mode
@@ -98,7 +100,6 @@ export default function VariantTable (props: VariantTableProps) {
         />
         <Flex gap={12} align={'center'}>
           <Group options={options} hide={!groupName} onChange={setGroupName} value={groupName} />
-          <span style={{ opacity: 0.2, margin: '0 -4px' }}>|</span>
           <Actions />
         </Flex>
       </Flex>

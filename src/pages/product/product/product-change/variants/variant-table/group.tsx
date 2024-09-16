@@ -30,15 +30,29 @@ export default function Group (props: GroupProps) {
 
   return (
     <Flex align={'center'}>
-      <div style={{ color: '#646a73', fontSize: 12, minWidth: 60, position: 'relative', top: 1 }}>Group by</div>
+      <div style={{
+        color: '#646a73',
+        fontSize: 12,
+        minWidth: 60,
+        position: 'relative',
+        top: 1
+      }}
+      >Group by
+      </div>
       <Select
         dropdownStyle={{ minWidth: 150 }}
-        options={options?.map(i => ({ label: i.name, value: i.name }))}
+        options={options?.map(i => ({
+          label: i.name,
+          value: i.name
+        }))}
         style={{ minWidth: 100 }}
         size={'small'}
         value={groupName}
         onChange={setGroupName}
       />
+      <div>
+        <div style={{ paddingLeft: 12, opacity: 0.2 }}>|</div>
+      </div>
     </Flex>
   )
 }

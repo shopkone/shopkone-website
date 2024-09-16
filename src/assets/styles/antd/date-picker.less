@@ -3,13 +3,15 @@
     &, * {
       cursor: pointer;
     }
-    background-color: #fefefe;
+    &:not(.shopkone-input-disabled) {
+      background-color: #fefefe;
+      &:hover {
+        border-color: #3370ff;
+      }
+    }
     border-radius: 8px;
     border-color: #d0d3d6;
     box-shadow: none;
-    &:hover {
-      border-color: #3370ff;
-    }
   }
   .shopkone-picker-focused {
     border-color: #3370ff;
