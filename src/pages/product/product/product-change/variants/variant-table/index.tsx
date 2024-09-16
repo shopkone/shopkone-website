@@ -10,6 +10,8 @@ import Filter from '@/pages/product/product/product-change/variants/variant-tabl
 import Group from '@/pages/product/product/product-change/variants/variant-table/group'
 import Table from '@/pages/product/product/product-change/variants/variant-table/table'
 
+import styles from './index.module.less'
+
 export interface VariantName {
   id: number
   label: string
@@ -62,7 +64,6 @@ export default function VariantTable (props: VariantTableProps) {
       })
       if (children?.length) {
         const find = f.find(i => isEqual(i.name, item.name) && i.isParent)
-        console.log(find)
         return find ? { ...find, children } : { ...item, children }
       }
       const find = f.find(i => isEqual(item.name, i.name))
@@ -72,7 +73,7 @@ export default function VariantTable (props: VariantTableProps) {
   })
 
   return (
-    <div style={{ height: dataSource?.length ? undefined : 0 }}>
+    <div className={styles['variant-table']}>
       <Flex style={{ marginBottom: dataSource?.length ? 12 : 0 }} justify={'space-between'}>
         <Group options={options} hide={!groupName} onChange={setGroupName} value={groupName} />
         <Actions hide={!groupName} />

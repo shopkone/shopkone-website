@@ -49,7 +49,7 @@ self.onmessage = (e) => {
   data = data.map(item => ({ ...item, values: item.values.filter(item => item.value) }))
   const list = combineOptions(data).filter(item => item.length)
   const result: Variant[] = list?.map(variant => {
-    return { name: variant, id: genId(), weight_uint: 'g', price: 0 }
+    return { name: variant, id: genId(), weight_uint: 'g', price: 0, parentId: 0, isParent: false }
   })
   self.postMessage(result)
 }

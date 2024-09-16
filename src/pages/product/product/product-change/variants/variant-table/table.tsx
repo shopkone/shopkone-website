@@ -1,11 +1,14 @@
 import { useState } from 'react'
 import { AddPicture, DeleteFour, Down, Up } from '@icon-park/react'
-import { Checkbox, Flex, Input } from 'antd'
+import { Button, Checkbox, Flex, Input, Select } from 'antd'
+import { useAtomValue } from 'jotai'
 import { cloneDeep } from 'lodash'
 
 import SInputNumber from '@/components/s-input-number'
 import SRender from '@/components/s-render'
 import STable, { STableProps } from '@/components/s-table'
+import { WEIGHT_UNIT_OPTIONS } from '@/constant/product'
+import { expandAtom } from '@/pages/product/product/product-change/variants/state'
 import { Variant } from '@/pages/product/product/product-change/variants/variant-table/index'
 
 import styles from './index.module.less'
@@ -19,6 +22,7 @@ export interface TableProps {
 export default function Table (props: TableProps) {
   const { value, onChange, groupName } = props
   const [expands, setExpands] = useState<number[]>([])
+  const expand = useAtomValue(expandAtom)
 
   const updateFormData = (row: Variant, key: string, v: any) => {
     if (row.children?.length) {
@@ -82,7 +86,8 @@ export default function Table (props: TableProps) {
           </SRender>
         </div>
       ),
-      width: 300
+      width: 300,
+      lock: true
     },
     {
       title: 'Price',
@@ -119,7 +124,41 @@ export default function Table (props: TableProps) {
       width: 120
     },
     {
+      title: 'Weight',
+      name: 'weight',
+      code: 'weight',
+      render: (weight: number, row: Variant) => (
+        <div style={{ position: 'relative' }}>
+          <SInputNumber placeholder={'0'} />
+          <Flex
+            className={styles['weight-select-wrapper']}
+            align={'center'}
+            justify={'center'}
+          >
+            <Select
+              value={row?.weight_uint}
+              style={{ padding: 0 }}
+              variant={'borderless'}
+              size={'small'}
+              suffixIcon={<Down className={styles['weight-select']} size={14} />}
+              options={WEIGHT_UNIT_OPTIONS}
+            />
+          </Flex>
+        </div>
+      ),
+      width: 120
+    },
+    {
       title: 'SKU',
+      name: 'sku',
+      code: 'sku',
+      render: () => (
+        <Input />
+      ),
+      width: 150
+    },
+    {
+      title: 'Barcode',
       name: 'sku',
       code: 'sku',
       render: () => (
@@ -132,7 +171,9 @@ export default function Table (props: TableProps) {
       name: 'id',
       code: 'id',
       render: (id: number, row: Variant) => (
-        <DeleteFour />
+        <Button type={'text'} className={styles['delete-btn']}>
+          <DeleteFour fill={'#1f2329e0'} size={15} className={styles['delete-btn-inner']} />
+        </Button>
       ),
       lock: true,
       align: 'center',
@@ -142,7 +183,8 @@ export default function Table (props: TableProps) {
 
   return (
     <STable
-      style={{ marginLeft: -16, marginRight: -16 }}
+      style={{ width: expand ? 916 : 578 }}
+      className={styles.table}
       useVirtual
       expand={{ value: expands, onChange: setExpands }}
       columns={columns}

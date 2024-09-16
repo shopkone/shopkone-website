@@ -24,7 +24,7 @@ export interface FilterProps {
 export default function Filter (props: FilterProps) {
   const { onChange, hide, groupName, options, isSingleVariantType = true } = props
   const [variants, setVariants] = useState<Variant[]>([])
-  const [filter, setFilter] = useState<Record<string, number>>()
+  const [filter, setFilter] = useState<Record<string, string>>()
 
   const onClearAllFilter = () => {
     setFilter(undefined)
@@ -48,14 +48,22 @@ export default function Filter (props: FilterProps) {
   }, [isSingleVariantType])
 
   useEffect(() => {
-    if (!variants?.length || !groupName) {
+    if (!variants?.length) {
       onChange(variants || [])
       return
     }
     const v = variants.filter(item => {
       if (!item.name) return false
-      return item.name?.every(i => !filter?.[i.label] || (filter[i.label] === i.id))
+      if (!filter || !Object.values(filter).find(i => i)) return true
+      return item.name.every(name => {
+        if (!filter[name.label]) return true
+        return filter[name.label] === name.value
+      })
     })
+    if (!groupName) {
+      onChange(v || [])
+      return
+    }
     const worker: Worker = new GroupNameHandle()
     worker.postMessage({ groupName, variants: v, options })
     worker.onmessage = (e) => {
@@ -75,10 +83,10 @@ export default function Filter (props: FilterProps) {
         options?.filter(i => i.name && i.values?.[0]?.value)?.map(item => (
           <TableFilter
             radio={{
-              options: item.values?.map(i => ({ label: i.value, value: i.id }))?.filter(i => i.label),
+              options: item.values?.map(i => ({ label: i.value, value: i.value }))?.filter(i => i.label),
               value: filter?.[item.name],
               onChange: (value) => {
-                setFilter(prev => ({ ...prev, [item.name]: Number(value || 0) }))
+                setFilter(prev => ({ ...prev, [item.name]: (value || '').toString() }))
               }
             }}
             key={item.id}

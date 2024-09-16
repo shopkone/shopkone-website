@@ -8,6 +8,8 @@ import { expandAtom } from '@/pages/product/product/product-change/variants/stat
 import VariantChanger, { Options } from '@/pages/product/product/product-change/variants/variant-changer'
 import VariantTable from '@/pages/product/product/product-change/variants/variant-table'
 
+import styles from './index.module.less'
+
 export default function Variants () {
   const [options, setOptions] = useState<Options[]>([])
   const form = Form.useFormInstance()
@@ -16,7 +18,7 @@ export default function Variants () {
   const expand = useAtomValue(expandAtom)
 
   return (
-    <Card style={{ maxWidth: expand ? 950 : 620, transition: 'all 0.1s ease-in-out' }} title={'Variants'}>
+    <Card style={{ maxWidth: expand ? 950 : 612 }} className={styles.container} title={'Variants'}>
       <Flex vertical gap={24}>
         <VariantChanger onChange={setOptions} />
         <SRender render={!!options.length || isSingle}>

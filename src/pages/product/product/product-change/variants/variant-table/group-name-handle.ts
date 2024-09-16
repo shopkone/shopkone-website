@@ -18,8 +18,8 @@ self.onmessage = (e) => {
   const groups: Variant[] = groupOption?.values?.filter(i => i.value)?.map(item => {
     const children = variants?.filter(variant => {
       return variant.name?.find(n => n.label === groupName && n.value === item.value)
-    })
+    }).map(item => ({ ...item, parentId: item.id }))
     return { id: genId(), price: 0, weight_uint: 'g', children, parentId: item.id, name: [{ label: groupName, value: item.value, id: 0 }], isParent: true }
-  })
+  }).filter(i => i.children?.length) as any
   self.postMessage(groups)
 }
