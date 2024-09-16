@@ -10,6 +10,7 @@ import STable, { STableProps } from '@/components/s-table'
 import { WEIGHT_UNIT_OPTIONS } from '@/constant/product'
 import { expandAtom } from '@/pages/product/product/product-change/variants/state'
 import { Variant } from '@/pages/product/product/product-change/variants/variant-table/index'
+import { getPriceString } from '@/utils/num'
 
 import styles from './index.module.less'
 
@@ -25,18 +26,15 @@ export default function Table (props: TableProps) {
   const expand = useAtomValue(expandAtom)
 
   const updateFormData = (row: Variant, key: string, v: any) => {
-    if (row.children?.length) {
-      row.children = row.children?.map((item: Variant) => {
-        return { ...item, [key]: v }
-      })
-    } else {
-      // @ts-expect-error
-      row[key] = v
-    }
-    const newValue = value.map((item: Variant) => {
-      return item.id === row.id ? row : item
+    const s = value?.map(variant => {
+      if (row.parentId) {
+        const children = variant.children?.map(child => child.id === row.id ? { ...child, [key]: v } : child)
+        return { ...variant, children }
+      }
+      return variant.id === row.id ? { ...variant, [key]: v } : variant
     })
-    onChange(cloneDeep(newValue))
+    console.log(row)
+    onChange(cloneDeep(s))
   }
 
   const columns: STableProps['columns'] = [
@@ -95,12 +93,19 @@ export default function Table (props: TableProps) {
       name: 'price',
       render: (price: number, row: Variant) => {
         return (
-          <SInputNumber
-            money
-            placeholder={'0.00'}
-            value={price}
-            onChange={(v) => { updateFormData(row, 'price', v) }}
-          />
+          <div>
+            <SRender style={{ fontSize: 13 }} className={'tips'} render={row.isParent}>
+              {getPriceString(row?.children?.map(i => i.price))}
+            </SRender>
+            <SRender render={!row.isParent}>
+              <SInputNumber
+                money
+                placeholder={'0.00'}
+                value={price}
+                onChange={(v) => { updateFormData(row, 'price', v) }}
+              />
+            </SRender>
+          </div>
         )
       },
       width: 120
@@ -109,10 +114,24 @@ export default function Table (props: TableProps) {
       title: 'Compare at price',
       name: 'compare_at_price',
       code: 'compare_at_price',
-      render: () => (
-        <SInputNumber money />
+      render: (compare_at_price: number, row: Variant) => (
+        <div>
+          <SRender style={{ fontSize: 13 }} className={'tips'} render={row.isParent}>
+            {getPriceString(row?.children?.map(i => i.compare_at_price))}
+          </SRender>
+          <SRender render={!row.isParent}>
+            <SInputNumber
+              money
+              placeholder={'0.00'}
+              value={compare_at_price}
+              onChange={(v) => {
+                updateFormData(row, 'compare_at_price', v)
+              }}
+            />
+          </SRender>
+        </div>
       ),
-      width: 150
+      width: 120
     },
     {
       title: 'Inventory',
@@ -152,17 +171,31 @@ export default function Table (props: TableProps) {
       title: 'SKU',
       name: 'sku',
       code: 'sku',
-      render: () => (
-        <Input />
+      render: (sku: string, row: Variant) => (
+        <div>
+          <SRender render={row.isParent} className={'tips'} style={{ fontSize: 13 }}>
+            {row.children?.filter(i => i.sku).length} / {row.children?.length}
+          </SRender>
+          <SRender render={!row.isParent}>
+            <Input value={sku} />
+          </SRender>
+        </div>
       ),
       width: 150
     },
     {
       title: 'Barcode',
-      name: 'sku',
-      code: 'sku',
-      render: () => (
-        <Input />
+      name: 'barcode',
+      code: 'barcode',
+      render: (barcode: string, row: Variant) => (
+        <div>
+          <SRender render={row.isParent} className={'tips'} style={{ fontSize: 13 }}>
+            {row.children?.filter(i => i.barcode).length} / {row.children?.length}
+          </SRender>
+          <SRender render={!row.isParent}>
+            <Input value={barcode} />
+          </SRender>
+        </div>
       ),
       width: 150
     },

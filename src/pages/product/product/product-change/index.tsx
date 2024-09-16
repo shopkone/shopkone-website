@@ -29,11 +29,11 @@ export default function ProductChange () {
     <Flex vertical style={{ width: 320 }} gap={16}>
       <Status />
       <ProductOrganization />
-      <Form.Item name={'seo'}>
+      <Form.Item style={{ marginBottom: expand ? 0 : undefined }} name={'seo'}>
         <Seo />
       </Form.Item>
     </Flex>
-  ), [])
+  ), [expand])
 
   useEffect(() => {
     form.setFieldsValue(INIT_DATA)

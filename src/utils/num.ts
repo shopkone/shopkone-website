@@ -16,3 +16,12 @@ export function formatPrice (x?: string | number) {
   }
   return arr[0] + '.' + arr[1].padEnd(2, '0')
 }
+
+export function getPriceString (prices?: Array<number | undefined>) {
+  // @ts-expect-error
+  const list: number[] = prices?.filter(i => typeof i === 'number') || []
+  if (!list?.length) return '$ 0.00'
+  const max = Math.max(...list)
+  const min = Math.min(...list)
+  return max === min ? `$ ${formatPrice(max)}` : `$ ${formatPrice(min)} - $ ${formatPrice(max)}`
+}

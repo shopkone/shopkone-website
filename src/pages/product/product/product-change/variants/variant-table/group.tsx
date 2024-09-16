@@ -18,7 +18,8 @@ export default function Group (props: GroupProps) {
       setGroupName()
       return
     }
-    if (!groupName) {
+    const find = options?.find(i => i.name === groupName)
+    if (!find) {
       setGroupName(options?.[0]?.name)
     }
   }, [options])

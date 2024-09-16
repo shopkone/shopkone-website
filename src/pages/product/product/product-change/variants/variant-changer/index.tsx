@@ -29,12 +29,14 @@ export default function VariantChanger (props: VariantChangerProps) {
   const variantType: VariantType = Form.useWatch('variant_type', form)
 
   const onChangeOptions = () => {
+    const err = errorCheck(options)
+    setErr(err)
+    if (!err.noError) return
     setTimeout(() => {
       if (variantType === VariantType.Single) {
         props.onChange([])
         return
       }
-      if (!err?.noError) return
       if (options.some(item => item.values?.every(i => !i.value))) {
         return
       }
@@ -129,9 +131,7 @@ export default function VariantChanger (props: VariantChangerProps) {
 
   useEffect(() => {
     if (options.some(item => !item.name)) return
-    const err = errorCheck(options)
-    setErr(err)
-    if (err.noError) onChangeOptions()
+    onChangeOptions()
   }, [options])
 
   useEffect(() => {

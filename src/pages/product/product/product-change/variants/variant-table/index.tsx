@@ -25,6 +25,8 @@ export interface Variant {
   weight_uint: 'kg' | 'lb' | 'oz' | 'g'
   compare_at_price?: number
   cost_per_item?: number
+  barcode?: string
+  sku?: string
   children?: Variant[]
   parentId?: number
   isParent: boolean
