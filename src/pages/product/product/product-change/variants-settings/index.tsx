@@ -12,7 +12,11 @@ export default function VariantsSettings () {
   const inventoryTracking = Form.useWatch('inventory_tracking', form)
 
   return (
-    <Card style={{ width: 612 }} title={'Variants Settings'}>
+    <Card
+      className={styles.container}
+      style={{ height: inventoryTracking ? 230 : 135 }}
+      title={'Variants Settings'}
+    >
       <div>
         <Form.Item name={'variant_type'}>
           <TypeChanger />

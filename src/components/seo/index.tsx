@@ -39,7 +39,7 @@ export default function Seo (props: SeoProps) {
   }, [title, description, editing])
 
   return (
-    <div className={styles.card} style={{ maxHeight: editing ? 500 : 160 }}>
+    <div className={styles.card} style={{ height: editing ? 413 : 160 }}>
       <Card
         title={'SEO'}
         extra={
@@ -145,10 +145,10 @@ export default function Seo (props: SeoProps) {
                  https://b3930d-c0.myshopify.com
                </Typography.Text>
                <Typography.Text ellipsis={{ tooltip: true }} className={styles.title}>
-                 {value?.page_title}
+                 {value?.page_title || '-'}
                </Typography.Text>
                <Typography.Text ellipsis={{ tooltip: true }} className={styles.desc}>
-                 {value?.meta_description}
+                 {value?.meta_description || '-'}
                </Typography.Text>
              </Flex>
              )

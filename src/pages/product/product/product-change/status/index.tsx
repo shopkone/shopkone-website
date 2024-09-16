@@ -5,6 +5,8 @@ import dayjs from 'dayjs'
 import SSelect from '@/components/s-select'
 import { useVariantStatusOptions, VariantStatus } from '@/constant/product'
 
+import styles from './index.module.less'
+
 export default function Status () {
   const form = Form.useFormInstance()
 
@@ -13,7 +15,7 @@ export default function Status () {
   const status: VariantStatus = Form.useWatch('status', form)
 
   return (
-    <Card style={{ width: '100%' }}>
+    <Card style={{ height: status === VariantStatus.Draft ? 170 : 100 }} className={styles.container}>
       <Form.Item name={'status'} label={'Status'}>
         <SSelect options={statusOptions} style={{ width: '100%' }} />
       </Form.Item>

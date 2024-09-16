@@ -75,7 +75,7 @@ export default function Edit (props: EditProps) {
           }}
         />
       </Form.Item>
-      <Form.Item name={'url_handle'} label={'URL handle'}>
+      <Form.Item className={'mb0'} name={'url_handle'} label={'URL handle'}>
         <div className={styles.input}>
           <span
             onClick={onFocus} className={'tips'} style={{

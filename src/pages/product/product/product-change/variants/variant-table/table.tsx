@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { AddPicture, DeleteFour, Down, Up } from '@icon-park/react'
-import { Button, Checkbox, Flex, Input, Select, Tooltip } from 'antd'
+import { Button, Checkbox, Flex, Form, Input, Select, Tooltip } from 'antd'
 import { cloneDeep } from 'lodash'
 
 import SInputNumber from '@/components/s-input-number'
@@ -21,6 +21,8 @@ export interface TableProps {
 export default function Table (props: TableProps) {
   const { value, onChange, groupName } = props
   const [expands, setExpands] = useState<number[]>([])
+  const form = Form.useFormInstance()
+  const inventoryTracking = Form.useWatch('inventory_tracking', form)
 
   const updateFormData = (row: Variant, key: string, v: any) => {
     if (row.isParent) {
@@ -205,6 +207,7 @@ export default function Table (props: TableProps) {
       render: () => (
         <SInputNumber uint placeholder={'0'} />
       ),
+      hidden: !inventoryTracking,
       width: 150
     },
     {
