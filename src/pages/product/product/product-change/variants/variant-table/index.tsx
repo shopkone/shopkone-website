@@ -104,7 +104,12 @@ export default function VariantTable (props: VariantTableProps) {
         </Flex>
       </Flex>
 
-      <Table groupName={groupName} onChange={setDataSource} value={dataSource} />
+      <Table
+        isSingleVariantType={isSingle}
+        groupName={groupName}
+        onChange={setDataSource}
+        value={dataSource}
+      />
     </div>
   )
 }

@@ -3,12 +3,13 @@ export interface SRenderProps {
   render?: any
   style?: React.CSSProperties
   className?: string
+  onClick?: () => void
 }
 
 export default function SRender (props: SRenderProps) {
-  const { render, children, className, style } = props
-  if ((className || style) && render) {
-    return <div style={style} className={className}>{children}</div>
+  const { render, children, className, style, onClick } = props
+  if ((className || style || onClick) && render) {
+    return <div onClick={onClick} style={style} className={className}>{children}</div>
   }
   if (render) return children
   return null

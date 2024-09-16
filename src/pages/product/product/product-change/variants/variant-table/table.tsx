@@ -16,10 +16,11 @@ export interface TableProps {
   value: Variant[]
   onChange: (value: Variant[]) => void
   groupName?: string
+  isSingleVariantType: boolean
 }
 
 export default function Table (props: TableProps) {
-  const { value, onChange, groupName } = props
+  const { value, onChange, groupName, isSingleVariantType } = props
   const [expands, setExpands] = useState<number[]>([])
   const form = Form.useFormInstance()
   const inventoryTracking = Form.useWatch('inventory_tracking', form)
@@ -58,14 +59,30 @@ export default function Table (props: TableProps) {
     }
   }
 
+  const changeExpandAll = () => {
+    if (value?.map(i => i.id).some(i => expands.includes(i))) {
+      setExpands([])
+    } else {
+      setExpands(value?.map(i => i.id))
+    }
+  }
+
+  const changeExpandOne = (id: number) => {
+    setExpands(expands.includes(id) ? expands.filter(i => i !== id) : [...expands, id])
+  }
+
   const columns: STableProps['columns'] = [
     {
       title: (
         <span>
           <Checkbox style={{ marginRight: 16, marginLeft: -8 }} />
           Variant
-          <span style={{ padding: '0 6px' }}>·</span>
-          <span className={styles['expand-all']}>expand all</span>
+          <SRender render={!!groupName}>
+            <span style={{ padding: '0 6px' }}>·</span>
+            <span onClick={changeExpandAll} className={styles['expand-all']}>
+              {value?.map(i => i.id).some(i => expands.includes(i)) ? 'collapse' : 'expand all'}
+            </span>
+          </SRender>
         </span>
       ),
       code: 'id',
@@ -108,7 +125,8 @@ export default function Table (props: TableProps) {
         </div>
       ),
       width: 300,
-      lock: true
+      lock: true,
+      hidden: isSingleVariantType
     },
     {
       title: 'Price',
@@ -215,22 +233,65 @@ export default function Table (props: TableProps) {
       name: 'weight',
       code: 'weight',
       render: (weight: number, row: Variant) => (
-        <div style={{ position: 'relative' }}>
-          <SInputNumber placeholder={'0'} />
-          <Flex
-            className={styles['weight-select-wrapper']}
-            align={'center'}
-            justify={'center'}
-          >
-            <Select
-              value={row?.weight_uint}
-              style={{ padding: 0 }}
-              variant={'borderless'}
-              size={'small'}
-              suffixIcon={<Down className={styles['weight-select']} size={14} />}
-              options={WEIGHT_UNIT_OPTIONS}
-            />
-          </Flex>
+        <div>
+          <SRender render={row.isParent}>
+            <Tooltip title={`Applies to all ${row?.children?.length} variants`}>
+              <div style={{ position: 'relative' }}>
+                <SInputNumber
+                  value={weight}
+                  placeholder={'0'}
+                  onChange={(v) => {
+                    updateFormData(row, 'weight', v)
+                  }}
+                />
+                <Flex
+                  className={styles['weight-select-wrapper']}
+                  align={'center'}
+                  justify={'center'}
+                >
+                  <Select
+                    value={[...new Set(row?.children?.map(i => i.weight_uint))].join('/')}
+                    onChange={(v) => {
+                      updateFormData(row, 'weight_uint', v)
+                    }}
+                    style={{ padding: 0 }}
+                    variant={'borderless'}
+                    size={'small'}
+                    suffixIcon={<Down className={styles['weight-select']} size={14} />}
+                    options={WEIGHT_UNIT_OPTIONS}
+                  />
+                </Flex>
+              </div>
+            </Tooltip>
+          </SRender>
+          <SRender render={!row.isParent}>
+            <div style={{ position: 'relative' }}>
+              <SInputNumber
+                value={weight}
+                placeholder={'0'}
+                onChange={(v) => {
+                  updateFormData(row, 'weight', v)
+                }}
+              />
+              <Flex
+                className={styles['weight-select-wrapper']}
+                align={'center'}
+                justify={'center'}
+              >
+                <Select
+                  value={row?.weight_uint}
+                  onChange={(v) => {
+                    updateFormData(row, 'weight_uint', v)
+                  }}
+                  style={{ padding: 0 }}
+                  variant={'borderless'}
+                  size={'small'}
+                  suffixIcon={<Down className={styles['weight-select']} size={14} />}
+                  options={WEIGHT_UNIT_OPTIONS}
+                />
+              </Flex>
+            </div>
+          </SRender>
         </div>
       ),
       width: 150
@@ -241,11 +302,14 @@ export default function Table (props: TableProps) {
       code: 'sku',
       render: (sku: string, row: Variant) => (
         <div>
-          <SRender render={row.isParent} className={'tips'} style={{ fontSize: 13 }}>
+          <SRender onClick={() => { changeExpandOne(row.id) }} render={row.isParent} className={styles['tips-expand']}>
             {row.children?.filter(i => i.sku).length} / {row.children?.length}
           </SRender>
           <SRender render={!row.isParent}>
-            <Input value={sku} />
+            <Input
+              onChange={(v) => { updateFormData(row, 'sku', v.target?.value) }}
+              value={sku}
+            />
           </SRender>
         </div>
       ),
@@ -257,11 +321,14 @@ export default function Table (props: TableProps) {
       code: 'barcode',
       render: (barcode: string, row: Variant) => (
         <div>
-          <SRender render={row.isParent} className={'tips'} style={{ fontSize: 13 }}>
+          <SRender onClick={() => { changeExpandOne(row.id) }} render={row.isParent} className={styles['tips-expand']}>
             {row.children?.filter(i => i.barcode).length} / {row.children?.length}
           </SRender>
           <SRender render={!row.isParent}>
-            <Input value={barcode} />
+            <Input
+              onChange={(v) => { updateFormData(row, 'barcode', v.target?.value) }}
+              value={barcode}
+            />
           </SRender>
         </div>
       ),
@@ -278,7 +345,8 @@ export default function Table (props: TableProps) {
       ),
       lock: true,
       align: 'center',
-      width: 50
+      width: 50,
+      hidden: isSingleVariantType
     }
   ]
 
