@@ -1,6 +1,7 @@
-import { App, Radio } from 'antd'
+import { App, Form, Radio } from 'antd'
 
 import { useVariantTypeOptions, VariantType } from '@/constant/product'
+import { Variant } from '@/pages/product/product/product-change/variants/variant-table'
 
 export interface TypeChangerProps {
   onChange?: (type: VariantType) => void
@@ -8,17 +9,14 @@ export interface TypeChangerProps {
 }
 
 export default function TypeChanger (props: TypeChangerProps) {
-  const {
-    value,
-    onChange
-  } = props
+  const { value, onChange } = props
   const options = useVariantTypeOptions()
   const { modal } = App.useApp()
-
-  const variants = []
+  const form = Form.useFormInstance()
 
   const onChangeHandle = (v: number) => {
-    const hasValue = variants?.some(i => i.id)
+    const variants = form.getFieldValue('variants') || []
+    const hasValue = variants?.some((i: Variant) => i.id)
     if (!hasValue && !options?.length) {
       onChange?.(v)
       return

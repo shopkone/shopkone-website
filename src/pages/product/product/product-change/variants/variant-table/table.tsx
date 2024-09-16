@@ -1,14 +1,12 @@
 import { useState } from 'react'
 import { AddPicture, DeleteFour, Down, Up } from '@icon-park/react'
 import { Button, Checkbox, Flex, Input, Select, Tooltip } from 'antd'
-import { useAtomValue } from 'jotai'
 import { cloneDeep } from 'lodash'
 
 import SInputNumber from '@/components/s-input-number'
 import SRender from '@/components/s-render'
 import STable, { STableProps } from '@/components/s-table'
 import { WEIGHT_UNIT_OPTIONS } from '@/constant/product'
-import { expandAtom } from '@/pages/product/product/product-change/variants/state'
 import { Variant } from '@/pages/product/product/product-change/variants/variant-table/index'
 import { formatPrice } from '@/utils/num'
 
@@ -23,7 +21,6 @@ export interface TableProps {
 export default function Table (props: TableProps) {
   const { value, onChange, groupName } = props
   const [expands, setExpands] = useState<number[]>([])
-  const expand = useAtomValue(expandAtom)
 
   const updateFormData = (row: Variant, key: string, v: any) => {
     if (row.isParent) {
@@ -109,7 +106,7 @@ export default function Table (props: TableProps) {
         </div>
       ),
       width: 300,
-      lock: expand
+      lock: true
     },
     {
       title: 'Price',
@@ -134,6 +131,36 @@ export default function Table (props: TableProps) {
                 placeholder={'0.00'}
                 value={price}
                 onChange={(v) => { updateFormData(row, 'price', v) }}
+              />
+            </SRender>
+          </div>
+        )
+      },
+      width: 150
+    },
+    {
+      title: 'Cost per item',
+      name: 'cost_per_item',
+      code: 'cost_per_item',
+      render: (cost_per_item: number, row: Variant) => {
+        return (
+          <div>
+            <SRender style={{ fontSize: 13 }} className={'tips'} render={row.isParent}>
+              <Tooltip title={`Applies to all ${row?.children?.length} variants`}>
+                <SInputNumber
+                  onChange={(v) => { updateFormData(row, 'cost_per_item', v) }}
+                  money
+                  value={getPriceRange(row?.children?.map(i => i.cost_per_item))?.value}
+                  placeholder={getPriceRange(row?.children?.map(i => i.cost_per_item))?.placeHolder}
+                />
+              </Tooltip>
+            </SRender>
+            <SRender render={!row.isParent}>
+              <SInputNumber
+                money
+                placeholder={'0.00'}
+                value={cost_per_item}
+                onChange={(v) => { updateFormData(row, 'cost_per_item', v) }}
               />
             </SRender>
           </div>
@@ -254,7 +281,7 @@ export default function Table (props: TableProps) {
 
   return (
     <STable
-      style={{ width: expand ? 916 : 578 }}
+      width={916}
       className={styles.table}
       expand={{ value: expands, onChange: setExpands }}
       columns={columns}

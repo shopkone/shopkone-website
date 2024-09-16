@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useMemoizedFn } from 'ahooks'
-import { Flex } from 'antd'
+import { Flex, Form } from 'antd'
 import { isEqual } from 'lodash'
 
 import SRender from '@/components/s-render'
@@ -41,10 +41,12 @@ export default function VariantTable (props: VariantTableProps) {
   const { options, isSingle } = props
   const [groupName, setGroupName] = useState<string>()
   const [dataSource, setDataSource] = useState<Variant[]>([])
+  const form = Form.useFormInstance()
 
-  const flat = () => {
+  const flat = (v: Variant[]) => {
     const result: Variant[] = []
-    dataSource.forEach(item => {
+    if (!v?.length) return []
+    v.forEach(item => {
       if (item.children?.length) {
         result.push({ ...item, children: [] })
         item.children.forEach(i => {
@@ -58,7 +60,11 @@ export default function VariantTable (props: VariantTableProps) {
   }
 
   const onChangeDataSource = useMemoizedFn((v: Variant[]) => {
-    const f = flat()
+    const f = flat(dataSource)
+    if (!v?.length) {
+      setDataSource([])
+      return
+    }
     const list = v.map(item => {
       const children = item.children?.map(i => {
         const find = f.find(j => isEqual(i.name, j.name))
@@ -74,13 +80,12 @@ export default function VariantTable (props: VariantTableProps) {
     setDataSource(list)
   })
 
+  useEffect(() => {
+    form.setFieldValue('variants', flat(dataSource))
+  }, [dataSource])
+
   return (
     <div className={styles['variant-table']}>
-      <Flex style={{ marginBottom: dataSource?.length ? 12 : 0 }} justify={'space-between'}>
-        <Group options={options} hide={!groupName} onChange={setGroupName} value={groupName} />
-        <Actions hide={!groupName} />
-      </Flex>
-
       <Flex align={'center'} style={{ marginBottom: 12 }} justify={'space-between'}>
         <SRender className={'tips'} style={{ fontSize: 13 }} render={isSingle}>
           Single Variant Mode
@@ -91,7 +96,11 @@ export default function VariantTable (props: VariantTableProps) {
           groupName={groupName}
           onChange={onChangeDataSource}
         />
-        <Actions hide={!dataSource?.length || !!groupName} />
+        <Flex gap={12} align={'center'}>
+          <Group options={options} hide={!groupName} onChange={setGroupName} value={groupName} />
+          <span style={{ opacity: 0.2, margin: '0 -4px' }}>|</span>
+          <Actions />
+        </Flex>
       </Flex>
 
       <Table groupName={groupName} onChange={setDataSource} value={dataSource} />

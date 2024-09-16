@@ -1,13 +1,11 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect } from 'react'
 import { Flex, Form } from 'antd'
-import { useAtomValue } from 'jotai'
 
 import Seo from '@/components/seo'
 import BaseInfo from '@/pages/product/product/product-change/base-info'
 import ProductOrganization from '@/pages/product/product/product-change/product-organization'
 import Status from '@/pages/product/product/product-change/status'
 import Variants from '@/pages/product/product/product-change/variants'
-import { expandAtom } from '@/pages/product/product/product-change/variants/state'
 import VariantsSettings from '@/pages/product/product/product-change/variants-settings'
 
 import styles from './index.module.less'
@@ -22,18 +20,7 @@ const INIT_DATA = {
 }
 
 export default function ProductChange () {
-  const expand = useAtomValue(expandAtom)
   const [form] = Form.useForm()
-
-  const right = useMemo(() => (
-    <Flex vertical style={{ width: 320 }} gap={16}>
-      <Status />
-      <ProductOrganization />
-      <Form.Item style={{ marginBottom: expand ? 0 : undefined }} name={'seo'}>
-        <Seo />
-      </Form.Item>
-    </Flex>
-  ), [expand])
 
   useEffect(() => {
     form.setFieldsValue(INIT_DATA)
@@ -48,13 +35,16 @@ export default function ProductChange () {
               <BaseInfo />
               <VariantsSettings />
             </Flex>
-            {expand
-              ? right
-              : null}
+            <Flex vertical style={{ width: 320 }} gap={16}>
+              <Status />
+              <ProductOrganization />
+              <Form.Item className={'mb0'} name={'seo'}>
+                <Seo />
+              </Form.Item>
+            </Flex>
           </Flex>
           <Variants />
         </Flex>
-        {!expand && right}
       </Flex>
     </Form>
   )

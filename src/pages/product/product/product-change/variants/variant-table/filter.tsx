@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Button, Flex } from 'antd'
 
-import SRender from '@/components/s-render'
 import TableFilter from '@/components/table-filter'
 import { Options } from '@/pages/product/product/product-change/variants/variant-changer'
 import { Variant } from '@/pages/product/product/product-change/variants/variant-table/index'
@@ -31,7 +30,9 @@ export default function Filter (props: FilterProps) {
   }
 
   useEffect(() => {
-    if (isSingleVariantType) return
+    if (isSingleVariantType) {
+      return
+    }
     const worker: Worker = new OptionsHandle()
     worker.postMessage({ options })
     worker.onmessage = (e) => {
@@ -75,10 +76,6 @@ export default function Filter (props: FilterProps) {
 
   return (
     <Flex gap={6} align={'center'} className={styles.filter}>
-      <SRender style={{ width: 54, color: '#646a73', fontSize: 12 }} render={groupName}>
-        Filter
-      </SRender>
-
       {
         options?.filter(i => i.name && i.values?.[0]?.value)?.map(item => (
           <TableFilter
