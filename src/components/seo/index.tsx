@@ -39,7 +39,7 @@ export default function Seo (props: SeoProps) {
   }, [title, description, editing])
 
   return (
-    <div className={styles.card} style={{ height: editing ? 500 : 160 }}>
+    <div className={styles.card} style={{ maxHeight: editing ? 500 : 160 }}>
       <Card
         title={'SEO'}
         extra={
@@ -81,54 +81,48 @@ export default function Seo (props: SeoProps) {
                    )
              }
             </Button>
-            {
-             editing
-               ? null
-               : (
-                 <Popover
-                   placement={'bottom'}
-                   overlayInnerStyle={{ minWidth: 'unset' }}
-                   content={
-                     <Flex vertical gap={4}>
-                       <Button type={'text'} size={'small'}>
-                         <Flex align={'center'} style={{ color: '#646a73' }} gap={8}>
-                           <div>Check Google indexing</div>
-                           <Share
-                             strokeWidth={5} style={{
-                               position: 'relative',
-                               top: 2
-                             }}
-                           />
-                         </Flex>
-                       </Button>
-                       <Button type={'text'} size={'small'}>
-                         <Flex align={'center'} style={{ color: '#646a73' }} gap={8}>
-                           <div>Submit for indexing</div>
-                           <Share
-                             strokeWidth={5} style={{
-                               position: 'relative',
-                               top: 2
-                             }}
-                           />
-                         </Flex>
-                       </Button>
-                     </Flex>
-                   }
-                   trigger={'click'}
-                 >
-                   <Button
-                     style={{
-                       position: 'relative',
-                       right: -4
-                     }}
-                     size={'small'}
-                     type={'text'}
-                   >
-                     <More size={16} strokeWidth={6} fill={'#646a73'} />
-                   </Button>
-                 </Popover>
-                 )
-           }
+            <Popover
+              placement={'bottom'}
+              overlayInnerStyle={{ minWidth: 'unset' }}
+              content={
+                <Flex vertical gap={4}>
+                  <Button type={'text'} size={'small'}>
+                    <Flex align={'center'} style={{ color: '#646a73' }} gap={8}>
+                      <div>Check Google indexing</div>
+                      <Share
+                        strokeWidth={5} style={{
+                          position: 'relative',
+                          top: 2
+                        }}
+                      />
+                    </Flex>
+                  </Button>
+                  <Button type={'text'} size={'small'}>
+                    <Flex align={'center'} style={{ color: '#646a73' }} gap={8}>
+                      <div>Submit for indexing</div>
+                      <Share
+                        strokeWidth={5} style={{
+                          position: 'relative',
+                          top: 2
+                        }}
+                      />
+                    </Flex>
+                  </Button>
+                </Flex>
+              }
+              trigger={'click'}
+            >
+              <Button
+                style={{
+                  position: 'relative',
+                  right: -4
+                }}
+                size={'small'}
+                type={'text'}
+              >
+                <More size={16} strokeWidth={6} fill={'#646a73'} />
+              </Button>
+            </Popover>
           </Flex>
        }
       >

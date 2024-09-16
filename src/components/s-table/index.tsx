@@ -76,6 +76,7 @@ function STable (props: STableProps) {
         isStickyHeader
         hasHeader
         stickyTop={stickyTop}
+        useVirtual={{ horizontal: false }}
         {...rest}
         {...pipeline.getProps()}
       />

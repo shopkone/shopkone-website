@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { AddPicture, DeleteFour, Down, Up } from '@icon-park/react'
-import { Button, Checkbox, Flex, Input, Select } from 'antd'
+import { Button, Checkbox, Flex, Input, Select, Tooltip } from 'antd'
 import { useAtomValue } from 'jotai'
 import { cloneDeep } from 'lodash'
 
@@ -10,7 +10,7 @@ import STable, { STableProps } from '@/components/s-table'
 import { WEIGHT_UNIT_OPTIONS } from '@/constant/product'
 import { expandAtom } from '@/pages/product/product/product-change/variants/state'
 import { Variant } from '@/pages/product/product/product-change/variants/variant-table/index'
-import { getPriceString } from '@/utils/num'
+import { formatPrice } from '@/utils/num'
 
 import styles from './index.module.less'
 
@@ -26,6 +26,14 @@ export default function Table (props: TableProps) {
   const expand = useAtomValue(expandAtom)
 
   const updateFormData = (row: Variant, key: string, v: any) => {
+    if (row.isParent) {
+      row.children = row.children?.map(child => {
+        return { ...child, [key]: v }
+      })
+      const newValue = value?.map(i => i.id === row.id ? row : i)
+      onChange(cloneDeep(newValue))
+      return
+    }
     const s = value?.map(variant => {
       if (row.parentId) {
         const children = variant.children?.map(child => child.id === row.id ? { ...child, [key]: v } : child)
@@ -33,8 +41,22 @@ export default function Table (props: TableProps) {
       }
       return variant.id === row.id ? { ...variant, [key]: v } : variant
     })
-    console.log(row)
     onChange(cloneDeep(s))
+  }
+
+  const getPriceRange = (prices?: Array<number | undefined>) => {
+    // @ts-expect-error
+    const list: number[] = prices?.filter(i => typeof i === 'number') || []
+    if (!list?.length) return { value: undefined, placeHolder: '0.00' }
+    const max = Math.max(...list)
+    const min = Math.min(...list)
+    if (min === max) {
+      return { value: max, placeHolder: undefined }
+    }
+    return {
+      placeHolder: [formatPrice(min), formatPrice(max)].join(' - '),
+      value: undefined
+    }
   }
 
   const columns: STableProps['columns'] = [
@@ -43,6 +65,8 @@ export default function Table (props: TableProps) {
         <span>
           <Checkbox style={{ marginRight: 16, marginLeft: -8 }} />
           Variant
+          <span style={{ padding: '0 6px' }}>·</span>
+          <span className={styles['expand-all']}>expand all</span>
         </span>
       ),
       code: 'id',
@@ -85,7 +109,7 @@ export default function Table (props: TableProps) {
         </div>
       ),
       width: 300,
-      lock: true
+      lock: expand
     },
     {
       title: 'Price',
@@ -95,7 +119,14 @@ export default function Table (props: TableProps) {
         return (
           <div>
             <SRender style={{ fontSize: 13 }} className={'tips'} render={row.isParent}>
-              {getPriceString(row?.children?.map(i => i.price))}
+              <Tooltip title={`Applies to all ${row?.children?.length} variants`}>
+                <SInputNumber
+                  onChange={(v) => { updateFormData(row, 'price', v) }}
+                  money
+                  value={getPriceRange(row?.children?.map(i => i.price))?.value}
+                  placeholder={getPriceRange(row?.children?.map(i => i.price))?.placeHolder}
+                />
+              </Tooltip>
             </SRender>
             <SRender render={!row.isParent}>
               <SInputNumber
@@ -108,30 +139,37 @@ export default function Table (props: TableProps) {
           </div>
         )
       },
-      width: 120
+      width: 150
     },
     {
       title: 'Compare at price',
       name: 'compare_at_price',
       code: 'compare_at_price',
-      render: (compare_at_price: number, row: Variant) => (
-        <div>
-          <SRender style={{ fontSize: 13 }} className={'tips'} render={row.isParent}>
-            {getPriceString(row?.children?.map(i => i.compare_at_price))}
-          </SRender>
-          <SRender render={!row.isParent}>
-            <SInputNumber
-              money
-              placeholder={'0.00'}
-              value={compare_at_price}
-              onChange={(v) => {
-                updateFormData(row, 'compare_at_price', v)
-              }}
-            />
-          </SRender>
-        </div>
-      ),
-      width: 120
+      render: (compare_at_price: number, row: Variant) => {
+        return (
+          <div>
+            <SRender style={{ fontSize: 13 }} className={'tips'} render={row.isParent}>
+              <Tooltip title={`Applies to all ${row?.children?.length} variants`}>
+                <SInputNumber
+                  onChange={(v) => { updateFormData(row, 'compare_at_price', v) }}
+                  money
+                  value={getPriceRange(row?.children?.map(i => i.compare_at_price))?.value}
+                  placeholder={getPriceRange(row?.children?.map(i => i.compare_at_price))?.placeHolder}
+                />
+              </Tooltip>
+            </SRender>
+            <SRender render={!row.isParent}>
+              <SInputNumber
+                money
+                placeholder={'0.00'}
+                value={compare_at_price}
+                onChange={(v) => { updateFormData(row, 'compare_at_price', v) }}
+              />
+            </SRender>
+          </div>
+        )
+      },
+      width: 150
     },
     {
       title: 'Inventory',
@@ -140,7 +178,7 @@ export default function Table (props: TableProps) {
       render: () => (
         <SInputNumber uint placeholder={'0'} />
       ),
-      width: 120
+      width: 150
     },
     {
       title: 'Weight',
@@ -165,7 +203,7 @@ export default function Table (props: TableProps) {
           </Flex>
         </div>
       ),
-      width: 120
+      width: 150
     },
     {
       title: 'SKU',
@@ -218,7 +256,6 @@ export default function Table (props: TableProps) {
     <STable
       style={{ width: expand ? 916 : 578 }}
       className={styles.table}
-      useVirtual
       expand={{ value: expands, onChange: setExpands }}
       columns={columns}
       data={value}
