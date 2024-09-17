@@ -27,6 +27,7 @@ export interface Variant {
   compare_at_price?: number
   cost_per_item?: number
   barcode?: string
+  inventories: Array<{ id: number, quantity: number, location_id: number }>
   sku?: string
   children?: Variant[]
   parentId?: number
