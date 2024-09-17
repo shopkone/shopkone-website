@@ -16,13 +16,14 @@ export default function TypeChanger (props: TypeChangerProps) {
 
   const onChangeHandle = (v: number) => {
     const variants = form.getFieldValue('variants') || []
+    const opt = form.getFieldValue('options') || []
     const hasValue = variants?.some((i: Variant) => {
       if (i.name?.length) {
         return true
       }
       return (i.barcode || i.sku || i.price || i.compare_at_price || i.cost_per_item || i.weight)
     })
-    if (!hasValue || (variants?.length > 1)) {
+    if (!hasValue && !opt?.length) {
       onChange?.(v)
       return
     }

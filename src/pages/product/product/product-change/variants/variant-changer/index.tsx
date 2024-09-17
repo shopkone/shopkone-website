@@ -90,6 +90,7 @@ export default function VariantChanger (props: VariantChangerProps) {
         values
       }
     })
+    form.setFieldValue('options', newOptions)
     setOptions(newOptions)
   })
 
