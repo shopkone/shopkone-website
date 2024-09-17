@@ -1,19 +1,19 @@
 #shopkone {
   .shopkone-input-number-outlined {
     border-radius: 8px;
-    border-color: #d0d3d6;
+    border-color: var(--color-disabled-border);
     box-shadow: none;
     &:not(.shopkone-input-disabled) {
-      background-color: #fefefe;
+      background-color: var(--color-bg-third);
       &:hover {
-        border-color: #3370ff;
-        background-color: #fdfdfd;
+        border-color: var(--color-primary);
+        background-color: var(--color-bg-fourth);
       }
     }
 
     &:has(.shopkone-input-number-focused) {
-      border-color: #3370ff;
-      outline: 2px solid #3370ff;
+      border-color: var(--color-primary);
+      outline: 2px solid var(--color-primary);
       outline-offset: 1px;
       transition: none;
     }
@@ -21,8 +21,8 @@
 
   .shopkone-input-number-outlined.shopkone-input-number-focused {
     transition: none;
-    border-color: #3370ff;
-    outline: 2px solid #3370ff;
+    border-color: var(--color-primary);
+    outline: 2px solid var(--color-primary);
     outline-offset: 1px;
   }
 

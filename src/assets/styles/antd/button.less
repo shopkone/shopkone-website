@@ -14,30 +14,30 @@
   }
 
   .shopkone-btn-primary:not(:disabled) {
-    background-color: #3370ff;
+    background-color: var(--color-primary);
     &:hover {
-      background-color: #4e83fd;
+      background-color: var(--color-primary-hover);
     }
     &:active {
-      background-color: #245bdb;
+      background-color: var(--color-primary-active);
     }
   }
 
   .shopkone-btn-default:not(:disabled) {
-    border-color: #d0d3d6;
+    border-color: var(--color-disabled-border);
     &:hover {
-      color: #1f2329;
-      border-color: #d0d3d6;
-      background-color: #f1f2f4;
+      color: var(--color-text-primary);
+      border-color: var(--color-disabled-border);
+      background-color: var(--color-bg-secondary);
     }
     &:active {
-      background-color: #e1e3e5;
+      background-color: var(--color-disabled-bg);
     }
   }
 
   .shopkone-btn-text:hover {
     &:hover {
-      background-color: #e1e3e5;
+      background-color: var(--color-disabled-bg);
     }
     &:active {
       background-color: #cccccc;
@@ -45,31 +45,31 @@
   }
 
   .shopkone-btn-dangerous:not(:disabled)  {
-    color: #f54a45;
+    color: var(--color--error);
     font-weight: 500;
     &:hover {
-      color: #f50a00;
+      color: var(--color--error);
     }
   }
 
   .shopkone-btn-dashed {
-    border-color: #d0d3d6;
+    border-color: var(--color-disabled-border);
     &:hover {
       border-style: solid;
-      color: #1f2329;
+      color: var(--color-text-);
     }
     &:active {
-      background-color: #e1e3e5;
+      background-color: var(--color-disabled-bg);
     }
   }
 
   .shopkone-btn-link:not(:disabled) {
-    color: #3370ff;
+    color: var(--color-primary);
     span {
       font-weight: 450;
     }
     &:hover{
-      color: #3370ff;
+      color: var(--color-primary);
       span {
         text-decoration: underline;
       }

@@ -151,7 +151,7 @@ export default function VariantChanger (props: VariantChangerProps) {
         <Button className={`primary-text ${styles['ml-10']}`} onClick={onAdd} type={'text'} size={'small'}>
           <Flex gap={5} align={'center'}>
             <AddOne className={styles['add-btn-icon']} size={13} />
-            <div>Add options like size or color</div>
+            <div style={{ fontSize: 13 }}>Add options like size or color</div>
           </Flex>
         </Button>
       </div>

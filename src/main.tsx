@@ -7,6 +7,7 @@ import '@/assets/styles/reset.less'
 import '@/assets/styles/global.less'
 import '@/assets/styles/animation.less'
 import '@/assets/styles/antd/antd.less'
+import '@/assets/styles/base.less'
 
 const dom = document.getElementById('root')
 
