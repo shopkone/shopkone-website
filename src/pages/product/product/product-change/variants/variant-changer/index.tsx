@@ -148,14 +148,9 @@ export default function VariantChanger (props: VariantChangerProps) {
   if (!options?.length) {
     return (
       <div>
-        <Button className={'primary-text'} onClick={onAdd} style={{ marginLeft: -10 }} type={'text'} size={'small'}>
+        <Button className={`primary-text ${styles['ml-10']}`} onClick={onAdd} type={'text'} size={'small'}>
           <Flex gap={5} align={'center'}>
-            <AddOne
-              style={{
-                position: 'relative',
-                top: 2
-              }} size={13}
-            />
+            <AddOne className={styles['add-btn-icon']} size={13} />
             <div>Add options like size or color</div>
           </Flex>
         </Button>
@@ -227,11 +222,7 @@ export default function VariantChanger (props: VariantChangerProps) {
                                 >
                                   <Flex
                                     key={value.id}
-                                    style={{
-                                      marginRight: 16,
-                                      marginBottom: 4,
-                                      marginLeft: -4
-                                    }}
+                                    className={styles.item}
                                     vertical
                                     gap={2}
                                   >
@@ -250,36 +241,18 @@ export default function VariantChanger (props: VariantChangerProps) {
                                         rootClassName={'fit-width'}
                                         suffix={
                                           <Button
+                                            className={styles['delete-btn']}
                                             onClick={() => {
                                               removeValue(option.id, value.id)
                                             }}
-                                            style={{
-                                              height: 20,
-                                              width: 24,
-                                              padding: 0,
-                                              display: (
-                                                option.values.length !== i + 1
-                                              ) &&
-                                              (
-                                                option.values.length > 2
-                                              )
-                                                ? 'block'
-                                                : 'none'
-                                            }} size={'small'} type={'text'}
+                                            style={{ display: (option.values.length !== i + 1) && (option.values.length > 2) ? 'block' : 'none' }} size={'small'} type={'text'}
                                           >
                                             <DeleteFour fill={'#1f2329e0'} size={14} />
                                           </Button>
                                         }
                                       />
                                     </Flex>
-                                    <div style={{
-                                      marginLeft: 20,
-                                      color: '#f54a45',
-                                      fontSize: 12,
-                                      fontWeight: 450,
-                                      display: err?.valueError?.find(i => i.id === value.id)?.message ? 'block' : 'none'
-                                    }}
-                                    >
+                                    <div className={styles['err-msg']} style={{ display: err?.valueError?.find(i => i.id === value.id)?.message ? 'block' : 'none' }}>
                                       {err?.valueError?.find(i => i.id === value.id)?.message}
                                     </div>
                                   </Flex>
@@ -332,14 +305,7 @@ export default function VariantChanger (props: VariantChangerProps) {
         options?.length < 3 &&
         <div className={styles['add-btn']}>
           <Flex className={styles['add-btn-inner']} gap={5} align={'center'} onClick={onAdd}>
-            <AddOne
-              style={{
-                position: 'relative',
-                top: 2
-              }}
-              strokeWidth={5}
-              size={13}
-            />
+            <AddOne className={styles['add-btn-icon']} strokeWidth={5} size={13} />
             <div>Add another option</div>
           </Flex>
         </div>
