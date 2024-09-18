@@ -1,0 +1,40 @@
+.sider {
+  position: fixed;
+  left: 0;
+  width: 240px;
+  top: 56px;
+  bottom: 0;
+  padding: 12px;
+  background-color: #e1e3e550;
+}
+
+.item {
+  padding: 0 4px 0 8px;
+  height: 28px;
+  line-height: 28px !important;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 2px;
+  &:hover {
+    background-color: #e1e3e5;
+    .item-left-arrow {
+      opacity: 1;
+    }
+  }
+}
+
+.item-left-arrow {
+  position: relative;
+  top: 2px;
+  color: var(--color-text-secondary);
+  opacity: 0;
+}
+
+.group {
+  position: relative;
+}
+
+.active {
+  color: var(--color-primary);
+  font-weight: bolder;
+}

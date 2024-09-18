@@ -1,6 +1,9 @@
-import { memo } from 'react'
+import { memo, useMemo } from 'react'
+import { LoadingOutlined } from '@ant-design/icons'
 import { BaseTable, BaseTableProps, features, useTablePipeline } from 'ali-react-table'
-import { Checkbox } from 'antd'
+import { Checkbox, Spin } from 'antd'
+
+import Empty, { EmptyProps } from '@/components/s-table/empty'
 
 type omit = 'columns' | 'dataSource' | 'primaryKey' | 'hasHeader' | 'isStickyHeader'
 
@@ -19,6 +22,8 @@ export interface STableProps extends Omit<BaseTableProps, omit> {
     value: number[]
     onChange: (value: number[]) => void
   }
+  loading?: boolean
+  empty?: EmptyProps
 }
 
 function STable (props: STableProps) {
@@ -31,6 +36,8 @@ function STable (props: STableProps) {
     rowSelection,
     expand,
     stickyTop,
+    loading,
+    empty,
     ...rest
   } = props
 
@@ -70,9 +77,22 @@ function STable (props: STableProps) {
       }))
   }
 
+  const LoadingContent = useMemo(() => (
+    <div style={{ position: 'relative', top: 12, textAlign: 'center' }}>
+      <Spin spinning indicator={<LoadingOutlined style={{ fontSize: 32 }} />} />
+    </div>
+  ), [])
+
+  if (!data.length && !loading && empty) {
+    return (
+      <Empty {...empty} />
+    )
+  }
+
   return (
     <div style={{ width, ...style }}>
       <BaseTable
+        components={{ LoadingIcon: () => LoadingContent }}
         isStickyHeader
         hasHeader
         stickyTop={stickyTop}

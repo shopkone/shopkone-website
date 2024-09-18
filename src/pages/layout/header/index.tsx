@@ -1,24 +1,34 @@
 import { BellOutlined, QuestionCircleOutlined, ShopOutlined } from '@ant-design/icons'
 import { Attention, Check, Right } from '@icon-park/react'
 import { Button, Flex, Popover, Tooltip } from 'antd'
+import { useAtomValue } from 'jotai'
+
+import SRender from '@/components/s-render'
+import { pageAtom } from '@/state'
 
 import styles from './index.module.less'
 
 export default function Header () {
+  const page = useAtomValue(pageAtom)
+
+  console.log(page)
+
   return (
     <header className={styles.header}>
       <Flex align={'center'} className={styles.logo}>shopkone</Flex>
       <Flex align={'center'} justify={'center'} className={styles.center} >
-        <Flex justify={'space-between'} align={'center'} className={styles['center-inner']}>
-          <Flex align={'center'} gap={4}>
-            <Attention strokeWidth={4} style={{ position: 'relative', top: 2 }} size={14} />
-            <div>Unsaved</div>
+        <SRender render={page.isChange}>
+          <Flex justify={'space-between'} align={'center'} className={styles['center-inner']}>
+            <Flex align={'center'} gap={4}>
+              <Attention strokeWidth={4} style={{ position: 'relative', top: 2 }} size={14} />
+              <div>Unsaved</div>
+            </Flex>
+            <Flex align={'center'} gap={12}>
+              <Button>Discard</Button>
+              <Button type={'primary'}>Save</Button>
+            </Flex>
           </Flex>
-          <Flex align={'center'} gap={12}>
-            <Button>Discard</Button>
-            <Button type={'primary'}>Save</Button>
-          </Flex>
-        </Flex>
+        </SRender>
       </Flex>
       <div className={styles.right}>
         <Tooltip arrow={false} title={'View your online store'}>

@@ -1,5 +1,11 @@
+import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { ArrowLeft } from '@icon-park/react'
 import { Button, Flex } from 'antd'
+import { useSetAtom } from 'jotai'
+
+import SRender from '@/components/s-render'
+import { pageAtom } from '@/state'
 
 import styles from './index.module.less'
 
@@ -8,18 +14,34 @@ export interface PageProps {
   width?: number
   header?: React.ReactNode
   footer?: React.ReactNode
+  title?: string
+  back?: string
+  isChange?: boolean
 }
 
 export default function Page (props: PageProps) {
-  const { children, width, header, footer } = props
+  const { children, width, header, footer, title, back, isChange } = props
+  const setPage = useSetAtom(pageAtom)
+  const nav = useNavigate()
+
+  useEffect(() => {
+    setPage({ isChange })
+  }, [isChange])
+
+  useEffect(() => {
+    return () => { setPage({}) }
+  }, [])
+
   return (
     <div style={{ maxWidth: width, margin: '0 auto' }}>
       <Flex align={'center'} justify={'space-between'} className={styles.title}>
         <Flex gap={4} align={'center'}>
-          <Button type={'text'} className={styles['back-icon']}>
-            <ArrowLeft strokeWidth={5} size={16} />
-          </Button>
-          <div style={{ fontSize: 20 }}>Close sadasdgadfc</div>
+          <SRender render={!!back}>
+            <Button onClick={() => { nav(back || '') }} type={'text'} className={styles['back-icon']}>
+              <ArrowLeft strokeWidth={5} size={16} />
+            </Button>
+          </SRender>
+          <div style={{ fontSize: 20 }}>{title}</div>
         </Flex>
         <div className={styles.header}>
           {header}
@@ -28,7 +50,9 @@ export default function Page (props: PageProps) {
       {children}
       <Flex gap={12} align={'center'} className={styles.footer}>
         {footer}
-        <Button type={'primary'}>Save</Button>
+        <SRender render={isChange !== undefined}>
+          <Button type={'primary'}>Save</Button>
+        </SRender>
       </Flex>
     </div>
   )
