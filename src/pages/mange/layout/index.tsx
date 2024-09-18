@@ -1,6 +1,7 @@
 import { Suspense } from 'react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
+import { AccountRoutes } from '@/pages/account/routes'
 import NotFound from '@/pages/error/not-found'
 import Header from '@/pages/layout/header'
 import Main from '@/pages/layout/main'
@@ -24,7 +25,10 @@ export default function Layout () {
     [{
       path: '/',
       element: Content,
-      children: [...ProductRoutes, { path: '/*', element: <NotFound /> }]
+      children: [
+        ...ProductRoutes,
+        ...AccountRoutes,
+        { path: '/*', element: <NotFound /> }]
     }]
   )
 
