@@ -11,21 +11,25 @@ export interface PageProps {
 }
 
 export default function Page (props: PageProps) {
-  const { children, width } = props
+  const { children, width, header, footer } = props
   return (
     <div style={{ maxWidth: width, margin: '0 auto' }}>
-      <Flex className={styles.title}>
+      <Flex align={'center'} justify={'space-between'} className={styles.title}>
         <Flex gap={4} align={'center'}>
           <Button type={'text'} className={styles['back-icon']}>
             <ArrowLeft strokeWidth={5} size={16} />
           </Button>
           <div style={{ fontSize: 20 }}>Close sadasdgadfc</div>
         </Flex>
+        <div className={styles.header}>
+          {header}
+        </div>
       </Flex>
       {children}
-      <div className={styles.footer}>
+      <Flex gap={12} align={'center'} className={styles.footer}>
+        {footer}
         <Button type={'primary'}>Save</Button>
-      </div>
+      </Flex>
     </div>
   )
 }

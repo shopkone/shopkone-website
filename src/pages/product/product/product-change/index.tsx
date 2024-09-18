@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Flex, Form } from 'antd'
+import { Button, Flex, Form } from 'antd'
 
 import Page from '@/components/page'
 import Seo from '@/components/seo'
@@ -28,7 +28,22 @@ export default function ProductChange () {
   }, [])
 
   return (
-    <Page width={950}>
+    <Page
+      width={950}
+      header={
+        <Flex gap={8}>
+          <Button type={'text'}>Duplicate</Button>
+          <Button type={'text'}>Preview</Button>
+          <Button type={'text'}>Share</Button>
+          <Button type={'text'}>More actions</Button>
+        </Flex>
+      }
+      footer={
+        <Flex gap={8}>
+          <Button type={'primary'} danger>Delete Product</Button>
+        </Flex>
+      }
+    >
       <Form className={styles.container} form={form} layout={'vertical'}>
         <Flex gap={16}>
           <Flex vertical gap={16} flex={1}>

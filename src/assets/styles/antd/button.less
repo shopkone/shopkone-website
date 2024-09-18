@@ -23,6 +23,19 @@
     }
   }
 
+  .shopkone-btn-primary.shopkone-btn-dangerous:not(:disabled) {
+    background-color: var(--color--error);
+    color: #fff;
+    &:hover {
+      color: #fff;
+      background-color: var(--color-error-hover);
+    }
+    &:active {
+      color: #fff;
+      background-color: var(--color-error-active);
+    }
+  }
+
   .shopkone-btn-default:not(:disabled) {
     border-color: var(--color-disabled-border);
     &:hover {
