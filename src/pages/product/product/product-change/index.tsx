@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { Flex, Form } from 'antd'
 
+import Page from '@/components/page'
 import Seo from '@/components/seo'
 import BaseInfo from '@/pages/product/product/product-change/base-info'
 import ProductOrganization from '@/pages/product/product/product-change/product-organization'
@@ -27,25 +28,27 @@ export default function ProductChange () {
   }, [])
 
   return (
-    <Form className={styles.container} form={form} layout={'vertical'}>
-      <Flex gap={16} style={{ width: 950, margin: '24px auto' }}>
-        <Flex vertical gap={16} flex={1}>
-          <Flex gap={16}>
-            <Flex vertical gap={16}>
-              <BaseInfo />
-              <VariantsSettings />
+    <Page width={950}>
+      <Form className={styles.container} form={form} layout={'vertical'}>
+        <Flex gap={16}>
+          <Flex vertical gap={16} flex={1}>
+            <Flex gap={16}>
+              <Flex vertical gap={16}>
+                <BaseInfo />
+                <VariantsSettings />
+              </Flex>
+              <Flex vertical style={{ width: 320 }} gap={16}>
+                <Status />
+                <ProductOrganization />
+                <Form.Item className={'mb0'} name={'seo'}>
+                  <Seo />
+                </Form.Item>
+              </Flex>
             </Flex>
-            <Flex vertical style={{ width: 320 }} gap={16}>
-              <Status />
-              <ProductOrganization />
-              <Form.Item className={'mb0'} name={'seo'}>
-                <Seo />
-              </Form.Item>
-            </Flex>
+            <Variants />
           </Flex>
-          <Variants />
         </Flex>
-      </Flex>
-    </Form>
+      </Form>
+    </Page>
   )
 }

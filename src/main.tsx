@@ -1,7 +1,7 @@
 import ReactDOM from 'react-dom/client'
 import { App, ConfigProvider } from 'antd'
 
-import Index from '@/Index'
+import Layout from '@/pages/layout'
 
 import '@/assets/styles/reset.less'
 import '@/assets/styles/global.less'
@@ -26,7 +26,7 @@ if (dom) {
       prefixCls={'shopkone'}
     >
       <App>
-        <Index />
+        <Layout />
       </App>
     </ConfigProvider>
   )
