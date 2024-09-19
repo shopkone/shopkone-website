@@ -1,103 +1,99 @@
-import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { CornerDownRight, Down, Home } from '@icon-park/react'
-import { useMemoizedFn } from 'ahooks'
-import { Flex } from 'antd'
-import classNames from 'classnames'
-
-import SRender from '@/components/s-render'
+import { Home } from '@icon-park/react'
+import { Menu, MenuProps } from 'antd'
 
 import styles from './index.module.less'
 
 export default function Sider () {
   const nav = useNavigate()
   const location = useLocation()
-  const [expand, setExpand] = useState<string[]>([])
 
-  const menus = [
+  const menus: MenuProps['items'] = [
+    { label: 'Home', key: '', icon: <Home style={{ position: 'relative', top: -1 }} size={15} /> },
     {
-      title: 'Home',
-      key: '',
-      icon: <Home style={{ position: 'relative', top: 2 }} size={14} />
+      label: 'Orders',
+      key: '/orders',
+      children: [
+        { label: 'All orders', key: 'orders' },
+        { label: 'Drafts', key: 'Drafts' },
+        { label: 'Abandoned checkouts', key: 'Abandoned checkouts' }
+      ],
+      icon: <Home style={{ position: 'relative', top: -1 }} size={15} />
     },
     {
-      title: 'Products',
-      key: 'products',
-      icon: <Home style={{ position: 'relative', top: 2 }} size={14} />,
+      label: 'Products',
+      key: '/products',
       children: [
-        { title: 'Products', key: '/products/list' },
-        { title: 'Collections', key: '/products/collections' },
-        { title: 'Inventory', key: '/products/inventory' },
-        { title: 'Purchase Order', key: '/products/purchase_order' },
-        { title: 'Transfers', key: '/products/transfers' },
-        { title: 'Gift cards', key: '/products/gift_cards' }
-      ]
+        { label: 'Products', key: 'products' },
+        { label: 'Collections', key: 'collections' },
+        { label: 'Inventory', key: 'inventory' },
+        { label: 'Purchase orders', key: 'purchase_orders' },
+        { label: 'Transfers', key: 'transfers' },
+        { label: 'Gift cards', key: 'gift_cards' }
+      ],
+      icon: <Home style={{ position: 'relative', top: -1 }} size={15} />
+    },
+    {
+      label: 'Customers',
+      key: '/customers',
+      children: [
+        { label: 'Customers', key: 'customers' },
+        { label: 'Segments', key: 'segments' }
+      ],
+      icon: <Home style={{ position: 'relative', top: -1 }} size={15} />
+    },
+    {
+      label: 'Content',
+      key: '/content',
+      children: [
+        { label: 'Metaobjects', key: 'metaobjects' },
+        { label: 'Files', key: 'files' }
+      ],
+      icon: <Home style={{ position: 'relative', top: -1 }} size={15} />
+    },
+    {
+      label: 'Analytics',
+      key: '/analytics',
+      children: [
+        { label: 'Analytics', key: 'analytics' },
+        { label: 'Reports', key: 'reports' },
+        { label: 'Live View', key: 'live-view' }
+      ],
+      icon: <Home style={{ position: 'relative', top: -1 }} size={15} />
+    },
+    {
+      label: 'Marketing',
+      key: '/marketing',
+      children: [
+        { label: 'Marketing', key: 'marketing' },
+        { label: 'Campaigns', key: 'campaigns' },
+        { label: 'automations', key: 'automations' }
+      ],
+      icon: <Home style={{ position: 'relative', top: -1 }} size={15} />
+    },
+    {
+      label: 'Discounts',
+      key: '/discounts',
+      icon: <Home style={{ position: 'relative', top: -1 }} size={15} />
     }
   ]
 
-  const getIsSelect = useMemoizedFn((key: string) => {
-    const parent = location.pathname.split('/')?.[1]
-    console.log(key, parent)
-    return parent === key
-  })
-
-  const clickHandle = (key: string, isParent?: boolean) => {
-    if (isParent) {
-      setExpand(expand.includes(key) ? expand.filter(i => i !== key) : [...expand, key])
-      return
-    }
-    if (getIsSelect(key)) return
-    nav(key)
+  const onClick: MenuProps['onClick'] = ({ keyPath }) => {
+    const path = keyPath.reverse().join('/')
+    if (location.pathname === path) return
+    nav(path)
   }
-
-  useEffect(() => {
-    const parent = location.pathname.split('/')?.[2]
-    if (expand.length) return
-    setExpand([parent])
-  }, [location.pathname])
 
   return (
     <nav className={styles.sider}>
-      <div className={'group'}>
-        {
-          menus.map(item => (
-            <div
-              style={{ borderRadius: 12 }}
-              onClick={(e) => { e.stopPropagation(); clickHandle(item.key, !!item.children) }}
-              className={classNames({ [styles.part]: getIsSelect(item.key) })}
-              key={item.key}
-            >
-              <Flex justify={'space-between'} align={'center'} className={classNames(styles.item, { [styles.active]: getIsSelect(item.key) && !item?.children })}>
-                <Flex gap={8} align={'center'}>
-                  {item.icon}
-                  <div>{item.title}</div>
-                </Flex>
-                <SRender className={styles.arrow} render={!!item?.children} style={{ transform: expand.includes(item.key) ? 'rotate(-180deg)' : '' }}>
-                  <Down size={15} style={{ position: 'relative', top: 2 }} />
-                </SRender>
-              </Flex>
-              <SRender render={expand.includes(item.key)}>
-                {item?.children?.map(child => (
-                  <Flex
-                    onClick={(e) => { e.stopPropagation(); clickHandle(child.key) }}
-                    key={child.key}
-                    gap={8}
-                    align={'center'}
-                    className={classNames(styles.item, { [styles.active]: getIsSelect(child.key) })}
-                    style={{ marginLeft: 2 }}
-                  >
-                    <CornerDownRight
-                      className={styles['item-left-arrow']}
-                      size={13}
-                    />
-                    <div>{child.title}</div>
-                  </Flex>
-                ))}
-              </SRender>
-            </div>
-          ))
-        }
-      </div>
+      <Menu
+        defaultOpenKeys={[`/${location.pathname?.split('/')[1]}`]}
+        selectedKeys={[`${location.pathname?.split('/')[2]}`]}
+        onClick={onClick}
+        prefix={'asd'}
+        mode={'inline'}
+        items={menus}
+      />
     </nav>
   )
 }

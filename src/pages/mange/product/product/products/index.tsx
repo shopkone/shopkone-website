@@ -17,7 +17,7 @@ export default function Products () {
     { title: 'asd', code: 'asd', name: 'asd' }
   ]
 
-  const [list, setList] = useState([])
+  const [list] = useState([])
 
   return (
     <Page
@@ -77,15 +77,14 @@ export default function Products () {
                     <div>Import by Shopify</div>
                   </Flex>
                 </Button>
-                <Button onClick={() => { nav('/products/list/change') }} type={'primary'}>
+                <Button onClick={() => { nav('change') }} type={'primary'}>
                   <Flex gap={4} align={'center'} style={{ position: 'relative', top: -2 }}>
                     <Plus size={14} style={{ position: 'relative', top: 2 }} strokeWidth={5} />
                     <div>Add products</div>
                   </Flex>
                 </Button>
               </Flex>
-            ),
-            img: 'asd'
+            )
           }}
           columns={columns}
           data={[]}
