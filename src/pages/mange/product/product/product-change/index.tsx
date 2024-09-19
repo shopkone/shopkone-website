@@ -30,7 +30,7 @@ export default function ProductChange () {
   return (
     <Page
       title={'Add product'}
-      back={'/products'}
+      back={'/products/list'}
       width={950}
       header={
         <Flex gap={8}>

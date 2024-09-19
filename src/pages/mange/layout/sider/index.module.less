@@ -6,6 +6,7 @@
   bottom: 0;
   padding: 12px;
   background-color: #e1e3e550;
+  user-select: none;
 }
 
 .item {
@@ -30,6 +31,10 @@
   opacity: 0;
 }
 
+.arrow {
+  transition: all 0.1s;
+}
+
 .group {
   position: relative;
 }
@@ -37,4 +42,7 @@
 .active {
   color: var(--color-primary);
   font-weight: bolder;
+}
+
+.part {
 }

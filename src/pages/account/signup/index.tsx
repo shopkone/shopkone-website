@@ -1,10 +1,15 @@
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { LoadingOutlined } from '@ant-design/icons'
 import { ArrowRight } from '@icon-park/react'
-import { useCountDown, useMemoizedFn } from 'ahooks'
-import { Button, ButtonProps, Flex, Form, Input, Progress } from 'antd'
+import { useCountDown, useMemoizedFn, useRequest } from 'ahooks'
+import { Button, ButtonProps, Flex, Form, Input, Progress, Spin } from 'antd'
 
+import { LoginApi } from '@/api/account/login'
+import { RegisterApi } from '@/api/account/register'
+import { SendCodeApi } from '@/api/account/send-code'
 import SInputNumber from '@/components/s-input-number'
+import { sMessage } from '@/components/s-message'
 import SRender from '@/components/s-render'
 
 import styles from '../index.module.less'
@@ -16,6 +21,10 @@ export default function Signup () {
   const [targetDate, setTargetDate] = useState<number>()
   const [count] = useCountDown({ targetDate })
   const [sendEmail, setSendEmail] = useState<string>()
+
+  const send = useRequest(SendCodeApi, { manual: true })
+  const register = useRequest(RegisterApi, { manual: true })
+  const login = useRequest(LoginApi, { manual: true })
 
   const password: string = Form.useWatch('password', form)
   const email: string = Form.useWatch('email', form)
@@ -71,8 +80,19 @@ export default function Signup () {
   const sendCode: ButtonProps['onClick'] = useMemoizedFn(async (e) => {
     e.stopPropagation()
     await form.validateFields()
+    await send.runAsync({ email, type: 'register' })
     setTargetDate(Date.now() + 59 * 1000)
     setSendEmail(email)
+  })
+
+  const registerAccount = useMemoizedFn(async () => {
+    if (register.loading) return
+    await form.validateFields()
+    if (!isValidPwd || !isValidEmail || !isValidCode) return
+    await register.runAsync({ email, password, code: code.toString() })
+    await login.runAsync({ email, password })
+    sMessage.success('Login successful!')
+    nav('/')
   })
 
   return (
@@ -83,20 +103,26 @@ export default function Signup () {
 
       <Form layout={'vertical'} form={form} colon={false}>
         <Form.Item rules={[{ required: true }, { pattern: EMAIL_REG, message: 'Please enter a valid email address.' }]} label={'Email'} name={'email'}>
-          <Input size={'large'} />
+          <Input onPressEnter={registerAccount} size={'large'} />
         </Form.Item>
         <Form.Item className={sendEmail ? 'mb0' : ''} name={'code'} label={'Verification code'}>
           <SInputNumber
+            onPressEnter={registerAccount}
             suffix={
-              <Button disabled={!!count} onClick={sendCode} className={styles.secondary} size={'small'} type={'text'}>
-                <SRender render={sendEmail ? !count : false}>
-                  Resend
+              <Button disabled={!!count || send.loading} onClick={sendCode} className={styles.secondary} size={'small'} type={'text'}>
+                <SRender render={!send.loading}>
+                  <SRender render={sendEmail ? !count : false}>
+                    Resend
+                  </SRender>
+                  <SRender render={!sendEmail}>
+                    Send Verification Code
+                  </SRender>
+                  <SRender render={count}>
+                    Resend（{Math.round(count / 1000)}s）
+                  </SRender>
                 </SRender>
-                <SRender render={!sendEmail}>
-                  Send Verification Code
-                </SRender>
-                <SRender render={count}>
-                  Resend（{Math.round(count / 1000)}s）
+                <SRender render={send.loading}>
+                  <Spin spinning={send.loading} indicator={<LoadingOutlined />} />
                 </SRender>
               </Button>
             }
@@ -110,7 +136,7 @@ export default function Signup () {
           A 6-digit code was sent to {sendEmail}.
         </SRender>
         <Form.Item name={'password'} className={'mb0'} label={'Password'}>
-          <Input.Password autoComplete={'off'} size={'large'} />
+          <Input.Password onPressEnter={registerAccount} autoComplete={'off'} size={'large'} />
         </Form.Item>
         <Progress
           showInfo={false}
@@ -124,7 +150,7 @@ export default function Signup () {
         <SRender render={!isValidPwd} className={styles.tips}>
           Your password must be at least 8 characters, and can’t begin or end with a space.
         </SRender>
-        <Button className={styles.btn} disabled={!isValidPwd || !isValidEmail || !isValidCode} block type={'primary'} size={'large'}>
+        <Button loading={register.loading || login.loading} onClick={registerAccount} className={styles.btn} disabled={!isValidPwd || !isValidEmail || !isValidCode} block type={'primary'} size={'large'}>
           Create Shopkone account
         </Button>
         <Flex align={'center'} justify={'center'} className={styles['help-link']}>

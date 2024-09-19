@@ -1,17 +1,25 @@
 import { BellOutlined, QuestionCircleOutlined, ShopOutlined } from '@ant-design/icons'
 import { Attention, Check, Right } from '@icon-park/react'
+import { useRequest } from 'ahooks'
 import { Button, Flex, Popover, Tooltip } from 'antd'
 import { useAtomValue } from 'jotai'
 
+import { LogoutApi } from '@/api/account/logout'
+import SLoading from '@/components/s-loading'
 import SRender from '@/components/s-render'
 import { pageAtom } from '@/pages/mange/state'
+import { toLogin } from '@/utils/to-login'
 
 import styles from './index.module.less'
 
 export default function Header () {
   const page = useAtomValue(pageAtom)
+  const logoutApi = useRequest(LogoutApi, { manual: true })
 
-  console.log(page)
+  const logout = async () => {
+    await logoutApi.runAsync()
+    toLogin()
+  }
 
   return (
     <header className={styles.header}>
@@ -72,8 +80,13 @@ export default function Header () {
               <div className={styles.item}>
                 Manage account
               </div>
-              <div className={styles.item}>
-                Log out
+              <div onClick={logout} className={styles.item}>
+                <SRender render={!logoutApi.loading}>
+                  Log out
+                </SRender>
+                <SRender render={logoutApi.loading}>
+                  <SLoading size={20} />
+                </SRender>
               </div>
             </div>
           )}

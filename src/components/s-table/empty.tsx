@@ -8,12 +8,11 @@ import styles from './index.module.less'
 export interface EmptyProps {
   title: string
   desc: string
-  img: string
   actions: ReactNode
 }
 
 export default function Empty (props: EmptyProps) {
-  const { title, desc, img, actions } = props
+  const { title, desc, actions } = props
   return (
     <div className={styles.empty}>
       <Flex align={'center'} justify={'space-between'} className={styles.inner}>

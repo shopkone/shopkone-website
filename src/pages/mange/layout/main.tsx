@@ -1,12 +1,14 @@
 import { Suspense } from 'react'
 import { Outlet } from 'react-router-dom'
 
+import SLoading from '@/components/s-loading'
+
 import styles from './index.module.less'
 
 export default function Main () {
   return (
     <main className={styles.main}>
-      <Suspense fallback={'Loading...'}>
+      <Suspense fallback={<SLoading />}>
         <Outlet />
       </Suspense>
     </main>

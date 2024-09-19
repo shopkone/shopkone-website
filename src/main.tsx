@@ -1,7 +1,6 @@
 import ReactDOM from 'react-dom/client'
-import { App, ConfigProvider, Empty } from 'antd'
+import { App, ConfigProvider } from 'antd'
 
-import { ReactComponent as EmptyImg } from '@/assets/image/empty.svg'
 import Pages from '@/pages/pages'
 
 import '@/assets/styles/reset.less'
@@ -15,7 +14,6 @@ const dom = document.getElementById('root')
 if (dom) {
   ReactDOM.createRoot(dom).render(
     <ConfigProvider
-      renderEmpty={() => <Empty image={<EmptyImg style={{ fontSize: 80 }} />} />}
       theme={{
         token: {
           fontSize: 13,

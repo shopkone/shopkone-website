@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom'
 import { Flex } from 'antd'
 
 import { ReactComponent as BannerImg } from '@/assets/image/banner.svg'
+import SLoading from '@/components/s-loading'
 
 import styles from './index.module.less'
 
@@ -17,7 +18,7 @@ export default function Auth () {
       <Flex align={'center'} justify={'center'} className={styles.main}>
         <div className={styles.content}>
           <div className={styles.form}>
-            <Suspense fallback={'LOADING'}>
+            <Suspense fallback={<SLoading />}>
               <Outlet />
             </Suspense>
           </div>
