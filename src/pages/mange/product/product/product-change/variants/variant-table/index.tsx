@@ -4,11 +4,11 @@ import { Flex, Form } from 'antd'
 import { isEqual } from 'lodash'
 
 import SRender from '@/components/s-render'
-import { Options } from '@/pages/product/product/product-change/variants/variant-changer'
-import Actions from '@/pages/product/product/product-change/variants/variant-table/actions'
-import Filter from '@/pages/product/product/product-change/variants/variant-table/filter'
-import Group from '@/pages/product/product/product-change/variants/variant-table/group'
-import Table from '@/pages/product/product/product-change/variants/variant-table/table'
+import { Options } from '@/pages/mange/product/product/product-change/variants/variant-changer'
+import Actions from '@/pages/mange/product/product/product-change/variants/variant-table/actions'
+import Filter from '@/pages/mange/product/product/product-change/variants/variant-table/filter'
+import Group from '@/pages/mange/product/product/product-change/variants/variant-table/group'
+import Table from '@/pages/mange/product/product/product-change/variants/variant-table/table'
 
 import styles from './index.module.less'
 

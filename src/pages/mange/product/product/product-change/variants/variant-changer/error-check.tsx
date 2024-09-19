@@ -1,4 +1,4 @@
-import { Options } from '@/pages/product/product/product-change/variants/variant-changer/index'
+import { Options } from '@/pages/mange/product/product/product-change/variants/variant-changer/index'
 
 export interface ErrorResult {
   nameError: Array<{ id: number, message: string }>

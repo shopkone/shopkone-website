@@ -2,7 +2,7 @@ import ReactDOM from 'react-dom/client'
 import { App, ConfigProvider, Empty } from 'antd'
 
 import { ReactComponent as EmptyImg } from '@/assets/image/empty.svg'
-import Layout from '@/pages/layout'
+import Pages from '@/pages/pages'
 
 import '@/assets/styles/reset.less'
 import '@/assets/styles/global.less'
@@ -28,7 +28,7 @@ if (dom) {
       prefixCls={'shopkone'}
     >
       <App>
-        <Layout />
+        <Pages />
       </App>
     </ConfigProvider>
   )

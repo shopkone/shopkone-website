@@ -1,17 +1,11 @@
-import { Suspense } from 'react'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-
-import { AccountRoutes } from '@/pages/account/routes'
-import NotFound from '@/pages/error/not-found'
-import Header from '@/pages/layout/header'
-import Main from '@/pages/layout/main'
-import Sider from '@/pages/layout/sider'
-import { ProductRoutes } from '@/pages/product/product/routes'
+import Header from '@/pages/mange/layout/header'
+import Main from '@/pages/mange/layout/main'
+import Sider from '@/pages/mange/layout/sider'
 
 import styles from './index.module.less'
 
 export default function Layout () {
-  const Content = (
+  return (
     <div className={styles.layout}>
       <Header />
       <div className={styles.content}>
@@ -19,22 +13,5 @@ export default function Layout () {
         <Main />
       </div>
     </div>
-  )
-
-  const routes = createBrowserRouter(
-    [{
-      path: '/',
-      element: Content,
-      children: [
-        ...ProductRoutes,
-        ...AccountRoutes,
-        { path: '/*', element: <NotFound /> }]
-    }]
-  )
-
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <RouterProvider router={routes} />
-    </Suspense>
   )
 }

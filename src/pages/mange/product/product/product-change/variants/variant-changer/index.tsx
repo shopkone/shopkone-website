@@ -5,8 +5,11 @@ import { useMemoizedFn } from 'ahooks'
 import { Button, Flex, Form, Input, Modal } from 'antd'
 
 import { VariantType } from '@/constant/product'
-import DoneItem from '@/pages/product/product/product-change/variants/variant-changer/done-item'
-import { errorCheck, ErrorResult } from '@/pages/product/product/product-change/variants/variant-changer/error-check'
+import DoneItem from '@/pages/mange/product/product/product-change/variants/variant-changer/done-item'
+import {
+  errorCheck,
+  ErrorResult
+} from '@/pages/mange/product/product/product-change/variants/variant-changer/error-check'
 import { genId } from '@/utils/random'
 
 import styles from './index.module.less'

@@ -1,5 +1,5 @@
-import { Options } from '@/pages/product/product/product-change/variants/variant-changer'
-import { Variant } from '@/pages/product/product/product-change/variants/variant-table/index'
+import { Options } from '@/pages/mange/product/product/product-change/variants/variant-changer'
+import { Variant } from '@/pages/mange/product/product/product-change/variants/variant-table/index'
 import { genId } from '@/utils/random'
 
 self.onmessage = (e) => {

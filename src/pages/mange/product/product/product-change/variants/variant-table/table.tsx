@@ -7,7 +7,7 @@ import SInputNumber from '@/components/s-input-number'
 import SRender from '@/components/s-render'
 import STable, { STableProps } from '@/components/s-table'
 import { WEIGHT_UNIT_OPTIONS } from '@/constant/product'
-import { Variant } from '@/pages/product/product/product-change/variants/variant-table/index'
+import { Variant } from '@/pages/mange/product/product/product-change/variants/variant-table/index'
 import { formatPrice } from '@/utils/num'
 
 import styles from './index.module.less'

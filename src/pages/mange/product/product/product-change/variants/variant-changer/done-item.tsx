@@ -1,6 +1,6 @@
 import { Flex, Tag } from 'antd'
 
-import { Options } from '@/pages/product/product/product-change/variants/variant-changer/index'
+import { Options } from '@/pages/mange/product/product/product-change/variants/variant-changer/index'
 
 import styles from './index.module.less'
 

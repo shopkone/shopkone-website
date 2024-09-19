@@ -33,13 +33,14 @@ export default function Sider () {
     }
   ]
 
-  const to = (key: string) => {
-    nav(key)
-  }
-
   const getIsSelect = useMemoizedFn((key: string) => {
     return location.pathname.includes(key)
   })
+
+  const to = (key: string) => {
+    if (getIsSelect(key)) return
+    nav(key)
+  }
 
   return (
     <nav className={styles.sider}>

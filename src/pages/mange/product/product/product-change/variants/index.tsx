@@ -2,8 +2,8 @@ import { useState } from 'react'
 import { Card, Flex, Form } from 'antd'
 
 import { VariantType } from '@/constant/product'
-import VariantChanger, { Options } from '@/pages/product/product/product-change/variants/variant-changer'
-import VariantTable from '@/pages/product/product/product-change/variants/variant-table'
+import VariantChanger, { Options } from '@/pages/mange/product/product/product-change/variants/variant-changer'
+import VariantTable from '@/pages/mange/product/product/product-change/variants/variant-table'
 
 import styles from './index.module.less'
 

@@ -4,7 +4,7 @@ import { Button, Flex, Popover, Tooltip } from 'antd'
 import { useAtomValue } from 'jotai'
 
 import SRender from '@/components/s-render'
-import { pageAtom } from '@/state'
+import { pageAtom } from '@/pages/mange/state'
 
 import styles from './index.module.less'
 

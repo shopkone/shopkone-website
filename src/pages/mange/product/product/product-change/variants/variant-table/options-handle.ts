@@ -1,4 +1,4 @@
-import { Variant } from '@/pages/product/product/product-change/variants/variant-table/index'
+import { Variant } from '@/pages/mange/product/product/product-change/variants/variant-table/index'
 import { genId } from '@/utils/random'
 
 interface Options {
@@ -49,7 +49,7 @@ self.onmessage = (e) => {
   data = data.map(item => ({ ...item, values: item.values.filter(item => item.value) }))
   const list = combineOptions(data).filter(item => item.length)
   const result: Variant[] = list?.map(variant => {
-    return { name: variant, id: genId(), weight_uint: 'g', price: 0, parentId: 0, isParent: false }
+    return { name: variant, id: genId(), weight_uint: 'g', price: 0, parentId: 0, isParent: false, inventories: [] }
   })
   self.postMessage(result)
 }

@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { Flex, Select } from 'antd'
 
-import { Options } from '@/pages/product/product/product-change/variants/variant-changer'
+import { Options } from '@/pages/mange/product/product/product-change/variants/variant-changer'
 
 export interface GroupProps {
   onChange: (groupName?: string) => void

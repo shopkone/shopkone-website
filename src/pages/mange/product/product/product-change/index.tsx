@@ -3,11 +3,11 @@ import { Button, Flex, Form } from 'antd'
 
 import Page from '@/components/page'
 import Seo from '@/components/seo'
-import BaseInfo from '@/pages/product/product/product-change/base-info'
-import ProductOrganization from '@/pages/product/product/product-change/product-organization'
-import Status from '@/pages/product/product/product-change/status'
-import Variants from '@/pages/product/product/product-change/variants'
-import VariantsSettings from '@/pages/product/product/product-change/variants-settings'
+import BaseInfo from '@/pages/mange/product/product/product-change/base-info'
+import ProductOrganization from '@/pages/mange/product/product/product-change/product-organization'
+import Status from '@/pages/mange/product/product/product-change/status'
+import Variants from '@/pages/mange/product/product/product-change/variants'
+import VariantsSettings from '@/pages/mange/product/product/product-change/variants-settings'
 
 import styles from './index.module.less'
 

@@ -1,7 +1,7 @@
 import { Card, Checkbox, Form, Radio } from 'antd'
 
 import { useInventoryPolicyOptions } from '@/constant/product'
-import TypeChanger from '@/pages/product/product/product-change/variants-settings/type-changer'
+import TypeChanger from '@/pages/mange/product/product/product-change/variants-settings/type-changer'
 
 import styles from './index.module.less'
 
