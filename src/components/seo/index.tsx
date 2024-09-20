@@ -4,7 +4,6 @@ import { Button, Card, Flex, Form, Popover, Typography } from 'antd'
 import { useWatch } from 'antd/es/form/Form'
 
 import { useGetShopInfo } from '@/api/shop/get-shop-info'
-import SRender from '@/components/s-render'
 import Edit, { SeoType } from '@/components/seo/edit'
 
 import styles from './index.module.less'
@@ -15,8 +14,10 @@ export interface SeoProps {
 }
 
 export default function Seo (props: SeoProps) {
-  const { value, onChange } = props
-
+  const {
+    value,
+    onChange
+  } = props
   const [editing, setEditing] = useState(false)
 
   const shop = useGetShopInfo()
@@ -46,21 +47,43 @@ export default function Seo (props: SeoProps) {
         title={'SEO'}
         extra={
           <Flex>
-            <SRender render={!editing}>
-              <Button
-                onClick={() => {
-                  if (editing && tempSeoRef.current) {
-                    onChange?.(tempSeoRef.current)
-                  }
-                  tempSeoRef.current = undefined
-                  setEditing(!editing)
-                }}
-                size={'small'}
-                type={'text'}
-              >
-                <div style={{ color: '#646a73' }}>Edit</div>
-              </Button>
-            </SRender>
+            {
+              editing
+                ? (
+                  <Button
+                    onClick={() => {
+                      setEditing(!editing)
+                      tempSeoRef.current = undefined
+                    }}
+                    size={'small'}
+                    type={'text'}
+                  >
+                    <div style={{ color: '#646a73' }}>Cancel</div>
+                  </Button>
+                  )
+                : null
+            }
+            <Button
+              onClick={() => {
+                if (editing && tempSeoRef.current) {
+                  onChange?.(tempSeoRef.current)
+                }
+                tempSeoRef.current = undefined
+                setEditing(!editing)
+              }}
+              size={'small'}
+              type={'text'}
+            >
+              {
+                editing
+                  ? (
+                    <div style={{ color: '#3370ff' }}>Done</div>
+                    )
+                  : (
+                    <div style={{ color: '#646a73' }}>Edit</div>
+                    )
+              }
+            </Button>
             <Popover
               placement={'bottom'}
               overlayInnerStyle={{ minWidth: 'unset' }}
@@ -104,35 +127,35 @@ export default function Seo (props: SeoProps) {
               </Button>
             </Popover>
           </Flex>
-       }
+        }
       >
         {
-         editing
-           ? (
-             <Edit
-               onChange={(seo) => {
-                 tempSeoRef.current = seo
-               }}
-               seo={value}
-               title={title}
-               description={description}
-             />
-             )
-           : (
-             <Flex vertical>
-               <div className={styles.name}>{shop.data?.name}</div>
-               <Typography.Text ellipsis={{ tooltip: true }} className={styles.link}>
-                 https://b3930d-c0.myshopify.com
-               </Typography.Text>
-               <Typography.Text ellipsis={{ tooltip: true }} className={styles.title}>
-                 {value?.page_title || '-'}
-               </Typography.Text>
-               <Typography.Text ellipsis={{ tooltip: true }} className={styles.desc}>
-                 {value?.meta_description || '-'}
-               </Typography.Text>
-             </Flex>
-             )
-       }
+          editing
+            ? (
+              <Edit
+                onChange={(seo) => {
+                  tempSeoRef.current = seo
+                }}
+                seo={value}
+                title={title}
+                description={description}
+              />
+              )
+            : (
+              <Flex vertical>
+                <div className={styles.name}>{shop?.data?.name}</div>
+                <Typography.Text ellipsis={{ tooltip: true }} className={styles.link}>
+                  https://b3930d-c0.myshopify.com
+                </Typography.Text>
+                <Typography.Text ellipsis={{ tooltip: true }} className={styles.title}>
+                  {value?.page_title || '-'}
+                </Typography.Text>
+                <Typography.Text ellipsis={{ tooltip: true }} className={styles.desc}>
+                  {value?.meta_description || '-'}
+                </Typography.Text>
+              </Flex>
+              )
+        }
       </Card>
     </div>
   )

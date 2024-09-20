@@ -1,16 +1,25 @@
 import { Button, Card, Empty, Flex, Form, Input, Radio } from 'antd'
 
 import Page from '@/components/page'
+import SRender from '@/components/s-render'
 import Seo from '@/components/seo'
+import Conditions from '@/pages/mange/product/collections/change/conditions'
 
 import styles from './index.module.less'
+
+const INIT_VALUES = {
+  collection_type: 'manual',
+  match_mode: 'all'
+}
 
 export default function Change () {
   const [form] = Form.useForm()
 
+  const collection_type: string = Form.useWatch('collection_type', form)
+
   return (
     <Page isChange={true} back={'/products/collections'} width={950} title={'Create collection'}>
-      <Form form={form} layout={'vertical'}>
+      <Form initialValues={INIT_VALUES} form={form} layout={'vertical'}>
         <Flex gap={16}>
           <Flex vertical flex={1} gap={16}>
             <Card className={'fit-width'}>
@@ -37,6 +46,9 @@ export default function Change () {
                 Existing and future products that match the conditions you set will automatically be added to this collection.
               </div>
             </Card>
+            <SRender render={collection_type === 'automated'}>
+              <Conditions />
+            </SRender>
             <Card title={'Products'} className={'fit-width'}>
               <Empty
                 image={Empty.PRESENTED_IMAGE_SIMPLE}
