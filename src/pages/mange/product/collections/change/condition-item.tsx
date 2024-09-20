@@ -28,7 +28,7 @@ export default function ConditionItem (props: ConditionItemProps) {
   })
 
   return (
-    <Flex gap={8}>
+    <Flex gap={8} align={'center'}>
       <SSelect
         virtual={false}
         fieldNames={{ value: 'key' }}
@@ -47,8 +47,8 @@ export default function ConditionItem (props: ConditionItemProps) {
       />
       {item?.component({ value: v, onChange: v => { onChange('value', v) } })}
       <SRender render={onClick}>
-        <Button onClick={onClick} style={{ width: 32, height: 32, padding: 0, marginLeft: 4 }}>
-          <DeleteFour size={15} style={{ position: 'relative', top: 1 }} />
+        <Button onClick={onClick} style={{ width: 28, height: 28, padding: 0, marginLeft: 4 }}>
+          <DeleteFour size={14} style={{ position: 'relative', top: 1 }} />
         </Button>
       </SRender>
     </Flex>

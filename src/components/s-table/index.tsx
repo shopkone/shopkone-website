@@ -2,8 +2,11 @@ import { memo, useMemo } from 'react'
 import { LoadingOutlined } from '@ant-design/icons'
 import { BaseTable, BaseTableProps, features, useTablePipeline } from 'ali-react-table'
 import { Checkbox, Spin } from 'antd'
+import classNames from 'classnames'
 
 import Empty, { EmptyProps } from '@/components/s-table/empty'
+
+import styles from './index.module.less'
 
 type omit = 'columns' | 'dataSource' | 'primaryKey' | 'hasHeader' | 'isStickyHeader'
 
@@ -24,6 +27,7 @@ export interface STableProps extends Omit<BaseTableProps, omit> {
   }
   loading?: boolean
   empty?: EmptyProps
+  borderless?: boolean
 }
 
 function STable (props: STableProps) {
@@ -38,6 +42,7 @@ function STable (props: STableProps) {
     stickyTop,
     loading,
     empty,
+    borderless,
     ...rest
   } = props
 
@@ -90,7 +95,7 @@ function STable (props: STableProps) {
   }
 
   return (
-    <div style={{ width, ...style }}>
+    <div className={classNames({ [styles.borderless]: borderless })} style={{ width, ...style }}>
       <BaseTable
         components={{ LoadingIcon: () => LoadingContent }}
         isStickyHeader

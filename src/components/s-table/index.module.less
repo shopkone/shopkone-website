@@ -14,3 +14,13 @@
     font-size: 12px;
   }
 }
+
+.borderless :global {
+  background-color: firebrick;
+  .art-table-header {
+    border: none !important;
+  }
+  .art-table-row.last .art-table-cell{
+    border: none !important;
+  }
+}

@@ -1,0 +1,21 @@
+import { Card, Form, Input } from 'antd'
+
+import Media from '@/components/media'
+
+export default function BaseInfo () {
+  return (
+    <Card style={{ width: 612, flex: 1 }} bordered>
+      <div>
+        <Form.Item name={'title'} label={'Title'}>
+          <Input autoComplete={'off'} placeholder={'My Store gift card'} />
+        </Form.Item>
+        <Form.Item name={'description'} label={'Description'}>
+          <Input.TextArea autoSize={{ minRows: 4, maxRows: 4 }} />
+        </Form.Item>
+        <Form.Item className={'mb0'} label={'Media'}>
+          <Media />
+        </Form.Item>
+      </div>
+    </Card>
+  )
+}
