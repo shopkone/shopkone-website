@@ -1,9 +1,11 @@
+import { useEffect } from 'react'
 import { Button, Card, Empty, Flex, Form, Input, Radio } from 'antd'
 
 import Page from '@/components/page'
 import SRender from '@/components/s-render'
 import Seo from '@/components/seo'
 import Conditions from '@/pages/mange/product/collections/change/conditions'
+import { genId } from '@/utils/random'
 
 import styles from './index.module.less'
 
@@ -16,6 +18,14 @@ export default function Change () {
   const [form] = Form.useForm()
 
   const collection_type: string = Form.useWatch('collection_type', form)
+
+  useEffect(() => {
+    if (collection_type === 'automated') {
+      form.setFieldValue('conditions', [
+        { id: genId(), action: 'eq', value: undefined, key: 'tag' }
+      ])
+    }
+  }, [collection_type])
 
   return (
     <Page isChange={true} back={'/products/collections'} width={950} title={'Create collection'}>
