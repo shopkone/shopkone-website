@@ -90,7 +90,7 @@ export default function Signup () {
     if (!isValidPwd || !isValidEmail || !isValidCode) return
     await register.runAsync({ email, password, code: code.toString() })
     await login.runAsync({ email, password })
-    nav('/')
+    window.location.href = '/'
   })
 
   return (
@@ -153,7 +153,7 @@ export default function Signup () {
         </Button>
         <Flex align={'center'} justify={'center'} className={styles['help-link']}>
           <div>Already have a Shopkone account?</div>
-          <Button onClick={() => { window.location.href = '/' }} size={'small'} className={styles['link-btn']} type={'link'}>
+          <Button onClick={() => { nav('/auth/login') }} size={'small'} className={styles['link-btn']} type={'link'}>
             <Flex style={{ fontSize: 13 }} align={'center'} gap={4}>
               <div>Login</div>
               <ArrowRight className={styles['link-icon']} />

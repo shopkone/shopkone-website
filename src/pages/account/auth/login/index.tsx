@@ -52,7 +52,7 @@ export default function Login () {
         </Button>
         <Flex align={'center'} justify={'center'} className={styles['help-link']}>
           <div>New to Shopkone? </div>
-          <Button onClick={() => { nav('/accounts/signup') }} size={'small'} className={styles['link-btn']} type={'link'}>
+          <Button onClick={() => { nav('/auth/signup') }} size={'small'} className={styles['link-btn']} type={'link'}>
             <Flex style={{ fontSize: 13 }} align={'center'} gap={4}>
               <div>Get started</div>
               <ArrowRight className={styles['link-icon']} />

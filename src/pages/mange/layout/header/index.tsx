@@ -4,6 +4,7 @@ import { useRequest } from 'ahooks'
 import { Button, Flex, Popover, Skeleton, Tooltip } from 'antd'
 import { useAtomValue } from 'jotai'
 
+import { useGetLoginInfo } from '@/api/account/get-account-info'
 import { LogoutApi } from '@/api/account/logout'
 import { useGetShopInfo } from '@/api/shop/get-shop-info'
 import { useShopOptions } from '@/api/shop/get-shop-options'
@@ -19,6 +20,7 @@ export default function Header () {
   const logoutApi = useRequest(LogoutApi, { manual: true })
   const options = useShopOptions()
   const shop = useGetShopInfo()
+  const userInfo = useGetLoginInfo()
 
   const logout = async () => {
     await logoutApi.runAsync()
@@ -67,9 +69,11 @@ export default function Header () {
                 options?.data?.map((item) => (
                   <Flex key={item.uuid} justify={'space-between'} className={styles.item}>
                     <Flex gap={6}>
-                      <Flex align={'center'} justify={'center'} className={styles['item-avatar']}>
-                        <img src={item.favicon} alt={item.name} />
-                      </Flex>
+                      <SRender render={item.favicon}>
+                        <Flex align={'center'} justify={'center'} className={styles['item-avatar']}>
+                          <img src={item.favicon} alt={item.name} />
+                        </Flex>
+                      </SRender>
                       <div style={{ fontWeight: 500 }}>{item.name}</div>
                     </Flex>
                     <Check strokeWidth={6} size={11} />
@@ -78,8 +82,8 @@ export default function Header () {
               }
               <div style={{ margin: 0, marginBottom: 4 }} className={'line'} />
               <div className={styles.info}>
-                <div style={{ fontWeight: 500 }}>asd fa</div>
-                <div>oetavttsut@daimashili.com</div>
+                <SRender render={userInfo?.data?.is_master} style={{ fontWeight: 500 }}>admin</SRender>
+                <div>{userInfo?.data?.email}</div>
               </div>
               <Flex justify={'space-between'} align={'center'} className={styles.item}>
                 <div>Language</div>
@@ -101,8 +105,10 @@ export default function Header () {
         >
           <div className={styles.avatar}>
             <SRender render={options.data}>
-              <div className={styles['avatar-img']}>MS</div>
-              <div className={styles['avatar-text']}>My Store</div>
+              <SRender render={shop?.data?.favicon} className={styles['avatar-img']}>
+                <img src={shop.data?.favicon} alt={shop.data?.name} />
+              </SRender>
+              <div className={styles['avatar-text']}>{shop.data?.name}</div>
             </SRender>
             <SRender render={!options.data}>
               <Skeleton.Button active style={{ width: 100 }} />

@@ -4,6 +4,7 @@ import { RouteObject } from 'react-router-dom'
 const ProductChange = lazy(async () => await import('./product/product-change'))
 const Products = lazy(async () => await import('./product/products'))
 const Collections = lazy(async () => await import('./collections/collections'))
+const CollectionsChange = lazy(async () => await import('./collections/change'))
 const Inventory = lazy(async () => await import('./inventory/inventory'))
 const Purchase = lazy(async () => await import('./purchase/purchase'))
 const Transfers = lazy(async () => await import('./transfers/transfers'))
@@ -13,6 +14,7 @@ export const ProductRoutes: RouteObject[] = [
   { element: <Products />, path: '/products/products' },
   { element: <ProductChange />, path: '/products/products/change' },
   { element: <Collections />, path: '/products/collections' },
+  { element: <CollectionsChange />, path: '/products/collections/change' },
   { element: <Inventory />, path: '/products/inventory' },
   { element: <Purchase />, path: '/products/purchase_orders' },
   { element: <Transfers />, path: '/products/transfers' },

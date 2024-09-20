@@ -3,6 +3,8 @@ import { More, Share } from '@icon-park/react'
 import { Button, Card, Flex, Form, Popover, Typography } from 'antd'
 import { useWatch } from 'antd/es/form/Form'
 
+import { useGetShopInfo } from '@/api/shop/get-shop-info'
+import SRender from '@/components/s-render'
 import Edit, { SeoType } from '@/components/seo/edit'
 
 import styles from './index.module.less'
@@ -13,11 +15,11 @@ export interface SeoProps {
 }
 
 export default function Seo (props: SeoProps) {
-  const {
-    value,
-    onChange
-  } = props
+  const { value, onChange } = props
+
   const [editing, setEditing] = useState(false)
+
+  const shop = useGetShopInfo()
 
   const tempSeoRef = useRef<SeoType>()
 
@@ -44,43 +46,21 @@ export default function Seo (props: SeoProps) {
         title={'SEO'}
         extra={
           <Flex>
-            {
-             editing
-               ? (
-                 <Button
-                   onClick={() => {
-                     setEditing(!editing)
-                     tempSeoRef.current = undefined
-                   }}
-                   size={'small'}
-                   type={'text'}
-                 >
-                   <div style={{ color: '#646a73' }}>Cancel</div>
-                 </Button>
-                 )
-               : null
-           }
-            <Button
-              onClick={() => {
-                if (editing && tempSeoRef.current) {
-                  onChange?.(tempSeoRef.current)
-                }
-                tempSeoRef.current = undefined
-                setEditing(!editing)
-              }}
-              size={'small'}
-              type={'text'}
-            >
-              {
-               editing
-                 ? (
-                   <div style={{ color: '#3370ff' }}>Done</div>
-                   )
-                 : (
-                   <div style={{ color: '#646a73' }}>Edit</div>
-                   )
-             }
-            </Button>
+            <SRender render={!editing}>
+              <Button
+                onClick={() => {
+                  if (editing && tempSeoRef.current) {
+                    onChange?.(tempSeoRef.current)
+                  }
+                  tempSeoRef.current = undefined
+                  setEditing(!editing)
+                }}
+                size={'small'}
+                type={'text'}
+              >
+                <div style={{ color: '#646a73' }}>Edit</div>
+              </Button>
+            </SRender>
             <Popover
               placement={'bottom'}
               overlayInnerStyle={{ minWidth: 'unset' }}
@@ -140,7 +120,7 @@ export default function Seo (props: SeoProps) {
              )
            : (
              <Flex vertical>
-               <div className={styles.name}>我的店铺</div>
+               <div className={styles.name}>{shop.data?.name}</div>
                <Typography.Text ellipsis={{ tooltip: true }} className={styles.link}>
                  https://b3930d-c0.myshopify.com
                </Typography.Text>

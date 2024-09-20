@@ -1,6 +1,7 @@
 import axios from 'axios'
 
 import { getStorage, STORAGE_KEY } from '@/utils/storage-key'
+import { toLogin } from '@/utils/to-login'
 
 const service = axios.create({ baseURL: '/api' })
 
@@ -29,7 +30,7 @@ service.interceptors.response.use(
   },
   async err => {
     if (err?.response?.status === 401) {
-      // logoutHandle()
+      toLogin()
     } else {
       window.__info_modal({ content: '服务器暂时出现问题，请稍后再试。如果问题仍然存在，请联系我们的客服人员。' })
       throw new Error(err)

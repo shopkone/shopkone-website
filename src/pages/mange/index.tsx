@@ -1,4 +1,4 @@
-import { Suspense, useEffect } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
 import { useGetShopInfo } from '@/api/shop/get-shop-info'
@@ -10,6 +10,7 @@ export default function Mange () {
   const options = useShopOptions()
   const shopId = window.location.pathname?.split('/')[1]
   const shop = useGetShopInfo(true)
+  const [isInit, setIsInit] = useState(false)
 
   useEffect(() => {
     if (!options?.data?.length) return
@@ -18,7 +19,8 @@ export default function Mange () {
   }, [options.data])
 
   useEffect(() => {
-    if (!options?.data?.length || shop.data) return
+    if (!options?.data?.length || shop.data || isInit) return
+    setIsInit(true)
     if (!options.data?.find(item => item.uuid === shopId)) return
     shop.run()
   }, [shopId, options.data])

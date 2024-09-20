@@ -1,9 +1,11 @@
+import { useNavigate } from 'react-router-dom'
 import { Button, Card, Flex } from 'antd'
 
 import Page from '@/components/page'
 import STable from '@/components/s-table'
 
 export default function Collections () {
+  const nav = useNavigate()
   return (
     <Page title={'Collections'}>
       <Card>
@@ -15,7 +17,12 @@ export default function Collections () {
             desc: 'Use collections to organize your products into categories and galleries for your online store.',
             actions: (
               <Flex gap={8}>
-                <Button type={'primary'}>Create Collection</Button>
+                <Button
+                  onClick={() => { nav('change') }}
+                  type={'primary'}
+                >
+                  Create collection
+                </Button>
               </Flex>
             )
           }}
