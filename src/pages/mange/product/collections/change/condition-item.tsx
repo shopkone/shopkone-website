@@ -3,16 +3,18 @@ import { useMemoizedFn } from 'ahooks'
 import { Button, Flex } from 'antd'
 import { cloneDeep } from 'lodash'
 
+import SRender from '@/components/s-render'
 import SSelect from '@/components/s-select'
 import { conditions } from '@/pages/mange/product/collections/change/get-conditions'
 
 export interface ConditionItemProps {
   value?: { id: number, action: string, value: string | number, key: string }
   onChange?: (value: ConditionItemProps['value']) => void
+  onClick?: () => void
 }
 
 export default function ConditionItem (props: ConditionItemProps) {
-  const { value } = props
+  const { value, onClick } = props
   const { id, action, value: v, key } = value || {}
   const item = conditions.find(i => i.key === key)
 
@@ -44,9 +46,11 @@ export default function ConditionItem (props: ConditionItemProps) {
         dropdownStyle={{ width: 150 }}
       />
       {item?.component({ value: v, onChange: v => { onChange('value', v) } })}
-      <Button style={{ width: 32, height: 32, padding: 0, marginLeft: 4 }}>
-        <DeleteFour size={15} style={{ position: 'relative', top: 1 }} />
-      </Button>
+      <SRender render={onClick}>
+        <Button onClick={onClick} style={{ width: 32, height: 32, padding: 0, marginLeft: 4 }}>
+          <DeleteFour size={15} style={{ position: 'relative', top: 1 }} />
+        </Button>
+      </SRender>
     </Flex>
   )
 }

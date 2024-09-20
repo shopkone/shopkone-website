@@ -65,7 +65,7 @@ export default function Change () {
                 style={{ padding: '32px 0' }}
                 description={(
                   <Flex style={{ marginTop: 16 }} vertical gap={12}>
-                    <div className={'tips'}>
+                    <div>
                       There are no products in this collection.
                     </div>
                     <div>

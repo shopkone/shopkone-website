@@ -11,6 +11,9 @@ export default function Conditions () {
     { label: 'any condition', value: 'any' }
   ]
 
+  const form = Form.useFormInstance()
+  const conditions = Form.useWatch('conditions', form)
+
   return (
     <Card title={'Conditions'}>
       <Flex style={{ marginBottom: 16 }} gap={20} align={'center'}>
@@ -21,12 +24,12 @@ export default function Conditions () {
       </Flex>
       <Form.List name={'conditions'}>
         {
-            (fields, { add }) => (
+            (fields, { add, remove }) => (
               <div>
                 {
-                  fields.map(({ key }) => (
-                    <Form.Item style={{ marginBottom: 8 }} name={[key, 'item']} key={key}>
-                      <ConditionItem key={key} />
+                  fields.map(({ name }) => (
+                    <Form.Item key={name} style={{ marginBottom: 8 }} name={[name, 'item']}>
+                      <ConditionItem onClick={conditions?.length > 1 ? () => { remove(name) } : undefined} />
                     </Form.Item>
                   ))
                 }

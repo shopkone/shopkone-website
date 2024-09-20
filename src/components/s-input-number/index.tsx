@@ -66,12 +66,6 @@ function SInputNumber (props: SInputNumberProps) {
   return (
     <Input
       onClick={select}
-      onFocus={() => {
-        setIsFocus(true)
-      }}
-      onBlur={() => {
-        setIsFocus(false)
-      }}
       ref={ref}
       value={num}
       style={{ width: '100%' }}

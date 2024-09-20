@@ -30,7 +30,6 @@ export default function Sider () {
         { label: 'Collections', key: 'collections' },
         { label: 'Inventory', key: 'inventory' },
         { label: 'Purchase orders', key: 'purchase_orders' },
-        { label: 'Transfers', key: 'transfers' },
         { label: 'Gift cards', key: 'gift_cards' }
       ],
       icon: <Home style={{ position: 'relative', top: -1 }} size={15} />
