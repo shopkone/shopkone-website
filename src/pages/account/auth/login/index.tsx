@@ -4,10 +4,10 @@ import { useRequest } from 'ahooks'
 import { Button, Flex, Form, Input } from 'antd'
 
 import { LoginApi } from '@/api/account/login'
-import { sMessage } from '@/components/s-message'
 import { useModal } from '@/components/s-modal'
+import { setStorage, STORAGE_KEY } from '@/utils/storage-key'
 
-import styles from '../index.module.less'
+import styles from '../../index.module.less'
 
 export default function Login () {
   const [form] = Form.useForm()
@@ -27,9 +27,10 @@ export default function Login () {
       })
       return
     }
-    await login.runAsync(form.getFieldsValue())
-    sMessage.success('Login successful!')
-    nav('/')
+    const ret = await login.runAsync(form.getFieldsValue())
+    if (!ret.token) return
+    setStorage(STORAGE_KEY.TOKEN, ret.token)
+    window.location.href = '/'
   }
 
   return (

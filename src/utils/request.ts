@@ -7,7 +7,7 @@ const service = axios.create({ baseURL: '/api' })
 service.interceptors.request.use(
   (config: any) => {
     const Authorization = 'Bearer ' + (getStorage(STORAGE_KEY.TOKEN) || '')
-    const XShopID = window.location.hash.split('#')[1]
+    const XShopID = window.location.pathname?.split('/')?.[1]
     config.headers = { ...config.headers, Authorization, 'x-shopid': XShopID }
     config.data = { ...(config.data || {}) }
     return config

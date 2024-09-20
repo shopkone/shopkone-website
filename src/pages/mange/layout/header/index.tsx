@@ -1,10 +1,12 @@
 import { BellOutlined, QuestionCircleOutlined, ShopOutlined } from '@ant-design/icons'
 import { Attention, Check, Right } from '@icon-park/react'
 import { useRequest } from 'ahooks'
-import { Button, Flex, Popover, Tooltip } from 'antd'
+import { Button, Flex, Popover, Skeleton, Tooltip } from 'antd'
 import { useAtomValue } from 'jotai'
 
 import { LogoutApi } from '@/api/account/logout'
+import { useGetShopInfo } from '@/api/shop/get-shop-info'
+import { useShopOptions } from '@/api/shop/get-shop-options'
 import SLoading from '@/components/s-loading'
 import SRender from '@/components/s-render'
 import { pageAtom } from '@/pages/mange/state'
@@ -15,6 +17,8 @@ import styles from './index.module.less'
 export default function Header () {
   const page = useAtomValue(pageAtom)
   const logoutApi = useRequest(LogoutApi, { manual: true })
+  const options = useShopOptions()
+  const shop = useGetShopInfo()
 
   const logout = async () => {
     await logoutApi.runAsync()
@@ -59,15 +63,19 @@ export default function Header () {
           overlayInnerStyle={{ padding: 0 }}
           content={(
             <div className={styles.popover}>
-              <Flex justify={'space-between'} className={styles.item}>
-                <Flex gap={6}>
-                  <Flex align={'center'} justify={'center'} className={styles['item-avatar']}>
-                    Ms
+              {
+                options?.data?.map((item) => (
+                  <Flex key={item.uuid} justify={'space-between'} className={styles.item}>
+                    <Flex gap={6}>
+                      <Flex align={'center'} justify={'center'} className={styles['item-avatar']}>
+                        <img src={item.favicon} alt={item.name} />
+                      </Flex>
+                      <div style={{ fontWeight: 500 }}>{item.name}</div>
+                    </Flex>
+                    <Check strokeWidth={6} size={11} />
                   </Flex>
-                  <div style={{ fontWeight: 500 }}>My store</div>
-                </Flex>
-                <Check strokeWidth={6} size={11} />
-              </Flex>
+                ))
+              }
               <div style={{ margin: 0, marginBottom: 4 }} className={'line'} />
               <div className={styles.info}>
                 <div style={{ fontWeight: 500 }}>asd fa</div>
@@ -92,8 +100,13 @@ export default function Header () {
           )}
         >
           <div className={styles.avatar}>
-            <div className={styles['avatar-img']}>MS</div>
-            <div className={styles['avatar-text']}>My Store</div>
+            <SRender render={options.data}>
+              <div className={styles['avatar-img']}>MS</div>
+              <div className={styles['avatar-text']}>My Store</div>
+            </SRender>
+            <SRender render={!options.data}>
+              <Skeleton.Button active style={{ width: 100 }} />
+            </SRender>
           </div>
         </Popover>
       </div>

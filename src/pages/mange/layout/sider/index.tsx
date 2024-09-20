@@ -8,6 +8,8 @@ export default function Sider () {
   const nav = useNavigate()
   const location = useLocation()
 
+  const shopId = location.pathname.split('/')[1]
+
   const menus: MenuProps['items'] = [
     { label: 'Home', key: '', icon: <Home style={{ position: 'relative', top: -1 }} size={15} /> },
     {

@@ -9,10 +9,9 @@ import { LoginApi } from '@/api/account/login'
 import { RegisterApi } from '@/api/account/register'
 import { SendCodeApi } from '@/api/account/send-code'
 import SInputNumber from '@/components/s-input-number'
-import { sMessage } from '@/components/s-message'
 import SRender from '@/components/s-render'
 
-import styles from '../index.module.less'
+import styles from '../../index.module.less'
 
 export default function Signup () {
   const [form] = Form.useForm()
@@ -91,7 +90,6 @@ export default function Signup () {
     if (!isValidPwd || !isValidEmail || !isValidCode) return
     await register.runAsync({ email, password, code: code.toString() })
     await login.runAsync({ email, password })
-    sMessage.success('Login successful!')
     nav('/')
   })
 
@@ -155,7 +153,7 @@ export default function Signup () {
         </Button>
         <Flex align={'center'} justify={'center'} className={styles['help-link']}>
           <div>Already have a Shopkone account?</div>
-          <Button onClick={() => { nav('/accounts/login') }} size={'small'} className={styles['link-btn']} type={'link'}>
+          <Button onClick={() => { window.location.href = '/' }} size={'small'} className={styles['link-btn']} type={'link'}>
             <Flex style={{ fontSize: 13 }} align={'center'} gap={4}>
               <div>Login</div>
               <ArrowRight className={styles['link-icon']} />

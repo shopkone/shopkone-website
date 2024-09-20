@@ -1,30 +1,20 @@
-import { Suspense, useEffect } from 'react'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { useEffect } from 'react'
 
-import SLoading from '@/components/s-loading'
 import { useModal } from '@/components/s-modal'
-import { AccountRoutes } from '@/pages/account/routes'
-import NotFound from '@/pages/mange/error/not-found'
-import { MangeRoutes } from '@/pages/mange/routes'
+import Account from '@/pages/account'
+import Mange from '@/pages/mange'
 
 export default function Pages () {
   const modal = useModal()
 
-  const router = createBrowserRouter(
-    [
-      ...MangeRoutes,
-      ...AccountRoutes,
-      { path: '/*', element: <NotFound /> }
-    ]
-  )
+  const pathname = location.pathname
 
   useEffect(() => {
     window.__info_modal = modal.info
   }, [modal])
 
-  return (
-    <Suspense fallback={<SLoading />}>
-      <RouterProvider router={router} />
-    </Suspense>
-  )
+  if (pathname?.split('/')[1] === 'accounts') {
+    return <Account />
+  }
+  return <Mange />
 }
