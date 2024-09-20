@@ -1,21 +1,15 @@
 import { Plus } from '@icon-park/react'
-import { useMemoizedFn } from 'ahooks'
-import { Button, Card, Flex, Form, Input, Radio } from 'antd'
+import { Button, Card, Flex, Form, Radio } from 'antd'
 
-import SSelect from '@/components/s-select'
-import { getConditions } from '@/pages/mange/product/collections/change/get-conditions'
+import ConditionItem from '@/pages/mange/product/collections/change/condition-item'
+import styles from '@/pages/mange/product/collections/change/index.module.less'
+import { genId } from '@/utils/random'
 
 export default function Conditions () {
   const matchModeOptions = [
     { label: 'all conditions', value: 'all' },
     { label: 'any condition', value: 'any' }
   ]
-
-  const form = Form.useFormInstance()
-  const list = Form.useWatch('conditions', form)
-  const conditions = getConditions()
-
-  const getCurrentCondition = useMemoizedFn(() => {})
 
   return (
     <Card title={'Conditions'}>
@@ -25,33 +19,27 @@ export default function Conditions () {
           <Radio.Group options={matchModeOptions} />
         </Form.Item>
       </Flex>
-      <Flex gap={8} vertical>
-        <Form.List name={'conditions'}>
-          {
-            fields => fields.map(({ key }) => (
-              <Flex key={key} gap={8}>
-                <Form.Item name={[key, 'key']} className={'mb0'} style={{ flex: 1 }}>
-                  <SSelect fieldNames={{ value: 'key' }} options={conditions} />
-                </Form.Item>
-                <Form.Item name={[key, 'action']} className={'mb0'} style={{ flex: 1 }}>
-                  <SSelect />
-                </Form.Item>
-                <Form.Item className={'mb0'} style={{ flex: 1 }}>
-                  <Input />
-                </Form.Item>
-              </Flex>
-            ))
+      <Form.List name={'conditions'}>
+        {
+            (fields, { add }) => (
+              <div>
+                {
+                  fields.map(({ key }) => (
+                    <Form.Item style={{ marginBottom: 8 }} name={[key, 'item']} key={key}>
+                      <ConditionItem key={key} />
+                    </Form.Item>
+                  ))
+                }
+                <Button onClick={() => { add({ item: { id: genId(), action: 'eq', value: undefined, key: 'tag' } }) }}>
+                  <Flex align={'center'} gap={4} className={styles['add-btn']}>
+                    <Plus size={14} className={styles['plus-icon']} />
+                    <div>Add another condition</div>
+                  </Flex>
+                </Button>
+              </div>
+            )
           }
-        </Form.List>
-        <div>
-          <Button>
-            <Flex align={'center'} gap={4} style={{ position: 'relative', top: -2 }}>
-              <Plus size={14} style={{ position: 'relative', top: 1 }} />
-              <div>Add another condition</div>
-            </Flex>
-          </Button>
-        </div>
-      </Flex>
+      </Form.List>
     </Card>
   )
 }

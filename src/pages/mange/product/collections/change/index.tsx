@@ -22,7 +22,7 @@ export default function Change () {
   useEffect(() => {
     if (collection_type === 'automated') {
       form.setFieldValue('conditions', [
-        { id: genId(), action: 'eq', value: undefined, key: 'tag' }
+        { item: { id: genId(), action: 'eq', value: undefined, key: 'tag' } }
       ])
     }
   }, [collection_type])

@@ -2,7 +2,7 @@ import { memo, useEffect, useRef, useState } from 'react'
 import { useMemoizedFn } from 'ahooks'
 import { Input, InputProps, InputRef } from 'antd'
 
-import { formatPrice, roundPrice } from '@/utils/num'
+import { roundPrice } from '@/utils/num'
 
 export interface SInputNumberProps extends Omit<InputProps, 'onChange' | 'value'> {
   value?: number
@@ -14,6 +14,7 @@ export interface SInputNumberProps extends Omit<InputProps, 'onChange' | 'value'
   debounce?: boolean
   money?: boolean
   uint?: boolean// 是否正整数
+  precision?: number // 小数精度
 }
 
 function SInputNumber (props: SInputNumberProps) {
@@ -24,16 +25,16 @@ function SInputNumber (props: SInputNumberProps) {
     min = 0,
     uint,
     money,
+    precision = money ? 2 : 10,
     ...rest
   } = props
 
   const ref = useRef<InputRef>(null)
-  const [isFocus, setIsFocus] = useState(false)
   const [num, setNum] = useState<string>()
 
   const onChangeHandle: InputProps['onChange'] = useMemoizedFn((e) => {
     let str = e.target.value
-    const reg = /^[0-9]+(\.[0-9]{0,2})?$/
+    const reg = new RegExp(`^[0-9]+(\\.[0-9]{0,${precision}})?$`)
     if (str && !reg.test(str)) {
       if (!reg.test(str[0])) {
         setNum('')
@@ -54,6 +55,7 @@ function SInputNumber (props: SInputNumberProps) {
   })
 
   const select = useMemoizedFn(() => {
+    if (value) return
     ref.current?.select()
   })
 
@@ -71,7 +73,7 @@ function SInputNumber (props: SInputNumberProps) {
         setIsFocus(false)
       }}
       ref={ref}
-      value={(money && !isFocus) ? formatPrice(num) : num}
+      value={num}
       style={{ width: '100%' }}
       autoComplete={'off'}
       onChange={onChangeHandle}
