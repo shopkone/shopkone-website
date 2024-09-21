@@ -1,5 +1,6 @@
 import { Card, Flex, Form, Input } from 'antd'
 
+import Address from '@/components/address'
 import Page from '@/components/page'
 import SSelect from '@/components/s-select'
 
@@ -33,34 +34,7 @@ export default function General () {
             </Flex>
           </Card>
           <Card title={'Billing information'}>
-            <Flex gap={16}>
-              <Flex vertical flex={1}>
-                <Form.Item label={'Legal business name'}>
-                  <Input />
-                </Form.Item>
-                <Form.Item label={'Full address'}>
-                  <Input />
-                </Form.Item>
-                <Form.Item label={'City'} className={'flex1'}>
-                  <Input />
-                </Form.Item>
-                <Form.Item label={'Postal code'}>
-                  <Input />
-                </Form.Item>
-              </Flex>
-              <Flex vertical flex={1}>
-                <Form.Item label={'Country/region'}>
-                  <SSelect />
-                </Form.Item>
-                <Form.Item label={'Apartment, suite, etc'}>
-                  <Input />
-                </Form.Item>
-                <Form.Item label={'Province'} className={'flex1'}>
-                  <SSelect className={'fit-width'} />
-                </Form.Item>
-              </Flex>
-            </Flex>
-
+            <Address />
           </Card>
           <Card title={'Store defaults'}>
             <Flex vertical>

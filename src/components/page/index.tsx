@@ -35,19 +35,23 @@ export default function Page (props: PageProps) {
 
   return (
     <div style={{ maxWidth: width, margin: '0 auto', paddingBottom: isChange !== undefined ? 60 : bottom }}>
-      <Flex align={'center'} justify={'space-between'} className={styles.title}>
-        <Flex gap={4} align={'center'}>
-          <SRender render={!!back}>
-            <Button onClick={() => { nav(back || '') }} type={'text'} className={styles['back-icon']}>
-              <ArrowLeft strokeWidth={5} size={16} />
-            </Button>
-          </SRender>
-          <div style={{ fontSize: 20 }}>{title}</div>
+      <SRender render={title || header}>
+        <Flex align={'center'} justify={'space-between'} className={styles.title}>
+          <Flex gap={4} align={'center'}>
+            <SRender render={!!back}>
+              <Button onClick={() => { nav(back || '') }} type={'text'} className={styles['back-icon']}>
+                <ArrowLeft strokeWidth={5} size={16} />
+              </Button>
+            </SRender>
+            <SRender render={!!title}>
+              <div style={{ fontSize: 20 }}>{title}</div>
+            </SRender>
+          </Flex>
+          <div className={styles.header}>
+            {header}
+          </div>
         </Flex>
-        <div className={styles.header}>
-          {header}
-        </div>
-      </Flex>
+      </SRender>
       {children}
       <Flex gap={12} align={'center'} className={styles.footer}>
         {footer}

@@ -1,0 +1,25 @@
+.container {
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+.item {
+  padding: 12px;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  border-radius: 8px;
+  font-weight: 500;
+  &:last-child {
+    border-bottom: none;
+  }
+  .title {
+    color: var(--color-text-primary);
+  }
+}
+
+.click-item {
+  cursor: pointer;
+  &:hover {
+    background: var(--color-bg-secondary);
+  }
+}
