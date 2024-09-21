@@ -17,10 +17,11 @@ export interface PageProps {
   title?: string
   back?: string
   isChange?: boolean
+  bottom?: number
 }
 
 export default function Page (props: PageProps) {
-  const { children, width, header, footer, title, back, isChange } = props
+  const { children, width, header, footer, title, back, isChange, bottom } = props
   const setPage = useSetAtom(pageAtom)
   const nav = useNavigate()
 
@@ -33,7 +34,7 @@ export default function Page (props: PageProps) {
   }, [])
 
   return (
-    <div style={{ maxWidth: width, margin: '0 auto', paddingBottom: isChange !== undefined ? 60 : undefined }}>
+    <div style={{ maxWidth: width, margin: '0 auto', paddingBottom: isChange !== undefined ? 60 : bottom }}>
       <Flex align={'center'} justify={'space-between'} className={styles.title}>
         <Flex gap={4} align={'center'}>
           <SRender render={!!back}>
