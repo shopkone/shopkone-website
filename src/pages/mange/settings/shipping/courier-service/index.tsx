@@ -70,7 +70,7 @@ export default function CourierService () {
           </Flex>
           <Flex vertical>
             <Flex style={{ padding: 12 }}>
-              <Button type={'link'} className={'extra-link'}>Create a new profile</Button>
+              <Button style={{ fontSize: 13 }} type={'link'} className={'extra-link'}>Create a new profile</Button>
               <div style={{ marginLeft: 4 }}>to add custom rates or destination restrictions for groups of products</div>
             </Flex>
           </Flex>
