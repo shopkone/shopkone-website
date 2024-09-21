@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom'
-import { Home } from '@icon-park/react'
+import { Home, Setting } from '@icon-park/react'
 import { Menu, MenuProps } from 'antd'
 
 import styles from './index.module.less'
@@ -44,15 +44,6 @@ export default function Sider () {
       icon: <Home style={{ position: 'relative', top: -1 }} size={15} />
     },
     {
-      label: 'Content',
-      key: '/content',
-      children: [
-        { label: 'Metaobjects', key: 'metaobjects' },
-        { label: 'Files', key: 'files' }
-      ],
-      icon: <Home style={{ position: 'relative', top: -1 }} size={15} />
-    },
-    {
       label: 'Analytics',
       key: '/analytics',
       children: [
@@ -73,9 +64,33 @@ export default function Sider () {
       icon: <Home style={{ position: 'relative', top: -1 }} size={15} />
     },
     {
-      label: 'Discounts',
-      key: '/discounts',
+      label: 'Blog Posts',
+      key: '/blog_posts',
       icon: <Home style={{ position: 'relative', top: -1 }} size={15} />
+    },
+    {
+      label: 'Settings',
+      key: '/settings',
+      icon: <Setting style={{ position: 'relative', top: -1 }} size={15} />,
+      children: [
+        { label: 'General', key: 'general' },
+        { label: 'Staff', key: 'staff' },
+        { label: 'Plan & Billing', key: 'plan_billing' },
+        { label: 'Payments', key: 'payments' },
+        { label: 'Domains', key: 'domains' },
+        { label: 'Languages', key: 'languages' },
+        { label: 'Markets', key: 'markets' },
+        { label: 'Taxes', key: 'taxes' },
+        { label: 'Locations', key: 'locations' },
+        { label: 'Shipping', key: 'shipping' },
+        { label: 'Notifications', key: 'notifications' },
+        { label: 'Order settings', key: 'order_settings' },
+        { label: 'Checkout page', key: 'checkout_page' },
+        { label: 'Legal', key: 'legal' },
+        { label: 'Metafields', key: 'metafields' },
+        { label: 'Files', key: 'files' },
+        { label: 'Activity log', key: 'activity_log' }
+      ]
     }
   ]
 
