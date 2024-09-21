@@ -8,14 +8,17 @@ import styles from './index.module.less'
 export default function CourierService () {
   return (
     <Flex vertical gap={16}>
-      <Card
-        extra={<Button className={'extra-link'} size={'small'} type={'link'}>Set up</Button>}
-        title={'Default location'}
-      >
+      <Card title={'Default location'}>
         <div style={{ marginBottom: 12 }} className={'tips'}>
           When the order cannot be routed through the shipping point to find the inventory that meets the shipping location, it will be assigned to that location by default.
         </div>
-        <SLocation />
+        <SLocation
+          extra={
+            <div style={{ height: 40 }}>
+              <Button className={'extra-link'} size={'small'} type={'link'}>Change default location</Button>
+            </div>
+          }
+        />
       </Card>
 
       <Card
@@ -23,7 +26,7 @@ export default function CourierService () {
         title={'Shipping point routing'}
       >
         <div className={'tips'}>
-          No available locations at the moment. Please go to the location list Location to add new locations.
+          When a new order is generated, according to this routing rule, the inventory will be automatically assigned to the order to meet the shipping location.
         </div>
       </Card>
 
