@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { ArrowRight, International, LocalTwo, Right } from '@icon-park/react'
-import { Button, Card, Flex } from 'antd'
+import { Button, Card, Empty, Flex } from 'antd'
 
 import SLocation from '@/components/s-location'
 
@@ -76,12 +76,22 @@ export default function CourierService () {
               New profile
             </Button>
           </Flex>
-          <Flex vertical>
-            <Flex style={{ padding: 12 }}>
-              <Button style={{ fontSize: 13 }} type={'link'} className={'extra-link'}>Create a new profile</Button>
-              <div style={{ marginLeft: 4 }}>to add custom rates or destination restrictions for groups of products</div>
-            </Flex>
-          </Flex>
+          <Empty
+            image={Empty.PRESENTED_IMAGE_SIMPLE}
+            style={{ padding: '32px 0' }}
+            description={(
+              <Flex style={{ marginTop: 16 }} vertical gap={12}>
+                <div>
+                  Creating a new group of locations in your shipping profiles lets you specify the zones and rates for locations in that group.
+                </div>
+                <div style={{ marginTop: 8 }}>
+                  <Button>
+                    New profile
+                  </Button>
+                </div>
+              </Flex>
+              )}
+          />
         </div>
       </Card>
     </Flex>

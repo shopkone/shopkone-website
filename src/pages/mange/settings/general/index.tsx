@@ -21,7 +21,7 @@ export default function General () {
                 <Form.Item className={'flex1'} label={'Store phone'}>
                   <Input />
                 </Form.Item>
-                <Form.Item extra={'Receives messages about your store. For sender email'} label={'Store email'}>
+                <Form.Item extra={'Receives messages about your store.'} label={'Store email'}>
                   <Input />
                 </Form.Item>
               </Flex>
@@ -34,7 +34,7 @@ export default function General () {
             </Flex>
           </Card>
           <Card title={'Billing information'}>
-            <Address />
+            <Address hasName />
           </Card>
           <Card title={'Store defaults'}>
             <Flex vertical>
