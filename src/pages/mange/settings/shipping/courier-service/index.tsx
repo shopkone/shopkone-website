@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom'
 import { ArrowRight, International, LocalTwo, Right } from '@icon-park/react'
 import { Button, Card, Flex } from 'antd'
 
@@ -6,6 +7,8 @@ import SLocation from '@/components/s-location'
 import styles from './index.module.less'
 
 export default function CourierService () {
+  const nav = useNavigate()
+
   return (
     <Flex vertical gap={16}>
       <Card title={'Default location'}>
@@ -69,7 +72,9 @@ export default function CourierService () {
         <div style={{ marginTop: 16 }} className={styles.table}>
           <Flex justify={'space-between'} className={styles.title}>
             <div>Custom shipping rates</div>
-            <Button className={'extra-link'} size={'small'} type={'link'}>New profile</Button>
+            <Button onClick={() => { nav('courier-service/change') }} className={'extra-link'} size={'small'} type={'link'}>
+              New profile
+            </Button>
           </Flex>
           <Flex vertical>
             <Flex style={{ padding: 12 }}>
