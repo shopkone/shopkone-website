@@ -1,8 +1,11 @@
+import { Plus } from '@icon-park/react'
 import { Card, Flex, Form, Input } from 'antd'
 
 import Address from '@/components/address'
 import Page from '@/components/page'
 import SSelect from '@/components/s-select'
+
+import styles from './index.module.less'
 
 export default function General () {
   return (
@@ -10,30 +13,30 @@ export default function General () {
       <Form layout={'vertical'}>
         <Flex vertical gap={16}>
           <Card title={'Profile'}>
-            <div className={'tips'} style={{ marginBottom: 12, marginTop: -8 }}>
-              These details could be publicly available. Do not use your personal information.
-            </div>
-            <Flex gap={16}>
-              <Flex vertical flex={1}>
-                <Form.Item extra={'Appears on your website'} className={'flex1'} label={'Store name'}>
+            <Flex gap={48}>
+              <Flex vertical flex={3}>
+                <Form.Item className={'flex1'} label={'Store name'}>
                   <Input />
                 </Form.Item>
-                <Form.Item className={'flex1'} label={'Store phone'}>
+                <Form.Item extra={'Shopkone uses this to contact you.'} className={'flex1'} label={'Store owner email'}>
                   <Input />
                 </Form.Item>
-                <Form.Item extra={'Receives messages about your store.'} label={'Store email'}>
+                <Form.Item extra={'This email is used to contact customers.'} label={'Customer service email'}>
                   <Input />
                 </Form.Item>
               </Flex>
-              <Flex flex={1}>
-                <Form.Item label={'Website favicon'}>
-                  123
+              <Flex vertical flex={2}>
+                <Form.Item
+                  label={'Website favicon'}
+                >
+                  <Flex align={'center'} justify={'center'} className={styles.favicon} >
+                    <Plus size={24} style={{ position: 'relative', top: 2 }} />
+                  </Flex>
                 </Form.Item>
               </Flex>
-
             </Flex>
           </Card>
-          <Card title={'Billing information'}>
+          <Card title={'Address'}>
             <Address hasName />
           </Card>
           <Card title={'Store defaults'}>

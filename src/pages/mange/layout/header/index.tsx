@@ -7,7 +7,7 @@ import { useAtomValue } from 'jotai'
 import { useGetLoginInfo } from '@/api/account/get-account-info'
 import { LogoutApi } from '@/api/account/logout'
 import { useGetShopInfo } from '@/api/shop/get-shop-info'
-import { useShopOptions } from '@/api/shop/get-shop-options'
+import { useShopList } from '@/api/shop/get-shop-list'
 import SLoading from '@/components/s-loading'
 import SRender from '@/components/s-render'
 import { pageAtom } from '@/pages/mange/state'
@@ -18,7 +18,7 @@ import styles from './index.module.less'
 export default function Header () {
   const page = useAtomValue(pageAtom)
   const logoutApi = useRequest(LogoutApi, { manual: true })
-  const options = useShopOptions()
+  const shopList = useShopList()
   const shop = useGetShopInfo()
   const userInfo = useGetLoginInfo()
 
@@ -66,7 +66,7 @@ export default function Header () {
           content={(
             <div className={styles.popover}>
               {
-                options?.data?.map((item) => (
+                shopList?.data?.map((item) => (
                   <Flex key={item.uuid} justify={'space-between'} className={styles.item}>
                     <Flex gap={6}>
                       <SRender render={item.favicon}>
@@ -104,13 +104,13 @@ export default function Header () {
           )}
         >
           <div className={styles.avatar}>
-            <SRender render={options.data}>
+            <SRender render={shopList.data}>
               <SRender render={shop?.data?.favicon} className={styles['avatar-img']}>
                 <img src={shop.data?.favicon} alt={shop.data?.name} />
               </SRender>
               <div className={styles['avatar-text']}>{shop.data?.name}</div>
             </SRender>
-            <SRender render={!options.data}>
+            <SRender render={!shopList.data}>
               <Skeleton.Button active style={{ width: 100 }} />
             </SRender>
           </div>

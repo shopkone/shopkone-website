@@ -1,0 +1,22 @@
+.favicon {
+  border: 1px dashed #ccc;
+  width: 64px;
+  height: 64px;
+  border-radius: 8px;
+  background-color: #fefefe;
+  cursor: pointer;
+  transition: all 0.1s;
+  position: relative;
+  svg {
+    transition: all 0.1s;
+    color: #ccc;
+  }
+  &:hover {
+    background-color: #fdfdfd;
+    border-color: var(--color-primary);
+    svg {
+      color: var(--color-primary);
+    }
+  }
+}
+

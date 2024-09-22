@@ -5,10 +5,11 @@ import SSelect from '@/components/s-select'
 
 export interface AddressProps {
   hasName?: boolean
+  hasEmail?: boolean
 }
 
 export default function Address (props: AddressProps) {
-  const { hasName } = props
+  const { hasName, hasEmail } = props
   return (
     <div>
       <SRender render={!hasName}>
@@ -35,9 +36,11 @@ export default function Address (props: AddressProps) {
               <Input />
             </Flex>
           </Form.Item>
-          <Form.Item label={'Postal code'}>
-            <Input />
-          </Form.Item>
+          <SRender render={hasEmail}>
+            <Form.Item label={'Postal code'}>
+              <Input />
+            </Form.Item>
+          </SRender>
         </Flex>
         <Flex vertical flex={1}>
           <SRender render={hasName}>
@@ -51,9 +54,16 @@ export default function Address (props: AddressProps) {
           <Form.Item label={'Province'}>
             <SSelect className={'fit-width'} />
           </Form.Item>
-          <Form.Item label={'Email'}>
-            <Input className={'fit-width'} />
-          </Form.Item>
+          <SRender render={hasEmail}>
+            <Form.Item label={'Email'}>
+              <Input className={'fit-width'} />
+            </Form.Item>
+          </SRender>
+          <SRender render={!hasEmail}>
+            <Form.Item label={'Postal code'}>
+              <Input />
+            </Form.Item>
+          </SRender>
         </Flex>
       </Flex>
     </div>
