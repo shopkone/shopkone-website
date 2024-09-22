@@ -12,9 +12,7 @@ export default function Change () {
             <Input />
           </Form.Item>
         </Card>
-        <Card title={'Address'} style={{ marginTop: 16 }}>
-          <Address hasEmail />
-        </Card>
+        <Address hasEmail />
       </Form>
     </Page>
   )

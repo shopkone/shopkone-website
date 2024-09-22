@@ -3,9 +3,9 @@ import { useRequest } from 'ahooks'
 import { api } from '@/api/api'
 
 export interface PhoneCodeRes {
-  value: string
-  label: string
-  iso2: string
+  iso3: string
+  code: string
+  num: number
 }
 
 const PhoneCodeApi = async () => {

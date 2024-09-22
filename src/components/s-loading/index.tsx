@@ -1,23 +1,46 @@
 import { ReactNode } from 'react'
 import { LoadingFour } from '@icon-park/react'
+import { Spin } from 'antd'
 
 import styles from './index.module.less'
 
 export interface SLoadingProps {
   text?: ReactNode
-  size?: number
+  size?: number | 'large' | 'small' | 'default'
   black?: boolean
   loading?: boolean
   minHeight?: number
+  children?: ReactNode
 }
 
 export default function SLoading (props: SLoadingProps) {
-  const { text, size = 36, black, loading = true, minHeight } = props
+  const { text, size = 36, black, loading = true, minHeight, children } = props
 
-  return (
-    <div className={styles.wrapper} style={{ opacity: loading ? 1 : 0, display: loading ? undefined : 'none', minHeight }}>
+  const loadingComponent = (
+    <div
+      className={styles.wrapper}
+      style={{
+        opacity: loading ? 1 : 0,
+        display: loading ? undefined : 'none',
+        minHeight
+      }}
+    >
       <LoadingFour className={styles.loading} spin fill={black ? '#1F2329' : '#1456f0'} size={size} />
       {text ? <span className={styles.lint}>{text}</span> : null}
     </div>
   )
+
+  if (children) {
+    return (
+      <Spin
+        spinning={loading}
+        size={size as any}
+        indicator={loadingComponent}
+      >
+        <div className={styles.inner} style={{ opacity: loading ? 0 : 1 }}>{children}</div>
+      </Spin>
+    )
+  }
+
+  return loadingComponent
 }

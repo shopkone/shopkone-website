@@ -8,8 +8,8 @@ import { Button, ButtonProps, Flex, Form, Input, Progress, Spin } from 'antd'
 import { LoginApi } from '@/api/account/login'
 import { RegisterApi } from '@/api/account/register'
 import { SendCodeApi } from '@/api/account/send-code'
-import SInputNumber from '@/components/s-input-number'
 import SRender from '@/components/s-render'
+import { setStorage, STORAGE_KEY } from '@/utils/storage-key'
 
 import styles from '../../index.module.less'
 
@@ -89,7 +89,9 @@ export default function Signup () {
     await form.validateFields()
     if (!isValidPwd || !isValidEmail || !isValidCode) return
     await register.runAsync({ email, password, code: code.toString() })
-    await login.runAsync({ email, password })
+    const ret = await login.runAsync({ email, password })
+    if (!ret.token) return
+    setStorage(STORAGE_KEY.TOKEN, ret.token)
     window.location.href = '/'
   })
 
@@ -104,7 +106,7 @@ export default function Signup () {
           <Input onPressEnter={registerAccount} size={'large'} />
         </Form.Item>
         <Form.Item className={sendEmail ? 'mb0' : ''} name={'code'} label={'Verification code'}>
-          <SInputNumber
+          <Input
             onPressEnter={registerAccount}
             suffix={
               <Button disabled={!!count || send.loading} onClick={sendCode} className={styles.secondary} size={'small'} type={'text'}>
@@ -124,7 +126,7 @@ export default function Signup () {
                 </SRender>
               </Button>
             }
-            uint
+            maxLength={6}
             max={999999}
             autoComplete={'off'}
             size={'large'}
