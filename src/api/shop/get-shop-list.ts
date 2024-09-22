@@ -4,9 +4,9 @@ import { api } from '@/api/api'
 
 export interface GetShopListResponse {
   uuid: string
-  name: string
+  store_name: string
   status: number
-  favicon?: string
+  website_favicon?: string
 }
 
 // 获取店铺列表

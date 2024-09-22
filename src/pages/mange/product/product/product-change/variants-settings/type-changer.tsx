@@ -1,7 +1,7 @@
 import { App, Form, Radio } from 'antd'
 
 import { useVariantTypeOptions, VariantType } from '@/constant/product'
-import { Variant } from '@/pages/product/product/product-change/variants/variant-table'
+import { Variant } from '@/pages/mange/product/product/product-change/variants/variant-table'
 
 export interface TypeChangerProps {
   onChange?: (type: VariantType) => void

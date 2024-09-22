@@ -1,4 +1,4 @@
-import { http } from '@/http/http'
+import { api } from '@/api/api'
 
 export interface ProvincesReqItem {
   country_code: string
@@ -15,5 +15,5 @@ export interface ProvincesByIdsRes {
 }
 
 export const ProvincesByIdsApi = async (data: ProvincesByIdsReq) => {
-  return await http<ProvincesByIdsRes[]>('/base/province-by-ids', data)
+  return await api<ProvincesByIdsRes[]>('/base/province-by-ids', data)
 }

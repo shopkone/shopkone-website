@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { AddPicture, DeleteFour, Down, Up } from '@icon-park/react'
 import { Button, Checkbox, Flex, Form, Input, Select, Tooltip } from 'antd'
-import { cloneDeep } from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 
 import SInputNumber from '@/components/s-input-number'
 import SRender from '@/components/s-render'

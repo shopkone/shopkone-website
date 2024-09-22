@@ -4,11 +4,11 @@ import { api } from '@/api/api'
 
 interface GetShopInfoResponse {
   uuid: string
-  name: string
+  store_name: string
   status: number
-  favicon?: string
-  currency_code: string
-  time_zone_abbr: string
+  website_favicon?: string
+  store_currency: string
+  time_zone: string
 }
 
 // 获取店铺信息

@@ -1,7 +1,7 @@
 import { DeleteFour } from '@icon-park/react'
 import { useMemoizedFn } from 'ahooks'
 import { Button, Flex } from 'antd'
-import { cloneDeep } from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 
 import SRender from '@/components/s-render'
 import SSelect from '@/components/s-select'

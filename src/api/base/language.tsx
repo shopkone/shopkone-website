@@ -1,6 +1,6 @@
 import { useRequest } from 'ahooks'
 
-import { http } from '@/http/http'
+import { api } from '@/api/api'
 
 export interface LanguageRes {
   value: string
@@ -8,7 +8,7 @@ export interface LanguageRes {
 }
 
 const LanguageApi = async () => {
-  return await http<LanguageRes[]>('/base/languages')
+  return await api<LanguageRes[]>('/base/languages')
 }
 
 export const useLanguages = () => {

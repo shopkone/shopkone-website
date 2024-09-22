@@ -1,6 +1,6 @@
 import { useRequest } from 'ahooks'
 
-import { http } from '@/http/http'
+import { api } from '@/api/api'
 
 export interface PhoneCodeRes {
   value: string
@@ -9,7 +9,7 @@ export interface PhoneCodeRes {
 }
 
 const PhoneCodeApi = async () => {
-  return await http<PhoneCodeRes[]>('/base/phone-area-code')
+  return await api<PhoneCodeRes[]>('/base/phone-area-code')
 }
 
 export const usePhoneCode = () => {

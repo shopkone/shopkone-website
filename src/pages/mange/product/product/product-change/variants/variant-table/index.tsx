@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useMemoizedFn } from 'ahooks'
 import { Flex, Form } from 'antd'
-import { isEqual } from 'lodash'
+import isEqual from 'lodash/isEqual'
 
 import SRender from '@/components/s-render'
 import { Options } from '@/pages/mange/product/product/product-change/variants/variant-changer'

@@ -1,6 +1,6 @@
 import { useRequest } from 'ahooks'
 
-import { http } from '@/http/http'
+import { api } from '@/api/api'
 
 export interface TimezonesRes {
   value: string
@@ -8,7 +8,7 @@ export interface TimezonesRes {
 }
 
 const TimeZoneApi = async () => {
-  return await http<TimezonesRes[]>('/base/timezones')
+  return await api<TimezonesRes[]>('/base/timezones')
 }
 
 export const useTimezones = () => {

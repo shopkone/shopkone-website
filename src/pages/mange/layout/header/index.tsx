@@ -69,12 +69,12 @@ export default function Header () {
                 shopList?.data?.map((item) => (
                   <Flex key={item.uuid} justify={'space-between'} className={styles.item}>
                     <Flex gap={6}>
-                      <SRender render={item.favicon}>
+                      <SRender render={item.website_favicon}>
                         <Flex align={'center'} justify={'center'} className={styles['item-avatar']}>
-                          <img src={item.favicon} alt={item.name} />
+                          <img src={item.website_favicon} alt={item.store_name} />
                         </Flex>
                       </SRender>
-                      <div style={{ fontWeight: 500 }}>{item.name}</div>
+                      <div style={{ fontWeight: 500 }}>{item.store_name}</div>
                     </Flex>
                     <Check strokeWidth={6} size={11} />
                   </Flex>
@@ -105,10 +105,10 @@ export default function Header () {
         >
           <div className={styles.avatar}>
             <SRender render={shopList.data}>
-              <SRender render={shop?.data?.favicon} className={styles['avatar-img']}>
-                <img src={shop.data?.favicon} alt={shop.data?.name} />
+              <SRender render={shop?.data?.website_favicon} className={styles['avatar-img']}>
+                <img src={shop.data?.website_favicon} alt={shop.data?.store_name} />
               </SRender>
-              <div className={styles['avatar-text']}>{shop.data?.name}</div>
+              <div className={styles['avatar-text']}>{shop.data?.store_name}</div>
             </SRender>
             <SRender render={!shopList.data}>
               <Skeleton.Button active style={{ width: 100 }} />

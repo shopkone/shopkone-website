@@ -143,7 +143,7 @@ export default function Seo (props: SeoProps) {
               )
             : (
               <Flex vertical>
-                <div className={styles.name}>{shop?.data?.name}</div>
+                <div className={styles.name}>{shop?.data?.store_name}</div>
                 <Typography.Text ellipsis={{ tooltip: true }} className={styles.link}>
                   https://b3930d-c0.myshopify.com
                 </Typography.Text>

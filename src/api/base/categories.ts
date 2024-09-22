@@ -1,7 +1,7 @@
 import { useRequest } from 'ahooks'
 import cloneDeep from 'lodash/cloneDeep'
 
-import { http } from '@/http/http'
+import { api } from '@/api/api'
 
 export interface CategoryItem {
   value: number
@@ -41,7 +41,7 @@ export const formatFlagToTree = (baseArr: CategoryItem[], parentId: number): Cat
 }
 
 const fetchCategoryItemsApi = async () => {
-  return await http<CategoryItem[]>('/base/categories')
+  return await api<CategoryItem[]>('/base/categories')
 }
 
 export const useCategories = () => {

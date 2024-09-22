@@ -1,6 +1,6 @@
 import { useRequest } from 'ahooks'
 
-import { http } from '@/http/http'
+import { api } from '@/api/api'
 
 export interface CurrenciesRes {
   value: string
@@ -8,7 +8,7 @@ export interface CurrenciesRes {
 }
 
 const CurrenciesApi = async () => {
-  return await http<CurrenciesRes[]>('/base/currencies')
+  return await api<CurrenciesRes[]>('/base/currencies')
 }
 
 export const useCurrencies = () => {

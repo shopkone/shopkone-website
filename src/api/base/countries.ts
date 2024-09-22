@@ -1,6 +1,6 @@
 import { useRequest } from 'ahooks'
 
-import { http } from '@/http/http'
+import { api } from '@/api/api'
 
 export interface CountriesReq {
   children?: boolean
@@ -14,7 +14,7 @@ export interface CountriesRes {
 }
 
 const CountriesApi = async (params: CountriesReq) => {
-  return await http<CountriesRes[]>('/base/countries', params)
+  return await api<CountriesRes[]>('/base/countries', params)
 }
 
 export const useCountries = () => {

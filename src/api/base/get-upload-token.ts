@@ -1,5 +1,5 @@
-import { http } from '@/http/http'
+import { api } from '@/api/api'
 
 export const GetUploadTokenApi = async () => {
-  return await http<{ token: string }>('/base/get-upload-token')
+  return await api<{ token: string }>('/base/get-upload-token')
 }
