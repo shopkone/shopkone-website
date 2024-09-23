@@ -1,5 +1,5 @@
 import { useCountries } from '@/api/base/countries'
-import SLoading from '@/components/s-loading'
+import Image from '@/components/image'
 
 export interface CountryFlagProps {
   country?: string
@@ -12,12 +12,12 @@ export default function CountryFlag (props: CountryFlagProps) {
   const country = countries.data?.find(c => c.code === props.country)
 
   return (
-    <SLoading size={'small'} loading={countries.loading}>
-      <img
-        style={{ height: props.size, borderRadius: 4 }}
-        src={country?.flag?.src}
-        alt={country?.flag?.alt}
-      />
-    </SLoading>
+    <Image
+      loading={countries.loading}
+      size={'small'}
+      style={{ height: props.size, borderRadius: 4 }}
+      src={country?.flag?.src}
+      alt={country?.flag?.alt}
+    />
   )
 }

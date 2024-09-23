@@ -59,7 +59,7 @@ export default function PhoneCode (props: PhoneCodeProps) {
           dropdownStyle={{ width: 320 }}
           options={options}
           style={{ width: 100 }}
-          listHeight={300}
+          listHeight={400}
           onChange={onChangePrefix}
           labelRender={({ value, label }) =>
             (

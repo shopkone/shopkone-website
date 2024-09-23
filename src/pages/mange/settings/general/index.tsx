@@ -10,6 +10,7 @@ import Address from '@/components/address'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
 import SSelect from '@/components/s-select'
+import Upload from '@/components/upload'
 
 import styles from './index.module.less'
 
@@ -57,9 +58,16 @@ export default function General () {
                 <Form.Item
                   label={'Website favicon'}
                 >
-                  <Flex align={'center'} justify={'center'} className={styles.favicon} >
+                  <Upload
+                    accepts={['image']}
+                    maxSize={1024 * 1024 * 10}
+                    multiple
+                    align={'center'}
+                    justify={'center'}
+                    className={styles.favicon}
+                  >
                     <Plus size={24} style={{ position: 'relative', top: 2 }} />
-                  </Flex>
+                  </Upload>
                 </Form.Item>
               </Flex>
             </Flex>
@@ -72,11 +80,10 @@ export default function General () {
                 extra={'Changing the currency after the store is in normal operation will affect its product prices, orders, data and other information, please proceed with caution.'} label={'Store currency'}
               >
                 <SSelect
-                  virtual={false}
+                  listHeight={400}
                   showSearch
-                  optionFilterProp={'title'}
-                  options={currencyList.data}
-                  fieldNames={{ value: 'code', label: 'title' }}
+                  optionFilterProp={'label'}
+                  options={currencyList.data?.map(item => ({ value: item.code, label: item.title }))}
                   style={{ width: 'calc(50% - 16px)' }}
                 />
               </Form.Item>
@@ -87,9 +94,8 @@ export default function General () {
                 <Form.Item style={{ flexShrink: 0 }} className={'flex1'} name={'timezone'} label={'Time zone'}>
                   <SSelect
                     showSearch
-                    optionFilterProp={'description'}
-                    options={timezones.data}
-                    fieldNames={{ label: 'description', value: 'olson_name' }}
+                    optionFilterProp={'label'}
+                    options={timezones.data?.map(item => ({ value: item.olson_name, label: item.description }))}
                   />
                 </Form.Item>
               </Flex>
