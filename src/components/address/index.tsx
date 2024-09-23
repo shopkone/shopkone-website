@@ -1,5 +1,11 @@
+import { useEffect, useMemo } from 'react'
+import { useRequest } from 'ahooks'
 import { Flex, Form, Input } from 'antd'
+import random from 'lodash/random'
 
+import { AddressConfigApi } from '@/api/base/address-config'
+import { useCountries } from '@/api/base/countries'
+import { usePhonePrefix } from '@/api/base/phone-prefix'
 import PhoneCode from '@/components/address/phone-code'
 import SCard from '@/components/s-card'
 import SRender from '@/components/s-render'
@@ -14,57 +20,109 @@ export interface AddressProps {
 export default function Address (props: AddressProps) {
   const { hasName, hasEmail, loading } = props
 
+  const form = Form.useFormInstance()
+
+  const countries = useCountries()
+  const phoneCodes = usePhonePrefix()
+  const config = useRequest(AddressConfigApi, { manual: true })
+
+  const country = Form.useWatch('country', form)
+
+  const countryOptions = useMemo(() => {
+    return countries.data?.map(item => ({ label: item.name, value: item.code }))
+  }, [countries.data])
+
+  const zoneOptions = useMemo(() => {
+    const c = countries.data?.find(item => item.code === country)
+    const options = c?.zones?.map(item => ({ label: item.name, value: item.code }))
+    form.setFieldValue('zone', options?.[0]?.value)
+    return options || []
+  }, [countries.data, country])
+
+  const countryRender = (
+    <Form.Item name={'country'} label={config?.data?.country}>
+      <SSelect
+        virtual={false}
+        options={countryOptions}
+        showSearch
+        optionFilterProp={'label'}
+      />
+    </Form.Item>
+  )
+
+  const formatPostalCodeMsg = (msg: string): string => {
+    if (!msg) return msg
+    return msg.split('').map(item => {
+      if (item === '#') return random(0, 9)
+      return item
+    }).join('')
+  }
+
+  const postalCodeRender = (
+    <SRender render={!!config?.data?.postal_code}>
+      <Form.Item
+        validateTrigger={'onBlur'}
+        rules={[{
+          pattern: new RegExp(config?.data?.postal_code_config?.regex || ''),
+          message: `${config?.data?.postal_code || 'Postal code'}  isn't valid.Example:` + formatPostalCodeMsg(config?.data?.postal_code_config?.format || '')
+        }]}
+        name={'postal_code'}
+        label={config?.data?.postal_code}
+      >
+        <Input
+          autoComplete={'off'}
+        />
+      </Form.Item>
+    </SRender>
+  )
+
+  useEffect(() => {
+    if (!country) return
+    config.run({ country })
+  }, [country])
+
   return (
-    <SCard loading={loading} title={'Address'}>
-      <SRender render={!hasName}>
-        <Form.Item name={'country_iso_3'} label={'Country/region'}>
-          <SSelect />
-        </Form.Item>
-      </SRender>
+    <SCard loading={loading || countries.loading || phoneCodes.loading || config.loading} title={'Address'}>
+      <SRender render={!hasName}>{countryRender}</SRender>
       <Flex gap={16}>
         <Flex vertical flex={1}>
           <SRender render={hasName}>
             <Form.Item name={'legal_business_name'} label={'Legal business name'}>
-              <Input />
+              <Input autoComplete={'off'} />
             </Form.Item>
           </SRender>
-          <Form.Item name={'full_address'} label={'Full address'}>
-            <Input />
+          <Form.Item name={'address1'} label={config?.data?.address1}>
+            <Input autoComplete={'off'} />
           </Form.Item>
-          <Form.Item name={'city'} label={'City'}>
-            <Input />
+          <Form.Item name={'city'} label={config?.data?.city}>
+            <Input autoComplete={'off'} />
           </Form.Item>
-          <Form.Item name={'phone'} label={'Phone'}>
+          <Form.Item name={'phone'} label={config?.data?.phone}>
             <PhoneCode />
           </Form.Item>
-          <SRender render={hasEmail}>
-            <Form.Item name={'postal_code'} label={'Postal code'}>
-              <Input />
-            </Form.Item>
-          </SRender>
+          <SRender render={hasEmail}>{postalCodeRender}</SRender>
         </Flex>
         <Flex vertical flex={1}>
-          <SRender render={hasName}>
-            <Form.Item name={'country_iso_3'} label={'Country/region'}>
-              <SSelect />
+          <SRender render={hasName}>{countryRender}</SRender>
+          <Form.Item name={'address2'} label={config?.data?.address2}>
+            <Input autoComplete={'off'} />
+          </Form.Item>
+          <SRender render={!!zoneOptions?.length}>
+            <Form.Item name={'zone'} label={config?.data?.zone}>
+              <SSelect
+                showSearch
+                optionFilterProp={'label'}
+                options={zoneOptions}
+                className={'fit-width'}
+              />
             </Form.Item>
           </SRender>
-          <Form.Item name={'apartment'} label={'Apartment, suite, etc'}>
-            <Input />
-          </Form.Item>
-          <Form.Item name={'province_code'} label={'Province'}>
-            <SSelect className={'fit-width'} />
-          </Form.Item>
           <SRender render={hasEmail}>
             <Form.Item name={'email'} label={'Email'}>
-              <Input className={'fit-width'} />
+              <Input autoComplete={'off'} />
             </Form.Item>
           </SRender>
-          <SRender render={!hasEmail}>
-            <Form.Item name={'postal_code'} label={'Postal code'}>
-              <Input />
-            </Form.Item>
-          </SRender>
+          <SRender render={!hasEmail}>{postalCodeRender}</SRender>
         </Flex>
       </Flex>
     </SCard>

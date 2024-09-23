@@ -2,27 +2,21 @@ import { useRequest } from 'ahooks'
 
 import { api } from '@/api/api'
 
-export interface CountriesReq {
-  children?: boolean
+export interface ZoneListOut {
+  code: string
+  name: string
 }
 
 export interface CountriesRes {
-  value: string
-  label: string
-  region_name: string
-  children: CountriesRes[]
+  code: string
+  name: string
+  continent: string
+  zones: ZoneListOut[]
 }
 
-const CountriesApi = async (params: CountriesReq) => {
-  return await api<CountriesRes[]>('/base/countries', params)
-}
+export const CountriesApi = async () =>
+  await api<CountriesRes[]>('/base/countries')
 
 export const useCountries = () => {
-  return useRequest(CountriesApi, { staleTime: -1, cacheKey: '/base/countries' })
-}
-
-export const useWithChildrenCountries = () => {
-  return useRequest(async () => await CountriesApi(
-    { children: true }),
-  { staleTime: -1, cacheKey: '/base/countries_children' })
+  return useRequest(CountriesApi, { cacheKey: 'COUNTRIES', staleTime: -1 })
 }

@@ -1,16 +1,20 @@
-export interface Phone {
-  country_iso3: string
-  number: string
+export interface PhoneType {
+  country: string
+  prefix: number
+  num: string
 }
 
 export interface AddressType {
   id: number
   legal_business_name: string
-  country_iso3: string
-  full_address: string
-  apartment: string
+  address1: string
+  address2: string
   city: string
-  province_code: string
+  company: string
+  country: string
+  first_name: string
+  last_name: string
+  phone: PhoneType
   postal_code: string
-  phone: Phone
+  zone: string
 }
