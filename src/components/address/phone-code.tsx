@@ -1,9 +1,10 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { Flex, Input } from 'antd'
 
 import { useCountries } from '@/api/base/countries'
 import { usePhonePrefix } from '@/api/base/phone-prefix'
 import { PhoneType } from '@/api/common/address'
+import CountryFlag from '@/components/country-flag'
 import SSelect from '@/components/s-select'
 
 export interface PhoneCodeProps {
@@ -16,6 +17,8 @@ export default function PhoneCode (props: PhoneCodeProps) {
 
   const phoneCodes = usePhonePrefix()
   const countries = useCountries()
+
+  const [focus, setFoucus] = useState(false)
 
   const options = useMemo(() => {
     if (!phoneCodes.data) return []
@@ -46,6 +49,8 @@ export default function PhoneCode (props: PhoneCodeProps) {
     <Flex>
       <Flex gap={4}>
         <SSelect
+          onFocus={() => { setFoucus(true) }}
+          onBlur={() => { setFoucus(false) }}
           showSearch
           virtual={false}
           optionFilterProp={'label'}
@@ -56,6 +61,16 @@ export default function PhoneCode (props: PhoneCodeProps) {
           style={{ width: 100 }}
           listHeight={300}
           onChange={onChangePrefix}
+          labelRender={({ value, label }) =>
+            (
+              <div style={{
+                position: 'relative',
+                top: 2
+              }}
+              >
+                <CountryFlag size={20} country={value?.toString()} />
+              </div>
+            )}
         />
         <Input
           value={value?.num}

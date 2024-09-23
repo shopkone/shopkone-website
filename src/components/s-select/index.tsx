@@ -5,6 +5,7 @@ export default function SSelect (props: SelectProps) {
   return (
     <Select
       {...props}
+      virtual={false}
       suffixIcon={
         <Down size={15} fill={'#646a73c0'} />
       }

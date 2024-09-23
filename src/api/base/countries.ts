@@ -11,6 +11,7 @@ export interface CountriesRes {
   code: string
   name: string
   continent: string
+  flag: { src: string, alt: string }
   zones: ZoneListOut[]
 }
 
