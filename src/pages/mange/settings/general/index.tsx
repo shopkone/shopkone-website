@@ -72,6 +72,8 @@ export default function General () {
                 extra={'Changing the currency after the store is in normal operation will affect its product prices, orders, data and other information, please proceed with caution.'} label={'Store currency'}
               >
                 <SSelect
+                  showSearch
+                  optionFilterProp={'title'}
                   options={currencyList.data}
                   fieldNames={{ value: 'code', label: 'title' }}
                   style={{ width: 'calc(50% - 16px)' }}
