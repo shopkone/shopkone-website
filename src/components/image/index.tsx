@@ -10,7 +10,7 @@ export interface ImageProps extends Omit<ImgHTMLAttributes<any>, 'loading'> {
 }
 
 export default function Image (props: ImageProps) {
-  const { loading = true, size, errorSize = 18, src, ...rest } = props
+  const { loading = false, size, errorSize = 18, src, ...rest } = props
   const [isLoading, setIsLoading] = useState(true)
   const [hasError, setHasError] = useState(false)
 
@@ -28,10 +28,13 @@ export default function Image (props: ImageProps) {
           )
         : (
           <img
+            alt={src}
             src={src}
+            onLoadCapture={() => {
+              setIsLoading(false)
+            }}
             onLoad={() => { setIsLoading(false) }}
-            onError={() => { setHasError(true) }}
-            loading={'lazy'}
+            onError={() => { setHasError(true); setIsLoading(false) }}
             {...rest}
           />
           )}

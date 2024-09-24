@@ -1,10 +1,7 @@
-import { useNavigate } from 'react-router-dom'
 import { Attention, CheckOne, Close } from '@icon-park/react'
 import { Button, Flex, Typography } from 'antd'
-import classNames from 'classnames'
 import { useAtomValue } from 'jotai'
 
-import { UploadFileType } from '@/api/file/UploadFileType'
 import Image from '@/components/image'
 import SRender from '@/components/s-render'
 import { uploadList } from '@/pages/mange/task/state'
@@ -13,13 +10,6 @@ import { formatFileSize } from '@/utils/format'
 import styles from './index.module.less'
 
 export default function UploadRender () {
-  const nav = useNavigate()
-
-  const toFilePage = (file: UploadFileType) => {
-    if (file.status !== 'done') return
-    nav(`/settings/files?name=${file.name}`)
-  }
-
   const fileList = useAtomValue(uploadList)
 
   return (
@@ -27,10 +17,9 @@ export default function UploadRender () {
       {
         fileList?.map(file => (
           <Flex
-            onClick={() => { toFilePage(file) }}
             justify={'space-between'}
             align={'center'}
-            className={classNames(styles.item, { [styles.done]: file.status === 'done' })}
+            className={styles.item}
             key={file.uuid}
           >
             <Flex gap={8}>

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Attention, Check, Minus, Up } from '@icon-park/react'
+import { Attention, Check, Close, Minus, Up } from '@icon-park/react'
 import { Badge, Button, Flex, Tabs } from 'antd'
 import classNames from 'classnames'
 
@@ -11,7 +11,7 @@ import { useUpload } from '@/pages/mange/task/upload/use-upload'
 import styles from './index.module.less'
 
 export default function Task () {
-  const [mini, setMini] = useState(false)
+  const [mini, setMini] = useState(true)
   const files = useUpload()
   const loadingFileCount = files.filter(file => ['wait', 'uploading'].includes(file.status)).length
   const loadingCount = loadingFileCount
@@ -78,14 +78,26 @@ export default function Task () {
               </SRender>
             </div>
           </Flex>
-          <Button
-            onClick={() => {
-              setMini(!mini)
-            }}
-            className={styles.btn}
-          >
-            <Up className={styles.icon} size={16} />
-          </Button>
+          <SRender render={loadingCount}>
+            <Button
+              onClick={() => {
+                setMini(!mini)
+              }}
+              className={styles.btn}
+            >
+              <Up className={styles.icon} size={16} />
+            </Button>
+          </SRender>
+          <SRender render={!loadingCount}>
+            <Button
+              onClick={() => {
+                setMini(!mini)
+              }}
+              style={{ width: 26, height: 26, position: 'relative', marginBottom: 0, top: 2 }}
+            >
+              <Close style={{ position: 'relative', left: -6 }} size={12} />
+            </Button>
+          </SRender>
         </Flex>
       </SRender>
     </div>
