@@ -6,7 +6,7 @@ import styles from './index.module.less'
 
 export interface SLoadingProps {
   text?: ReactNode
-  size?: number | 'large' | 'small' | 'default'
+  size?: number | 'large' | 'default' | 'small'
   black?: boolean
   loading?: boolean
   minHeight?: number
@@ -35,12 +35,13 @@ export default function SLoading (props: SLoadingProps) {
   if (children) {
     return (
       <Spin
-        spinning={loading}
         size={size as any}
-        indicator={loadingComponent}
-        style={spinStyle}
+        spinning={loading}
+        indicator={
+          <div><LoadingFour className={styles.loading} /></div>
+        }
       >
-        <div className={styles.inner} style={{ opacity: loading ? Number(!!foreShow) : 1 }}>{children}</div>
+        <div style={{ opacity: loading ? Number(!!foreShow) : 1 }}>{children}</div>
       </Spin>
     )
   }

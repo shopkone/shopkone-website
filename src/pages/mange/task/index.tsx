@@ -1,17 +1,19 @@
-import { useState } from 'react'
-import { Attention, Check, Minus, Up } from '@icon-park/react'
+import { Attention, Check, Close, Minus, Up } from '@icon-park/react'
 import { Badge, Button, Flex, Tabs } from 'antd'
 import classNames from 'classnames'
+import { useAtom } from 'jotai'
 
 import SLoading from '@/components/s-loading'
 import SRender from '@/components/s-render'
+import { taskExpand, taskOpen } from '@/pages/mange/task/state'
 import UploadRender from '@/pages/mange/task/upload/upload-render'
 import { useUpload } from '@/pages/mange/task/upload/use-upload'
 
 import styles from './index.module.less'
 
 export default function Task () {
-  const [mini, setMini] = useState(true)
+  const [open, setOpen] = useAtom(taskOpen)
+  const [expand, setExpand] = useAtom(taskExpand)
   const files = useUpload()
   const loadingFileCount = files.filter(file => ['wait', 'uploading'].includes(file.status)).length
   const loadingCount = loadingFileCount
@@ -24,12 +26,14 @@ export default function Task () {
     { label: 'Export', key: 'export' }
   ]
 
+  if (!open) return null
+
   return (
-    <div className={classNames([styles.container, { [styles.max]: !mini }])}>
-      <SRender render={!mini} className={styles.maxContent}>
+    <div className={classNames([styles.container, { [styles.max]: expand }])}>
+      <SRender render={expand} className={styles.maxContent}>
         <Flex className={styles.header} justify={'space-between'}>
           <Tabs className={'flex1'} size={'small'} items={options} />
-          <Button type={'text'} onClick={() => { setMini(!mini) }} className={styles.btn}>
+          <Button type={'text'} onClick={() => { setExpand(false) }} className={styles.btn}>
             <Minus className={styles.icon} size={16} />
           </Button>
         </Flex>
@@ -39,8 +43,8 @@ export default function Task () {
         </div>
       </SRender>
 
-      <SRender render={mini}>
-        <Flex justify={'space-between'} align={'center'} gap={12}>
+      <SRender render={!expand}>
+        <Flex style={{ position: 'relative', top: 2 }} justify={'space-between'} align={'center'} gap={12}>
           <Flex align={'center'} gap={6}>
             <div style={{ width: 20 }}>
               <SRender render={loadingCount}>
@@ -78,14 +82,31 @@ export default function Task () {
               </SRender>
             </div>
           </Flex>
-          <Button
-            onClick={() => {
-              setMini(!mini)
-            }}
-            className={styles.btn}
-          >
-            <Up className={styles.icon} size={16} />
-          </Button>
+          <SRender render={!(!loadingCount && !errorCount)}>
+            <Button
+              onClick={() => {
+                setExpand(true)
+              }}
+              className={styles.btn}
+            >
+              <Up className={styles.icon} size={16} />
+            </Button>
+          </SRender>
+          <SRender render={!loadingCount && !errorCount}>
+            <Button
+              onClick={() => {
+                setOpen(false)
+              }}
+              style={{
+                height: 26,
+                width: 26
+              }}
+              type={'text'}
+              size={'small'}
+            >
+              <Close style={{ position: 'relative', left: -2, top: 1 }} size={12} />
+            </Button>
+          </SRender>
         </Flex>
       </SRender>
     </div>

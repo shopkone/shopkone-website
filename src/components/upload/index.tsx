@@ -166,7 +166,7 @@ export default function Upload (props: UploadProps) {
     const list = oldFileList.filter(item => {
       return !files.find(i => item.uuid === i.uuid)
     })
-    setFileList(list.concat(files))
+    setFileList(files.concat(list))
   })
 
   const onInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {

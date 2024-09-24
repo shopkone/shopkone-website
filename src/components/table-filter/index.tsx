@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { MouseEventHandler, useMemo, useState } from 'react'
 import { CloseOutlined } from '@ant-design/icons'
 import { Down } from '@icon-park/react'
 import { Button, Checkbox, Flex, Popover } from 'antd'
@@ -34,24 +34,29 @@ export default function TableFilter (props: TableFilterProps) {
     if (checkbox) {
       return checkbox?.value?.map((key) => checkbox?.options?.find((item) => {
         return item?.value === key
-      })?.label)
+      })?.label).join(', ')
     }
     if (numberRange) {
       const min = numberRange?.value?.[0]
       const max = numberRange?.value?.[1]
       if (min && !max) return `Greater than ${min} ${numberRange.unit}`
       if (max && !min) return `Less than ${max} ${numberRange.unit}`
-      if (min && max) return `${min} ~ ${max} ${numberRange.unit}`
+      if (min && max) return `${min} ${numberRange.unit}-${max} ${numberRange.unit}`
     }
   }, [radio, checkbox, numberRange])
 
-  const onClear = () => {
+  const onClear: MouseEventHandler = (e) => {
+    e.stopPropagation()
     if (radio) {
       radio?.onChange?.(undefined)
     }
     if (numberRange) {
       numberRange?.onChange?.(undefined)
     }
+    if (checkbox) {
+      checkbox?.onChange?.([])
+    }
+    setOpen(false)
   }
 
   return (
@@ -81,16 +86,16 @@ export default function TableFilter (props: TableFilterProps) {
       placement={'bottomLeft'}
       arrow={false}
     >
-      <Button type={label ? undefined : 'dashed'} style={{ background: label ? '#f5f5f5' : undefined }} size={'small'}>
-        <Flex gap={2} align={'center'} style={{ fontWeight: 400 }}>
-          <div>
-            {children}{label ? ':' : ''} {label}
+      <Button style={{ background: '#fff' }} type={label ? undefined : 'dashed'} size={'small'}>
+        <Flex gap={2} align={'center'}>
+          <div style={{ fontWeight: label ? 550 : 400 }}>
+            <span style={{ color: '#666' }}>{children}</span>{label ? ':' : ''} {label}
           </div>
           {
             label
               ? (
-                <div onClick={onClear}>
-                  <CloseOutlined style={{ fontSize: 10, fontWeight: 'bolder', marginLeft: 8 }} />
+                <div className={styles.close} onClick={onClear}>
+                  <CloseOutlined className={styles.closeIcon} />
                 </div>
                 )
               : (

@@ -3,6 +3,8 @@ import { api, PageReq, PageRes } from '@/api/api'
 export interface FileListReq extends PageReq {
   keyword?: string
   fileSize?: [number | undefined, number | undefined]
+  fileType?: number[]
+  used?: number
 }
 
 export interface FileListRes {

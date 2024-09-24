@@ -1,31 +1,39 @@
-import { Flex, Input } from 'antd'
+import { Button, Flex, Input } from 'antd'
 
+import { FileType } from '@/api/file/add-file-record'
 import { ReactComponent as SearchIcon } from '@/assets/icon/search.svg'
+import SRender from '@/components/s-render'
 import TableFilter from '@/components/table-filter'
 import { FilterNumberRangeProps } from '@/components/table-filter/filter-number-range'
 
 export interface FiltersProps {
-  onSearch?: (value?: string) => void
   value?: {
     keyword?: string
     fileSize?: FilterNumberRangeProps['value']
+    fileType?: number[]
+    used?: number
   }
   onChange?: (value: FiltersProps['value']) => void
 }
 
 export default function Filters (props: FiltersProps) {
-  const { onSearch, onChange, value } = props
+  const { onChange, value } = props
 
   const options = [
-    { label: 'Image', value: 'image' },
-    { label: 'Video', value: 'video' },
-    { label: 'Audio', value: 'audio' },
-    { label: 'Other', value: 'other' }
+    { value: FileType.Image, label: 'Image' },
+    { value: FileType.Video, label: 'Video' },
+    { value: FileType.Audio, label: 'Audio' },
+    { value: FileType.Other, label: 'Other' }
   ]
 
   return (
     <div>
       <Input
+        value={value?.keyword}
+        onChange={(e) => {
+          onChange?.({ ...value, keyword: e.target.value })
+        }}
+        allowClear
         prefix={<SearchIcon />}
         placeholder={'Search files'}
         size={'small'}
@@ -49,8 +57,8 @@ export default function Filters (props: FiltersProps) {
             maxLabel: 'Min size',
             minLabel: 'Max size',
             unit: 'MB',
-            onChange: (value) => {
-              onChange?.({ ...value, fileSize: value })
+            onChange: (v) => {
+              onChange?.({ ...value, fileSize: v })
             },
             value: value?.fileSize
           }}
@@ -60,11 +68,43 @@ export default function Filters (props: FiltersProps) {
 
         <TableFilter
           checkbox={{
-            options
+            options,
+            onChange: (v) => {
+              onChange?.({ ...value, fileType: v.map(i => Number(i || 0)) })
+            },
+            value: value?.fileType
           }}
         >
           File type
         </TableFilter>
+
+        <TableFilter
+          radio={{
+            options: [
+              { label: 'Used', value: 1 },
+              { label: 'Unused', value: 2 }
+            ],
+            onChange: (v) => {
+              onChange?.({ ...value, used: Number(v || 0) })
+            },
+            value: value?.used
+          }}
+        >
+          Used
+        </TableFilter>
+
+        <SRender render={!!value?.fileSize || !!value?.fileType || !!value?.used}>
+          <Button
+            onClick={() => {
+              onChange?.({ ...value, fileSize: undefined, fileType: undefined, used: undefined })
+            }}
+            type={'link'}
+            size={'small'}
+            className={'link-btn'}
+          >
+            Clear all
+          </Button>
+        </SRender>
       </Flex>
     </div>
   )

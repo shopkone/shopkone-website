@@ -21,7 +21,7 @@ export default function Image (props: ImageProps) {
   }, [src])
 
   return (
-    <SLoading spinStyle={{ top: -5 }} size={size} loading={loading || isLoading}>
+    <SLoading size={size} loading={loading || isLoading}>
       {hasError
         ? (
           <ErrorPicture theme={'outline'} size={errorSize} fill={'#646a73'} />

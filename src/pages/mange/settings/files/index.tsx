@@ -101,6 +101,14 @@ export default function Files () {
           <Card styles={{ body: { padding: '8px 0' } }}>
             <Filters value={params} onChange={(v) => { setParams({ ...params, ...(v || {}) }) }} />
             <STable
+              page={{
+                total: list?.data?.total || 0,
+                current: params.page,
+                pageSize: params.page_size,
+                onChange: (page, page_size) => {
+                  setParams({ ...params, page, page_size })
+                }
+              }}
               rowSelection={{ onChange: () => {}, value: [], width: 30 }}
               init={!!list?.data?.list}
               loading={list.loading}
