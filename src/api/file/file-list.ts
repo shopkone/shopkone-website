@@ -5,6 +5,7 @@ export interface FileListReq extends PageReq {
   fileSize?: [number | undefined, number | undefined]
   fileType?: number[]
   used?: number
+  group_id: number
 }
 
 export interface FileListRes {

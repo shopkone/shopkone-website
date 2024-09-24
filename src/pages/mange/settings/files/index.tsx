@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import { LinkOutlined } from '@ant-design/icons'
 import { useRequest } from 'ahooks'
 import { Button, Card, Flex } from 'antd'
@@ -18,7 +19,9 @@ import styles from './index.module.less'
 
 export default function Files () {
   const list = useRequest(FileListApi, { manual: true })
-  const [params, setParams] = useState<FileListReq>({ page: 1, page_size: 20 })
+  const [params, setParams] = useState<FileListReq>({ page: 1, page_size: 20, group_id: 0 })
+
+  const location = useLocation()
 
   const columns: STableProps['columns'] = [
     {
@@ -77,6 +80,10 @@ export default function Files () {
   useEffect(() => {
     list.run(params)
   }, [params])
+
+  useEffect(() => {
+    console.log(location.search)
+  }, [location.search])
 
   return (
     <Page

@@ -105,16 +105,18 @@ function STable (props: STableProps) {
 
   return (
     <div className={classNames({ [styles.borderless]: borderless }, styles.table)} style={{ width, ...style }}>
-      <SLoading size={'large'} foreShow loading={loading}>
-        <BaseTable
-          isStickyHeader
-          hasHeader
-          stickyTop={stickyTop}
-          useVirtual={{ horizontal: false }}
-          {...rest}
-          {...pipeline.getProps()}
-        />
-      </SLoading>
+      <div style={{ position: 'relative' }}>
+        <SLoading loading={loading} size={'large'}>
+          <BaseTable
+            isStickyHeader
+            hasHeader
+            stickyTop={stickyTop}
+            useVirtual={{ horizontal: false }}
+            {...rest}
+            {...pipeline.getProps()}
+          />
+        </SLoading>
+      </div>
       <SRender render={page}>
         <Flex style={{ marginRight: 16 }} justify={'flex-end'}>
           <Pagination
