@@ -10,6 +10,8 @@ import Page from '@/components/page'
 import SRender from '@/components/s-render'
 import STable, { STableProps } from '@/components/s-table'
 import Upload from '@/components/upload'
+import Filters from '@/pages/mange/settings/files/filters'
+import Group from '@/pages/mange/settings/files/group'
 import { formatFileSize } from '@/utils/format'
 
 import styles from './index.module.less'
@@ -93,31 +95,37 @@ export default function Files () {
       }
       title={'Files'}
     >
-      <Card styles={{ body: { paddingLeft: 0, paddingRight: 0 } }}>
-        <STable
-          rowSelection={{ onChange: () => {}, value: [], width: 30 }}
-          init={!!list?.data?.list}
-          loading={list.loading}
-          empty={{
-            title: 'Upload and manage your files',
-            desc: 'Files can be images, videos or audio.',
-            actions: (
-              <Flex>
-                <Upload
-                  global
-                  multiple
-                  maxSize={1024 * 1024 * 20}
-                  accepts={['image', 'video', 'zip', 'audio']}
-                >
-                  <Button type={'primary'}>Upload files</Button>
-                </Upload>
-              </Flex>
-            )
-          }}
-          data={list?.data?.list || []}
-          columns={columns}
-        />
-      </Card>
+      <Flex gap={16}>
+        <Group />
+        <div className={styles.right}>
+          <Card styles={{ body: { padding: '8px 0' } }}>
+            <Filters value={params} onChange={(v) => { setParams({ ...params, ...(v || {}) }) }} />
+            <STable
+              rowSelection={{ onChange: () => {}, value: [], width: 30 }}
+              init={!!list?.data?.list}
+              loading={list.loading}
+              empty={{
+                title: 'Upload and manage your files',
+                desc: 'Files can be images, videos or audio.',
+                actions: (
+                  <Flex>
+                    <Upload
+                      global
+                      multiple
+                      maxSize={1024 * 1024 * 20}
+                      accepts={['image', 'video', 'zip', 'audio']}
+                    >
+                      <Button type={'primary'}>Upload files</Button>
+                    </Upload>
+                  </Flex>
+                )
+              }}
+              data={list?.data?.list || []}
+              columns={columns}
+            />
+          </Card>
+        </div>
+      </Flex>
     </Page>
   )
 }

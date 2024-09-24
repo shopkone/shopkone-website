@@ -34,7 +34,12 @@ export default function Page (props: PageProps) {
   }, [])
 
   return (
-    <div style={{ maxWidth: width, margin: '0 auto', paddingBottom: isChange !== undefined ? 60 : bottom }}>
+    <div style={{
+      maxWidth: width,
+      margin: '0 auto',
+      paddingBottom: isChange !== undefined ? 60 : bottom
+    }}
+    >
       <SRender render={title || header}>
         <Flex align={'center'} justify={'space-between'} className={styles.title}>
           <Flex gap={4} align={'center'}>

@@ -4,6 +4,7 @@ import { Down } from '@icon-park/react'
 import { Button, Checkbox, Flex, Popover } from 'antd'
 import { CheckboxGroupProps } from 'antd/es/checkbox'
 
+import FilterNumberRange, { FilterNumberRangeProps } from '@/components/table-filter/filter-number-range'
 import FilterRadio, { RadioGroup } from '@/components/table-filter/filter-radio'
 
 import styles from './index.module.less'
@@ -16,10 +17,11 @@ export interface TableFilterProps {
   children?: React.ReactNode
   radio?: RadioGroup
   checkbox?: CheckboxGroup
+  numberRange?: FilterNumberRangeProps
 }
 
 export default function TableFilter (props: TableFilterProps) {
-  const { children, radio, checkbox } = props
+  const { children, radio, checkbox, numberRange } = props
   const [open, setOpen] = useState(false)
 
   const label = useMemo(() => {
@@ -34,11 +36,17 @@ export default function TableFilter (props: TableFilterProps) {
         return item?.value === key
       })?.label)
     }
+    if (numberRange) {
+      return numberRange?.value?.map(i => `${i || ''} ${numberRange.unit}`)?.join(' ~ ')
+    }
   }, [radio, checkbox])
 
   const onClear = () => {
     if (radio) {
       radio?.onChange?.(undefined)
+    }
+    if (numberRange) {
+      numberRange?.onChange?.(undefined)
     }
   }
 
@@ -51,11 +59,13 @@ export default function TableFilter (props: TableFilterProps) {
         <div className={styles.content}>
           {radio ? <FilterRadio{...radio} /> : null}
           {checkbox ? <Checkbox.Group {...checkbox} /> : null}
+          {numberRange ? <FilterNumberRange {...numberRange} /> : null}
           {
             label
               ? (
                 <div
-                  onClick={onClear} style={{
+                  onClick={onClear}
+                  style={{
                     marginLeft: -8,
                     height: 20,
                     fontWeight: 400,
