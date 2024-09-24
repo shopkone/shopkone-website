@@ -1,4 +1,4 @@
-import { Button, Flex, Input } from 'antd'
+import { Button, Flex, Input, Typography } from 'antd'
 
 import { FileType } from '@/api/file/add-file-record'
 import { ReactComponent as SearchIcon } from '@/assets/icon/search.svg'
@@ -18,6 +18,9 @@ export interface FiltersProps {
 
 export default function Filters (props: FiltersProps) {
   const { onChange, value } = props
+
+  const groupName = new URLSearchParams(location.search).get('groupName')
+  const groupId = Number(new URLSearchParams(location.search).get('groupId') || 0)
 
   const options = [
     { value: FileType.Image, label: 'Image' },
@@ -45,6 +48,7 @@ export default function Filters (props: FiltersProps) {
       />
       <div style={{ margin: '6px 0' }} className={'line'} />
       <Flex
+        align={'center'}
         gap={8}
         style={{
           marginLeft: 8,
@@ -92,6 +96,12 @@ export default function Filters (props: FiltersProps) {
         >
           Used
         </TableFilter>
+
+        <SRender render={groupName ? groupId : null}>
+          <Typography.Text style={{ maxWidth: 150, fontSize: 12, padding: '5px 8px', borderRadius: 8, border: '1px solid #d0d3d6', lineHeight: 1, fontWeight: 550 }} ellipsis>
+            {groupName}
+          </Typography.Text>
+        </SRender>
 
         <SRender render={!!value?.fileSize || !!value?.fileType || !!value?.used}>
           <Button

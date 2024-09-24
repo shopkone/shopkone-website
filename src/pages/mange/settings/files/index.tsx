@@ -82,7 +82,11 @@ export default function Files () {
   }, [params])
 
   useEffect(() => {
-    console.log(location.search)
+    const groupId = Number(new URLSearchParams(location.search).get('groupId') || 0)
+    if (groupId !== params.group_id) {
+      setParams({ ...params, group_id: groupId })
+      document?.getElementById('shopkone-main')?.scrollTo({ top: 0 })
+    }
   }, [location.search])
 
   return (
@@ -108,6 +112,7 @@ export default function Files () {
           <Card styles={{ body: { padding: '8px 0' } }}>
             <Filters value={params} onChange={(v) => { setParams({ ...params, ...(v || {}) }) }} />
             <STable
+              useVirtual={false}
               page={{
                 total: list?.data?.total || 0,
                 current: params.page,
@@ -141,6 +146,7 @@ export default function Files () {
           </Card>
         </div>
       </Flex>
+
     </Page>
   )
 }

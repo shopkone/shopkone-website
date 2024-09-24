@@ -5,7 +5,6 @@ import { useAtom } from 'jotai'
 
 import { FileSource, FileType } from '@/api/file/add-file-record'
 import { UploadFileType } from '@/api/file/UploadFileType'
-import { sMessage } from '@/components/s-message'
 import { useModal } from '@/components/s-modal'
 import { useOss } from '@/hooks/use-oss'
 import { uploadList } from '@/pages/mange/task/state'
@@ -182,10 +181,6 @@ export default function Upload (props: UploadProps) {
     }
     // 获取文件信息
     const fileInfos = await Promise.all(files.map(async file => await getFileInfo(file)))
-    // 提示
-    if (global) {
-      sMessage.success('File successfully queued for upload.')
-    }
     onUpload?.(fileInfos)
     onChange?.(fileInfos)
     e.target.value = ''

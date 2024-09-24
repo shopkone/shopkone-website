@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { BellOutlined, QuestionCircleOutlined, ShopOutlined } from '@ant-design/icons'
 import { Attention, Check, Right } from '@icon-park/react'
 import { useRequest } from 'ahooks'
@@ -21,6 +22,8 @@ export default function Header () {
   const shopList = useShopList()
   const shop = useGetShopInfo()
   const userInfo = useGetLoginInfo()
+
+  const [infoExpand, setInfoExpand] = useState(false)
 
   const logout = async () => {
     await logoutApi.runAsync()
@@ -59,6 +62,8 @@ export default function Header () {
           <BellOutlined />
         </Flex>
         <Popover
+          open={infoExpand}
+          onOpenChange={(open) => { setInfoExpand(open) }}
           trigger={'click'}
           placement={'bottomRight'}
           arrow={false}
@@ -103,7 +108,7 @@ export default function Header () {
             </div>
           )}
         >
-          <div className={styles.avatar}>
+          <div className={styles.avatar} style={{ background: infoExpand ? '#edeeee' : undefined }}>
             <SRender render={shopList.data}>
               <SRender render={shop?.data?.website_favicon} className={styles['avatar-img']}>
                 <img src={shop.data?.website_favicon} alt={shop.data?.store_name} />

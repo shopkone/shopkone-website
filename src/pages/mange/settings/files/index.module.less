@@ -43,7 +43,7 @@
   width: 250px;
   height: calc(100vh - 140px);
   .sideTitle {
-    padding: 8px;
+    padding: 8px 16px;
     font-weight: 600;
     border-bottom: 1px solid #efefef;
   }
@@ -62,12 +62,18 @@
     margin-bottom: 4px;
     cursor: pointer;
     border-radius: 8px;
+    .more {
+      opacity: 0;
+    }
     &:hover {
-      background-color: var(--color-bg-fifth);
+      background-color: #e4e5e670;
+      .more {
+        opacity: 1;
+      }
     }
   }
   .sideItemActive {
-    background-color: #e4e5e690;
+    background-color: #e4e5e670;
     color: var(--color-primary);
   }
 }
