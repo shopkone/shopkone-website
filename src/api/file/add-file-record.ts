@@ -3,7 +3,8 @@ import { api } from '@/api/api'
 export enum FileType {
   Image = 1,
   Video = 2,
-  Audio = 3
+  Audio = 3,
+  Other = 4
 }
 
 export enum FileSource {

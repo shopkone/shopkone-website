@@ -25,8 +25,8 @@ export default function TableFilter (props: TableFilterProps) {
   const [open, setOpen] = useState(false)
 
   const label = useMemo(() => {
-    setOpen(false)
     if (radio) {
+      setOpen(false)
       return radio?.options?.find((item) => {
         return item?.value === radio?.value
       })?.label
@@ -37,9 +37,13 @@ export default function TableFilter (props: TableFilterProps) {
       })?.label)
     }
     if (numberRange) {
-      return numberRange?.value?.map(i => `${i || ''} ${numberRange.unit}`)?.join(' ~ ')
+      const min = numberRange?.value?.[0]
+      const max = numberRange?.value?.[1]
+      if (min && !max) return `Greater than ${min} ${numberRange.unit}`
+      if (max && !min) return `Less than ${max} ${numberRange.unit}`
+      if (min && max) return `${min} ~ ${max} ${numberRange.unit}`
     }
-  }, [radio, checkbox])
+  }, [radio, checkbox, numberRange])
 
   const onClear = () => {
     if (radio) {
@@ -60,24 +64,18 @@ export default function TableFilter (props: TableFilterProps) {
           {radio ? <FilterRadio{...radio} /> : null}
           {checkbox ? <Checkbox.Group {...checkbox} /> : null}
           {numberRange ? <FilterNumberRange {...numberRange} /> : null}
-          {
-            label
-              ? (
-                <div
-                  onClick={onClear}
-                  style={{
-                    marginLeft: -8,
-                    height: 20,
-                    fontWeight: 400,
-                    marginTop: 8,
-                    marginBottom: 4
-                  }}
-                >
-                  <Button type={'link'} size={'small'}>Clear</Button>
-                </div>
-                )
-              : null
-          }
+          <div
+            onClick={onClear}
+            style={{
+              marginLeft: -8,
+              height: 20,
+              fontWeight: 400,
+              marginTop: 8,
+              marginBottom: 4
+            }}
+          >
+            <Button disabled={!label} type={'link'} size={'small'}>Clear</Button>
+          </div>
         </div>
       }
       placement={'bottomLeft'}

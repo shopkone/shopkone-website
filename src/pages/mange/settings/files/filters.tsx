@@ -15,6 +15,14 @@ export interface FiltersProps {
 
 export default function Filters (props: FiltersProps) {
   const { onSearch, onChange, value } = props
+
+  const options = [
+    { label: 'Image', value: 'image' },
+    { label: 'Video', value: 'video' },
+    { label: 'Audio', value: 'audio' },
+    { label: 'Other', value: 'other' }
+  ]
+
   return (
     <div>
       <Input
@@ -48,6 +56,14 @@ export default function Filters (props: FiltersProps) {
           }}
         >
           File size
+        </TableFilter>
+
+        <TableFilter
+          checkbox={{
+            options
+          }}
+        >
+          File type
         </TableFilter>
       </Flex>
     </div>

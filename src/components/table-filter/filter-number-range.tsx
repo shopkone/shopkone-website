@@ -1,3 +1,4 @@
+import { useThrottleFn } from 'ahooks'
 import { Form } from 'antd'
 
 import SInputNumber from '@/components/s-input-number'
@@ -12,18 +13,23 @@ export interface FilterNumberRangeProps {
 
 export default function FilterNumberRange (props: FilterNumberRangeProps) {
   const { minLabel, maxLabel, value, onChange, unit } = props
+
+  const onChangeHandle = useThrottleFn((value?: FilterNumberRangeProps['value']) => {
+    onChange?.(value)
+  }, { wait: 150 }).run
+
   return (
     <Form style={{ width: 250 }} layout={'vertical'}>
       <Form.Item style={{ marginBottom: 8 }} label={`${minLabel} (${unit})`}>
         <SInputNumber
           value={value?.[0]}
-          onChange={(v) => onChange?.([v, value?.[1]])}
+          onChange={(v) => onChangeHandle?.([v, value?.[1]])}
         />
       </Form.Item>
       <Form.Item className={'mb0'} label={`${maxLabel} (${unit})`}>
         <SInputNumber
           value={value?.[1]}
-          onChange={(v) => onChange?.([value?.[0], v])}
+          onChange={(v) => onChangeHandle?.([value?.[0], v])}
         />
       </Form.Item>
     </Form>

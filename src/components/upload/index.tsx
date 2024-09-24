@@ -135,6 +135,9 @@ export default function Upload (props: UploadProps) {
     if (file.type.includes('audio')) {
       info.type = FileType.Audio
     }
+    if (!info.type) {
+      info.type = FileType.Other
+    }
     switch (info.type) {
       case FileType.Image: {
         // 获取宽高
