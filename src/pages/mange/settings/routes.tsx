@@ -13,6 +13,7 @@ const ShippingCourierService = lazy(async () => await import('./shipping/courier
 const ShippingCourierServiceChange = lazy(async () => await import('./shipping/courier-service/change'))
 const ShippingLocalDelivery = lazy(async () => await import('./shipping/local-delivery'))
 const ShippingPickupInStore = lazy(async () => await import('./shipping/pickup-in-store'))
+const Files = lazy(async () => await import('./files'))
 
 export const SettingsRoutes: RouteObject[] = [
   { element: <General />, path: '/settings/general' },
@@ -31,5 +32,6 @@ export const SettingsRoutes: RouteObject[] = [
       { element: <ShippingPickupInStore />, path: '/settings/shipping/pickup-in-store' }
     ]
   },
-  { element: <ShippingCourierServiceChange />, path: '/settings/shipping/courier-service/change' }
+  { element: <ShippingCourierServiceChange />, path: '/settings/shipping/courier-service/change' },
+  { element: <Files />, path: '/settings/files' }
 ]

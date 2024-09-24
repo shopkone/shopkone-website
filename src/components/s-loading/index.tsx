@@ -11,10 +11,11 @@ export interface SLoadingProps {
   loading?: boolean
   minHeight?: number
   children?: ReactNode
+  foreShow?: boolean
 }
 
 export default function SLoading (props: SLoadingProps) {
-  const { text, size = 36, black, loading = true, minHeight, children } = props
+  const { text, size = 36, black, loading = true, minHeight, children, foreShow } = props
 
   const loadingComponent = (
     <div
@@ -37,7 +38,7 @@ export default function SLoading (props: SLoadingProps) {
         size={size as any}
         indicator={loadingComponent}
       >
-        <div className={styles.inner} style={{ opacity: loading ? 0 : 1 }}>{children}</div>
+        <div className={styles.inner} style={{ opacity: loading ? Number(!!foreShow) : 1 }}>{children}</div>
       </Spin>
     )
   }

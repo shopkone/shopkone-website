@@ -1,9 +1,9 @@
-import { memo, useMemo } from 'react'
-import { LoadingOutlined } from '@ant-design/icons'
+import { memo } from 'react'
 import { BaseTable, BaseTableProps, features, useTablePipeline } from 'ali-react-table'
-import { Checkbox, Spin } from 'antd'
+import { Checkbox } from 'antd'
 import classNames from 'classnames'
 
+import SLoading from '@/components/s-loading'
 import Empty, { EmptyProps } from '@/components/s-table/empty'
 
 import styles from './index.module.less'
@@ -16,9 +16,11 @@ export interface STableProps extends Omit<BaseTableProps, omit> {
   width?: number
   rowKey?: string
   style?: React.CSSProperties
+  init: boolean
   rowSelection?: {
     value: number[]
     onChange: (value: number[]) => void
+    width?: number
   }
   stickyTop?: number
   expand?: {
@@ -43,6 +45,7 @@ function STable (props: STableProps) {
     loading,
     empty,
     borderless,
+    init,
     ...rest
   } = props
 
@@ -56,9 +59,9 @@ function STable (props: STableProps) {
   if (rowSelection) {
     pipeline = pipeline.use(
       features.multiSelect({
+        checkboxColumn: { width: rowSelection?.width, lock: true },
         highlightRowWhenSelected: true,
         checkboxPlacement: 'start',
-        checkboxColumn: { lock: true },
         clickArea: 'cell'
       })
     )
@@ -82,11 +85,13 @@ function STable (props: STableProps) {
       }))
   }
 
-  const LoadingContent = useMemo(() => (
-    <div style={{ position: 'relative', top: 12, textAlign: 'center' }}>
-      <Spin spinning indicator={<LoadingOutlined style={{ fontSize: 32 }} />} />
-    </div>
-  ), [])
+  if (!init) {
+    return (
+      <SLoading loading size={'large'}>
+        <div style={{ height: 300 }} />
+      </SLoading>
+    )
+  }
 
   if (!data.length && !loading && empty) {
     return (
@@ -96,15 +101,16 @@ function STable (props: STableProps) {
 
   return (
     <div className={classNames({ [styles.borderless]: borderless })} style={{ width, ...style }}>
-      <BaseTable
-        components={{ LoadingIcon: () => LoadingContent }}
-        isStickyHeader
-        hasHeader
-        stickyTop={stickyTop}
-        useVirtual={{ horizontal: false }}
-        {...rest}
-        {...pipeline.getProps()}
-      />
+      <SLoading size={'large'} foreShow loading={loading}>
+        <BaseTable
+          isStickyHeader
+          hasHeader
+          stickyTop={stickyTop}
+          useVirtual={{ horizontal: false }}
+          {...rest}
+          {...pipeline.getProps()}
+        />
+      </SLoading>
     </div>
   )
 }
