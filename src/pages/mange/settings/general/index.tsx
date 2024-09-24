@@ -1,5 +1,4 @@
 import { useEffect } from 'react'
-import { Plus } from '@icon-park/react'
 import { useRequest } from 'ahooks'
 import { Checkbox, Flex, Form, Input } from 'antd'
 
@@ -10,9 +9,7 @@ import Address from '@/components/address'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
 import SSelect from '@/components/s-select'
-import Upload from '@/components/upload'
-
-import styles from './index.module.less'
+import Uploader from '@/pages/mange/settings/general/uploader'
 
 export default function General () {
   const general = useRequest(ShopGeneralApi)
@@ -58,16 +55,7 @@ export default function General () {
                 <Form.Item
                   label={'Website favicon'}
                 >
-                  <Upload
-                    accepts={['image']}
-                    maxSize={1024 * 1024 * 10}
-                    multiple
-                    align={'center'}
-                    justify={'center'}
-                    className={styles.favicon}
-                  >
-                    <Plus size={24} style={{ position: 'relative', top: 2 }} />
-                  </Upload>
+                  <Uploader />
                 </Form.Item>
               </Flex>
             </Flex>

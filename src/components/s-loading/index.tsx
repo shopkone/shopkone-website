@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import React, { ReactNode } from 'react'
 import { LoadingFour } from '@icon-park/react'
 import { Spin } from 'antd'
 
@@ -12,10 +12,11 @@ export interface SLoadingProps {
   minHeight?: number
   children?: ReactNode
   foreShow?: boolean
+  spinStyle?: React.CSSProperties
 }
 
 export default function SLoading (props: SLoadingProps) {
-  const { text, size = 36, black, loading = true, minHeight, children, foreShow } = props
+  const { text, size = 36, black, loading = true, minHeight, children, foreShow, spinStyle } = props
 
   const loadingComponent = (
     <div
@@ -37,6 +38,7 @@ export default function SLoading (props: SLoadingProps) {
         spinning={loading}
         size={size as any}
         indicator={loadingComponent}
+        style={spinStyle}
       >
         <div className={styles.inner} style={{ opacity: loading ? Number(!!foreShow) : 1 }}>{children}</div>
       </Spin>

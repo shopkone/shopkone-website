@@ -4,4 +4,5 @@ export interface UploadFileType extends AddFileReq {
   status: 'uploading' | 'done' | 'error' | 'wait'
   uuid: string
   fileInstance: File
+  global: boolean
 }

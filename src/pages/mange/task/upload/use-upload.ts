@@ -38,5 +38,5 @@ export const useUpload = () => {
     upload(fileList)
   }, [fileList])
 
-  return fileList
+  return fileList?.filter(i => i.global)
 }

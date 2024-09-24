@@ -82,6 +82,7 @@ export default function Files () {
       header={
         <SRender render={!!list?.data?.list?.length}>
           <Upload
+            global
             multiple
             maxSize={1024 * 1024 * 20}
             accepts={['image', 'video', 'zip', 'audio']}
@@ -103,6 +104,7 @@ export default function Files () {
             actions: (
               <Flex>
                 <Upload
+                  global
                   multiple
                   maxSize={1024 * 1024 * 20}
                   accepts={['image', 'video', 'zip', 'audio']}

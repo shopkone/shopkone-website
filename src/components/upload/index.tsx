@@ -5,6 +5,7 @@ import { useAtom } from 'jotai'
 
 import { FileSource, FileType } from '@/api/file/add-file-record'
 import { UploadFileType } from '@/api/file/UploadFileType'
+import { sMessage } from '@/components/s-message'
 import { useModal } from '@/components/s-modal'
 import { useOss } from '@/hooks/use-oss'
 import { uploadList } from '@/pages/mange/task/state'
@@ -19,6 +20,8 @@ export interface UploadProps extends Omit<FlexProps, 'onChange'> {
   multiple: boolean
   maxSize: number
   accepts: Array<'video' | 'image' | 'audio' | 'zip'>
+  onUpload?: (files: UploadFileType[]) => void
+  global: boolean
 }
 
 export default function Upload (props: UploadProps) {
@@ -28,6 +31,8 @@ export default function Upload (props: UploadProps) {
     onClick,
     maxSize,
     accepts,
+    global,
+    onUpload,
     ...rest
   } = props
   const oss = useOss()
@@ -113,7 +118,8 @@ export default function Upload (props: UploadProps) {
       status: 'wait',
       uuid: genId().toString(),
       fileInstance: file,
-      suffix: file.type.split('/').pop()?.toUpperCase() || file.name?.split('.').pop()?.toUpperCase() || ''
+      suffix: file.type.split('/').pop()?.toUpperCase() || file.name?.split('.').pop()?.toUpperCase() || '',
+      global
     }
     // 获取文件大小
     info.size = file.size
@@ -173,6 +179,11 @@ export default function Upload (props: UploadProps) {
     }
     // 获取文件信息
     const fileInfos = await Promise.all(files.map(async file => await getFileInfo(file)))
+    // 提示
+    if (global) {
+      sMessage.success('File successfully queued for upload.')
+    }
+    onUpload?.(fileInfos)
     onChange?.(fileInfos)
     e.target.value = ''
   }

@@ -15,7 +15,7 @@ export default function UploadRender () {
   return (
     <Flex className={styles.container} vertical gap={12}>
       {
-        fileList?.map(file => (
+        fileList?.filter(i => i.global)?.map(file => (
           <Flex
             justify={'space-between'}
             align={'center'}
