@@ -124,6 +124,12 @@ function STable (props: STableProps) {
             prevIcon={<Left size={15} />}
             nextIcon={<Right size={15} />}
             {...page}
+            onChange={(...p) => {
+              if (p?.[0] !== page?.current) {
+                document?.getElementById('shopkone-main')?.scrollTo({ top: 0 })
+              }
+              page?.onChange?.(...p)
+            }}
           />
         </Flex>
       </SRender>
