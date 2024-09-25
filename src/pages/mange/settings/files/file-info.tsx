@@ -96,11 +96,10 @@ export default function FileInfo (props: FileInfoProps) {
                       {[
                         info?.data?.suffix,
                         !info?.data?.width ? '' : `${info?.data?.width} x ${info?.data?.height}`,
-                        info?.data?.duration,
                         formatFileSize(info?.data?.size || 0)
                       ].filter(i => i).join(' • ')}
                     </div>
-                    <SRender render={info?.data?.duration}>Duration: {tranTimer(info?.data?.duration || 0)}</SRender>
+                    <SRender render={info?.data?.duration}>Duration {tranTimer(info?.data?.duration || 0)}</SRender>
                     <div>Added {dayjs(info?.data?.created_at).format('MM/DD/YYYY')}</div>
                     <SRender render={groupName}>
                       <div>Group by {groupName}</div>
