@@ -33,7 +33,7 @@ export default function Files () {
   const newUploadFile = useAtomValue(triggerNewUploadFileAtom)
   const location = useLocation()
   const [selected, setSelected] = useState<number[]>([])
-  const fileInfoOpen = useOpen<FileListRes>()
+  const fileInfoOpen = useOpen<number>()
 
   const modal = useModal()
 
@@ -177,8 +177,7 @@ export default function Files () {
             />
             <STable
               onRowClick={(row: FileListRes) => {
-                console.log(123)
-                fileInfoOpen.edit(row)
+                fileInfoOpen.edit(row.id)
               }}
               actions={
                 <Button size={'small'} danger onClick={onBatchDelete}>Delete files</Button>
@@ -195,7 +194,7 @@ export default function Files () {
                   setParams({ ...params, page, page_size })
                 }
               }}
-              rowSelection={{ onChange: setSelected, value: selected, width: 30 }}
+              rowSelection={{ onChange: setSelected, value: selected }}
               init={!!list?.data?.list}
               loading={list.loading}
               empty={{
@@ -213,7 +212,7 @@ export default function Files () {
           </Card>
         </div>
       </Flex>
-      <FileInfo open={fileInfoOpen} />
+      <FileInfo groups={groupList?.data || []} open={fileInfoOpen} />
     </Page>
   )
 }

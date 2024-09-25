@@ -85,7 +85,7 @@ function STable (props: STableProps) {
   if (rowSelection) {
     pipeline = pipeline.use(
       features.multiSelect({
-        checkboxColumn: { width: rowSelection?.width, lock: true },
+        checkboxColumn: { width: rowSelection?.width || 40, lock: true },
         highlightRowWhenSelected: true,
         checkboxPlacement: 'start',
         value: rowSelection?.value as any,
@@ -138,7 +138,8 @@ function STable (props: STableProps) {
         },
         styles.table
       )
-} style={{ width, ...style }}
+      }
+      style={{ width, ...style }}
     >
       <div style={{ position: 'relative' }}>
         <SLoading foreShow loading={loading} size={'large'}>
@@ -152,6 +153,19 @@ function STable (props: STableProps) {
             useVirtual={{ horizontal: false }}
             {...rest}
             {...pipeline.getProps()}
+            getRowProps={(row, rowIndex) => ({
+              ...pipeline.getProps()?.getRowProps,
+              onClick: (e) => {
+                const className = (e.target as any)?.className?.split(' ') || []
+                if (className?.[0] === 'art-table-cell' && className?.[1] === 'first') {
+                  return
+                }
+                if (className?.[0] === 'shopkone-checkbox-input') {
+                  return
+                }
+                onRowClick?.(row, rowIndex)
+              }
+            })}
           />
         </SLoading>
       </div>

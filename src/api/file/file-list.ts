@@ -19,6 +19,7 @@ export interface FileListRes {
   references: number
   cover?: string
   type: FileType
+  group_id: number
 }
 
 export const FileListApi = async (params: FileListReq) => {
