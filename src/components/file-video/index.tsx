@@ -18,6 +18,7 @@ export default function FileVideo (props: FileVideoProps) {
 
   const [play, setPlay] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
+  const [hasError, setHasError] = useState(false)
 
   const tranTimer = (time: number) => {
     const minutes = Math.floor(time / 60)
@@ -26,6 +27,7 @@ export default function FileVideo (props: FileVideoProps) {
   }
 
   useEffect(() => {
+    setHasError(false)
     setPlay(false)
     return () => {
       setPlay(false)
@@ -43,13 +45,14 @@ export default function FileVideo (props: FileVideoProps) {
       <SRender render={!play}>
         <div className={styles.playContainer} onClick={() => { setPlay(true) }}>
           <img
+            onError={() => { setHasError(true) }}
             className={styles.cover}
-            style={{ width: style?.width, height: style?.height }}
+            style={{ width: style?.width, height: style?.height, opacity: hasError ? 0 : 1 }}
             src={cover || ''}
           />
           <Flex vertical align={'center'} justify={'center'} className={styles.play}>
             <PlayOne className={styles.icon} size={60} fill={'#fff'} />
-            <div className={styles.duration}>{tranTimer(160)}</div>
+            <div className={styles.duration}>{tranTimer(duration || 0)}</div>
           </Flex>
         </div>
       </SRender>

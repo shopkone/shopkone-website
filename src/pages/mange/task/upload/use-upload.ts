@@ -30,8 +30,10 @@ export const useUpload = () => {
   const upload = async (list: UploadFileType[]) => {
     const waitList = list.filter(item => item.status === 'wait')
     if (!waitList.length) return
-    setOpen(true)
-    setExpand(true)
+    if (waitList.every(i => i.global)) {
+      setOpen(true)
+      setExpand(true)
+    }
     setFileList(pre => pre.map(item => item.status === 'wait' ? { ...item, status: 'uploading' } : item))
     for await (const item of waitList) {
       const result = await uploader(item)

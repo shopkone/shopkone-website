@@ -44,7 +44,7 @@ export default function Uploader () {
       }}
     >
       <SRender render={file?.path}>
-        <Image src={file?.path} alt={file?.alt} />
+        <Image style={{ width: 64, height: 64 }} src={file?.path} alt={file?.alt} />
       </SRender>
       <SRender render={!file?.path}>
         <Plus size={24} style={{ position: 'relative', top: 2 }} />

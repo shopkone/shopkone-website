@@ -32,6 +32,12 @@ export default function FileInfo (props: FileInfoProps) {
 
   const groupName = groups.find(item => item.id === info?.data?.group_id)?.name
 
+  const tranTimer = (time: number) => {
+    const minutes = Math.floor(time / 60)
+    const seconds = Math.floor(time % 60)
+    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`
+  }
+
   useEffect(() => {
     if (!open.open) {
       setSrc('')
@@ -69,6 +75,7 @@ export default function FileInfo (props: FileInfoProps) {
           </SRender>
           <SRender render={info?.data?.type === FileType.Video}>
             <FileVideo
+              duration={info?.data?.duration}
               cover={info?.data?.cover}
               src={info?.data?.path || ''}
               style={{ height: 350, width: 600, marginRight: 60 }}
@@ -89,9 +96,11 @@ export default function FileInfo (props: FileInfoProps) {
                       {[
                         info?.data?.suffix,
                         !info?.data?.width ? '' : `${info?.data?.width} x ${info?.data?.height}`,
+                        info?.data?.duration,
                         formatFileSize(info?.data?.size || 0)
                       ].filter(i => i).join(' • ')}
                     </div>
+                    <SRender render={info?.data?.duration}>Duration: {tranTimer(info?.data?.duration || 0)}</SRender>
                     <div>Added {dayjs(info?.data?.created_at).format('MM/DD/YYYY')}</div>
                     <SRender render={groupName}>
                       <div>Group by {groupName}</div>

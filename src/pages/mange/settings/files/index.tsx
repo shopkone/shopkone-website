@@ -4,7 +4,7 @@ import { LinkOutlined } from '@ant-design/icons'
 import { useDebounceFn, useMemoizedFn, useRequest } from 'ahooks'
 import { Button, Card, Flex, Tooltip } from 'antd'
 import dayjs from 'dayjs'
-import { useAtomValue } from 'jotai'
+import { useAtom } from 'jotai'
 
 import { FilesDeleteApi } from '@/api/file/file-delete'
 import { FileGroupListApi } from '@/api/file/file-group-list'
@@ -30,7 +30,7 @@ export default function Files () {
   const [params, setParams] = useState<FileListReq>({ page: 1, page_size: 20, group_id: 0 })
   const groupList = useRequest(FileGroupListApi)
   const filesDelete = useRequest(FilesDeleteApi, { manual: true })
-  const newUploadFile = useAtomValue(triggerNewUploadFileAtom)
+  const [newUploadFile, setNewUploadFile] = useAtom(triggerNewUploadFileAtom)
   const location = useLocation()
   const [selected, setSelected] = useState<number[]>([])
   const fileInfoOpen = useOpen<number>()
@@ -117,9 +117,9 @@ export default function Files () {
     </Upload>
   ))
 
-  const triggerFresh = useDebounceFn(() => {
-    list.refreshAsync()
-  })
+  const triggerFresh = useDebounceFn(async () => {
+    await list.refreshAsync()
+  }).run
 
   const onBatchDelete = () => {
     modal.confirm({
@@ -143,15 +143,20 @@ export default function Files () {
   useEffect(() => {
     const groupId = Number(new URLSearchParams(location.search).get('groupId') || 0)
     if (groupId !== params.group_id) {
-      console.log(123)
       setParams({ ...params, group_id: groupId, page: 1 })
       document?.getElementById('shopkone-main')?.scrollTo({ top: 0 })
     }
   }, [location.search])
 
   useEffect(() => {
-    if (!newUploadFile) return
-    triggerFresh.run()
+    if (!newUploadFile) {
+      setNewUploadFile(undefined)
+      return
+    }
+    triggerFresh()
+    return () => {
+      setNewUploadFile(undefined)
+    }
   }, [newUploadFile])
 
   return (
