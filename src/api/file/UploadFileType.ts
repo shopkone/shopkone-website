@@ -5,4 +5,5 @@ export interface UploadFileType extends AddFileReq {
   uuid: string
   fileInstance: File
   global: boolean
+  errMsg: string
 }

@@ -6,6 +6,8 @@ import SRender from '@/components/s-render'
 import TableFilter from '@/components/table-filter'
 import { FilterNumberRangeProps } from '@/components/table-filter/filter-number-range'
 
+import styles from './index.module.less'
+
 export interface FiltersProps {
   value?: {
     keyword?: string
@@ -96,7 +98,7 @@ export default function Filters (props: FiltersProps) {
         </TableFilter>
 
         <SRender render={groupName}>
-          <Typography.Text style={{ maxWidth: 150, fontSize: 12, padding: '5px 8px', borderRadius: 8, border: '1px solid #d0d3d6', lineHeight: 1, fontWeight: 550 }} ellipsis>
+          <Typography.Text className={styles.tag} ellipsis={{ tooltip: true }}>
             {groupName}
           </Typography.Text>
         </SRender>

@@ -82,31 +82,33 @@ export default function Task () {
               </SRender>
             </div>
           </Flex>
-          <SRender render={!(!loadingCount && !errorCount)}>
-            <Button
-              onClick={() => {
-                setExpand(true)
-              }}
-              className={styles.btn}
-            >
-              <Up className={styles.icon} size={16} />
-            </Button>
-          </SRender>
-          <SRender render={!loadingCount && !errorCount}>
-            <Button
-              onClick={() => {
-                setOpen(false)
-              }}
-              style={{
-                height: 26,
-                width: 26
-              }}
-              type={'text'}
-              size={'small'}
-            >
-              <Close style={{ position: 'relative', left: -2, top: 1 }} size={12} />
-            </Button>
-          </SRender>
+          <Flex align={'center'} gap={12}>
+            <SRender render={!(!loadingCount && !errorCount)}>
+              <Button
+                onClick={() => {
+                  setExpand(true)
+                }}
+                className={styles.btn}
+              >
+                <Up className={styles.icon} size={16} />
+              </Button>
+            </SRender>
+            <SRender render={!loadingCount}>
+              <Button
+                onClick={() => {
+                  setOpen(false)
+                }}
+                style={{
+                  height: 26,
+                  width: 26
+                }}
+                type={'text'}
+                size={'small'}
+              >
+                <Close style={{ position: 'relative', left: -2, top: 1 }} size={12} />
+              </Button>
+            </SRender>
+          </Flex>
         </Flex>
       </SRender>
     </div>

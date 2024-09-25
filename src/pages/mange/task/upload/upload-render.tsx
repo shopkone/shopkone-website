@@ -1,5 +1,5 @@
 import { Attention, CheckOne, Close } from '@icon-park/react'
-import { Button, Flex, Typography } from 'antd'
+import { Button, Flex, Tooltip, Typography } from 'antd'
 import { useAtomValue } from 'jotai'
 
 import Image from '@/components/image'
@@ -41,14 +41,16 @@ export default function UploadRender () {
 
             <SRender render={['wait', 'uploading'].includes(file.status)}>
               <Button className={styles.size28} type={'text'} size={'small'}>
-                <Close />
+                <Close style={{ position: 'relative', left: -2, top: 1 }} />
               </Button>
             </SRender>
             <SRender style={{ marginRight: 8 }} render={file.status === 'done'}>
               <CheckOne theme={'filled'} size={16} fill={'#32a645'} />
             </SRender>
             <SRender style={{ marginRight: 8 }} render={file.status === 'error'}>
-              <Attention theme={'filled'} size={16} fill={'#de7802'} />
+              <Tooltip title={file.errMsg}>
+                <Attention theme={'filled'} size={16} fill={'#de7802'} />
+              </Tooltip>
             </SRender>
           </Flex>
         ))

@@ -5,7 +5,6 @@ import { useAtom } from 'jotai'
 
 import { FileSource, FileType } from '@/api/file/add-file-record'
 import { UploadFileType } from '@/api/file/UploadFileType'
-import { useModal } from '@/components/s-modal'
 import { useOss } from '@/hooks/use-oss'
 import { uploadList } from '@/pages/mange/task/state'
 import { formatFileSize } from '@/utils/format'
@@ -39,7 +38,6 @@ export default function Upload (props: UploadProps) {
   const oss = useOss()
 
   const inputRef = useRef<HTMLInputElement>(null)
-  const modal = useModal()
   const [oldFileList, setFileList] = useAtom(uploadList)
 
   const directoryProps = {
@@ -67,18 +65,17 @@ export default function Upload (props: UploadProps) {
     inputRef.current?.click()
   }
 
-  const checkFile = (files: File[]) => {
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i]
-      // 校验大小
+  const checkFile = (files: UploadFileType[]) => {
+    return files.map(file => {
+      let errMsg = ''
       if (file.size > maxSize) {
-        return `The file is too large. Please upload a file smaller than ${formatFileSize(maxSize)}.`
+        errMsg = `The file is too large. Please upload a file smaller than ${formatFileSize(maxSize)}.`
       }
-      // 校验格式
-      if (!accepts.some(item => file.type.includes(item))) {
-        return `The file format is not supported. Please try uploading an ${accepts?.map(item => item).join(' or ')}.`
+      if (!accepts.some(item => file.fileInstance.type.includes(item))) {
+        errMsg = `The file format is not supported. Please try uploading an ${accepts?.map(item => item).join(' or ')}.`
       }
-    }
+      return { ...file, status: errMsg ? 'error' : file.status, errMsg }
+    })
   }
 
   // 获取图片尺寸
@@ -121,7 +118,8 @@ export default function Upload (props: UploadProps) {
       fileInstance: file,
       suffix: file.type.split('/').pop()?.toUpperCase() || file.name?.split('.').pop()?.toUpperCase() || '',
       global,
-      group_id: groupId
+      group_id: groupId,
+      errMsg: ''
     }
     // 获取文件大小
     info.size = file.size
@@ -173,17 +171,14 @@ export default function Upload (props: UploadProps) {
 
   const onInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || [])
-    // 校验文件
     if (!files?.length) {
-      e.target.value = ''; return
-    }
-    // 校验文件
-    const errMsg = checkFile(files)
-    if (errMsg) {
-      modal.info({ content: errMsg, title: 'Upload failed' }); return
+      e.target.value = ''
+      return
     }
     // 获取文件信息
-    const fileInfos = await Promise.all(files.map(async file => await getFileInfo(file)))
+    let fileInfos = await Promise.all(files.map(async file => await getFileInfo(file)))
+    // 校验文件
+    fileInfos = checkFile(fileInfos)
     onUpload?.(fileInfos)
     onChange?.(fileInfos)
     e.target.value = ''

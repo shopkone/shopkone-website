@@ -2,17 +2,22 @@ import { ReactNode, useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { LinkOutlined } from '@ant-design/icons'
 import { useDebounceFn, useMemoizedFn, useRequest } from 'ahooks'
-import { Button, Card, Flex } from 'antd'
+import { Button, Card, Flex, Tooltip } from 'antd'
 import dayjs from 'dayjs'
 import { useAtomValue } from 'jotai'
 
+import { FilesDeleteApi } from '@/api/file/file-delete'
 import { FileGroupListApi } from '@/api/file/file-group-list'
 import { FileListApi, FileListReq, FileListRes } from '@/api/file/file-list'
 import Image from '@/components/image'
 import Page from '@/components/page'
+import { sMessage } from '@/components/s-message'
+import { useModal } from '@/components/s-modal'
 import SRender from '@/components/s-render'
 import STable, { STableProps } from '@/components/s-table'
 import Upload from '@/components/upload'
+import { useOpen } from '@/hooks/useOpen'
+import FileInfo from '@/pages/mange/settings/files/file-info'
 import Filters from '@/pages/mange/settings/files/filters'
 import Group from '@/pages/mange/settings/files/group'
 import { triggerNewUploadFileAtom } from '@/pages/mange/task/state'
@@ -24,8 +29,18 @@ export default function Files () {
   const list = useRequest(FileListApi, { manual: true })
   const [params, setParams] = useState<FileListReq>({ page: 1, page_size: 20, group_id: 0 })
   const groupList = useRequest(FileGroupListApi)
+  const filesDelete = useRequest(FilesDeleteApi, { manual: true })
   const newUploadFile = useAtomValue(triggerNewUploadFileAtom)
   const location = useLocation()
+  const [selected, setSelected] = useState<number[]>([])
+  const fileInfoOpen = useOpen<FileListRes>()
+
+  const modal = useModal()
+
+  const onCopy = (link: string) => {
+    navigator.clipboard.writeText(link)
+    sMessage.success('Link copied')
+  }
 
   const columns: STableProps['columns'] = [
     {
@@ -84,10 +99,12 @@ export default function Files () {
       code: 'src',
       name: 'src',
       width: 60,
-      render: () => (
-        <Button className={styles.btn}>
-          <LinkOutlined className={styles.icon} />
-        </Button>
+      render: (src: string) => (
+        <Tooltip title={'Copy link'}>
+          <Button onClick={() => { onCopy(src) }} className={styles.btn}>
+            <LinkOutlined className={styles.icon} />
+          </Button>
+        </Tooltip>
       )
     }
   ]
@@ -106,6 +123,21 @@ export default function Files () {
   const triggerFresh = useDebounceFn(() => {
     list.refreshAsync()
   })
+
+  const onBatchDelete = () => {
+    modal.confirm({
+      title: `Delete ${selected?.length} files?`,
+      content: 'This can’t be undone. The files will be removed from all places they’re being used in your Shopkone store.',
+      okButtonProps: { type: 'primary', danger: true },
+      okText: 'Delete',
+      onOk: async () => {
+        await filesDelete.runAsync({ ids: selected })
+        sMessage.success('Delete files successfully')
+        list.refresh()
+        setSelected([])
+      }
+    })
+  }
 
   useEffect(() => {
     list.run(params)
@@ -147,16 +179,26 @@ export default function Files () {
               onChange={(v) => { setParams({ ...params, ...(v || {}), page: 1 }) }}
             />
             <STable
+              onRowClick={(row: FileListRes) => {
+                console.log(123)
+                fileInfoOpen.edit(row)
+              }}
+              actions={
+                <Button size={'small'} danger onClick={onBatchDelete}>Delete files</Button>
+              }
               useVirtual={false}
               page={{
                 total: list?.data?.total || 0,
                 current: params.page,
                 pageSize: params.page_size,
                 onChange: (page, page_size) => {
+                  if (page !== params.page) {
+                    setSelected([])
+                  }
                   setParams({ ...params, page, page_size })
                 }
               }}
-              rowSelection={{ onChange: () => {}, value: [], width: 30 }}
+              rowSelection={{ onChange: setSelected, value: selected, width: 30 }}
               init={!!list?.data?.list}
               loading={list.loading}
               empty={{
@@ -174,7 +216,7 @@ export default function Files () {
           </Card>
         </div>
       </Flex>
-
+      <FileInfo open={fileInfoOpen} />
     </Page>
   )
 }

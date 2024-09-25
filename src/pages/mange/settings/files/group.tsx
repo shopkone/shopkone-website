@@ -51,7 +51,9 @@ export default function Group (props: GroupProps) {
         if (groupId === id) {
           onSelect(0)
         }
-      }
+      },
+      okButtonProps: { type: 'primary', danger: true },
+      okText: 'Delete'
     })
   }
 

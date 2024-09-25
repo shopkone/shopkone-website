@@ -22,8 +22,8 @@ export const useUpload = () => {
       const info: UploadFileType = { ...fileInfo, path: result?.url, status: 'done' }
       await addFile.runAsync(info)
       return info
-    } catch {
-      return { ...fileInfo, status: 'error' }
+    } catch (e) {
+      return { ...fileInfo, status: 'error', errMsg: e?.toString() || '' }
     }
   }
 

@@ -26,15 +26,15 @@ export const useModal = () => {
   useEffect(() => {
     modal.current.confirm = (props: ModalFuncProps = {}) => {
       const { title = 'Tips' } = props
-      m.confirm({ centered: true, title, okText: 'Ok', cancelText: 'Discard', icon: renderIcon(props), width: 450, ...props })
+      m.confirm({ centered: true, title, icon: renderIcon(props), width: 450, ...props })
     }
     modal.current.info = (props: ModalFuncProps = {}) => {
       const { title = 'Tips' } = props
-      m.info({ centered: true, title, okText: 'Ok', icon: renderIcon(props), width: 450, ...props })
+      m.info({ centered: true, title, icon: renderIcon(props), width: 450, ...props })
     }
     modal.current.simple = (props: ModalFuncProps = {}) => {
       const { title = 'Tips' } = props
-      m.confirm({ centered: true, title, okText: 'Ok', icon: null, width: 450, ...props })
+      m.confirm({ centered: true, title, icon: null, width: 450, ...props })
     }
   }, [m])
 
@@ -52,8 +52,6 @@ export default function SModal (props: SModalProps) {
       width={550}
       destroyOnClose
       maskClosable={false}
-      okText={'Ok'}
-      cancelText={'Discard'}
       {...props}
     />
   )

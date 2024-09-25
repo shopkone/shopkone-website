@@ -16,6 +16,7 @@ export const sMessage = ({
         fill={'#32a645'}
       />
     ),
-    content
+    content,
+    duration: 1.5
   })
 })

@@ -1,4 +1,4 @@
-import { memo } from 'react'
+import { memo, useMemo } from 'react'
 import { Left, More, Right } from '@icon-park/react'
 import { BaseTable, BaseTableProps, features, useTablePipeline } from 'ali-react-table'
 import { Button, Checkbox, Flex, Pagination, PaginationProps } from 'antd'
@@ -12,7 +12,7 @@ import styles from './index.module.less'
 
 type omit = 'columns' | 'dataSource' | 'primaryKey' | 'hasHeader' | 'isStickyHeader'
 
-export interface STableProps extends Omit<BaseTableProps, omit> {
+export interface STableProps<T=any> extends Omit<BaseTableProps, omit> {
   columns: BaseTableProps['columns']
   data: BaseTableProps['dataSource']
   width?: number
@@ -33,11 +33,13 @@ export interface STableProps extends Omit<BaseTableProps, omit> {
   empty?: EmptyProps
   borderless?: boolean
   page?: PaginationProps
+  actions?: React.ReactNode
+  onRowClick?: (row: T, rowIndex: number) => void
 }
 
 function STable (props: STableProps) {
   const {
-    columns = [],
+    columns: cols = [],
     data = [],
     width,
     rowKey = 'id',
@@ -50,8 +52,28 @@ function STable (props: STableProps) {
     borderless,
     init,
     page,
+    actions,
+    onRowClick,
     ...rest
   } = props
+
+  const columns = useMemo(() => {
+    if (!rowSelection?.value?.length) return cols
+    return cols.map((col, index) => {
+      if (index === 0) {
+        return {
+          ...col,
+          title: (
+            <Flex align={'center'} justify={'space-between'} className={styles.header}>
+              <span style={{ position: 'relative', top: 1 }}>{rowSelection?.value?.length} selected</span>
+              {actions}
+            </Flex>
+          )
+        }
+      }
+      return col
+    })
+  }, [cols])
 
   let pipeline = useTablePipeline({ components: { Checkbox } })
     .input({
@@ -66,6 +88,8 @@ function STable (props: STableProps) {
         checkboxColumn: { width: rowSelection?.width, lock: true },
         highlightRowWhenSelected: true,
         checkboxPlacement: 'start',
+        value: rowSelection?.value as any,
+        onChange: rowSelection.onChange as any,
         clickArea: 'cell'
       })
     )
@@ -104,10 +128,24 @@ function STable (props: STableProps) {
   }
 
   return (
-    <div className={classNames({ [styles.borderless]: borderless }, styles.table)} style={{ width, ...style }}>
+    <div
+      className={
+      classNames(
+        {
+          [styles.borderless]: borderless,
+          [styles.selected]: rowSelection?.value?.length,
+          [styles.rowClick]: onRowClick
+        },
+        styles.table
+      )
+} style={{ width, ...style }}
+    >
       <div style={{ position: 'relative' }}>
-        <SLoading loading={loading} size={'large'}>
+        <SLoading foreShow loading={loading} size={'large'}>
           <BaseTable
+            components={{
+              EmptyContent: () => <div />
+            }}
             isStickyHeader
             hasHeader
             stickyTop={stickyTop}
@@ -117,7 +155,7 @@ function STable (props: STableProps) {
           />
         </SLoading>
       </div>
-      <SRender render={page}>
+      <SRender render={page ? Number(page.total) > 20 : null}>
         <Flex style={{ marginRight: 16 }} justify={'flex-end'}>
           <Pagination
             showTotal={(total) => `Total ${total} records`}
@@ -139,6 +177,7 @@ function STable (props: STableProps) {
                 <More style={{ position: 'relative', left: -3 }} size={15} />
               </Button>
             }
+            showSizeChanger
             {...page}
             onChange={(...p) => {
               if (p?.[0] !== page?.current) {

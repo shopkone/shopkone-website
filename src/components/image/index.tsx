@@ -1,5 +1,6 @@
 import { ImgHTMLAttributes, useEffect, useState } from 'react'
 import { ErrorPicture } from '@icon-park/react'
+import { Flex } from 'antd'
 
 import SLoading from '@/components/s-loading'
 
@@ -24,7 +25,9 @@ export default function Image (props: ImageProps) {
     <SLoading size={size} loading={loading || isLoading}>
       {hasError
         ? (
-          <ErrorPicture theme={'outline'} size={errorSize} fill={'#646a73'} />
+          <Flex className={'fit-height fit-width'} align={'center'} justify={'center'} {...rest}>
+            <ErrorPicture style={{ position: 'relative', top: 2 }} theme={'outline'} size={errorSize} fill={'#f54a45'} />
+          </Flex>
           )
         : (
           <img
