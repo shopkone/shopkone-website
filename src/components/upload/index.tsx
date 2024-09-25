@@ -119,7 +119,8 @@ export default function Upload (props: UploadProps) {
       suffix: file.type.split('/').pop()?.toUpperCase() || file.name?.split('.').pop()?.toUpperCase() || '',
       global,
       group_id: groupId,
-      errMsg: ''
+      errMsg: '',
+      cover: ''
     }
     // 获取文件大小
     info.size = file.size
@@ -150,6 +151,9 @@ export default function Upload (props: UploadProps) {
         // 获取时长
         const videoInfo = await getVideoInfo(file, oss)
         info.duration = videoInfo.duration
+        info.cover = videoInfo.url
+        info.width = videoInfo.width
+        info.height = videoInfo.height
         break
       }
       case FileType.Audio: {

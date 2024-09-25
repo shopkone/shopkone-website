@@ -25,6 +25,7 @@ export interface AddFileReq {
   duration?: number
   suffix: string
   group_id: number
+  cover: string
 }
 
 export interface AddFileRes {

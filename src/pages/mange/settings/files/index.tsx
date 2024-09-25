@@ -9,7 +9,7 @@ import { useAtomValue } from 'jotai'
 import { FilesDeleteApi } from '@/api/file/file-delete'
 import { FileGroupListApi } from '@/api/file/file-group-list'
 import { FileListApi, FileListReq, FileListRes } from '@/api/file/file-list'
-import Image from '@/components/image'
+import FileImage from '@/components/file-image'
 import Page from '@/components/page'
 import { sMessage } from '@/components/s-message'
 import { useModal } from '@/components/s-modal'
@@ -50,10 +50,7 @@ export default function Files () {
       width: 300,
       render: (name: string, row: FileListRes) => (
         <Flex align={'center'} gap={12}>
-          <Image
-            className={styles.img}
-            src={row.src}
-          />
+          <FileImage type={row.type} alt={name} src={row.cover || row.src} />
           <div className={styles.title}>
             <div className={styles.name}>{name}</div>
             <div>{row.suffix}</div>

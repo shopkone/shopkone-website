@@ -2,7 +2,7 @@ import { Attention, CheckOne, Close } from '@icon-park/react'
 import { Button, Flex, Tooltip, Typography } from 'antd'
 import { useAtomValue } from 'jotai'
 
-import Image from '@/components/image'
+import FileImage from '@/components/file-image'
 import SRender from '@/components/s-render'
 import { uploadList } from '@/pages/mange/task/state'
 import { formatFileSize } from '@/utils/format'
@@ -22,10 +22,13 @@ export default function UploadRender () {
             className={styles.item}
             key={file.uuid}
           >
-            <Flex gap={8}>
-              <div className={styles.img}>
-                <Image src={file.path} loading={['wait', 'uploading'].includes(file.status)} />
-              </div>
+            <Flex gap={8} align={'center'}>
+              <FileImage
+                src={file.cover || file.path}
+                type={file.type} width={36}
+                height={36}
+                loading={['wait', 'uploading'].includes(file.status)}
+              />
               <div>
                 <Typography.Text
                   ellipsis

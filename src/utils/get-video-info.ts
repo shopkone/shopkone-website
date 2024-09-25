@@ -1,3 +1,4 @@
+import { sMessage } from '@/components/s-message'
 import { genId } from '@/utils/random'
 
 interface GetVideoInfoType {
@@ -48,7 +49,7 @@ export async function getVideoInfo (file: File, oss: GetVideoInfoType): Promise<
         }, 'image/png')
       } else {
         resolve({ url: '', width: 0, height: 0, name: '', size: 0, duration: 0 })
-        console.error('Canvas context 2D is not supported.')
+        sMessage.warning('Canvas context 2D is not supported.')
       }
 
       videoElement.src = ''

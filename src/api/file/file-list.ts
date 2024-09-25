@@ -1,4 +1,5 @@
 import { api, PageReq, PageRes } from '@/api/api'
+import { FileType } from '@/api/file/add-file-record'
 
 export interface FileListReq extends PageReq {
   keyword?: string
@@ -16,6 +17,8 @@ export interface FileListRes {
   src: string
   size: number
   references: number
+  cover?: string
+  type: FileType
 }
 
 export const FileListApi = async (params: FileListReq) => {

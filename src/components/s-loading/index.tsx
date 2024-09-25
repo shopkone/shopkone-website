@@ -40,7 +40,9 @@ export default function SLoading (props: SLoadingProps) {
           <div><LoadingFour className={styles.loading} /></div>
         }
       >
-        <div className={'fit-width fit-height'} style={{ opacity: loading ? Number(!!foreShow) : 1 }}>{children}</div>
+        <div className={'fit-width fit-height'} style={{ opacity: loading ? Number(!!foreShow) : 1, flexShrink: 0 }}>
+          {children}
+        </div>
       </Spin>
     )
   }
