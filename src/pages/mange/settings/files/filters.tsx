@@ -56,14 +56,13 @@ export default function Filters (props: FiltersProps) {
       >
         <TableFilter
           numberRange={{
-            maxLabel: 'Min size',
-            minLabel: 'Max size',
+            maxLabel: 'Max size',
+            minLabel: 'Min size',
             unit: 'MB',
             onChange: (v) => {
-              const range: any = v?.filter(i => i).map(i => Number(i)) || []
-              onChange?.({ ...value, file_size: range })
+              onChange?.({ ...value, file_size: v })
             },
-            value: value?.file_size || [undefined, undefined]
+            value: value?.file_size || {}
           }}
         >
           File size
@@ -102,7 +101,7 @@ export default function Filters (props: FiltersProps) {
           </Typography.Text>
         </SRender>
 
-        <SRender render={!!value?.file_size?.length || !!value?.file_type?.length || !!value?.used}>
+        <SRender render={!!Object.values(value?.file_size || {})?.filter(i => i)?.length || !!value?.file_type?.length || !!value?.used}>
           <Button
             onClick={() => {
               onChange?.({ ...value, file_size: undefined, file_type: undefined, used: undefined })

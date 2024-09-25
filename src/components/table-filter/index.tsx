@@ -37,8 +37,8 @@ export default function TableFilter (props: TableFilterProps) {
       })?.label).join(', ')
     }
     if (numberRange) {
-      const min = numberRange?.value?.[0]
-      const max = numberRange?.value?.[1]
+      const min = numberRange?.value?.min
+      const max = numberRange?.value?.max
       if (min && !max) return `Greater than ${min} ${numberRange.unit}`
       if (max && !min) return `Less than ${max} ${numberRange.unit}`
       if (min && max) return `${min} ${numberRange.unit}-${max} ${numberRange.unit}`
@@ -51,7 +51,7 @@ export default function TableFilter (props: TableFilterProps) {
       radio?.onChange?.(undefined)
     }
     if (numberRange) {
-      numberRange?.onChange?.([undefined, undefined])
+      numberRange?.onChange?.({})
     }
     if (checkbox) {
       checkbox?.onChange?.([])

@@ -2,7 +2,7 @@ import { api, PageReq, PageRes } from '@/api/api'
 
 export interface FileListReq extends PageReq {
   keyword?: string
-  file_size?: [number | undefined, number | undefined]
+  file_size?: { min?: number, max?: number }
   file_type?: number[]
   used?: number
   group_id: number

@@ -114,6 +114,7 @@ export default function Files () {
   useEffect(() => {
     const groupId = Number(new URLSearchParams(location.search).get('groupId') || 0)
     if (groupId !== params.group_id) {
+      console.log(123)
       setParams({ ...params, group_id: groupId, page: 1 })
       document?.getElementById('shopkone-main')?.scrollTo({ top: 0 })
     }
