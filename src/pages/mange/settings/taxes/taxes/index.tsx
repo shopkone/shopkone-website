@@ -14,7 +14,7 @@ export default function Taxes () {
     <Page width={800} title={'Taxes'}>
       <Card
         extra={
-          <Button size={'small'} type={'text'}>Select region</Button>
+          <Button size={'small'} type={'link'} className={'extra-link'}>Select region</Button>
         }
         title={'Regional settings'}
       >
@@ -22,6 +22,7 @@ export default function Taxes () {
           Create a shipping zone in the region(s) you want to collect tax in. Then, find the region in this list and select it to manage its tax settings. If you’re unsure about where you’re liable, check with a tax professional.
         </div>
         <STable
+          init
           className={'table-border'}
           columns={columns}
           data={[]}

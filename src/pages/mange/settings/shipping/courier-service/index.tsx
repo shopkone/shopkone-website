@@ -11,17 +11,16 @@ export default function CourierService () {
 
   return (
     <Flex vertical gap={16}>
-      <Card title={'Default location'}>
+      <Card
+        extra={(
+          <Button className={'extra-link'} size={'small'} type={'link'}>Change default location</Button>
+      )}
+        title={'Default location'}
+      >
         <div style={{ marginBottom: 12 }} className={'tips'}>
           When the order cannot be routed through the shipping point to find the inventory that meets the shipping location, it will be assigned to that location by default.
         </div>
-        <SLocation
-          extra={
-            <div style={{ height: 40 }}>
-              <Button className={'extra-link'} size={'small'} type={'link'}>Change default location</Button>
-            </div>
-          }
-        />
+        <SLocation />
       </Card>
 
       <Card
@@ -33,8 +32,14 @@ export default function CourierService () {
         </div>
       </Card>
 
-      <Card title={'Shipping'}>
-
+      <Card
+        extra={
+          <Button onClick={() => { nav('courier-service/change') }} className={'extra-link'} size={'small'} type={'link'}>
+            New profile
+          </Button>
+        }
+        title={'Shipping'}
+      >
         <div
           style={{
             marginBottom: 12,
@@ -70,18 +75,14 @@ export default function CourierService () {
         </div>
 
         <div style={{ marginTop: 16 }} className={styles.table}>
-          <Flex justify={'space-between'} className={styles.title}>
-            <div>Custom shipping rates</div>
-            <Button onClick={() => { nav('courier-service/change') }} className={'extra-link'} size={'small'} type={'link'}>
-              New profile
-            </Button>
-          </Flex>
+          <div className={styles.title}>
+            Custom shipping rates
+          </div>
           <Empty
             image={Empty.PRESENTED_IMAGE_SIMPLE}
-            style={{ padding: '32px 0' }}
             description={(
               <Flex style={{ marginTop: 16 }} vertical gap={12}>
-                <div>
+                <div className={'secondary'}>
                   Creating a new group of locations in your shipping profiles lets you specify the zones and rates for locations in that group.
                 </div>
                 <div style={{ marginTop: 8 }}>
