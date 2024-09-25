@@ -1,0 +1,31 @@
+.container {
+  border-radius: 12px;
+  background-color: #000;
+  overflow: hidden;
+}
+
+.playContainer {
+  position: relative;
+}
+
+.cover {
+  background-color: #000;
+}
+
+.play {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 12;
+  .icon {
+    cursor: pointer;
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+}
+
+.duration {
+  color: #fff;
+}

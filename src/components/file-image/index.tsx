@@ -26,7 +26,7 @@ export default function FileImage (props: FileImageProps) {
     if (type === FileType.Video) {
       return src
     }
-    return ''
+    return src
   }, [type, src])
 
   return (

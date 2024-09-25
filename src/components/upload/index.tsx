@@ -125,7 +125,7 @@ export default function Upload (props: UploadProps) {
     // 获取文件大小
     info.size = file.size
     // 获取文件名
-    info.name = file.name
+    info.name = file.name.split('.')?.[0] || 'unknown'
     // 获取文件类型
     if (file.type.includes('image')) {
       info.type = FileType.Image

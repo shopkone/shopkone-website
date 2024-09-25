@@ -6,6 +6,7 @@ import dayjs from 'dayjs'
 import { FileType } from '@/api/file/add-file-record'
 import { FileInfoApi } from '@/api/file/file-info'
 import FileImage from '@/components/file-image'
+import FileVideo from '@/components/file-video'
 import SLoading from '@/components/s-loading'
 import SModal from '@/components/s-modal'
 import SRender from '@/components/s-render'
@@ -27,16 +28,24 @@ export default function FileInfo (props: FileInfoProps) {
 
   const [name, setName] = useState<string>()
   const [alt, setAlt] = useState<string>()
+  const [src, setSrc] = useState('')
 
   const groupName = groups.find(item => item.id === info?.data?.group_id)?.name
 
   useEffect(() => {
+    if (!open.open) {
+      setSrc('')
+      return
+    }
     if (!data) return
     info.runAsync({ id: data }).then(res => {
       setName(res.name)
       setAlt(res.alt)
+      if (src !== (res.cover || res.path || '')) {
+        setSrc(res.cover || res.path || '')
+      }
     })
-  }, [data])
+  }, [data, open.open])
 
   return (
     <SModal
@@ -46,16 +55,25 @@ export default function FileInfo (props: FileInfoProps) {
       open={open.open}
       onCancel={open.close}
     >
-      <SLoading loading={info.loading} size={'large'}>
+      <SLoading loading={info.loading}>
         <Flex className={styles.container}>
-          <FileImage
-            src={info?.data?.cover || info?.data?.path || ''}
-            type={info?.data?.type || FileType.Other}
-            width={600}
-            height={450}
-            padding={12}
-            style={{ background: 'transparent', border: 'none' }}
-          />
+          <SRender render={info?.data?.type === FileType.Image}>
+            <FileImage
+              src={src}
+              type={info?.data?.type || FileType.Other}
+              width={600}
+              height={450}
+              padding={12}
+              style={{ background: 'transparent', border: 'none' }}
+            />
+          </SRender>
+          <SRender render={info?.data?.type === FileType.Video}>
+            <FileVideo
+              cover={info?.data?.cover}
+              src={info?.data?.path || ''}
+              style={{ height: 350, width: 600, marginRight: 60 }}
+            />
+          </SRender>
           <div className={styles.info}>
             <Flex vertical justify={'space-between'} className={'fit-height'}>
               <Form layout={'vertical'}>

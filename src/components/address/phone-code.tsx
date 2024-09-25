@@ -65,7 +65,7 @@ export default function PhoneCode (props: PhoneCodeProps) {
             (
               <div style={{
                 position: 'relative',
-                top: 2
+                top: -1
               }}
               >
                 <CountryFlag size={20} country={value?.toString()} />

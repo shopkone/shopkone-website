@@ -47,7 +47,7 @@ function STable (props: STableProps) {
     rowSelection,
     expand,
     stickyTop,
-    loading,
+    loading = false,
     empty,
     borderless,
     init,
@@ -192,6 +192,7 @@ function STable (props: STableProps) {
               </Button>
             }
             showSizeChanger
+            pageSizeOptions={['20', '50', '100']}
             {...page}
             onChange={(...p) => {
               if (p?.[0] !== page?.current) {
