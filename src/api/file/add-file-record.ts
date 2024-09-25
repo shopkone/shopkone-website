@@ -24,6 +24,7 @@ export interface AddFileReq {
   height?: number
   duration?: number
   suffix: string
+  group_id: number
 }
 
 export interface AddFileRes {

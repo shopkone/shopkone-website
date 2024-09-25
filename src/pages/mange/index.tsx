@@ -5,6 +5,7 @@ import { useGetShopInfo } from '@/api/shop/get-shop-info'
 import { useShopList } from '@/api/shop/get-shop-list'
 import SLoading from '@/components/s-loading'
 import { MangeRoutes } from '@/pages/mange/routes'
+import Task from '@/pages/mange/task'
 
 export default function Mange () {
   const shopList = useShopList()
@@ -31,8 +32,11 @@ export default function Mange () {
   const router = createBrowserRouter(MangeRoutes, { basename: `/${shopId}` })
 
   return (
-    <Suspense fallback={<SLoading />}>
-      <RouterProvider router={router} />
-    </Suspense>
+    <>
+      <Task />
+      <Suspense fallback={<SLoading />}>
+        <RouterProvider router={router} />
+      </Suspense>
+    </>
   )
 }

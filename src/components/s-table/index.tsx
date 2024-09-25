@@ -1,7 +1,7 @@
 import { memo } from 'react'
-import { Left, Right } from '@icon-park/react'
+import { Left, More, Right } from '@icon-park/react'
 import { BaseTable, BaseTableProps, features, useTablePipeline } from 'ali-react-table'
-import { Checkbox, Flex, Pagination, PaginationProps } from 'antd'
+import { Button, Checkbox, Flex, Pagination, PaginationProps } from 'antd'
 import classNames from 'classnames'
 
 import SLoading from '@/components/s-loading'
@@ -123,6 +123,22 @@ function STable (props: STableProps) {
             showTotal={(total) => `Total ${total} records`}
             prevIcon={<Left size={15} />}
             nextIcon={<Right size={15} />}
+            jumpNextIcon={
+              <Button
+                type={'text'}
+                size={'small'}
+              >
+                <More style={{ position: 'relative', left: -3 }} size={15} />
+              </Button>
+            }
+            jumpPrevIcon={
+              <Button
+                type={'text'}
+                size={'small'}
+              >
+                <More style={{ position: 'relative', left: -3 }} size={15} />
+              </Button>
+            }
             {...page}
             onChange={(...p) => {
               if (p?.[0] !== page?.current) {

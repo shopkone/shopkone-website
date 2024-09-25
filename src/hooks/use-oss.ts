@@ -11,7 +11,7 @@ export const useOss = () => {
 
   const client = useRef<OSS>(null)
 
-  const getToken = useRequest(GetUploadTokenApi, { manual: true })
+  const getToken = useRequest(GetUploadTokenApi, { manual: true, cacheKey: 'OSS_TOKEN', staleTime: 60 * 1000 * 5 })
   const getShopInfo = useGetShopInfo(true)
 
   const fetToken = useMemoizedFn(async () => {

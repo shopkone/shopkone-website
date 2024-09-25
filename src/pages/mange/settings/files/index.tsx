@@ -1,10 +1,12 @@
-import { useEffect, useState } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { LinkOutlined } from '@ant-design/icons'
-import { useRequest } from 'ahooks'
+import { useDebounceFn, useMemoizedFn, useRequest } from 'ahooks'
 import { Button, Card, Flex } from 'antd'
 import dayjs from 'dayjs'
+import { useAtomValue } from 'jotai'
 
+import { FileGroupListApi } from '@/api/file/file-group-list'
 import { FileListApi, FileListReq, FileListRes } from '@/api/file/file-list'
 import Image from '@/components/image'
 import Page from '@/components/page'
@@ -13,6 +15,7 @@ import STable, { STableProps } from '@/components/s-table'
 import Upload from '@/components/upload'
 import Filters from '@/pages/mange/settings/files/filters'
 import Group from '@/pages/mange/settings/files/group'
+import { triggerNewUploadFileAtom } from '@/pages/mange/task/state'
 import { formatFileSize } from '@/utils/format'
 
 import styles from './index.module.less'
@@ -20,7 +23,8 @@ import styles from './index.module.less'
 export default function Files () {
   const list = useRequest(FileListApi, { manual: true })
   const [params, setParams] = useState<FileListReq>({ page: 1, page_size: 20, group_id: 0 })
-
+  const groupList = useRequest(FileGroupListApi)
+  const newUploadFile = useAtomValue(triggerNewUploadFileAtom)
   const location = useLocation()
 
   const columns: STableProps['columns'] = [
@@ -28,7 +32,7 @@ export default function Files () {
       title: <div className={styles.colTitle}>File name</div>,
       code: 'file_name',
       name: 'file_name',
-      width: 500,
+      width: 300,
       render: (name: string, row: FileListRes) => (
         <Flex align={'center'} gap={12}>
           <Image
@@ -65,6 +69,17 @@ export default function Files () {
       width: 100
     },
     {
+      title: 'Group name',
+      code: 'group_id',
+      name: 'group_id',
+      width: 150,
+      render: (groupId: number) => {
+        const group = groupList.data?.find(item => item.id === groupId)
+        return group?.name || '--'
+      },
+      hidden: !groupList?.data?.length
+    },
+    {
       title: 'Link',
       code: 'src',
       name: 'src',
@@ -76,6 +91,21 @@ export default function Files () {
       )
     }
   ]
+  const Uploader = useMemoizedFn((p: { children: ReactNode }) => (
+    <Upload
+      groupId={params.group_id}
+      global
+      multiple
+      maxSize={1024 * 1024 * 20}
+      accepts={['image', 'video', 'zip', 'audio']}
+    >
+      {p.children}
+    </Upload>
+  ))
+
+  const triggerFresh = useDebounceFn(() => {
+    list.refreshAsync()
+  })
 
   useEffect(() => {
     list.run(params)
@@ -84,33 +114,37 @@ export default function Files () {
   useEffect(() => {
     const groupId = Number(new URLSearchParams(location.search).get('groupId') || 0)
     if (groupId !== params.group_id) {
-      setParams({ ...params, group_id: groupId })
+      setParams({ ...params, group_id: groupId, page: 1 })
       document?.getElementById('shopkone-main')?.scrollTo({ top: 0 })
     }
   }, [location.search])
+
+  useEffect(() => {
+    if (!newUploadFile) return
+    triggerFresh.run()
+  }, [newUploadFile])
 
   return (
     <Page
       bottom={64}
       header={
         <SRender render={!!list?.data?.list?.length}>
-          <Upload
-            global
-            multiple
-            maxSize={1024 * 1024 * 20}
-            accepts={['image', 'video', 'zip', 'audio']}
-          >
+          <Uploader>
             <Button type={'primary'}>Upload files</Button>
-          </Upload>
+          </Uploader>
         </SRender>
       }
       title={'Files'}
     >
       <Flex gap={16}>
-        <Group />
+        <Group loading={groupList.loading} list={groupList?.data || []} asyncRefresh={groupList.refreshAsync} />
         <div className={styles.right}>
           <Card styles={{ body: { padding: '8px 0' } }}>
-            <Filters value={params} onChange={(v) => { setParams({ ...params, ...(v || {}) }) }} />
+            <Filters
+              groupName={groupList?.data?.find(item => item.id === params.group_id)?.name}
+              value={params}
+              onChange={(v) => { setParams({ ...params, ...(v || {}), page: 1 }) }}
+            />
             <STable
               useVirtual={false}
               page={{
@@ -125,19 +159,12 @@ export default function Files () {
               init={!!list?.data?.list}
               loading={list.loading}
               empty={{
-                title: 'Upload and manage your files',
-                desc: 'Files can be images, videos or audio.',
+                title: params.group_id ? 'No files in this group' : 'Upload and manage your files',
+                desc: 'Upload and manage your files.',
                 actions: (
-                  <Flex>
-                    <Upload
-                      global
-                      multiple
-                      maxSize={1024 * 1024 * 20}
-                      accepts={['image', 'video', 'zip', 'audio']}
-                    >
-                      <Button type={'primary'}>Upload files</Button>
-                    </Upload>
-                  </Flex>
+                  <Uploader>
+                    <Button type={'primary'}>Upload files</Button>
+                  </Uploader>
                 )
               }}
               data={list?.data?.list || []}

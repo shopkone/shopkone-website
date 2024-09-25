@@ -5,7 +5,7 @@ import { useAtom, useSetAtom } from 'jotai'
 import { AddFileApi } from '@/api/file/add-file-record'
 import { UploadFileType } from '@/api/file/UploadFileType'
 import { useOss } from '@/hooks/use-oss'
-import { taskExpand, taskOpen, uploadList } from '@/pages/mange/task/state'
+import { taskExpand, taskOpen, triggerNewUploadFileAtom, uploadList } from '@/pages/mange/task/state'
 
 export const useUpload = () => {
   const [fileList, setFileList] = useAtom(uploadList)
@@ -13,6 +13,7 @@ export const useUpload = () => {
   const oss = useOss()
   const setOpen = useSetAtom(taskOpen)
   const setExpand = useSetAtom(taskExpand)
+  const triggerNewUploadFile = useSetAtom(triggerNewUploadFileAtom)
 
   const uploader = async (fileInfo: UploadFileType): Promise<UploadFileType> => {
     try {
@@ -35,6 +36,7 @@ export const useUpload = () => {
     for await (const item of waitList) {
       const result = await uploader(item)
       setFileList(pre => pre.map(i => i.uuid === item.uuid ? result : i))
+      triggerNewUploadFile(result)
     }
   }
 

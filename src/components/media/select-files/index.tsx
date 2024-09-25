@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
-import { Button, Flex, Input, Modal } from 'antd'
+import { Button, Flex, Input } from 'antd'
 import classNames from 'classnames'
 
 import { ReactComponent as SearchIcon } from '@/assets/icon/search.svg'
+import SModal from '@/components/s-modal'
 import Index from '@/components/table-filter'
 
 import styles from './index.module.less'
@@ -23,7 +24,7 @@ export default function SelectFiles () {
   }, [headerRef])
 
   return (
-    <Modal className={styles.modal} title={'Select file'} width={940} open={false} centered>
+    <SModal className={styles.modal} title={'Select file'} width={940} open={false} >
       <Flex vertical style={{ height: '70vh' }}>
         <div className={classNames([styles.header, { [styles.shadow]: !showShadow }])}>
           <div className={styles.mb12}>
@@ -76,7 +77,7 @@ export default function SelectFiles () {
           </div>
         </div>
       </Flex>
-    </Modal>
+    </SModal>
 
   )
 }

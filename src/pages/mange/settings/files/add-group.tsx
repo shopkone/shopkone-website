@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import { useRequest } from 'ahooks'
-import { Form, Input, InputRef, Modal } from 'antd'
+import { Form, Input, InputRef } from 'antd'
 
 import { FileGroupAddApi } from '@/api/file/file-group-add'
 import { FileGroupUpdateApi } from '@/api/file/file-group-update'
 import { sMessage } from '@/components/s-message'
+import SModal from '@/components/s-modal'
 import { UseOpenType } from '@/hooks/useOpen'
 
 export interface AddGroupProps {
@@ -62,13 +63,12 @@ export default function AddGroup (props: AddGroupProps) {
   }, [open.data])
 
   return (
-    <Modal
+    <SModal
       maskClosable={false}
       onOk={onOk}
       confirmLoading={addGroup.loading || editGroup.loading}
       okButtonProps={{ disabled: !name }}
       title={open.data?.name ? 'Edit group' : 'Add group'}
-      centered
       onCancel={open.close}
       open={open.open}
     >
@@ -77,6 +77,6 @@ export default function AddGroup (props: AddGroupProps) {
           <Input ref={inputRef} value={name} autoComplete={'off'} onChange={e => { setName(e.target.value) }} />
         </Form.Item>
       </Form>
-    </Modal>
+    </SModal>
   )
 }

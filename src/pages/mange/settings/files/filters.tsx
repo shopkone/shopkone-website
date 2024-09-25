@@ -9,18 +9,16 @@ import { FilterNumberRangeProps } from '@/components/table-filter/filter-number-
 export interface FiltersProps {
   value?: {
     keyword?: string
-    fileSize?: FilterNumberRangeProps['value']
-    fileType?: number[]
+    file_size?: FilterNumberRangeProps['value']
+    file_type?: number[]
     used?: number
   }
   onChange?: (value: FiltersProps['value']) => void
+  groupName?: string
 }
 
 export default function Filters (props: FiltersProps) {
-  const { onChange, value } = props
-
-  const groupName = new URLSearchParams(location.search).get('groupName')
-  const groupId = Number(new URLSearchParams(location.search).get('groupId') || 0)
+  const { onChange, value, groupName } = props
 
   const options = [
     { value: FileType.Image, label: 'Image' },
@@ -62,9 +60,10 @@ export default function Filters (props: FiltersProps) {
             minLabel: 'Max size',
             unit: 'MB',
             onChange: (v) => {
-              onChange?.({ ...value, fileSize: v })
+              const range: any = v?.filter(i => i).map(i => Number(i)) || []
+              onChange?.({ ...value, file_size: range })
             },
-            value: value?.fileSize
+            value: value?.file_size || [undefined, undefined]
           }}
         >
           File size
@@ -74,9 +73,9 @@ export default function Filters (props: FiltersProps) {
           checkbox={{
             options,
             onChange: (v) => {
-              onChange?.({ ...value, fileType: v.map(i => Number(i || 0)) })
+              onChange?.({ ...value, file_type: v.map(i => Number(i || 0)) })
             },
-            value: value?.fileType
+            value: value?.file_type
           }}
         >
           File type
@@ -97,16 +96,16 @@ export default function Filters (props: FiltersProps) {
           Used
         </TableFilter>
 
-        <SRender render={groupName ? groupId : null}>
+        <SRender render={groupName}>
           <Typography.Text style={{ maxWidth: 150, fontSize: 12, padding: '5px 8px', borderRadius: 8, border: '1px solid #d0d3d6', lineHeight: 1, fontWeight: 550 }} ellipsis>
             {groupName}
           </Typography.Text>
         </SRender>
 
-        <SRender render={!!value?.fileSize || !!value?.fileType || !!value?.used}>
+        <SRender render={!!value?.file_size?.length || !!value?.file_type?.length || !!value?.used}>
           <Button
             onClick={() => {
-              onChange?.({ ...value, fileSize: undefined, fileType: undefined, used: undefined })
+              onChange?.({ ...value, file_size: undefined, file_type: undefined, used: undefined })
             }}
             type={'link'}
             size={'small'}

@@ -21,6 +21,7 @@ export interface UploadProps extends Omit<FlexProps, 'onChange'> {
   accepts: Array<'video' | 'image' | 'audio' | 'zip'>
   onUpload?: (files: UploadFileType[]) => void
   global: boolean
+  groupId?: number
 }
 
 export default function Upload (props: UploadProps) {
@@ -32,6 +33,7 @@ export default function Upload (props: UploadProps) {
     accepts,
     global,
     onUpload,
+    groupId = 0,
     ...rest
   } = props
   const oss = useOss()
@@ -118,7 +120,8 @@ export default function Upload (props: UploadProps) {
       uuid: genId().toString(),
       fileInstance: file,
       suffix: file.type.split('/').pop()?.toUpperCase() || file.name?.split('.').pop()?.toUpperCase() || '',
-      global
+      global,
+      group_id: groupId
     }
     // 获取文件大小
     info.size = file.size

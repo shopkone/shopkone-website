@@ -5,37 +5,60 @@ import { useRequest } from 'ahooks'
 import { Button, Flex, Popover, Typography } from 'antd'
 import classNames from 'classnames'
 
-import { FileGroupListApi } from '@/api/file/file-group-list'
+import { FileGroupListRes } from '@/api/file/file-group-list'
+import { FileGroupRemoveApi } from '@/api/file/file-group-remove'
 import SCard from '@/components/s-card'
+import { sMessage } from '@/components/s-message'
+import { useModal } from '@/components/s-modal'
 import SRender from '@/components/s-render'
 import { useOpen } from '@/hooks/useOpen'
 import AddGroup from '@/pages/mange/settings/files/add-group'
 
 import styles from './index.module.less'
 
-export default function Group () {
-  const list = useRequest(FileGroupListApi)
+export interface GroupProps {
+  list: FileGroupListRes[]
+  loading: boolean
+  asyncRefresh: () => Promise<FileGroupListRes[]>
+}
 
+export default function Group (props: GroupProps) {
+  const { list, loading, asyncRefresh } = props
   const nav = useNavigate()
   const open = useOpen<{ id: number, name: string }>()
-
+  const groupRemove = useRequest(FileGroupRemoveApi, { manual: true })
+  const modal = useModal()
   const [expand, setExpand] = useState<number>()
 
   const queryString = window.location.search
   const params = new URLSearchParams(queryString)
   const groupId = Number(params.get('groupId') || 0)
 
-  const groups = useMemo(() => [{ id: 0, name: 'All files', count: 0 }, ...(list.data || [])], [list.data])
+  const groups = useMemo(() => [{ id: 0, name: 'All files', count: 0 }, ...(list || [])], [list])
 
-  const onSelect = (id: number, name: string) => {
+  const onSelect = (id: number) => {
     if (id === groupId) return
-    nav(`/settings/files?groupId=${id}&groupName=${name}`)
+    nav(`/settings/files?groupId=${id}`)
+  }
+
+  const onRemove = async (id: number) => {
+    modal.confirm({
+      content: 'Are you sure to delete this group?',
+      onOk: async () => {
+        await groupRemove.runAsync({ id })
+        sMessage.success('Delete group successfully')
+        asyncRefresh()
+        if (groupId === id) {
+          onSelect(0)
+        }
+      }
+    })
   }
 
   return (
     <div className={styles.side}>
       <SCard
-        loading={list.loading}
+        loading={loading}
         styles={{ body: { padding: 0 } }}
         className={'fit-height'}
       >
@@ -44,7 +67,7 @@ export default function Group () {
           {
             groups.map(group => (
               <div
-                onClick={() => { onSelect(group.id, group.name) }}
+                onClick={() => { onSelect(group.id) }}
                 key={group.id}
                 className={classNames(styles.sideItem, { [styles.sideItemActive]: group.id === groupId })}
               >
@@ -60,7 +83,7 @@ export default function Group () {
                       content={
                         <Flex onClick={e => { e.stopPropagation(); setExpand(undefined) }} vertical gap={8}>
                           <Button type={'text'} onClick={() => { open.edit({ id: group.id, name: group.name }) }}>Edit</Button>
-                          <Button type={'text'}>Delete</Button>
+                          <Button onClick={() => { onRemove(group.id) }} type={'text'}>Delete</Button>
                         </Flex>
                     }
                     >
@@ -90,11 +113,8 @@ export default function Group () {
       </SCard>
       <AddGroup
         onComplete={id => {
-          list.refreshAsync().then(res => {
-            const item = res.find(i => i.id === id)
-            if (!item) return
-            onSelect(item.id, item.name)
-          })
+          onSelect(id)
+          asyncRefresh()
         }}
         open={open}
       />

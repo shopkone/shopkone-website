@@ -51,7 +51,7 @@ export default function TableFilter (props: TableFilterProps) {
       radio?.onChange?.(undefined)
     }
     if (numberRange) {
-      numberRange?.onChange?.(undefined)
+      numberRange?.onChange?.([undefined, undefined])
     }
     if (checkbox) {
       checkbox?.onChange?.([])

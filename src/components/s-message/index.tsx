@@ -8,7 +8,14 @@ export const sMessage = ({
     content
   }),
   success: (content: ReactNode) => message.success({
-    icon: <CheckOne style={{ position: 'relative', top: 4, marginRight: 8 }} theme={'filled'} size={18} fill={'#32a645'} />,
+    icon: (
+      <CheckOne
+        style={{ position: 'relative', top: 4, marginRight: 8 }}
+        theme={'filled'}
+        size={18}
+        fill={'#32a645'}
+      />
+    ),
     content
   })
 })

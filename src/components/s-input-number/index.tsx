@@ -51,6 +51,9 @@ function SInputNumber (props: SInputNumberProps) {
       str = str.slice(1)
     }
     setNum(str)
+    if (str?.[str.length - 1] === '.') {
+      return
+    }
     onChange?.(num)
   })
 
