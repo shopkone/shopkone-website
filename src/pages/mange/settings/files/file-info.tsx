@@ -1,13 +1,15 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useRequest } from 'ahooks'
 import { Button, Flex, Form, Input } from 'antd'
 import dayjs from 'dayjs'
 
 import { FileType } from '@/api/file/add-file-record'
 import { FileInfoApi } from '@/api/file/file-info'
+import { FileUpdateApi } from '@/api/file/file-update'
 import FileImage from '@/components/file-image'
 import FileVideo from '@/components/file-video'
 import SLoading from '@/components/s-loading'
+import { sMessage } from '@/components/s-message'
 import SModal from '@/components/s-modal'
 import SRender from '@/components/s-render'
 import { UseOpenType } from '@/hooks/useOpen'
@@ -18,13 +20,15 @@ import styles from './index.module.less'
 export interface FileInfoProps {
   open: UseOpenType<number>
   groups: Array<{ id: number, name: string }>
+  reFresh: () => void
 }
 
 export default function FileInfo (props: FileInfoProps) {
-  const { open, groups } = props
+  const { open, groups, reFresh } = props
   const { data } = open
 
   const info = useRequest(FileInfoApi, { manual: true })
+  const update = useRequest(FileUpdateApi, { manual: true })
 
   const [name, setName] = useState<string>()
   const [alt, setAlt] = useState<string>()
@@ -36,6 +40,23 @@ export default function FileInfo (props: FileInfoProps) {
     const minutes = Math.floor(time / 60)
     const seconds = Math.floor(time % 60)
     return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`
+  }
+
+  const isChange = useMemo(() => {
+    return (name !== info?.data?.name) || (alt !== info?.data?.alt)
+  }, [info.data, alt, name])
+
+  const onSave = async () => {
+    await update.runAsync({
+      id: data || 0,
+      name: name || info?.data?.name || '',
+      alt: alt || info?.data?.alt || '',
+      src: info?.data?.path || '',
+      cover: info?.data?.cover || info?.data?.path || ''
+    })
+    sMessage.success('Update file info successfully')
+    open.close()
+    reFresh()
   }
 
   useEffect(() => {
@@ -85,11 +106,21 @@ export default function FileInfo (props: FileInfoProps) {
             <Flex vertical justify={'space-between'} className={'fit-height'}>
               <Form layout={'vertical'}>
                 <Form.Item label={'Name'}>
-                  <Input value={name} autoComplete={'off'} />
+                  <Input
+                    onChange={e => { setName(e.target.value) }}
+                    value={name}
+                    autoComplete={'off'}
+                  />
                 </Form.Item>
-                <Form.Item label={'Alt text'}>
-                  <Input value={alt} autoComplete={'off'} />
-                </Form.Item>
+                <SRender render={info?.data?.type === FileType.Image}>
+                  <Form.Item label={'Alt text'}>
+                    <Input
+                      onChange={e => { setAlt(e.target.value) }}
+                      value={alt}
+                      autoComplete={'off'}
+                    />
+                  </Form.Item>
+                </SRender>
                 <Form.Item label={'Details'}>
                   <Flex className={styles.details} vertical>
                     <div>
@@ -113,7 +144,9 @@ export default function FileInfo (props: FileInfoProps) {
                 </Form.Item>
               </Form>
               <Flex justify={'flex-end'}>
-                <Button type={'primary'}>Save</Button>
+                <Button onClick={onSave} loading={update.loading} type={'primary'} disabled={!isChange}>
+                  Save
+                </Button>
               </Flex>
             </Flex>
           </div>

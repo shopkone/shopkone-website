@@ -1,12 +1,10 @@
 import { useRef } from 'react'
 import { useMemoizedFn } from 'ahooks'
 import { Flex, FlexProps } from 'antd'
-import { useAtom } from 'jotai'
 
 import { FileSource, FileType } from '@/api/file/add-file-record'
 import { UploadFileType } from '@/api/file/UploadFileType'
 import { useOss } from '@/hooks/use-oss'
-import { uploadList } from '@/pages/mange/task/state'
 import { formatFileSize } from '@/utils/format'
 import { getVideoInfo } from '@/utils/get-video-info'
 import { genId } from '@/utils/random'
@@ -18,8 +16,7 @@ export interface UploadProps extends Omit<FlexProps, 'onChange'> {
   multiple: boolean
   maxSize: number
   accepts: Array<'video' | 'image' | 'audio' | 'zip'>
-  onUpload?: (files: UploadFileType[]) => void
-  global: boolean
+  onChange?: (files: UploadFileType[]) => void
   groupId?: number
 }
 
@@ -30,15 +27,13 @@ export default function Upload (props: UploadProps) {
     onClick,
     maxSize,
     accepts,
-    global,
-    onUpload,
+    onChange,
     groupId = 0,
     ...rest
   } = props
   const oss = useOss()
 
   const inputRef = useRef<HTMLInputElement>(null)
-  const [oldFileList, setFileList] = useAtom(uploadList)
 
   const directoryProps = {
     webkitdirectory: directory ? '' : false,
@@ -117,7 +112,6 @@ export default function Upload (props: UploadProps) {
       uuid: genId().toString(),
       fileInstance: file,
       suffix: file.type.split('/').pop()?.toUpperCase() || file.name?.split('.').pop()?.toUpperCase() || '',
-      global,
       group_id: groupId,
       errMsg: '',
       cover: ''
@@ -166,12 +160,12 @@ export default function Upload (props: UploadProps) {
     return info
   }
 
-  const onChange = useMemoizedFn((files: UploadFileType[]) => {
+  /*   const onChange = useMemoizedFn((files: UploadFileType[]) => {
     const list = oldFileList.filter(item => {
       return !files.find(i => item.uuid === i.uuid)
     })
     setFileList(files.concat(list))
-  })
+  }) */
 
   const onInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || [])
@@ -183,7 +177,6 @@ export default function Upload (props: UploadProps) {
     let fileInfos = await Promise.all(files.map(async file => await getFileInfo(file)))
     // 校验文件
     fileInfos = checkFile(fileInfos)
-    onUpload?.(fileInfos)
     onChange?.(fileInfos)
     e.target.value = ''
   }

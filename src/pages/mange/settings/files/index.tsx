@@ -6,9 +6,12 @@ import { Button, Card, Flex, Tooltip } from 'antd'
 import dayjs from 'dayjs'
 import { useAtom } from 'jotai'
 
+import { FileType } from '@/api/file/add-file-record'
 import { FilesDeleteApi } from '@/api/file/file-delete'
 import { FileGroupListApi } from '@/api/file/file-group-list'
 import { FileListApi, FileListReq, FileListRes } from '@/api/file/file-list'
+import { ReactComponent as ReplaceIcon } from '@/assets/icon/replace.svg'
+import { ReactComponent as ReplaceCoverIcon } from '@/assets/icon/replace-cover.svg'
 import FileImage from '@/components/file-image'
 import Page from '@/components/page'
 import { sMessage } from '@/components/s-message'
@@ -52,7 +55,28 @@ export default function Files () {
         <Flex align={'center'} gap={12}>
           <FileImage type={row.type} alt={name} src={row.cover || row.src} />
           <div className={styles.title}>
-            <div className={styles.name}>{name}</div>
+            <Flex align={'center'} gap={12} className={styles.name}>
+              <div>{name}</div>
+              <Flex style={{ position: 'relative', top: -1 }} className={'file_row_action_icons'} align={'center'} gap={12}>
+                <Upload
+                  multiple={false}
+                  maxSize={1024 * 1024 * 20}
+                >
+                  <Tooltip title={'Replace'}>
+                    <Button className={styles.actionsIcon} type={'text'} size={'small'}>
+                      <ReplaceIcon style={{ fontSize: 15 }} />
+                    </Button>
+                  </Tooltip>
+                </Upload>
+                <SRender render={row.type === FileType.Video}>
+                  <Tooltip title={'Replace cover'}>
+                    <Button className={styles.actionsIcon} type={'text'} size={'small'}>
+                      <ReplaceCoverIcon style={{ fontSize: 17, position: 'relative', top: -1 }} />
+                    </Button>
+                  </Tooltip>
+                </SRender>
+              </Flex>
+            </Flex>
             <div>{row.suffix}</div>
           </div>
         </Flex>
@@ -98,7 +122,7 @@ export default function Files () {
       width: 60,
       render: (src: string) => (
         <Tooltip title={'Copy link'}>
-          <Button onClick={() => { onCopy(src) }} className={styles.btn}>
+          <Button onClick={(e) => { e.stopPropagation(); onCopy(src) }} className={styles.btn}>
             <LinkOutlined className={styles.icon} />
           </Button>
         </Tooltip>
@@ -217,7 +241,11 @@ export default function Files () {
           </Card>
         </div>
       </Flex>
-      <FileInfo groups={groupList?.data || []} open={fileInfoOpen} />
+      <FileInfo
+        reFresh={list.refresh}
+        groups={groupList?.data || []}
+        open={fileInfoOpen}
+      />
     </Page>
   )
 }
