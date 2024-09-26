@@ -72,7 +72,7 @@ export default function AddGroup (props: AddGroupProps) {
       onCancel={open.close}
       open={open.open}
     >
-      <Form layout={'vertical'} style={{ margin: '0 16px' }}>
+      <Form layout={'vertical'} style={{ margin: '16px 16px 24px 16px' }}>
         <Form.Item label={'Group name'}>
           <Input ref={inputRef} value={name} autoComplete={'off'} onChange={e => { setName(e.target.value) }} />
         </Form.Item>

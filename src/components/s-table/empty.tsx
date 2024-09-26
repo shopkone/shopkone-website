@@ -9,10 +9,11 @@ export interface EmptyProps {
   title: string
   desc: string
   actions: ReactNode
+  img?: ReactNode
 }
 
 export default function Empty (props: EmptyProps) {
-  const { title, desc, actions } = props
+  const { title, desc, actions, img } = props
   return (
     <div className={styles.empty}>
       <Flex align={'center'} justify={'space-between'} className={styles.inner}>
@@ -22,7 +23,15 @@ export default function Empty (props: EmptyProps) {
           <Flex style={{ marginTop: 16 }}>{actions}</Flex>
         </Flex>
         <div className={styles.right}>
-          <img style={{ height: 180 }} src={NoMsg} />
+          {
+            (!img || typeof img === 'string')
+              ? (
+                <img style={{ height: 180 }} src={NoMsg} />
+                )
+              : (
+                  img
+                )
+          }
         </div>
       </Flex>
     </div>

@@ -1,4 +1,4 @@
-import { Radio, RadioGroupProps } from 'antd'
+import { Radio, RadioGroupProps, Typography } from 'antd'
 
 export interface RadioGroup extends Omit<RadioGroupProps, 'options' | 'onChange' | 'value'> {
   options: Array<{ label: string, value: string | number }>
@@ -12,5 +12,21 @@ export default function FilterRadio (props: RadioGroup) {
     onChange?.(e.target.value)
   }
 
-  return <Radio.Group {...rest} value={value} onChange={changeHandle} options={options} />
+  return (
+    <Radio.Group
+      {...rest}
+      value={value}
+      onChange={changeHandle}
+      options={
+      options.map(item => ({
+        label: (
+          <Typography.Text style={{ maxWidth: 130 }} ellipsis={{ tooltip: true }}>
+            {item.label}
+          </Typography.Text>
+        ),
+        value: item.value
+      }))
+}
+    />
+  )
 }

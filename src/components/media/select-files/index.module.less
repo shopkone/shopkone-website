@@ -21,11 +21,16 @@
   }
   .item-wrap {
     width: 140px;
+    position: relative;
     height: 185px;
-    background-color: #f1f2f4b0;
     border-radius: 12px;
+    padding: 20px 12px 12px 12px;
+    cursor: pointer;
     &:hover {
-      background-color: #f1f2f470;
+      .mask {
+        background-color: rgba(0, 0, 0, 0.2);
+      }
+      background-color: #f7f7f7;
     }
   }
   .bottom {
@@ -42,7 +47,45 @@
   height: 120px;
   border: 1px dashed #d0d3d6;
   border-radius: 8px;
+  background-color: #fefefe;
   &:hover {
     border-color: #3370ff;
+    background-color: #fdfdfd;
   }
+}
+
+.img {
+  background-color: #f1f1f1;
+  border: none;
+}
+
+.imgWrap {
+  padding: 4px;
+  border-radius: 12px;
+  background-color: #fff;
+  border: 1px solid var(--color-border);
+  position: relative;
+}
+
+.mask {
+  position: absolute;
+  left: 4px;
+  top: 4px;
+  right: 4px;
+  bottom: 4px;
+  border-radius: 12px;
+}
+
+.checkbox {
+  position: absolute;
+  left: 24px;
+  top: 24px;
+}
+
+.empty {
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

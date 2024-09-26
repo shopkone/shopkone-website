@@ -8,6 +8,7 @@ async function api<Result> (path: string, data?: unknown): Promise<Result> {
 export interface PageRes<T> {
   total: number
   list: T
+  page: PageReq
 }
 
 export interface PageReq {

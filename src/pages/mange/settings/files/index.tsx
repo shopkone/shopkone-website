@@ -198,6 +198,7 @@ export default function Files () {
   }, [location.search])
 
   useEffect(() => {
+    if (!fileDoneFlag) return
     onFreshDebounce()
   }, [fileDoneFlag])
 

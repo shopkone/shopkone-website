@@ -1,7 +1,7 @@
 import { MouseEventHandler, useMemo, useState } from 'react'
 import { CloseOutlined } from '@ant-design/icons'
 import { Down } from '@icon-park/react'
-import { Button, Checkbox, Flex, Popover } from 'antd'
+import { Button, Checkbox, Flex, Popover, Typography } from 'antd'
 import { CheckboxGroupProps } from 'antd/es/checkbox'
 
 import FilterNumberRange, { FilterNumberRangeProps } from '@/components/table-filter/filter-number-range'
@@ -88,9 +88,10 @@ export default function TableFilter (props: TableFilterProps) {
     >
       <Button style={{ background: '#fff' }} type={label ? undefined : 'dashed'} size={'small'}>
         <Flex gap={2} align={'center'}>
-          <div style={{ fontWeight: label ? 550 : 400 }}>
-            <span style={{ color: '#666' }}>{children}</span>{label ? ':' : ''} {label}
-          </div>
+          <Flex gap={4} style={{ fontWeight: label ? 550 : 400 }}>
+            <span style={{ color: '#666' }}>{children}</span>{label ? ':' : ''}
+            <Typography.Text ellipsis={{ tooltip: true }} style={{ maxWidth: 150, lineHeight: 1.2 }}>{label}</Typography.Text>
+          </Flex>
           {
             label
               ? (
