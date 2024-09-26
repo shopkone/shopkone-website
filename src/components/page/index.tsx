@@ -2,10 +2,9 @@ import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowLeft } from '@icon-park/react'
 import { Button, Flex } from 'antd'
-import { useSetAtom } from 'jotai'
 
 import SRender from '@/components/s-render'
-import { pageAtom } from '@/pages/mange/state'
+import { useLayoutState } from '@/pages/mange/layout/state'
 
 import styles from './index.module.less'
 
@@ -22,15 +21,16 @@ export interface PageProps {
 
 export default function Page (props: PageProps) {
   const { children, width, header, footer, title, back, isChange, bottom } = props
-  const setPage = useSetAtom(pageAtom)
   const nav = useNavigate()
+  const setIsChange = useLayoutState(state => state.setChange)
+  const resetPage = useLayoutState(state => state.reset)
 
   useEffect(() => {
-    setPage({ isChange })
+    setIsChange(isChange)
   }, [isChange])
 
   useEffect(() => {
-    return () => { setPage({}) }
+    return () => { resetPage() }
   }, [])
 
   return (

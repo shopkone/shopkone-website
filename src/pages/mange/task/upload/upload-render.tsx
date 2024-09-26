@@ -1,21 +1,20 @@
 import { Attention, CheckOne, Close } from '@icon-park/react'
 import { Button, Flex, Tooltip, Typography } from 'antd'
-import { useAtomValue } from 'jotai'
 
 import FileImage from '@/components/file-image'
 import SRender from '@/components/s-render'
-import { uploadList } from '@/pages/mange/task/state'
+import { useGlobalTask } from '@/pages/mange/task/state'
 import { formatFileSize } from '@/utils/format'
 
 import styles from './index.module.less'
 
 export default function UploadRender () {
-  const fileList = useAtomValue(uploadList)
+  const files = useGlobalTask(state => state.files)
 
   return (
     <Flex className={styles.container} vertical gap={12}>
       {
-        fileList?.filter(i => i.global)?.map(file => (
+        files?.map(file => (
           <Flex
             justify={'space-between'}
             align={'center'}

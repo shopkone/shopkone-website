@@ -1,23 +1,21 @@
 import { Attention, Check, Close, Minus, Up } from '@icon-park/react'
 import { Badge, Button, Flex, Tabs } from 'antd'
 import classNames from 'classnames'
-import { useAtom } from 'jotai'
 
 import SLoading from '@/components/s-loading'
 import SRender from '@/components/s-render'
-import { taskExpand, taskOpen } from '@/pages/mange/task/state'
+import { useGlobalTask } from '@/pages/mange/task/state'
 import UploadRender from '@/pages/mange/task/upload/upload-render'
-import { useUpload } from '@/pages/mange/task/upload/use-upload'
+import { useTaskUpload } from '@/pages/mange/task/upload/use-task-upload'
 
 import styles from './index.module.less'
 
 export default function Task () {
-  const [open, setOpen] = useAtom(taskOpen)
-  const [expand, setExpand] = useAtom(taskExpand)
-  const files = useUpload()
-  const loadingFileCount = files.filter(file => ['wait', 'uploading'].includes(file.status)).length
+  const globalTask = useGlobalTask(state => state)
+  useTaskUpload()
+  const loadingFileCount = globalTask.files.filter(file => ['wait', 'uploading'].includes(file.status)).length
   const loadingCount = loadingFileCount
-  const errorFileCount = files.filter(file => file.status === 'error').length
+  const errorFileCount = globalTask.files.filter(file => file.status === 'error').length
   const errorCount = errorFileCount
 
   const options = [
@@ -29,11 +27,11 @@ export default function Task () {
   if (!open) return null
 
   return (
-    <div className={classNames([styles.container, { [styles.max]: expand }])}>
-      <SRender render={expand} className={styles.maxContent}>
+    <div className={classNames([styles.container, { [styles.max]: globalTask.isExpand }])}>
+      <SRender render={globalTask.isExpand} className={styles.maxContent}>
         <Flex className={styles.header} justify={'space-between'}>
           <Tabs className={'flex1'} size={'small'} items={options} />
-          <Button type={'text'} onClick={() => { setExpand(false) }} className={styles.btn}>
+          <Button type={'text'} onClick={() => { globalTask.collapse() }} className={styles.btn}>
             <Minus className={styles.icon} size={16} />
           </Button>
         </Flex>
@@ -43,7 +41,7 @@ export default function Task () {
         </div>
       </SRender>
 
-      <SRender render={!expand}>
+      <SRender render={!globalTask.isExpand}>
         <Flex style={{ position: 'relative', top: 2 }} justify={'space-between'} align={'center'} gap={12}>
           <Flex align={'center'} gap={6}>
             <div style={{ width: 20 }}>
@@ -85,9 +83,7 @@ export default function Task () {
           <Flex align={'center'} gap={12}>
             <SRender render={!(!loadingCount && !errorCount)}>
               <Button
-                onClick={() => {
-                  setExpand(true)
-                }}
+                onClick={globalTask.expand}
                 className={styles.btn}
               >
                 <Up className={styles.icon} size={16} />
@@ -95,9 +91,7 @@ export default function Task () {
             </SRender>
             <SRender render={!loadingCount}>
               <Button
-                onClick={() => {
-                  setOpen(false)
-                }}
+                onClick={globalTask.close}
                 style={{
                   height: 26,
                   width: 26

@@ -3,7 +3,6 @@ import { BellOutlined, QuestionCircleOutlined, ShopOutlined } from '@ant-design/
 import { Attention, Check, Right } from '@icon-park/react'
 import { useRequest } from 'ahooks'
 import { Button, Flex, Popover, Skeleton, Tooltip } from 'antd'
-import { useAtomValue } from 'jotai'
 
 import { useGetLoginInfo } from '@/api/account/get-account-info'
 import { LogoutApi } from '@/api/account/logout'
@@ -11,13 +10,13 @@ import { useGetShopInfo } from '@/api/shop/get-shop-info'
 import { useShopList } from '@/api/shop/get-shop-list'
 import SLoading from '@/components/s-loading'
 import SRender from '@/components/s-render'
-import { pageAtom } from '@/pages/mange/state'
+import { useLayoutState } from '@/pages/mange/layout/state'
 import { toLogin } from '@/utils/to-login'
 
 import styles from './index.module.less'
 
 export default function Header () {
-  const page = useAtomValue(pageAtom)
+  const page = useLayoutState()
   const logoutApi = useRequest(LogoutApi, { manual: true })
   const shopList = useShopList()
   const shop = useGetShopInfo()

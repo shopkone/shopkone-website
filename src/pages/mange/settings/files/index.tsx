@@ -1,10 +1,9 @@
 import { ReactNode, useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { LinkOutlined } from '@ant-design/icons'
-import { useDebounceFn, useMemoizedFn, useRequest } from 'ahooks'
+import { useMemoizedFn, useRequest } from 'ahooks'
 import { Button, Card, Flex, Tooltip } from 'antd'
 import dayjs from 'dayjs'
-import { useAtom } from 'jotai'
 
 import { FileType } from '@/api/file/add-file-record'
 import { FilesDeleteApi } from '@/api/file/file-delete'
@@ -23,7 +22,6 @@ import { useOpen } from '@/hooks/useOpen'
 import FileInfo from '@/pages/mange/settings/files/file-info'
 import Filters from '@/pages/mange/settings/files/filters'
 import Group from '@/pages/mange/settings/files/group'
-import { triggerNewUploadFileAtom } from '@/pages/mange/task/state'
 import { formatFileSize } from '@/utils/format'
 
 import styles from './index.module.less'
@@ -33,7 +31,6 @@ export default function Files () {
   const [params, setParams] = useState<FileListReq>({ page: 1, page_size: 20, group_id: 0 })
   const groupList = useRequest(FileGroupListApi)
   const filesDelete = useRequest(FilesDeleteApi, { manual: true })
-  const [newUploadFile, setNewUploadFile] = useAtom(triggerNewUploadFileAtom)
   const location = useLocation()
   const [selected, setSelected] = useState<number[]>([])
   const fileInfoOpen = useOpen<number>()
@@ -59,6 +56,7 @@ export default function Files () {
               <div>{name}</div>
               <Flex style={{ position: 'relative', top: -1 }} className={'file_row_action_icons'} align={'center'} gap={12}>
                 <Upload
+                  accepts={[]}
                   multiple={false}
                   maxSize={1024 * 1024 * 20}
                 >
@@ -132,7 +130,6 @@ export default function Files () {
   const Uploader = useMemoizedFn((p: { children: ReactNode }) => (
     <Upload
       groupId={params.group_id}
-      global
       multiple
       maxSize={1024 * 1024 * 20}
       accepts={['image', 'video', 'zip', 'audio']}
@@ -140,10 +137,6 @@ export default function Files () {
       {p.children}
     </Upload>
   ))
-
-  const triggerFresh = useDebounceFn(async () => {
-    await list.refreshAsync()
-  }).run
 
   const onBatchDelete = () => {
     modal.confirm({
@@ -171,17 +164,6 @@ export default function Files () {
       document?.getElementById('shopkone-main')?.scrollTo({ top: 0 })
     }
   }, [location.search])
-
-  useEffect(() => {
-    if (!newUploadFile) {
-      setNewUploadFile(undefined)
-      return
-    }
-    triggerFresh()
-    return () => {
-      setNewUploadFile(undefined)
-    }
-  }, [newUploadFile])
 
   return (
     <Page
