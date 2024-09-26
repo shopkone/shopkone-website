@@ -2,10 +2,10 @@ import { api } from '@/api/api'
 
 export interface FileUpdateInfoReq {
   id: number
-  name: string
-  alt: string
-  cover: string
-  src: string
+  name?: string
+  alt?: string
+  cover?: string
+  src?: string
 }
 
 export const FileUpdateApi = async (params: FileUpdateInfoReq) => {

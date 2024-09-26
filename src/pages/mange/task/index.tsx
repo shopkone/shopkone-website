@@ -24,7 +24,7 @@ export default function Task () {
     { label: 'Export', key: 'export' }
   ]
 
-  if (!open) return null
+  if (!globalTask.isOpen) return null
 
   return (
     <div className={classNames([styles.container, { [styles.max]: globalTask.isExpand }])}>

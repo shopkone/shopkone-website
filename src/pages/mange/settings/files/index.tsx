@@ -9,8 +9,6 @@ import { FileType } from '@/api/file/add-file-record'
 import { FilesDeleteApi } from '@/api/file/file-delete'
 import { FileGroupListApi } from '@/api/file/file-group-list'
 import { FileListApi, FileListReq, FileListRes } from '@/api/file/file-list'
-import { ReactComponent as ReplaceIcon } from '@/assets/icon/replace.svg'
-import { ReactComponent as ReplaceCoverIcon } from '@/assets/icon/replace-cover.svg'
 import FileImage from '@/components/file-image'
 import Page from '@/components/page'
 import { sMessage } from '@/components/s-message'
@@ -22,6 +20,10 @@ import { useOpen } from '@/hooks/useOpen'
 import FileInfo from '@/pages/mange/settings/files/file-info'
 import Filters from '@/pages/mange/settings/files/filters'
 import Group from '@/pages/mange/settings/files/group'
+import MoveGroup from '@/pages/mange/settings/files/move-group'
+import ReplaceCover from '@/pages/mange/settings/files/replace-cover'
+import ReplaceImage from '@/pages/mange/settings/files/replace-image'
+import ReplaceVideo from '@/pages/mange/settings/files/replace-video'
 import { useGlobalTask } from '@/pages/mange/task/state'
 import { formatFileSize } from '@/utils/format'
 
@@ -35,14 +37,27 @@ export default function Files () {
   const location = useLocation()
   const [selected, setSelected] = useState<number[]>([])
   const fileInfoOpen = useOpen<number>()
+  const moveGroupOpen = useOpen<number[]>()
   const addFiles = useGlobalTask(state => state.addFiles)
   const fileDoneFlag = useGlobalTask(state => state.fileDoneFlag)
+  const [loadingList, setLoadingList] = useState<number[]>([])
 
   const modal = useModal()
 
   const onCopy = (link: string) => {
     navigator.clipboard.writeText(link)
     sMessage.success('Link copied')
+  }
+
+  const onLoading = (loading: boolean, id: number) => {
+    setLoadingList(prev => {
+      if (loading) {
+        return [...prev, id]
+      } else {
+        list.refresh()
+        return prev.filter(item => item !== id)
+      }
+    })
   }
 
   const columns: STableProps['columns'] = [
@@ -53,28 +68,37 @@ export default function Files () {
       width: 300,
       render: (name: string, row: FileListRes) => (
         <Flex align={'center'} gap={12}>
-          <FileImage type={row.type} alt={name} src={row.cover || row.src} />
+          <FileImage
+            loading={loadingList.includes(row.id)}
+            type={row.type}
+            alt={name} src={row.cover || row.src}
+          />
           <div className={styles.title}>
             <Flex align={'center'} gap={12} className={styles.name}>
               <div>{name}</div>
-              <Flex style={{ position: 'relative', top: -1 }} className={'file_row_action_icons'} align={'center'} gap={12}>
-                <Upload
-                  accepts={[]}
-                  multiple={false}
-                  maxSize={1024 * 1024 * 20}
-                >
-                  <Tooltip title={'Replace'}>
-                    <Button className={styles.actionsIcon} type={'text'} size={'small'}>
-                      <ReplaceIcon style={{ fontSize: 15 }} />
-                    </Button>
-                  </Tooltip>
-                </Upload>
+              <Flex
+                onClick={e => { e.stopPropagation() }}
+                style={{ position: 'relative', top: -1 }}
+                className={'file_row_action_icons'}
+                align={'center'} gap={12}
+              >
+                <SRender render={row.type === FileType.Image}>
+                  <ReplaceImage
+                    id={row.id}
+                    onLoading={(loading) => { onLoading(loading, row.id) }}
+                  />
+                </SRender>
                 <SRender render={row.type === FileType.Video}>
-                  <Tooltip title={'Replace cover'}>
-                    <Button className={styles.actionsIcon} type={'text'} size={'small'}>
-                      <ReplaceCoverIcon style={{ fontSize: 17, position: 'relative', top: -1 }} />
-                    </Button>
-                  </Tooltip>
+                  <ReplaceVideo
+                    id={row.id}
+                    onLoading={(loading) => { onLoading(loading, row.id) }}
+                  />
+                </SRender>
+                <SRender render={row.type === FileType.Video}>
+                  <ReplaceCover
+                    id={row.id}
+                    onLoading={(loading) => { onLoading(loading, row.id) }}
+                  />
                 </SRender>
               </Flex>
             </Flex>
@@ -201,7 +225,17 @@ export default function Files () {
                 fileInfoOpen.edit(row.id)
               }}
               actions={
-                <Button size={'small'} danger onClick={onBatchDelete}>Delete files</Button>
+                <Flex gap={12}>
+                  <Button size={'small'} danger onClick={onBatchDelete}>Delete files</Button>
+                  <SRender render={!!groupList?.data?.length}>
+                    <Button
+                      size={'small'}
+                      onClick={() => { moveGroupOpen.edit(selected) }}
+                    >
+                      Move to new group
+                    </Button>
+                  </SRender>
+                </Flex>
               }
               useVirtual={false}
               page={{
@@ -237,6 +271,14 @@ export default function Files () {
         reFresh={list.refresh}
         groups={groupList?.data || []}
         open={fileInfoOpen}
+      />
+      <MoveGroup
+        groupList={groupList?.data || []}
+        open={moveGroupOpen}
+        onConfirm={() => {
+          list.refresh()
+          setSelected([])
+        }}
       />
     </Page>
   )

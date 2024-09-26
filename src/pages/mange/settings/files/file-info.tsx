@@ -50,7 +50,7 @@ export default function FileInfo (props: FileInfoProps) {
     await update.runAsync({
       id: data || 0,
       name: name || info?.data?.name || '',
-      alt: alt || info?.data?.alt || '',
+      alt: alt || '',
       src: info?.data?.path || '',
       cover: info?.data?.cover || info?.data?.path || ''
     })
