@@ -4,6 +4,7 @@ import { UploadFileType } from '@/api/file/UploadFileType'
 
 export interface TaskState {
   files: UploadFileType[]
+  fileDoneFlag: number
   isOpen: boolean
   isExpand: boolean
 }
@@ -11,6 +12,7 @@ export interface TaskState {
 export interface TaskAction {
   addFiles: (files: UploadFileType[]) => void
   updateFile: (file: UploadFileType) => void
+  setFileDone: () => void
   close: () => void
   open: () => void
   expand: () => void
@@ -19,11 +21,15 @@ export interface TaskAction {
 
 export const useGlobalTask = create<TaskState & TaskAction>((set, get, store) => ({
   files: [],
+  fileDoneFlag: 0,
   addFiles: (files: UploadFileType[]) => {
     set({ files: [...get().files, ...files] })
   },
   updateFile: (file: UploadFileType) => {
     set({ files: get().files.map(item => item.uuid === file.uuid ? file : item) })
+  },
+  setFileDone: () => {
+    set({ fileDoneFlag: get().fileDoneFlag + 1 })
   },
 
   isOpen: false,

@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { LinkOutlined } from '@ant-design/icons'
-import { useMemoizedFn, useRequest } from 'ahooks'
+import { useDebounceFn, useMemoizedFn, useRequest } from 'ahooks'
 import { Button, Card, Flex, Tooltip } from 'antd'
 import dayjs from 'dayjs'
 
@@ -22,6 +22,7 @@ import { useOpen } from '@/hooks/useOpen'
 import FileInfo from '@/pages/mange/settings/files/file-info'
 import Filters from '@/pages/mange/settings/files/filters'
 import Group from '@/pages/mange/settings/files/group'
+import { useGlobalTask } from '@/pages/mange/task/state'
 import { formatFileSize } from '@/utils/format'
 
 import styles from './index.module.less'
@@ -34,6 +35,8 @@ export default function Files () {
   const location = useLocation()
   const [selected, setSelected] = useState<number[]>([])
   const fileInfoOpen = useOpen<number>()
+  const addFiles = useGlobalTask(state => state.addFiles)
+  const fileDoneFlag = useGlobalTask(state => state.fileDoneFlag)
 
   const modal = useModal()
 
@@ -129,6 +132,7 @@ export default function Files () {
   ]
   const Uploader = useMemoizedFn((p: { children: ReactNode }) => (
     <Upload
+      onChange={addFiles}
       groupId={params.group_id}
       multiple
       maxSize={1024 * 1024 * 20}
@@ -153,6 +157,8 @@ export default function Files () {
     })
   }
 
+  const onFreshDebounce = useDebounceFn(list.refresh, { wait: 500 }).run
+
   useEffect(() => {
     list.run(params)
   }, [params])
@@ -164,6 +170,10 @@ export default function Files () {
       document?.getElementById('shopkone-main')?.scrollTo({ top: 0 })
     }
   }, [location.search])
+
+  useEffect(() => {
+    onFreshDebounce()
+  }, [fileDoneFlag])
 
   return (
     <Page
