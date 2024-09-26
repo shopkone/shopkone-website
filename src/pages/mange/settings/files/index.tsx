@@ -2,7 +2,7 @@ import { ReactNode, useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { LinkOutlined } from '@ant-design/icons'
 import { useDebounceFn, useMemoizedFn, useRequest } from 'ahooks'
-import { Button, Card, Flex, Tooltip } from 'antd'
+import { Button, Card, Flex, Tooltip, Typography } from 'antd'
 import dayjs from 'dayjs'
 
 import { FileType } from '@/api/file/add-file-record'
@@ -75,7 +75,9 @@ export default function Files () {
           />
           <div className={styles.title}>
             <Flex align={'center'} gap={12} className={styles.name}>
-              <div>{name}</div>
+              <Typography.Text style={{ maxWidth: '18vw' }} ellipsis={{ tooltip: true }}>
+                {name}
+              </Typography.Text>
               <Flex
                 onClick={e => { e.stopPropagation() }}
                 style={{ position: 'relative', top: -1 }}
@@ -136,7 +138,7 @@ export default function Files () {
       width: 150,
       render: (groupId: number) => {
         const group = groupList.data?.find(item => item.id === groupId)
-        return group?.name || '--'
+        return <Typography.Text ellipsis={{ tooltip: true }}>{group?.name || '--'}</Typography.Text>
       },
       hidden: !groupList?.data?.length
     },
@@ -237,7 +239,6 @@ export default function Files () {
                   </SRender>
                 </Flex>
               }
-              useVirtual={false}
               page={{
                 total: list?.data?.total || 0,
                 current: params.page,

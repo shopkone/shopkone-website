@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useRequest } from 'ahooks'
-import { Button, Flex, Form, Input } from 'antd'
+import { Button, Flex, Form, Input, Typography } from 'antd'
 import dayjs from 'dayjs'
 
 import { FileType } from '@/api/file/add-file-record'
@@ -133,7 +133,9 @@ export default function FileInfo (props: FileInfoProps) {
                     <SRender render={info?.data?.duration}>Duration {tranTimer(info?.data?.duration || 0)}</SRender>
                     <div>Added {dayjs(info?.data?.created_at).format('MM/DD/YYYY')}</div>
                     <SRender render={groupName}>
-                      <div>Group by {groupName}</div>
+                      <Typography.Text ellipsis={{ tooltip: true }} style={{ width: 300 }}>
+                        Group by {groupName}
+                      </Typography.Text>
                     </SRender>
                   </Flex>
                 </Form.Item>
