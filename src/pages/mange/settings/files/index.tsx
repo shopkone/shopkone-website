@@ -256,7 +256,7 @@ export default function Files () {
               loading={list.loading}
               empty={{
                 title: params.group_id ? 'No files in this group' : 'Upload and manage your files',
-                desc: 'Upload and manage your files.',
+                desc: 'Files can be images, videos and zip.',
                 actions: (
                   <Uploader>
                     <Button type={'primary'}>Upload files</Button>

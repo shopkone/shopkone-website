@@ -17,6 +17,7 @@
     margin-bottom: 12px;
   }
   .content {
+    min-height: 300px;
     margin: 12px 20px;
   }
   .item-wrap {
@@ -30,8 +31,20 @@
       .mask {
         background-color: rgba(0, 0, 0, 0.2);
       }
-      background-color: #f7f7f7;
+      .errMask {
+        opacity: 1;
+      }
+      background-color: #f5f5f5;
     }
+  }
+  .itemWrapNoDone {
+    cursor: default;
+  }
+  .itemSelected {
+    .mask {
+      background-color: rgba(0, 0, 0, 0.2);
+    }
+    background-color: #f0f0f0;
   }
   .bottom {
     overflow-y: auto;
@@ -39,6 +52,29 @@
   .shadow {
     z-index: 2;
     box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.1);
+  }
+  .errMask {
+    transition: all 0.1s;
+    border-radius: 12px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #c1c1c1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    :global svg {
+      cursor: pointer;
+      position: relative;
+      top: 5px;
+      color: #f0f0f0;
+      &:hover {
+        color: #ffffff;
+      }
+    }
   }
 }
 
@@ -68,6 +104,7 @@
 }
 
 .mask {
+  transition: all 0.1s;
   position: absolute;
   left: 4px;
   top: 4px;
@@ -77,6 +114,8 @@
 }
 
 .checkbox {
+  transition: all 0.1s;
+  cursor: pointer;
   position: absolute;
   left: 24px;
   top: 24px;

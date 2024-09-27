@@ -52,9 +52,7 @@ export default function General () {
                 </Form.Item>
               </Flex>
               <Flex vertical flex={2}>
-                <Form.Item
-                  label={'Website favicon'}
-                >
+                <Form.Item label={'Website favicon'} name={'website_favicon_id'}>
                   <Uploader />
                 </Form.Item>
               </Flex>

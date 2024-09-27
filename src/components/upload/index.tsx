@@ -60,17 +60,15 @@ export default function Upload (props: UploadProps) {
     inputRef.current?.click()
   }
 
-  const checkFile = (files: UploadFileType[]) => {
-    return files.map(file => {
-      let errMsg = ''
-      if (file.size > maxSize) {
-        errMsg = `The file is too large. Please upload a file smaller than ${formatFileSize(maxSize)}.`
-      }
-      if (!accepts.some(item => file.fileInstance.type.includes(item))) {
-        errMsg = `The file format is not supported. Please try uploading an ${accepts?.map(item => item).join(' or ')}.`
-      }
-      return { ...file, status: errMsg ? 'error' : file.status, errMsg }
-    })
+  const checkFile = (file: UploadFileType) => {
+    let errMsg = ''
+    if (file.fileInstance.size > maxSize) {
+      errMsg = `The file is too large. Please upload a file smaller than ${formatFileSize(maxSize)}.`
+    }
+    if (!accepts.some(item => file.fileInstance.type.includes(item))) {
+      errMsg = `The file format is not supported. Please try uploading an ${accepts?.map(item => item).join(' or ')}.`
+    }
+    return { ...file, status: errMsg ? 'error' : file.status, errMsg }
   }
 
   // 获取图片尺寸
@@ -83,7 +81,8 @@ export default function Upload (props: UploadProps) {
           resolve({ width: image.width, height: image.height })
         }
         image.onerror = () => {
-          reject(new Error('Failed to load image.'))
+          resolve({ width: 0, height: 0 })
+          // reject(new Error('Failed to load image.'))
         }
         if (event.target && typeof event.target.result === 'string') {
           image.src = event.target.result
@@ -98,7 +97,7 @@ export default function Upload (props: UploadProps) {
 
   // 获取文件信息
   const getFileInfo = async (file: File) => {
-    const info: UploadFileType = {
+    let info: UploadFileType = {
       size: 0,
       name: '',
       type: FileType.Image,
@@ -120,6 +119,11 @@ export default function Upload (props: UploadProps) {
     info.size = file.size
     // 获取文件名
     info.name = file.name.split('.')?.[0] || 'unknown'
+    // 校验文件
+    info = checkFile(info)
+    if (info?.errMsg !== '' || info.status === 'error') {
+      return info
+    }
     // 获取文件类型
     if (file.type.includes('image')) {
       info.type = FileType.Image
@@ -174,9 +178,7 @@ export default function Upload (props: UploadProps) {
       return
     }
     // 获取文件信息
-    let fileInfos = await Promise.all(files.map(async file => await getFileInfo(file)))
-    // 校验文件
-    fileInfos = checkFile(fileInfos)
+    const fileInfos = await Promise.all(files.map(async file => await getFileInfo(file)))
     onChange?.(fileInfos)
     e.target.value = ''
   }

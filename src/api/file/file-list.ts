@@ -20,6 +20,8 @@ export interface FileListRes {
   cover?: string
   type: FileType
   group_id: number
+  uuid?: string
+  errMsg?: string
 }
 
 export const FileListApi = async (params: FileListReq) => {
