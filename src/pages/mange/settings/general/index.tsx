@@ -51,7 +51,7 @@ export default function General () {
     const values = form.getFieldsValue()
     await update.runAsync(values)
     await general.refreshAsync()
-    manageState.setShopInfo()
+    await manageState.setShopInfo()
     sMessage.success('Update success')
     setIsChange(false)
   }

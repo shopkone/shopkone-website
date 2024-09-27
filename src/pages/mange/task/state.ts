@@ -12,7 +12,7 @@ export interface TaskState {
 export interface TaskAction {
   addFiles: (files: UploadFileType[]) => void
   updateFile: (file: UploadFileType) => void
-  setFileDone: () => void
+  setFileDone: (clear?: boolean) => void
   close: () => void
   open: () => void
   expand: () => void
@@ -28,8 +28,8 @@ export const useGlobalTask = create<TaskState & TaskAction>((set, get, store) =>
   updateFile: (file: UploadFileType) => {
     set({ files: get().files.map(item => item.uuid === file.uuid ? file : item) })
   },
-  setFileDone: () => {
-    set({ fileDoneFlag: get().fileDoneFlag + 1 })
+  setFileDone: (clear = false) => {
+    set({ fileDoneFlag: clear ? 0 : get().fileDoneFlag + 1 })
   },
 
   isOpen: false,

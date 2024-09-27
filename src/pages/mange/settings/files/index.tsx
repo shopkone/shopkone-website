@@ -40,6 +40,7 @@ export default function Files () {
   const moveGroupOpen = useOpen<number[]>()
   const addFiles = useGlobalTask(state => state.addFiles)
   const fileDoneFlag = useGlobalTask(state => state.fileDoneFlag)
+  const setFileDone = useGlobalTask(state => state.setFileDone)
   const [loadingList, setLoadingList] = useState<number[]>([])
 
   const modal = useModal()
@@ -200,6 +201,9 @@ export default function Files () {
   useEffect(() => {
     if (!fileDoneFlag) return
     onFreshDebounce()
+    return () => {
+      setFileDone(true)
+    }
   }, [fileDoneFlag])
 
   return (

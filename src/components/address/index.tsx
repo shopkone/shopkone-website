@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react'
-import { useRequest } from 'ahooks'
+import { useDebounce, useRequest } from 'ahooks'
 import { Flex, Form, Input } from 'antd'
 import random from 'lodash/random'
 
@@ -41,6 +41,8 @@ export default function Address (props: AddressProps) {
     form.setFieldValue('zone', options?.[0]?.value)
     return options || []
   }, [countries.data, country])
+
+  const cardLoading = useDebounce(loading || countries.loading || phoneCodes.loading || config.loading, { wait: 100 })
 
   useEffect(() => {
     form.setFieldsValue(value)
@@ -89,7 +91,7 @@ export default function Address (props: AddressProps) {
   }, [country])
 
   return (
-    <SCard loading={loading || countries.loading || phoneCodes.loading || config.loading} title={'Address'}>
+    <SCard loading={cardLoading} title={'Address'}>
       <Form layout={'vertical'} form={form} onValuesChange={(_, values) => onChange?.(values as AddressType)}>
         <SRender render={!hasName}>{countryRender}</SRender>
         <Flex gap={16}>
