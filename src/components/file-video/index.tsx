@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { PlayOne } from '@icon-park/react'
+import { IconPlayerPlayFilled } from '@tabler/icons-react'
 import { Flex } from 'antd'
 
 import SRender from '@/components/s-render'
@@ -51,7 +51,7 @@ export default function FileVideo (props: FileVideoProps) {
             src={cover || ''}
           />
           <Flex vertical align={'center'} justify={'center'} className={styles.play}>
-            <PlayOne className={styles.icon} size={60} fill={'#fff'} />
+            <IconPlayerPlayFilled className={styles.icon} size={52} fill={'#fff'} />
             <div className={styles.duration}>{tranTimer(duration || 0)}</div>
           </Flex>
         </div>

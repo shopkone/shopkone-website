@@ -6,6 +6,7 @@ import random from 'lodash/random'
 import { AddressConfigApi } from '@/api/base/address-config'
 import { useCountries } from '@/api/base/countries'
 import { usePhonePrefix } from '@/api/base/phone-prefix'
+import { AddressType } from '@/api/common/address'
 import PhoneCode from '@/components/address/phone-code'
 import SCard from '@/components/s-card'
 import SRender from '@/components/s-render'
@@ -15,12 +16,14 @@ export interface AddressProps {
   hasName?: boolean
   hasEmail?: boolean
   loading?: boolean
+  value?: AddressType
+  onChange?: (value: AddressType) => void
 }
 
 export default function Address (props: AddressProps) {
-  const { hasName, hasEmail, loading } = props
+  const { hasName, hasEmail, loading, value, onChange } = props
 
-  const form = Form.useFormInstance()
+  const [form] = Form.useForm()
 
   const countries = useCountries()
   const phoneCodes = usePhonePrefix()
@@ -38,6 +41,10 @@ export default function Address (props: AddressProps) {
     form.setFieldValue('zone', options?.[0]?.value)
     return options || []
   }, [countries.data, country])
+
+  useEffect(() => {
+    form.setFieldsValue(value)
+  }, [value])
 
   const countryRender = (
     <Form.Item name={'country'} label={config?.data?.country}>
@@ -83,48 +90,50 @@ export default function Address (props: AddressProps) {
 
   return (
     <SCard loading={loading || countries.loading || phoneCodes.loading || config.loading} title={'Address'}>
-      <SRender render={!hasName}>{countryRender}</SRender>
-      <Flex gap={16}>
-        <Flex vertical flex={1}>
-          <SRender render={hasName}>
-            <Form.Item name={'legal_business_name'} label={'Legal business name'}>
+      <Form layout={'vertical'} form={form} onValuesChange={(_, values) => onChange?.(values as AddressType)}>
+        <SRender render={!hasName}>{countryRender}</SRender>
+        <Flex gap={16}>
+          <Flex vertical flex={1}>
+            <SRender render={hasName}>
+              <Form.Item name={'legal_business_name'} label={'Legal business name'}>
+                <Input autoComplete={'off'} />
+              </Form.Item>
+            </SRender>
+            <Form.Item name={'address1'} label={config?.data?.address1}>
               <Input autoComplete={'off'} />
             </Form.Item>
-          </SRender>
-          <Form.Item name={'address1'} label={config?.data?.address1}>
-            <Input autoComplete={'off'} />
-          </Form.Item>
-          <Form.Item name={'city'} label={config?.data?.city}>
-            <Input autoComplete={'off'} />
-          </Form.Item>
-          <Form.Item name={'phone'} label={config?.data?.phone}>
-            <PhoneCode />
-          </Form.Item>
-          <SRender render={hasEmail}>{postalCodeRender}</SRender>
-        </Flex>
-        <Flex vertical flex={1}>
-          <SRender render={hasName}>{countryRender}</SRender>
-          <Form.Item name={'address2'} label={config?.data?.address2}>
-            <Input autoComplete={'off'} />
-          </Form.Item>
-          <SRender render={!!zoneOptions?.length}>
-            <Form.Item name={'zone'} label={config?.data?.zone}>
-              <SSelect
-                showSearch
-                optionFilterProp={'label'}
-                options={zoneOptions}
-                className={'fit-width'}
-              />
-            </Form.Item>
-          </SRender>
-          <SRender render={hasEmail}>
-            <Form.Item name={'email'} label={'Email'}>
+            <Form.Item name={'city'} label={config?.data?.city}>
               <Input autoComplete={'off'} />
             </Form.Item>
-          </SRender>
-          <SRender render={!hasEmail}>{postalCodeRender}</SRender>
+            <Form.Item name={'phone'} label={config?.data?.phone}>
+              <PhoneCode />
+            </Form.Item>
+            <SRender render={hasEmail}>{postalCodeRender}</SRender>
+          </Flex>
+          <Flex vertical flex={1}>
+            <SRender render={hasName}>{countryRender}</SRender>
+            <Form.Item name={'address2'} label={config?.data?.address2}>
+              <Input autoComplete={'off'} />
+            </Form.Item>
+            <SRender render={!!zoneOptions?.length}>
+              <Form.Item name={'zone'} label={config?.data?.zone}>
+                <SSelect
+                  showSearch
+                  optionFilterProp={'label'}
+                  options={zoneOptions}
+                  className={'fit-width'}
+                />
+              </Form.Item>
+            </SRender>
+            <SRender render={hasEmail}>
+              <Form.Item name={'email'} label={'Email'}>
+                <Input autoComplete={'off'} />
+              </Form.Item>
+            </SRender>
+            <SRender render={!hasEmail}>{postalCodeRender}</SRender>
+          </Flex>
         </Flex>
-      </Flex>
+      </Form>
     </SCard>
   )
 }

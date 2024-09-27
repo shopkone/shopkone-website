@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
-import { LinkOutlined } from '@ant-design/icons'
+import { IconLink } from '@tabler/icons-react'
 import { useDebounceFn, useMemoizedFn, useRequest } from 'ahooks'
 import { Button, Card, Flex, Tooltip, Typography } from 'antd'
 import dayjs from 'dayjs'
@@ -150,7 +150,7 @@ export default function Files () {
       render: (src: string) => (
         <Tooltip title={'Copy link'}>
           <Button onClick={(e) => { e.stopPropagation(); onCopy(src) }} className={styles.btn}>
-            <LinkOutlined className={styles.icon} />
+            <IconLink size={15} className={styles.icon} />
           </Button>
         </Tooltip>
       )

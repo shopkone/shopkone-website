@@ -1,24 +1,32 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRequest } from 'ahooks'
 import { Checkbox, Flex, Form, Input } from 'antd'
 
 import { useCurrencyList } from '@/api/base/currency-list'
 import { useTimezoneList } from '@/api/base/timezone-list'
 import { ShopGeneralApi } from '@/api/shop/get-general'
+import { useGetShopInfo } from '@/api/shop/get-shop-info'
+import { UpdateGeneralApi } from '@/api/shop/update-general'
 import Address from '@/components/address'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
+import { sMessage } from '@/components/s-message'
 import SSelect from '@/components/s-select'
 import Uploader from '@/pages/mange/settings/general/uploader'
+import { isEqualHandle } from '@/utils/isEqual'
 
 export default function General () {
   const general = useRequest(ShopGeneralApi)
+  const update = useRequest(UpdateGeneralApi, { manual: true })
   const [form] = Form.useForm()
   const timezones = useTimezoneList()
   const currencyList = useCurrencyList()
 
   const orderIdPrefix = Form.useWatch('order_id_prefix', form)
   const orderIdSuffix = Form.useWatch('order_id_suffix', form)
+  const shop = useGetShopInfo()
+
+  const [isChange, setIsChange] = useState(false)
 
   const formattingOptions = [
     { label: 'e.g 123,456.78', value: '123,456.78' },
@@ -28,15 +36,40 @@ export default function General () {
     { label: 'e.g 123\'456.65', value: '123\'456.65' }
   ]
 
+  const onValuesChange = (_: any, allValues: any) => {
+    const isSame = isEqualHandle(allValues, general.data)
+    setIsChange(!isSame)
+  }
+
+  const onCancel = () => {
+    form.setFieldsValue(general.data)
+    setIsChange(false)
+  }
+
+  const onOk = async () => {
+    await form.validateFields()
+    const values = form.getFieldsValue()
+    await update.runAsync(values)
+    await general.refreshAsync()
+    await shop.refreshAsync()
+    sMessage.success('Update success')
+    setIsChange(false)
+  }
+
   useEffect(() => {
     if (!general.data) return
-    const { address, ...rest } = general.data
-    form.setFieldsValue({ ...rest, ...address })
+    form.setFieldsValue(general.data)
   }, [general.data])
 
   return (
-    <Page isChange={false} title={'General'} width={700}>
-      <Form form={form} layout={'vertical'}>
+    <Page
+      onOk={onOk}
+      onCancel={onCancel}
+      isChange={isChange}
+      title={'General'}
+      width={700}
+    >
+      <Form onValuesChange={onValuesChange} form={form} layout={'vertical'}>
         <Flex vertical gap={16}>
           <SCard loading={general.loading} title={'Profile'}>
             <Flex gap={48}>
@@ -58,7 +91,9 @@ export default function General () {
               </Flex>
             </Flex>
           </SCard>
-          <Address loading={general.loading} hasName />
+          <Form.Item name={'address'}>
+            <Address loading={general.loading} hasName />
+          </Form.Item>
           <SCard loading={general.loading || timezones.loading || currencyList.loading} title={'Store defaults'}>
             <Flex vertical>
               <Form.Item

@@ -1,7 +1,7 @@
+import { IconSearch } from '@tabler/icons-react'
 import { Button, Flex, Input, Typography } from 'antd'
 
 import { FileType } from '@/api/file/add-file-record'
-import { ReactComponent as SearchIcon } from '@/assets/icon/search.svg'
 import SRender from '@/components/s-render'
 import TableFilter from '@/components/table-filter'
 import { FilterNumberRangeProps } from '@/components/table-filter/filter-number-range'
@@ -37,7 +37,7 @@ export default function Filters (props: FiltersProps) {
           onChange?.({ ...value, keyword: e.target.value })
         }}
         allowClear
-        prefix={<SearchIcon />}
+        prefix={<IconSearch size={15} className={styles['filter-icon']} />}
         placeholder={'Search files'}
         size={'small'}
         variant={'borderless'}

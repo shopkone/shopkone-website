@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { DeleteFour } from '@icon-park/react'
+import { IconSearch } from '@tabler/icons-react'
 import { useInViewport, useRequest } from 'ahooks'
 import { Button, Checkbox, Flex, Input, Modal, Typography } from 'antd'
 import classNames from 'classnames'
@@ -8,7 +9,6 @@ import { AddFileApi, FileType } from '@/api/file/add-file-record'
 import { FileGroupListApi } from '@/api/file/file-group-list'
 import { FileListApi, FileListReq, FileListRes } from '@/api/file/file-list'
 import { UploadFileType } from '@/api/file/UploadFileType'
-import { ReactComponent as SearchIcon } from '@/assets/icon/search.svg'
 import FileImage from '@/components/file-image'
 import SLoading from '@/components/s-loading'
 import SRender from '@/components/s-render'
@@ -193,7 +193,7 @@ export default function SelectFiles (props: SelectFilesProps) {
                 setParams({ ...params, keyword: e.target.value, page: 1 })
               }}
               autoComplete={'off'}
-              prefix={<SearchIcon className={styles['filter-icon']} />}
+              prefix={<IconSearch size={15} className={styles['filter-icon']} />}
               placeholder={'Search files'}
               className={styles['search-input']}
             />
@@ -263,9 +263,8 @@ export default function SelectFiles (props: SelectFilesProps) {
 
             <div className={styles.content}>
               <SRender className={styles.empty} render={!list?.length && !fileList.loading}>
-                <div style={{ width: hasSearch ? 550 : 700 }}>
+                <div style={{ width: 700 }}>
                   <Empty
-                    img={hasSearch ? <SearchIcon className={'secondary'} style={{ fontSize: 64 }} /> : ''}
                     title={hasSearch ? 'No results found' : 'Upload and manage your files'}
                     desc={hasSearch ? 'Edit your search criteria, or upload a new file.' : 'Files can be images, videos and zip.'}
                     actions={

@@ -1,10 +1,21 @@
 .img {
-  width: 40px;
-  height: 40px;
   border: 1px solid var(--color-border);
   background-color: var(--color-bg-sixth);
   border-radius: 8px;
   position: relative;
   flex-shrink: 0;
   object-fit: contain;
+}
+
+.container :global {
+  background-color: #f1f1f1;
+  border-radius: 12px;
+  .shopkone-image-error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .shopkone-image-error .shopkone-image-img{
+    width: 24px !important;
+  }
 }

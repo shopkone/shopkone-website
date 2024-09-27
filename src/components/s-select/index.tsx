@@ -1,4 +1,4 @@
-import { Down } from '@icon-park/react'
+import { IconChevronDown } from '@tabler/icons-react'
 import { Select, SelectProps } from 'antd'
 
 export default function SSelect (props: SelectProps) {
@@ -7,7 +7,7 @@ export default function SSelect (props: SelectProps) {
       {...props}
       virtual={false}
       suffixIcon={
-        <Down size={15} fill={'#646a73c0'} />
+        <IconChevronDown size={15} color={'#646a73c0'} />
       }
     />
   )

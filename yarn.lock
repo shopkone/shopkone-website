@@ -1985,6 +1985,18 @@
     "@svgr/plugin-jsx" "8.1.0"
     "@svgr/plugin-svgo" "8.1.0"
 
+"@tabler/icons-react@^3.18.0":
+  version "3.18.0"
+  resolved "https://registry.npmmirror.com/@tabler/icons-react/-/icons-react-3.18.0.tgz#fdc2423900321f4864ade19112abd2dd4b825755"
+  integrity sha512-2gGMWJe67T7q6Sgb+4r/OsAjbq6hH30D6D2l02kOnl9kAauSsp/u6Gx1zteQ/GiwqRYSTEIhYMOhOV4LLa8rAw==
+  dependencies:
+    "@tabler/icons" "3.18.0"
+
+"@tabler/icons@3.18.0":
+  version "3.18.0"
+  resolved "https://registry.npmmirror.com/@tabler/icons/-/icons-3.18.0.tgz#9531d3ec7541facd584a22fb695bd65b896484a0"
+  integrity sha512-zLuwTs/xjQSsGh1X5Pt6qytvM8r6lFpWo5aAiDgnX2ekrOshNs4d87PcJEkP3555gaKy0ZftgckxPzedrN00fQ==
+
 "@tinymce/tinymce-react@^4.3.2":
   version "4.3.2"
   resolved "https://registry.npmmirror.com/@tinymce/tinymce-react/-/tinymce-react-4.3.2.tgz#fbe05e35e948b0e577eddf639bfe7ee2158fdc10"

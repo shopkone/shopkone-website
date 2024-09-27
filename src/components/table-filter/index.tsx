@@ -1,6 +1,6 @@
 import { MouseEventHandler, useMemo, useState } from 'react'
 import { CloseOutlined } from '@ant-design/icons'
-import { Down } from '@icon-park/react'
+import { IconChevronDown } from '@tabler/icons-react'
 import { Button, Checkbox, Flex, Popover, Typography } from 'antd'
 import { CheckboxGroupProps } from 'antd/es/checkbox'
 
@@ -100,7 +100,7 @@ export default function TableFilter (props: TableFilterProps) {
                 </div>
                 )
               : (
-                <Down style={{ position: 'relative', top: 3 }} size={13} strokeWidth={3} />
+                <IconChevronDown className={'secondary'} size={13} style={{ position: 'relative', top: 0 }} />
                 )
           }
         </Flex>

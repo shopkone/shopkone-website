@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { ArrowRight, International, LocalTwo, Right } from '@icon-park/react'
+import { IconArrowRight, IconChevronRight, IconMapPin, IconWorld } from '@tabler/icons-react'
 import { Button, Card, Empty, Flex } from 'antd'
 
 import SLocation from '@/components/s-location'
@@ -60,15 +60,15 @@ export default function CourierService () {
               <div className={styles.right}>
                 <div className={styles.name}>Rates for</div>
                 <Flex align={'center'}>
-                  <div><LocalTwo size={16} style={{ position: 'relative', top: 2, marginRight: 4 }} /></div>
+                  <div><IconMapPin size={16} style={{ position: 'relative', top: 2, marginRight: 4 }} /></div>
                   <div>2 locations</div>
-                  <div style={{ position: 'relative', top: 3, marginLeft: 12, marginRight: 12 }}><ArrowRight size={15} /></div>
-                  <div style={{ position: 'relative', top: 3, marginRight: 4 }}><International size={15} /></div>
+                  <div style={{ position: 'relative', top: 3, marginLeft: 12, marginRight: 12 }}><IconArrowRight size={15} /></div>
+                  <div style={{ position: 'relative', top: 2, marginRight: 4 }}><IconWorld size={16} /></div>
                   <div>2 zones</div>
                 </Flex>
               </div>
               <div className={styles['right-icon']}>
-                <Right size={16} />
+                <IconChevronRight size={16} />
               </div>
             </Flex>
           </Flex>

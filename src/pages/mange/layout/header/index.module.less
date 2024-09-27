@@ -18,16 +18,23 @@
     max-width: 640px;
   }
   .center-inner {
+    transition: all 0.3s;
     padding: 0 12px;
     flex: 1;
     height: 36px;
     border-radius: 12px;
     background-color: #00000010;
   }
+  .hide {
+    transform: scaleX(0);
+    opacity: 0;
+  }
   .right {
+    flex: 1;
     display: flex;
     align-items: center;
     margin-right: 8px;
+    justify-content: flex-end;
     gap: 8px;
     .bell {
       min-height: 36px;

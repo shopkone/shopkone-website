@@ -1,5 +1,14 @@
 import { useLocation, useNavigate } from 'react-router-dom'
-import { Home, Setting } from '@icon-park/react'
+import {
+  IconArchive,
+  IconBrandGoogleAnalytics,
+  IconHome,
+  IconNotebook,
+  IconSettings,
+  IconTag,
+  IconTargetArrow,
+  IconUser
+} from '@tabler/icons-react'
 import { Menu, MenuProps } from 'antd'
 
 import styles from './index.module.less'
@@ -7,9 +16,15 @@ import styles from './index.module.less'
 export default function Sider () {
   const nav = useNavigate()
   const location = useLocation()
+  const openKey = `/${location.pathname?.split('/')[1]}`
+  const activeKey = `${location.pathname?.split('/')[2] || ''}`
 
   const menus: MenuProps['items'] = [
-    { label: 'Home', key: '', icon: <Home style={{ position: 'relative', top: -1 }} size={15} /> },
+    {
+      label: 'Home',
+      key: '',
+      icon: <IconHome size={16} />
+    },
     {
       label: 'Orders',
       key: '/orders',
@@ -18,7 +33,7 @@ export default function Sider () {
         { label: 'Drafts', key: 'Drafts' },
         { label: 'Abandoned checkouts', key: 'Abandoned checkouts' }
       ],
-      icon: <Home style={{ position: 'relative', top: -1 }} size={15} />
+      icon: <IconArchive size={16} />
     },
     {
       label: 'Products',
@@ -30,7 +45,7 @@ export default function Sider () {
         { label: 'Purchase orders', key: 'purchase_orders' },
         { label: 'Gift cards', key: 'gift_cards' }
       ],
-      icon: <Home style={{ position: 'relative', top: -1 }} size={15} />
+      icon: <IconTag size={16} />
     },
     {
       label: 'Customers',
@@ -39,7 +54,7 @@ export default function Sider () {
         { label: 'Customers', key: 'customers' },
         { label: 'Segments', key: 'segments' }
       ],
-      icon: <Home style={{ position: 'relative', top: -1 }} size={15} />
+      icon: <IconUser size={16} />
     },
     {
       label: 'Analytics',
@@ -49,7 +64,7 @@ export default function Sider () {
         { label: 'Reports', key: 'reports' },
         { label: 'Live View', key: 'live-view' }
       ],
-      icon: <Home style={{ position: 'relative', top: -1 }} size={15} />
+      icon: <IconBrandGoogleAnalytics size={16} />
     },
     {
       label: 'Marketing',
@@ -59,17 +74,17 @@ export default function Sider () {
         { label: 'Campaigns', key: 'campaigns' },
         { label: 'automations', key: 'automations' }
       ],
-      icon: <Home style={{ position: 'relative', top: -1 }} size={15} />
+      icon: <IconTargetArrow size={16} />
     },
     {
       label: 'Blog Posts',
       key: '/blog_posts',
-      icon: <Home style={{ position: 'relative', top: -1 }} size={15} />
+      icon: <IconNotebook size={16} />
     },
     {
       label: 'Settings',
       key: '/settings',
-      icon: <Setting style={{ position: 'relative', top: -1 }} size={15} />,
+      icon: <IconSettings size={16} />,
       children: [
         { label: 'General', key: 'general' },
         { label: 'Staff', key: 'staff' },
@@ -101,8 +116,8 @@ export default function Sider () {
   return (
     <nav className={styles.sider}>
       <Menu
-        defaultOpenKeys={[`/${location.pathname?.split('/')[1]}`]}
-        selectedKeys={[`${location.pathname?.split('/')[2]}`]}
+        defaultOpenKeys={[openKey]}
+        selectedKeys={[activeKey]}
         onClick={onClick}
         prefix={'asd'}
         mode={'inline'}

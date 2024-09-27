@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowLeft } from '@icon-park/react'
+import { IconArrowLeft } from '@tabler/icons-react'
 import { Button, Flex } from 'antd'
 
 import SRender from '@/components/s-render'
@@ -17,17 +17,24 @@ export interface PageProps {
   back?: string
   isChange?: boolean
   bottom?: number
+  onOk?: () => void
+  onCancel?: () => void
 }
 
 export default function Page (props: PageProps) {
-  const { children, width, header, footer, title, back, isChange, bottom } = props
+  const { children, width, header, footer, title, back, isChange, bottom, onOk, onCancel } = props
   const nav = useNavigate()
   const setIsChange = useLayoutState(state => state.setChange)
+  const setAction = useLayoutState(state => state.setAction)
   const resetPage = useLayoutState(state => state.reset)
 
   useEffect(() => {
     setIsChange(isChange)
   }, [isChange])
+
+  useEffect(() => {
+    setAction({ onOk, onCancel })
+  }, [onOk, onCancel])
 
   useEffect(() => {
     return () => { resetPage() }
@@ -42,10 +49,10 @@ export default function Page (props: PageProps) {
     >
       <SRender render={title || header}>
         <Flex align={'center'} justify={'space-between'} className={styles.title}>
-          <Flex gap={4} align={'center'}>
+          <Flex gap={8} align={'center'}>
             <SRender render={!!back}>
               <Button onClick={() => { nav(back || '') }} type={'text'} className={styles['back-icon']}>
-                <ArrowLeft strokeWidth={5} size={16} />
+                <IconArrowLeft size={20} />
               </Button>
             </SRender>
             <SRender render={!!title}>
@@ -61,7 +68,7 @@ export default function Page (props: PageProps) {
       <Flex gap={12} align={'center'} className={styles.footer}>
         {footer}
         <SRender render={isChange !== undefined}>
-          <Button type={'primary'}>Save</Button>
+          <Button disabled={!isChange} type={'primary'}>Save</Button>
         </SRender>
       </Flex>
     </div>

@@ -4,7 +4,8 @@ import { useRequest } from 'ahooks'
 import { Flex } from 'antd'
 import classNames from 'classnames'
 
-import Image from '@/components/image'
+import { FileType } from '@/api/file/add-file-record'
+import FileImage from '@/components/file-image'
 import SelectFiles from '@/components/media/select-files'
 import SLoading from '@/components/s-loading'
 import SRender from '@/components/s-render'
@@ -39,16 +40,11 @@ export default function Uploader (props: UploaderProps) {
         <Flex
           onClick={() => { openInfo.edit(props.value ? [props.value] : []) }} align={'center'} justify={'center'} className={styles.favicon}
         >
-          <SRender render={file?.path}>
-            <Image style={{ width: 64, height: 64 }} src={file?.path} alt={file?.path} />
+          <SRender render={props.value}>
+            <FileImage type={FileType.Image} width={64} height={64} src={file?.path || ''} alt={file?.path} />
           </SRender>
-          <SRender render={!file?.path}>
-            <Plus
-              size={24} style={{
-                position: 'relative',
-                top: 2
-              }}
-            />
+          <SRender render={!props.value}>
+            <Plus size={24} style={{ position: 'relative', top: 2 }} />
           </SRender>
         </Flex>
       </SRender>

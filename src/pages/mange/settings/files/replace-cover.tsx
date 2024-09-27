@@ -1,9 +1,9 @@
+import { IconImageInPicture } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
 import { Button, Tooltip } from 'antd'
 
 import { FileUpdateApi } from '@/api/file/file-update'
 import { UploadFileType } from '@/api/file/UploadFileType'
-import { ReactComponent as ReplaceIcon } from '@/assets/icon/replace-cover.svg'
 import { sMessage } from '@/components/s-message'
 import Upload from '@/components/upload'
 import { useUpload } from '@/components/upload/use-upload'
@@ -38,13 +38,13 @@ export default function ReplaceCover (props: ReplaceCoverProps) {
       maxSize={1024 * 1024 * 10}
       onChange={onUpload}
     >
-      <Tooltip title={'Replace'}>
+      <Tooltip title={'Replace cover'}>
         <Button
           className={styles.actionsIcon}
           type={'text'}
           size={'small'}
         >
-          <ReplaceIcon style={{ fontSize: 15 }} />
+          <IconImageInPicture style={{ position: 'relative', top: -1 }} size={17} />
         </Button>
       </Tooltip>
     </Upload>

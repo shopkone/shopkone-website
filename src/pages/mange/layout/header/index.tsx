@@ -3,6 +3,7 @@ import { BellOutlined, QuestionCircleOutlined, ShopOutlined } from '@ant-design/
 import { Attention, Check, Right } from '@icon-park/react'
 import { useRequest } from 'ahooks'
 import { Button, Flex, Popover, Skeleton, Tooltip } from 'antd'
+import classNames from 'classnames'
 
 import { useGetLoginInfo } from '@/api/account/get-account-info'
 import { LogoutApi } from '@/api/account/logout'
@@ -21,7 +22,7 @@ export default function Header () {
   const shopList = useShopList()
   const shop = useGetShopInfo()
   const userInfo = useGetLoginInfo()
-
+  const [confirmLoading, setConfirmLoading] = useState(false)
   const [infoExpand, setInfoExpand] = useState(false)
 
   const logout = async () => {
@@ -29,97 +30,113 @@ export default function Header () {
     toLogin()
   }
 
+  const onOkHandler = async () => {
+    try {
+      setConfirmLoading(true)
+      await page.onOk?.()
+    } finally {
+      setConfirmLoading(false)
+    }
+  }
+
   return (
     <header className={styles.header}>
-      <Flex align={'center'} className={styles.logo}>shopkone</Flex>
-      <Flex align={'center'} justify={'center'} className={styles.center} >
-        <SRender render={page.isChange}>
-          <Flex justify={'space-between'} align={'center'} className={styles['center-inner']}>
+      <Flex justify={'space-between'} align={'center'} className={styles.logo}>shopkone</Flex>
+      <Flex justify={'space-between'} flex={1}>
+        <div className={'flex1'} />
+        <Flex flex={2} align={'center'} justify={'center'} className={styles.center} >
+          <Flex
+            justify={'space-between'}
+            align={'center'}
+            className={
+            classNames(styles['center-inner'], { [styles.hide]: !page.isChange })
+            }
+          >
             <Flex align={'center'} gap={4}>
               <Attention strokeWidth={4} style={{ position: 'relative', top: 2 }} size={14} />
               <div>Unsaved</div>
             </Flex>
             <Flex align={'center'} gap={12}>
-              <Button>Discard</Button>
-              <Button type={'primary'}>Save</Button>
+              <Button onClick={page.onCancel}>Discard</Button>
+              <Button onClick={onOkHandler} type={'primary'} loading={confirmLoading}>Save</Button>
             </Flex>
           </Flex>
-        </SRender>
-      </Flex>
-      <div className={styles.right}>
-        <Tooltip arrow={false} title={'View your online store'}>
-          <Flex align={'center'} justify={'center'} className={styles.bell} >
-            <ShopOutlined />
-          </Flex>
-        </Tooltip>
-        <Tooltip arrow={false} title={'Help center'}>
-          <Flex align={'center'} justify={'center'} className={styles.bell} >
-            <QuestionCircleOutlined />
-          </Flex>
-        </Tooltip>
-        <Flex align={'center'} justify={'center'} className={styles.bell} >
-          <BellOutlined />
         </Flex>
-        <Popover
-          open={infoExpand}
-          onOpenChange={(open) => { setInfoExpand(open) }}
-          trigger={'click'}
-          placement={'bottomRight'}
-          arrow={false}
-          overlayInnerStyle={{ padding: 0 }}
-          content={(
-            <div className={styles.popover}>
-              {
-                shopList?.data?.map((item) => (
-                  <Flex key={item.uuid} justify={'space-between'} className={styles.item}>
-                    <Flex gap={6}>
-                      <SRender render={item.website_favicon}>
-                        <Flex align={'center'} justify={'center'} className={styles['item-avatar']}>
-                          <img src={item.website_favicon} alt={item.store_name} />
-                        </Flex>
-                      </SRender>
-                      <div style={{ fontWeight: 500 }}>{item.store_name}</div>
+        <div className={styles.right}>
+          <Tooltip arrow={false} title={'View your online store'}>
+            <Flex align={'center'} justify={'center'} className={styles.bell} >
+              <ShopOutlined />
+            </Flex>
+          </Tooltip>
+          <Tooltip arrow={false} title={'Help center'}>
+            <Flex align={'center'} justify={'center'} className={styles.bell} >
+              <QuestionCircleOutlined />
+            </Flex>
+          </Tooltip>
+          <Flex align={'center'} justify={'center'} className={styles.bell} >
+            <BellOutlined />
+          </Flex>
+          <Popover
+            open={infoExpand}
+            onOpenChange={(open) => { setInfoExpand(open) }}
+            trigger={'click'}
+            placement={'bottomRight'}
+            arrow={false}
+            overlayInnerStyle={{ padding: 0 }}
+            content={(
+              <div className={styles.popover}>
+                {
+                  shopList?.data?.map((item) => (
+                    <Flex key={item.uuid} justify={'space-between'} className={styles.item}>
+                      <Flex gap={6}>
+                        <SRender render={item.website_favicon}>
+                          <Flex align={'center'} justify={'center'} className={styles['item-avatar']}>
+                            <img src={item.website_favicon} alt={item.store_name} />
+                          </Flex>
+                        </SRender>
+                        <div style={{ fontWeight: 500 }}>{item.store_name}</div>
+                      </Flex>
+                      <Check strokeWidth={6} size={11} />
                     </Flex>
-                    <Check strokeWidth={6} size={11} />
-                  </Flex>
-                ))
-              }
-              <div style={{ margin: 0, marginBottom: 4 }} className={'line'} />
-              <div className={styles.info}>
-                <SRender render={userInfo?.data?.is_master} style={{ fontWeight: 500 }}>admin</SRender>
-                <div>{userInfo?.data?.email}</div>
+                  ))
+                }
+                <div style={{ margin: 0, marginBottom: 4 }} className={'line'} />
+                <div className={styles.info}>
+                  <SRender render={userInfo?.data?.is_master} style={{ fontWeight: 500 }}>admin</SRender>
+                  <div>{userInfo?.data?.email}</div>
+                </div>
+                <Flex justify={'space-between'} align={'center'} className={styles.item}>
+                  <div>Language</div>
+                  <div className={styles['right-icon']}><Right size={14} /></div>
+                </Flex>
+                <div className={styles.item}>
+                  Manage account
+                </div>
+                <div onClick={logout} className={styles.item}>
+                  <SRender render={!logoutApi.loading}>
+                    Log out
+                  </SRender>
+                  <SRender render={logoutApi.loading}>
+                    <SLoading size={20} />
+                  </SRender>
+                </div>
               </div>
-              <Flex justify={'space-between'} align={'center'} className={styles.item}>
-                <div>Language</div>
-                <div className={styles['right-icon']}><Right size={14} /></div>
-              </Flex>
-              <div className={styles.item}>
-                Manage account
-              </div>
-              <div onClick={logout} className={styles.item}>
-                <SRender render={!logoutApi.loading}>
-                  Log out
+            )}
+          >
+            <div className={styles.avatar} style={{ background: infoExpand ? '#edeeee' : undefined }}>
+              <SRender render={shopList.data}>
+                <SRender render={shop?.data?.website_favicon} className={styles['avatar-img']}>
+                  <img src={shop.data?.website_favicon} alt={shop.data?.store_name} />
                 </SRender>
-                <SRender render={logoutApi.loading}>
-                  <SLoading size={20} />
-                </SRender>
-              </div>
-            </div>
-          )}
-        >
-          <div className={styles.avatar} style={{ background: infoExpand ? '#edeeee' : undefined }}>
-            <SRender render={shopList.data}>
-              <SRender render={shop?.data?.website_favicon} className={styles['avatar-img']}>
-                <img src={shop.data?.website_favicon} alt={shop.data?.store_name} />
+                <div className={styles['avatar-text']}>{shop.data?.store_name}</div>
               </SRender>
-              <div className={styles['avatar-text']}>{shop.data?.store_name}</div>
-            </SRender>
-            <SRender render={!shopList.data}>
-              <Skeleton.Button active style={{ width: 100 }} />
-            </SRender>
-          </div>
-        </Popover>
-      </div>
+              <SRender render={!shopList.data}>
+                <Skeleton.Button active style={{ width: 100 }} />
+              </SRender>
+            </div>
+          </Popover>
+        </div>
+      </Flex>
     </header>
   )
 }

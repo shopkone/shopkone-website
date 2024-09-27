@@ -1,9 +1,9 @@
+import { IconReplace } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
 import { Button, Tooltip } from 'antd'
 
 import { FileUpdateApi } from '@/api/file/file-update'
 import { UploadFileType } from '@/api/file/UploadFileType'
-import { ReactComponent as ReplaceIcon } from '@/assets/icon/replace.svg'
 import { sMessage } from '@/components/s-message'
 import Upload from '@/components/upload'
 import { useUpload } from '@/components/upload/use-upload'
@@ -44,7 +44,7 @@ export default function ReplaceVideo (props: ReplaceVideoProps) {
           type={'text'}
           size={'small'}
         >
-          <ReplaceIcon style={{ fontSize: 15 }} />
+          <IconReplace size={15} />
         </Button>
       </Tooltip>
     </Upload>

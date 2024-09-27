@@ -6,7 +6,7 @@ interface GetShopInfoResponse {
   uuid: string
   store_name: string
   status: number
-  website_favicon?: string
+  website_favicon_id?: number
   store_currency: string
   time_zone: string
 }

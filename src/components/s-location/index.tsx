@@ -1,4 +1,4 @@
-import { LocalTwo } from '@icon-park/react'
+import { IconMapPin } from '@tabler/icons-react'
 import { Flex } from 'antd'
 import classNames from 'classnames'
 
@@ -19,7 +19,7 @@ export default function SLocation (props: SLocationProps) {
         className={classNames([styles.item, { [styles['click-item ']]: !!onClick }])}
       >
         <div style={{ width: 20, position: 'relative', top: 2 }}>
-          <LocalTwo size={17} strokeWidth={5} />
+          <IconMapPin size={20} />
         </div>
         <div className={'flex1'}>
           <div className={styles.title}>asd</div>

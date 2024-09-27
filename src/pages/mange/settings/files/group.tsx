@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { More, Plus } from '@icon-park/react'
+import { More } from '@icon-park/react'
+import { IconPlus } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
 import { Button, Flex, Popover, Typography } from 'antd'
 import classNames from 'classnames'
@@ -107,7 +108,7 @@ export default function Group (props: GroupProps) {
         <div className={styles.sideBottom}>
           <Button onClick={() => { open.edit() }} block>
             <Flex gap={4} justify={'center'} align={'center'}>
-              <Plus size={15} />
+              <IconPlus style={{ position: 'relative', top: -3 }} size={14} />
               <div style={{ position: 'relative', top: -2 }}>Add group</div>
             </Flex>
           </Button>
