@@ -1,17 +1,18 @@
 import { useState } from 'react'
 import { BellOutlined, QuestionCircleOutlined, ShopOutlined } from '@ant-design/icons'
 import { Attention, Check, Right } from '@icon-park/react'
+import { IconChevronDown, IconChevronUp } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
-import { Button, Flex, Popover, Skeleton, Tooltip } from 'antd'
+import { Button, Flex, Popover, Tooltip, Typography } from 'antd'
 import classNames from 'classnames'
 
 import { useGetLoginInfo } from '@/api/account/get-account-info'
 import { LogoutApi } from '@/api/account/logout'
-import { useGetShopInfo } from '@/api/shop/get-shop-info'
 import { useShopList } from '@/api/shop/get-shop-list'
 import SLoading from '@/components/s-loading'
 import SRender from '@/components/s-render'
 import { useLayoutState } from '@/pages/mange/layout/state'
+import { useManageState } from '@/pages/mange/state'
 import { toLogin } from '@/utils/to-login'
 
 import styles from './index.module.less'
@@ -20,7 +21,7 @@ export default function Header () {
   const page = useLayoutState()
   const logoutApi = useRequest(LogoutApi, { manual: true })
   const shopList = useShopList()
-  const shop = useGetShopInfo()
+  const manageState = useManageState()
   const userInfo = useGetLoginInfo()
   const [confirmLoading, setConfirmLoading] = useState(false)
   const [infoExpand, setInfoExpand] = useState(false)
@@ -76,16 +77,17 @@ export default function Header () {
           <Flex align={'center'} justify={'center'} className={styles.bell} >
             <BellOutlined />
           </Flex>
-          <Popover
-            open={infoExpand}
-            onOpenChange={(open) => { setInfoExpand(open) }}
-            trigger={'click'}
-            placement={'bottomRight'}
-            arrow={false}
-            overlayInnerStyle={{ padding: 0 }}
-            content={(
-              <div className={styles.popover}>
-                {
+          <SLoading loading={manageState.shopInfoLoading}>
+            <Popover
+              open={infoExpand}
+              onOpenChange={(open) => { setInfoExpand(open) }}
+              trigger={'click'}
+              placement={'bottomRight'}
+              arrow={false}
+              overlayInnerStyle={{ padding: 0 }}
+              content={(
+                <div className={styles.popover}>
+                  {
                   shopList?.data?.map((item) => (
                     <Flex key={item.uuid} justify={'space-between'} className={styles.item}>
                       <Flex gap={6}>
@@ -100,41 +102,50 @@ export default function Header () {
                     </Flex>
                   ))
                 }
-                <div style={{ margin: 0, marginBottom: 4 }} className={'line'} />
-                <div className={styles.info}>
-                  <SRender render={userInfo?.data?.is_master} style={{ fontWeight: 500 }}>admin</SRender>
-                  <div>{userInfo?.data?.email}</div>
+                  <div style={{ margin: 0, marginBottom: 4 }} className={'line'} />
+                  <div className={styles.info}>
+                    <SRender render={userInfo?.data?.is_master} style={{ fontWeight: 500 }}>admin</SRender>
+                    <div>{userInfo?.data?.email}</div>
+                  </div>
+                  <Flex justify={'space-between'} align={'center'} className={styles.item}>
+                    <div>Language</div>
+                    <div className={styles['right-icon']}><Right size={14} /></div>
+                  </Flex>
+                  <div className={styles.item}>
+                    Manage account
+                  </div>
+                  <div onClick={logout} className={styles.item}>
+                    <SRender render={!logoutApi.loading}>
+                      Log out
+                    </SRender>
+                    <SRender render={logoutApi.loading}>
+                      <SLoading size={20} />
+                    </SRender>
+                  </div>
                 </div>
-                <Flex justify={'space-between'} align={'center'} className={styles.item}>
-                  <div>Language</div>
-                  <div className={styles['right-icon']}><Right size={14} /></div>
-                </Flex>
-                <div className={styles.item}>
-                  Manage account
-                </div>
-                <div onClick={logout} className={styles.item}>
-                  <SRender render={!logoutApi.loading}>
-                    Log out
-                  </SRender>
-                  <SRender render={logoutApi.loading}>
-                    <SLoading size={20} />
-                  </SRender>
-                </div>
-              </div>
             )}
-          >
-            <div className={styles.avatar} style={{ background: infoExpand ? '#edeeee' : undefined }}>
-              <SRender render={shopList.data}>
-                <SRender render={shop?.data?.website_favicon} className={styles['avatar-img']}>
-                  <img src={shop.data?.website_favicon} alt={shop.data?.store_name} />
+            >
+              <div className={styles.avatar} style={{ background: infoExpand ? '#edeeee' : undefined }}>
+                <SRender render={shopList.data}>
+                  <SRender render={manageState?.shopInfo?.website_favicon} className={styles['avatar-img']}>
+                    <img src={manageState?.shopInfo?.website_favicon} alt={manageState?.shopInfo?.store_name} />
+                  </SRender>
+                  <Typography.Text ellipsis={{ tooltip: true }} className={styles['avatar-text']}>
+                    {manageState?.shopInfo?.store_name}
+                  </Typography.Text>
                 </SRender>
-                <div className={styles['avatar-text']}>{shop.data?.store_name}</div>
-              </SRender>
-              <SRender render={!shopList.data}>
-                <Skeleton.Button active style={{ width: 100 }} />
-              </SRender>
-            </div>
-          </Popover>
+                {
+                  infoExpand
+                    ? (
+                      <IconChevronUp size={14} />
+                      )
+                    : (
+                      <IconChevronDown size={14} />
+                      )
+                }
+              </div>
+            </Popover>
+          </SLoading>
         </div>
       </Flex>
     </header>

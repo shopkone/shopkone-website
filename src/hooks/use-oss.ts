@@ -3,7 +3,7 @@ import { useMemoizedFn, useMount, useRequest } from 'ahooks'
 import OSS from 'ali-oss'
 
 import { GetUploadTokenApi } from '@/api/file/get-upload-token'
-import { useGetShopInfo } from '@/api/shop/get-shop-info'
+import { useManageState } from '@/pages/mange/state'
 
 export const useOss = () => {
   const REGION = 'oss-cn-shenzhen' // 存储区域
@@ -12,7 +12,7 @@ export const useOss = () => {
   const client = useRef<OSS>(null)
 
   const getToken = useRequest(GetUploadTokenApi, { manual: true, cacheKey: 'OSS_TOKEN', staleTime: 60 * 1000 * 5 })
-  const getShopInfo = useGetShopInfo(true)
+  const manageState = useManageState()
 
   const fetToken = useMemoizedFn(async () => {
     const { token } = await getToken.runAsync()
@@ -23,9 +23,7 @@ export const useOss = () => {
   const run = async (fileName: string, file: File, onProgress?: (p: number) => void) => {
     if (!client?.current) return
 
-    const shopInfo = await getShopInfo.runAsync()
-
-    const name = `${shopInfo?.uuid}/${fileName}`
+    const name = `${manageState.shopInfo?.uuid}/${fileName}`
 
     let abortCheckpoint: OSS.Checkpoint | undefined
 

@@ -3,8 +3,8 @@ import { More, Share } from '@icon-park/react'
 import { Button, Card, Flex, Form, Popover, Typography } from 'antd'
 import { useWatch } from 'antd/es/form/Form'
 
-import { useGetShopInfo } from '@/api/shop/get-shop-info'
 import Edit, { SeoType } from '@/components/seo/edit'
+import { useManageState } from '@/pages/mange/state'
 
 import styles from './index.module.less'
 
@@ -20,7 +20,7 @@ export default function Seo (props: SeoProps) {
   } = props
   const [editing, setEditing] = useState(false)
 
-  const shop = useGetShopInfo()
+  const mange = useManageState()
 
   const tempSeoRef = useRef<SeoType>()
 
@@ -143,7 +143,7 @@ export default function Seo (props: SeoProps) {
               )
             : (
               <Flex vertical>
-                <div className={styles.name}>{shop?.data?.store_name}</div>
+                <div className={styles.name}>{mange?.shopInfo?.store_name}</div>
                 <Typography.Text ellipsis={{ tooltip: true }} className={styles.link}>
                   https://b3930d-c0.myshopify.com
                 </Typography.Text>

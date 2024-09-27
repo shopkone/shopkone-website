@@ -5,7 +5,6 @@ import { Checkbox, Flex, Form, Input } from 'antd'
 import { useCurrencyList } from '@/api/base/currency-list'
 import { useTimezoneList } from '@/api/base/timezone-list'
 import { ShopGeneralApi } from '@/api/shop/get-general'
-import { useGetShopInfo } from '@/api/shop/get-shop-info'
 import { UpdateGeneralApi } from '@/api/shop/update-general'
 import Address from '@/components/address'
 import Page from '@/components/page'
@@ -13,6 +12,7 @@ import SCard from '@/components/s-card'
 import { sMessage } from '@/components/s-message'
 import SSelect from '@/components/s-select'
 import Uploader from '@/pages/mange/settings/general/uploader'
+import { useManageState } from '@/pages/mange/state'
 import { isEqualHandle } from '@/utils/isEqual'
 
 export default function General () {
@@ -24,7 +24,7 @@ export default function General () {
 
   const orderIdPrefix = Form.useWatch('order_id_prefix', form)
   const orderIdSuffix = Form.useWatch('order_id_suffix', form)
-  const shop = useGetShopInfo()
+  const manageState = useManageState()
 
   const [isChange, setIsChange] = useState(false)
 
@@ -51,7 +51,7 @@ export default function General () {
     const values = form.getFieldsValue()
     await update.runAsync(values)
     await general.refreshAsync()
-    await shop.refreshAsync()
+    manageState.setShopInfo()
     sMessage.success('Update success')
     setIsChange(false)
   }
