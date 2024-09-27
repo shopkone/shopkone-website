@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { DeleteFour } from '@icon-park/react'
-import { IconSearch } from '@tabler/icons-react'
+import { IconSearch, IconTrash } from '@tabler/icons-react'
 import { useInViewport, useRequest } from 'ahooks'
 import { Button, Checkbox, Flex, Input, Modal, Typography } from 'antd'
 import classNames from 'classnames'
@@ -326,9 +325,9 @@ export default function SelectFiles (props: SelectFilesProps) {
                             <div
                               className={styles.errMask}
                             >
-                              <DeleteFour
+                              <IconTrash
                                 onClick={() => { onRemoveErrFile(item.uuid) }}
-                                strokeWidth={5} size={20}
+                                size={24}
                               />
                             </div>
                           </div>

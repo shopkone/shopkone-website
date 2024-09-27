@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Download, Plus } from '@icon-park/react'
+import { IconDownload, IconPlus } from '@tabler/icons-react'
 import { Button, Card, Flex, Input } from 'antd'
 
 import Page from '@/components/page'
@@ -67,19 +67,19 @@ export default function Products () {
               <Flex gap={12}>
                 <Button>
                   <Flex gap={6} align={'center'} style={{ position: 'relative', top: -2 }}>
-                    <Download size={14} style={{ position: 'relative', top: 1 }} strokeWidth={5} />
+                    <IconDownload size={15} />
                     <div>Import</div>
                   </Flex>
                 </Button>
                 <Button>
                   <Flex gap={6} align={'center'} style={{ position: 'relative', top: -2 }}>
-                    <Download size={14} style={{ position: 'relative', top: 1 }} strokeWidth={5} />
+                    <IconDownload size={15} />
                     <div>Import by Shopify</div>
                   </Flex>
                 </Button>
                 <Button onClick={() => { nav('change') }} type={'primary'}>
                   <Flex gap={4} align={'center'} style={{ position: 'relative', top: -2 }}>
-                    <Plus size={14} style={{ position: 'relative', top: 2 }} strokeWidth={5} />
+                    <IconPlus size={14} />
                     <div>Add products</div>
                   </Flex>
                 </Button>

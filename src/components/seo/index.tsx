@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import { More, Share } from '@icon-park/react'
+import { More } from '@icon-park/react'
+import { IconExternalLink } from '@tabler/icons-react'
 import { Button, Card, Flex, Form, Popover, Typography } from 'antd'
 import { useWatch } from 'antd/es/form/Form'
 
@@ -92,23 +93,13 @@ export default function Seo (props: SeoProps) {
                   <Button type={'text'} size={'small'}>
                     <Flex align={'center'} style={{ color: '#646a73' }} gap={8}>
                       <div>Check Google indexing</div>
-                      <Share
-                        strokeWidth={5} style={{
-                          position: 'relative',
-                          top: 2
-                        }}
-                      />
+                      <IconExternalLink size={13} />
                     </Flex>
                   </Button>
                   <Button type={'text'} size={'small'}>
                     <Flex align={'center'} style={{ color: '#646a73' }} gap={8}>
                       <div>Submit for indexing</div>
-                      <Share
-                        strokeWidth={5} style={{
-                          position: 'relative',
-                          top: 2
-                        }}
-                      />
+                      <IconExternalLink size={13} />
                     </Flex>
                   </Button>
                 </Flex>

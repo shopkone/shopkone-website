@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import { LoadingFour } from '@icon-park/react'
+import { IconLoader2 } from '@tabler/icons-react'
 import { Spin } from 'antd'
 
 import styles from './index.module.less'
@@ -26,7 +26,7 @@ export default function SLoading (props: SLoadingProps) {
         minHeight
       }}
     >
-      <LoadingFour className={styles.loading} spin fill={black ? '#1F2329' : '#1456f0'} size={size} />
+      <IconLoader2 className={styles.loading} color={black ? '#1F2329' : '#1456f0'} size={size} />
       {text ? <span className={styles.lint}>{text}</span> : null}
     </div>
   )
@@ -37,7 +37,7 @@ export default function SLoading (props: SLoadingProps) {
         size={size as any}
         spinning={loading}
         indicator={
-          <div><LoadingFour className={styles.loading} /></div>
+          <div><IconLoader2 className={styles.loading} /></div>
         }
       >
         <div className={'fit-width fit-height'} style={{ opacity: loading ? Number(!!foreShow) : 1, flexShrink: 0 }}>

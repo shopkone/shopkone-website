@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { More } from '@icon-park/react'
-import { IconPlus } from '@tabler/icons-react'
+import { IconDots, IconPlus } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
 import { Button, Flex, Popover, Typography } from 'antd'
 import classNames from 'classnames'
@@ -96,7 +95,7 @@ export default function Group (props: GroupProps) {
                         type={'text'}
                         size={'small'}
                       >
-                        <More size={15} />
+                        <IconDots size={15} />
                       </Button>
                     </Popover>
                   </SRender>

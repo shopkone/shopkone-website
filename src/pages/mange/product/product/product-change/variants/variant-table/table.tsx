@@ -355,7 +355,7 @@ export default function Table (props: TableProps) {
       init
       loading={false}
       width={916}
-      className={styles.table}
+      className={`${styles.table}`}
       expand={{ value: expands, onChange: setExpands }}
       columns={columns}
       data={value}

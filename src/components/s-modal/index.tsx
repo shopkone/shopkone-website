@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { Info } from '@icon-park/react'
+import { IconInfoCircleFilled } from '@tabler/icons-react'
 import { App, Modal, ModalFuncProps, ModalProps } from 'antd'
 
 export const useModal = () => {
@@ -20,7 +20,7 @@ export const useModal = () => {
     if (icon) {
       return icon
     }
-    return <Info style={{ marginRight: 8, marginTop: 2 }} size={18} theme={'filled'} fill={'#1456f0'} />
+    return <IconInfoCircleFilled style={{ marginRight: 8, marginTop: -5 }} size={32} color={'#1456f0'} />
   }
 
   useEffect(() => {

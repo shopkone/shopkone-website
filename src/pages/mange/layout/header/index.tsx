@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { BellOutlined, QuestionCircleOutlined, ShopOutlined } from '@ant-design/icons'
-import { Attention, Check, Right } from '@icon-park/react'
-import { IconChevronDown, IconChevronUp } from '@tabler/icons-react'
+import { Right } from '@icon-park/react'
+import { IconCheck, IconChevronDown, IconChevronUp, IconInfoCircle } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
 import { Button, Flex, Popover, Tooltip, Typography } from 'antd'
 import classNames from 'classnames'
@@ -54,7 +54,7 @@ export default function Header () {
             }
           >
             <Flex align={'center'} gap={4}>
-              <Attention strokeWidth={4} style={{ position: 'relative', top: 2 }} size={14} />
+              <IconInfoCircle size={18} />
               <div>Unsaved</div>
             </Flex>
             <Flex align={'center'} gap={12}>
@@ -90,15 +90,17 @@ export default function Header () {
                   {
                   shopList?.data?.map((item) => (
                     <Flex key={item.uuid} justify={'space-between'} className={styles.item}>
-                      <Flex gap={6}>
+                      <Flex gap={12}>
                         <SRender render={item.website_favicon}>
                           <Flex align={'center'} justify={'center'} className={styles['item-avatar']}>
                             <img src={item.website_favicon} alt={item.store_name} />
                           </Flex>
                         </SRender>
-                        <div style={{ fontWeight: 500 }}>{item.store_name}</div>
+                        <Typography.Text ellipsis={{ tooltip: true }} style={{ fontWeight: 500, maxWidth: 180 }}>
+                          {item.store_name}
+                        </Typography.Text>
                       </Flex>
-                      <Check strokeWidth={6} size={11} />
+                      <IconCheck size={16} />
                     </Flex>
                   ))
                 }
