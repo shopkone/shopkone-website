@@ -1,14 +1,17 @@
 import { useEffect, useRef, useState } from 'react'
-import { useRequest } from 'ahooks'
+import { useParams } from 'react-router-dom'
+import { useDebounce, useRequest } from 'ahooks'
 import { Button, Flex, Form, Input } from 'antd'
 import isEqual from 'lodash/isEqual'
 
 import { LocationAddApi } from '@/api/location/add'
+import { LocationInfoApi } from '@/api/location/info'
 import Address from '@/components/address'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
 import { sMessage } from '@/components/s-message'
 import { useModal } from '@/components/s-modal'
+import SRender from '@/components/s-render'
 import { useManageState } from '@/pages/mange/state'
 import { isEqualHandle } from '@/utils/isEqual'
 
@@ -21,8 +24,12 @@ export default function Change () {
   const [isChange, setIsChange] = useState(false)
   const init = useRef<any>()
   const errMsg = useRef<string>()
+  const { id } = useParams()
+  const info = useRequest(LocationInfoApi, { manual: true })
 
   const modal = useModal()
+
+  const renderFooter = useDebounce(!!id && info?.data, { wait: 100 })
 
   const onValuesChange = () => {
     const values = form.getFieldsValue()
@@ -67,11 +74,16 @@ export default function Change () {
   }
 
   useEffect(() => {
-    if (!address?.country) {
+    if (!address?.country && !id) {
       form.setFieldValue('address', { ...address, country: manageState.shopInfo?.country || 'US' })
       init.current = form.getFieldsValue()
+    } else if (id) {
+      info.runAsync({ id: Number(id) }).then(res => {
+        form.setFieldsValue(res)
+        init.current = form.getFieldsValue()
+      })
     }
-  }, [manageState.shopInfo])
+  }, [manageState.shopInfo, id])
 
   return (
     <Page
@@ -80,20 +92,31 @@ export default function Change () {
       isChange={isChange}
       back={'/settings/locations'}
       width={700}
-      title={'Add location'}
+      title={id ? info?.data?.name || '-' : 'Add location'}
       header={
-        <Button type={'text'}>View inventory</Button>
+        <SRender render={id}>
+          <Button type={'text'}>View inventory</Button>
+        </SRender>
       }
       footer={
-        <Flex gap={12} align={'center'}>
-          <Button>Deactivate location</Button>
-          <Button>Activate location</Button>
-          <Button danger type={'primary'}>Delete location</Button>
-        </Flex>
+        <SRender render={renderFooter}>
+          <Flex gap={12} align={'center'}>
+            <SRender render={!!id && info?.data?.active}>
+              <Button>Deactivate location</Button>
+            </SRender>
+            <SRender render={!!id && !info?.data?.active}>
+              <Button>Activate location</Button>
+            </SRender>
+            <SRender render={!!id && !info?.data?.active}>
+              <Button danger type={'primary'}>Delete location</Button>
+            </SRender>
+          </Flex>
+        </SRender>
       }
     >
       <Form initialValues={{ name: '' }} onValuesChange={onValuesChange} layout={'vertical'} form={form}>
         <SCard
+          loading={info.loading}
           tips={'Give this location a short name to make it easy to identify. You will see this name in areas like orders and products.'}
           style={{ marginBottom: 16 }}
           title={'Name'}

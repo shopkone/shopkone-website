@@ -70,7 +70,7 @@ export default function Address (props: AddressProps) {
     return options || []
   }, [countries.data, country])
 
-  const cardLoading = useDebounce(loading || countries.loading || phoneCodes.loading || config.loading, { wait: 100 })
+  const cardLoading = useDebounce(loading || countries.loading || phoneCodes.loading || config.loading, { wait: 60 })
 
   useEffect(() => {
     if (!initValues.current) {
