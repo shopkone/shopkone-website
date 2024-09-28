@@ -1,7 +1,8 @@
 import { useNavigate } from 'react-router-dom'
 import { IconArrowRight, IconChevronRight, IconMapPin, IconTruckDelivery, IconWorld } from '@tabler/icons-react'
-import { Button, Card, Empty, Flex } from 'antd'
+import { Button, Empty, Flex } from 'antd'
 
+import SCard from '@/components/s-card'
 import SLocation from '@/components/s-location'
 
 import styles from './index.module.less'
@@ -11,44 +12,33 @@ export default function CourierService () {
 
   return (
     <Flex vertical gap={16}>
-      <Card
+      <SCard
+        tips={'When the order cannot be routed through the shipping point to find the inventory that meets the shipping location, it will be assigned to that location by default.'}
         extra={(
-          <Button className={'extra-link'} size={'small'} type={'link'}>Change default location</Button>
-      )}
+          <Button size={'small'} type={'text'}>Change default location</Button>
+        )}
         title={'Default location'}
       >
-        <div style={{ marginBottom: 12 }} className={'tips'}>
-          When the order cannot be routed through the shipping point to find the inventory that meets the shipping location, it will be assigned to that location by default.
-        </div>
         <SLocation />
-      </Card>
+      </SCard>
 
-      <Card
-        extra={<Button className={'extra-link'} size={'small'} type={'link'}>Set up</Button>}
+      <SCard
+        extra={<Button size={'small'} type={'text'}>Set up</Button>}
         title={'Shipping point routing'}
+        tips={'When a new order is generated, according to this routing rule, the inventory will be automatically assigned to the order to meet the shipping location.'}
       >
-        <div className={'tips'}>
-          When a new order is generated, according to this routing rule, the inventory will be automatically assigned to the order to meet the shipping location.
-        </div>
-      </Card>
+        asd
+      </SCard>
 
-      <Card
+      <SCard
         extra={
-          <Button onClick={() => { nav('courier-service/change') }} className={'extra-link'} size={'small'} type={'link'}>
+          <Button onClick={() => { nav('courier-service/change') }} size={'small'} type={'link'}>
             New profile
           </Button>
         }
         title={'Shipping'}
+        tips={'Choose where you ship and how much you charge for shipping at checkout.'}
       >
-        <div
-          style={{
-            marginBottom: 12,
-            marginTop: -8
-          }} className={'tips'}
-        >
-          Choose where you ship and how much you charge for shipping at checkout.
-        </div>
-
         <div className={styles.table}>
           <div className={styles.title}>General shipping rates</div>
           <Flex vertical>
@@ -96,7 +86,7 @@ export default function CourierService () {
             </Button>
           </Empty>
         </div>
-      </Card>
+      </SCard>
     </Flex>
   )
 }

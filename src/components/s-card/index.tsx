@@ -12,6 +12,7 @@ export default function SCard (props: SCardProps) {
   return (
     <Card {...rest}>
       <SLoading loading={loading} size={32}>
+        <div className={'secondary'} style={{ fontSize: 12, marginTop: -4, marginBottom: 8 }}>{tips}</div>
         {children}
       </SLoading>
     </Card>

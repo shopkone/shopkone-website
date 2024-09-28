@@ -14,7 +14,7 @@ export default function Taxes () {
     <Page width={800} title={'Taxes'}>
       <Card
         extra={
-          <Button size={'small'} type={'link'} className={'extra-link'}>Select region</Button>
+          <Button size={'small'} type={'text'}>Select region</Button>
         }
         title={'Regional settings'}
       >
