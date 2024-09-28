@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { IconArrowRight, IconChevronRight, IconMapPin, IconWorld } from '@tabler/icons-react'
+import { IconArrowRight, IconChevronRight, IconMapPin, IconTruckDelivery, IconWorld } from '@tabler/icons-react'
 import { Button, Card, Empty, Flex } from 'antd'
 
 import SLocation from '@/components/s-location'
@@ -79,20 +79,22 @@ export default function CourierService () {
             Custom shipping rates
           </div>
           <Empty
-            image={Empty.PRESENTED_IMAGE_SIMPLE}
+            image={
+              <div style={{ paddingTop: 32 }}>
+                <IconTruckDelivery size={64} color={'#ddd'} />
+              </div>
+            }
             description={(
-              <Flex style={{ marginTop: 16 }} vertical gap={12}>
-                <div className={'secondary'}>
-                  Creating a new group of locations in your shipping profiles lets you specify the zones and rates for locations in that group.
-                </div>
-                <div style={{ marginTop: 8 }}>
-                  <Button>
-                    New profile
-                  </Button>
-                </div>
-              </Flex>
-              )}
-          />
+              <div className={'secondary'}>
+                Manage the places you sell products, ship orders, and keep inventory.
+              </div>
+            )}
+            style={{ paddingBottom: 24 }}
+          >
+            <Button onClick={() => { nav('/settings/locations/change') }} type={'primary'}>
+              Add location
+            </Button>
+          </Empty>
         </div>
       </Card>
     </Flex>
