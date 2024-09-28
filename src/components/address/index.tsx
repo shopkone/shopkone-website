@@ -48,6 +48,14 @@ export default function Address (props: AddressProps) {
     form.setFieldsValue(value)
   }, [value])
 
+  useEffect(() => {
+    if (!phoneCodes.data) return
+    if (country && !form.getFieldValue('phone')) {
+      const code = phoneCodes.data?.find(item => item.code === country)
+      form.setFieldValue('phone', { country: code?.code || '', num: '', prefix: code?.prefix || '' })
+    }
+  }, [country, phoneCodes.data])
+
   const countryRender = (
     <Form.Item name={'country'} label={config?.data?.country}>
       <SSelect

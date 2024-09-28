@@ -7,6 +7,7 @@ export interface GetShopInfoResponse {
   website_favicon?: string
   store_currency: string
   time_zone: string
+  country: string
 }
 
 // 获取店铺信息

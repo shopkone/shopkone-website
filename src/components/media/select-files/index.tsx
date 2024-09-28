@@ -44,7 +44,7 @@ export default function SelectFiles (props: SelectFilesProps) {
 
   const isUploading = !!list?.filter(i => i.uuid)?.length
 
-  const hasSearch = params.keyword?.length || params.file_type?.length || params.file_size?.min || params.file_size?.max || params.used
+  const hasSearch = params.keyword?.length || params.file_type?.length || params.file_size?.min || params.file_size?.max || params.used || params.group_id
 
   const options = [
     { value: FileType.Image, label: 'Image' },
@@ -238,7 +238,7 @@ export default function SelectFiles (props: SelectFilesProps) {
         </SRender>
 
         <div className={styles.bottom}>
-          <SLoading foreShow size={'large'} loading={(fileList.loading || fileGroupList.loading) ? (!inViewport) : false}>
+          <SLoading foreShow size={28} loading={(fileList.loading || fileGroupList.loading) ? (!inViewport) : false}>
             <Upload
               style={!(fileList.loading || list?.length) ? hiddenStyle : undefined}
               vertical
@@ -310,7 +310,7 @@ export default function SelectFiles (props: SelectFilesProps) {
                           <div className={styles.mask} />
                         </SRender>
                         <SRender render={item.uuid ? !item.errMsg : null}>
-                          <SLoading size={'large'} loading>
+                          <SLoading size={28} loading>
                             <div style={{ width: 100, height: 100 }} />
                           </SLoading>
                         </SRender>

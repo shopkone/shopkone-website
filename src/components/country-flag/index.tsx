@@ -1,5 +1,7 @@
 import { useCountries } from '@/api/base/countries'
-import Image from '@/components/image'
+import { FileType } from '@/api/file/add-file-record'
+import FileImage from '@/components/file-image'
+import SLoading from '@/components/s-loading'
 
 export interface CountryFlagProps {
   country?: string
@@ -12,12 +14,15 @@ export default function CountryFlag (props: CountryFlagProps) {
   const country = countries.data?.find(c => c.code === props.country)
 
   return (
-    <Image
-      loading={countries.loading}
-      size={'small'}
-      style={{ height: props.size, borderRadius: 4 }}
-      src={country?.flag?.src}
-      alt={country?.flag?.alt}
-    />
+    <SLoading loading={countries.loading}>
+      <FileImage
+        type={FileType.Image}
+        height={24}
+        width={34}
+        style={{ borderRadius: 0, padding: 0 }}
+        src={country?.flag?.src || ''}
+        alt={country?.flag?.alt || ''}
+      />
+    </SLoading>
   )
 }

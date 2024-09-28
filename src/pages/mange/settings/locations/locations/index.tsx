@@ -12,6 +12,7 @@ import SRender from '@/components/s-render'
 export default function Locations () {
   const nav = useNavigate()
   const list = useRequest(LocationListApi)
+
   return (
     <Page
       header={
