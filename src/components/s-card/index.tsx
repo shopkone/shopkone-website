@@ -11,7 +11,7 @@ export default function SCard (props: SCardProps) {
   const { children, loading = false, tips, ...rest } = props
   return (
     <Card {...rest}>
-      <SLoading loading={loading} size={'large'}>
+      <SLoading loading={loading} size={32}>
         {children}
       </SLoading>
     </Card>

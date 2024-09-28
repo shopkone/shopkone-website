@@ -1,5 +1,5 @@
 import { memo, useMemo } from 'react'
-import { Left, More, Right } from '@icon-park/react'
+import { IconChevronLeft, IconChevronRight, IconDots } from '@tabler/icons-react'
 import { BaseTable, BaseTableProps, features, useTablePipeline } from 'ali-react-table'
 import { Button, Checkbox, Flex, Pagination, PaginationProps } from 'antd'
 import classNames from 'classnames'
@@ -50,7 +50,7 @@ function STable (props: STableProps) {
     loading = false,
     empty,
     borderless,
-    init = true,
+    init = false,
     page,
     actions,
     onRowClick,
@@ -115,7 +115,7 @@ function STable (props: STableProps) {
 
   if (!init) {
     return (
-      <SLoading loading size={'large'}>
+      <SLoading loading size={36}>
         <div style={{ height: 300 }} />
       </SLoading>
     )
@@ -142,7 +142,7 @@ function STable (props: STableProps) {
       style={{ width, ...style }}
     >
       <div style={{ position: 'relative' }}>
-        <SLoading foreShow loading={loading} size={'large'}>
+        <SLoading foreShow loading={loading} size={36}>
           <BaseTable
             components={{
               EmptyContent: () => <div />
@@ -173,14 +173,14 @@ function STable (props: STableProps) {
         <Flex style={{ marginRight: 16 }} justify={'flex-end'}>
           <Pagination
             showTotal={(total) => `Total ${total} records`}
-            prevIcon={<Left size={15} />}
-            nextIcon={<Right size={15} />}
+            prevIcon={<IconChevronLeft color={'#1f2329'} size={15} />}
+            nextIcon={<IconChevronRight color={'#1f2329'} size={15} />}
             jumpNextIcon={
               <Button
                 type={'text'}
                 size={'small'}
               >
-                <More style={{ position: 'relative', left: -3 }} size={15} />
+                <IconDots color={'#1f2329'} style={{ position: 'relative', left: -4, top: 1 }} size={14} />
               </Button>
             }
             jumpPrevIcon={
@@ -188,7 +188,7 @@ function STable (props: STableProps) {
                 type={'text'}
                 size={'small'}
               >
-                <More style={{ position: 'relative', left: -3 }} size={15} />
+                <IconDots color={'#1f2329'} style={{ position: 'relative', left: -4, top: 1 }} size={14} />
               </Button>
             }
             showSizeChanger
