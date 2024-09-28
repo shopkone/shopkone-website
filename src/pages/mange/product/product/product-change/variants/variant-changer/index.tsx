@@ -141,6 +141,13 @@ export default function VariantChanger (props: VariantChangerProps) {
   useEffect(() => {
     if (variantType === VariantType.Single) {
       setOptions([])
+    } else {
+      setOptions([{
+        name: '',
+        values: [{ value: '', id: genId() }],
+        id: genId(),
+        isDone: false
+      }])
     }
   }, [variantType])
 
@@ -266,6 +273,7 @@ export default function VariantChanger (props: VariantChangerProps) {
                           <Flex className={styles.footer} justify={'space-between'}>
                             <Button
                               danger
+                              disabled={option.values.length < 2}
                               onClick={() => {
                                 onRemove(option.id)
                               }}

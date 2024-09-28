@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { IconInfoCircleFilled } from '@tabler/icons-react'
-import { App, Modal, ModalFuncProps, ModalProps } from 'antd'
+import { App, Modal, ModalFuncProps, ModalProps, Typography } from 'antd'
 
 export const useModal = () => {
   const modal = useRef<{
@@ -53,6 +53,11 @@ export default function SModal (props: SModalProps) {
       destroyOnClose
       maskClosable={false}
       {...props}
+      title={
+        <Typography.Text style={{ maxWidth: Number(props.width || 550) - 100, fontSize: 14 }} ellipsis={{ tooltip: true }}>
+          {props.title}
+        </Typography.Text>
+      }
     />
   )
 }

@@ -32,6 +32,7 @@ export default function ProductChange () {
       title={'Add product'}
       back={'/products/products'}
       width={950}
+      bottom={48}
       header={
         <Flex gap={8}>
           <Button type={'text'}>Duplicate</Button>

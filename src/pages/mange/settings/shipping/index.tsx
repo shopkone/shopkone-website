@@ -4,6 +4,7 @@ import { IconTruckDelivery } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
 import { Button, Empty, Tabs, TabsProps } from 'antd'
 
+import { useCountries } from '@/api/base/countries'
 import { LocationListApi } from '@/api/location/list'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
@@ -16,6 +17,7 @@ export default function Shipping () {
   const locationList = useRequest(LocationListApi)
   const nav = useNavigate()
   const shippingState = useShippingState()
+  const countries = useCountries()
 
   const tabs: TabsProps['items'] = [
     { label: 'Courier service', key: '' },
@@ -34,7 +36,7 @@ export default function Shipping () {
 
   return (
     <Page title={locationList.data?.length ? '' : 'Shipping'} bottom={64} width={700}>
-      <SRender render={!locationList.data?.length}>
+      <SRender render={!locationList.data?.length && !countries.loading}>
         <SCard loading={locationList.loading}>
           <Empty
             image={
