@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useRequest } from 'ahooks'
 import { Checkbox, Flex, Form, Input } from 'antd'
 
@@ -10,6 +10,7 @@ import Address from '@/components/address'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
 import { sMessage } from '@/components/s-message'
+import { useModal } from '@/components/s-modal'
 import SSelect from '@/components/s-select'
 import Uploader from '@/pages/mange/settings/general/uploader'
 import { useManageState } from '@/pages/mange/state'
@@ -26,6 +27,8 @@ export default function General () {
   const orderIdSuffix = Form.useWatch('order_id_suffix', form)
   const manageState = useManageState()
 
+  const errMsg = useRef<string>()
+
   const [isChange, setIsChange] = useState(false)
 
   const formattingOptions = [
@@ -35,6 +38,8 @@ export default function General () {
     { label: 'e.g 123.456', value: '123.456' },
     { label: 'e.g 123\'456.65', value: '123\'456.65' }
   ]
+
+  const modal = useModal()
 
   const onValuesChange = (_: any, allValues: any) => {
     const isSame = isEqualHandle(allValues, general.data)
@@ -47,6 +52,11 @@ export default function General () {
   }
 
   const onOk = async () => {
+    console.log(errMsg.current)
+    if (errMsg.current) {
+      modal.info({ content: errMsg.current })
+      return
+    }
     await form.validateFields()
     const values = form.getFieldsValue()
     await update.runAsync(values)
@@ -92,7 +102,7 @@ export default function General () {
             </Flex>
           </SCard>
           <Form.Item name={'address'}>
-            <Address loading={general.loading} hasName />
+            <Address onMessage={(err) => { errMsg.current = err }} loading={general.loading} hasName />
           </Form.Item>
           <SCard loading={general.loading || timezones.loading || currencyList.loading} title={'Store defaults'}>
             <Flex vertical>

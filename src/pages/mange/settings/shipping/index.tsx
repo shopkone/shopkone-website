@@ -34,25 +34,27 @@ export default function Shipping () {
 
   return (
     <Page title={locationList.data?.length ? '' : 'Shipping'} bottom={64} width={700}>
-      <SCard loading={locationList.loading}>
-        <Empty
-          image={
-            <div style={{ paddingTop: 32 }}>
-              <IconTruckDelivery size={64} color={'#ddd'} />
-            </div>
-          }
-          description={(
-            <div className={'secondary'}>
-              No available locations at the moment. Please go to the location list Add location or enable locations to set up "Local delivery" and activate the service.
-            </div>
-          )}
-          style={{ paddingBottom: 24, marginTop: -32 }}
-        >
-          <Button onClick={() => { nav('/settings/locations') }} type={'primary'}>
-            To location
-          </Button>
-        </Empty>
-      </SCard>
+      <SRender render={!locationList.data?.length}>
+        <SCard loading={locationList.loading}>
+          <Empty
+            image={
+              <div style={{ paddingTop: 32 }}>
+                <IconTruckDelivery size={64} color={'#ddd'} />
+              </div>
+            }
+            description={(
+              <div className={'secondary'}>
+                No available locations at the moment. Please go to the location list Add location or enable locations to set up "Local delivery" and activate the service.
+              </div>
+            )}
+            style={{ paddingBottom: 24, marginTop: -32 }}
+          >
+            <Button onClick={() => { nav('/settings/locations') }} type={'primary'}>
+              To location
+            </Button>
+          </Empty>
+        </SCard>
+      </SRender>
 
       <SRender render={!!locationList.data?.length}>
         <div style={{ marginTop: 8 }}>
