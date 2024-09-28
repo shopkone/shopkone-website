@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useRequest } from 'ahooks'
-import { Form, Input } from 'antd'
+import { Button, Flex, Form, Input } from 'antd'
 import isEqual from 'lodash/isEqual'
 
 import { LocationAddApi } from '@/api/location/add'
@@ -81,6 +81,16 @@ export default function Change () {
       back={'/settings/locations'}
       width={700}
       title={'Add location'}
+      header={
+        <Button type={'text'}>View inventory</Button>
+      }
+      footer={
+        <Flex gap={12} align={'center'}>
+          <Button>Deactivate location</Button>
+          <Button>Activate location</Button>
+          <Button danger type={'primary'}>Delete location</Button>
+        </Flex>
+      }
     >
       <Form initialValues={{ name: '' }} onValuesChange={onValuesChange} layout={'vertical'} form={form}>
         <SCard

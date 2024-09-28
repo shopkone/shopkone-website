@@ -1,14 +1,14 @@
 .container {
   border: 1px solid var(--color-border);
-  border-radius: 8px;
+  border-radius: 12px;
+  overflow: hidden;
 }
 
 .item {
   padding: 12px;
-  border-bottom: 1px solid var(--color-border);
   color: var(--color-text-secondary);
-  border-radius: 8px;
   font-weight: 500;
+  border-bottom: 1px solid var(--color-border);
   &:last-child {
     border-bottom: none;
   }
@@ -18,8 +18,20 @@
 }
 
 .click-item {
+  transition: all 0.1s;
   cursor: pointer;
   &:hover {
     background: var(--color-bg-secondary);
   }
+  &:active {
+    background: var(--color-bg-fifth);
+  }
+}
+
+.mapPin {
+  height: 36px;
+  width: 36px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background-color: #f7f7f7;
 }

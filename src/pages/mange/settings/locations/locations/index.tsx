@@ -1,9 +1,9 @@
 import { useNavigate } from 'react-router-dom'
-import { IconMapPin } from '@tabler/icons-react'
+import { IconChevronRight, IconMapPin } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
 import { Button, Empty } from 'antd'
 
-import { LocationListApi } from '@/api/location/list'
+import { LocationListApi, LocationListRes } from '@/api/location/list'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
 import SLocation from '@/components/s-location'
@@ -25,7 +25,11 @@ export default function Locations () {
       title={'Locations'}
       width={800}
     >
-      <SCard loading={list.loading} title={'All locations'}>
+      <SCard
+        tips={list?.data?.length ? 'Manage the places you sell products, ship orders, and keep inventory.' : ''}
+        loading={list.loading}
+        title={'All locations'}
+      >
 
         <SRender render={!list.data?.length}>
           <Empty
@@ -47,16 +51,11 @@ export default function Locations () {
           </Empty>
         </SRender>
         <SRender render={list.data?.length}>
-          <div
-            style={{
-              marginBottom: 12,
-              marginTop: -4
-            }}
-            className={'tips'}
-          >
-            Manage the places you sell products, ship orders, and keep inventory.
-          </div>
-          <SLocation />
+          <SLocation
+            onClick={(item: LocationListRes) => { nav(`/settings/locations/change/${item.id}`) }}
+            value={list?.data || []}
+            extra={() => <IconChevronRight size={16} />}
+          />
         </SRender>
       </SCard>
     </Page>

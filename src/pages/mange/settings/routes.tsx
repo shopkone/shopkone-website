@@ -22,6 +22,7 @@ export const SettingsRoutes: RouteObject[] = [
   { element: <Domains />, path: '/settings/domains' },
   { element: <Taxes />, path: '/settings/taxes' },
   { element: <Locations />, path: '/settings/locations' },
+  { element: <LocationsChange />, path: '/settings/locations/change/:id' },
   { element: <LocationsChange />, path: '/settings/locations/change' },
   {
     element: <Shipping />,
