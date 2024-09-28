@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { IconArrowLeft } from '@tabler/icons-react'
-import { Button, Flex } from 'antd'
+import { Button, Flex, Typography } from 'antd'
 
 import SRender from '@/components/s-render'
 import { useLayoutState } from '@/pages/mange/layout/state'
@@ -56,7 +56,9 @@ export default function Page (props: PageProps) {
               </Button>
             </SRender>
             <SRender render={!!title}>
-              <div style={{ fontSize: 20 }}>{title}</div>
+              <Typography.Text ellipsis={{ tooltip: true }} style={{ fontSize: 20, maxWidth: width ? (width - 200) : undefined }}>
+                {title}
+              </Typography.Text>
             </SRender>
           </Flex>
           <div className={styles.header}>

@@ -16,6 +16,7 @@ export default function CountryFlag (props: CountryFlagProps) {
   return (
     <SLoading loading={countries.loading}>
       <FileImage
+        size={24}
         type={FileType.Image}
         height={24}
         width={34}

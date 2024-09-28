@@ -1,12 +1,13 @@
 import { IconMapPin } from '@tabler/icons-react'
 import { useMemoizedFn } from 'ahooks'
-import { Flex } from 'antd'
+import { Flex, Tag, Typography } from 'antd'
 import classNames from 'classnames'
 
 import { useCountries } from '@/api/base/countries'
 import { AddressType } from '@/api/common/address'
 import { LocationListRes } from '@/api/location/list'
 import SLoading from '@/components/s-loading'
+import SRender from '@/components/s-render'
 
 import styles from './index.module.less'
 
@@ -52,10 +53,29 @@ export default function SLocation (props: SLocationProps) {
                 <IconMapPin size={20} />
               </Flex>
               <div className={'flex1'}>
-                <div className={styles.title}>{item?.name || '-'}</div>
-                <div>
+                <Flex align={'center'} gap={8} className={styles.title}>
+                  <Typography.Text ellipsis={{ tooltip: true }} style={{ maxWidth: 500 }}>
+                    {item?.name || '-'}
+                  </Typography.Text>
+                  <SRender render={item.default}>
+                    <Tag style={{ background: '#3370ff30', color: '#3370ff', borderColor: '#3370ff30', borderRadius: 8, marginLeft: 12 }}>
+                      Default
+                    </Tag>
+                  </SRender>
+                  <SRender render={item.active ? !item.default : null}>
+                    <Tag style={{ background: '#32a64530', color: '#32a645', borderColor: '#32a64530', borderRadius: 8 }}>
+                      Active
+                    </Tag>
+                  </SRender>
+                  <SRender render={!item.active}>
+                    <Tag style={{ background: '#646A7330', color: '#646A73', borderColor: '#646A7330', borderRadius: 8 }}>
+                      Inactive
+                    </Tag>
+                  </SRender>
+                </Flex>
+                <Typography.Text ellipsis={{ tooltip: true }} style={{ width: 500 }}>
                   {formatInfo(item.address)}
-                </div>
+                </Typography.Text>
               </div>
               {extra?.(item)}
             </Flex>

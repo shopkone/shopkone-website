@@ -10,6 +10,7 @@ export interface LocationInfoRes {
   name: string
   address: AddressType
   active: boolean
+  default: boolean
 }
 
 export const LocationInfoApi = async (params: LocationInfoReq) =>

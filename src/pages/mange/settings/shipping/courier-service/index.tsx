@@ -4,11 +4,13 @@ import { Button, Empty, Flex } from 'antd'
 
 import SCard from '@/components/s-card'
 import SLocation from '@/components/s-location'
+import { useShippingState } from '@/pages/mange/settings/shipping/state'
 
 import styles from './index.module.less'
 
 export default function CourierService () {
   const nav = useNavigate()
+  const locations = useShippingState().locations
 
   return (
     <Flex vertical gap={16}>
@@ -19,7 +21,7 @@ export default function CourierService () {
         )}
         title={'Default location'}
       >
-        <SLocation />
+        <SLocation value={locations} />
       </SCard>
 
       <SCard
@@ -27,7 +29,7 @@ export default function CourierService () {
         title={'Shipping point routing'}
         tips={'When a new order is generated, according to this routing rule, the inventory will be automatically assigned to the order to meet the shipping location.'}
       >
-        asd
+        <SLocation value={locations} />
       </SCard>
 
       <SCard
@@ -82,7 +84,7 @@ export default function CourierService () {
             style={{ paddingBottom: 24 }}
           >
             <Button onClick={() => { nav('/settings/locations/change') }} type={'primary'}>
-              Add location
+              New profile
             </Button>
           </Empty>
         </div>

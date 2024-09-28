@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useDebounce, useRequest } from 'ahooks'
-import { Button, Flex, Form, Input } from 'antd'
+import { Button, Checkbox, Flex, Form, Input } from 'antd'
 import isEqual from 'lodash/isEqual'
 
 import { LocationAddApi } from '@/api/location/add'
@@ -101,7 +101,7 @@ export default function Change () {
       footer={
         <SRender render={renderFooter}>
           <Flex gap={12} align={'center'}>
-            <SRender render={!!id && info?.data?.active}>
+            <SRender render={!!id && info?.data?.active ? !info?.data?.default : null}>
               <Button>Deactivate location</Button>
             </SRender>
             <SRender render={!!id && !info?.data?.active}>
@@ -129,6 +129,20 @@ export default function Change () {
         <Form.Item name={'address'} className={'mb0'}>
           <Address onMessage={(err) => { errMsg.current = err }} loading={!address?.country} hasEmail />
         </Form.Item>
+
+        <SCard style={{ marginTop: 16 }} title={'Fulfillment details'} loading={info.loading}>
+          <Form.Item
+            extra={
+              <div style={{ marginLeft: 24, marginTop: -4, opacity: info?.data?.default ? 0.3 : 1 }}>
+                Inventory at this location is available for sale online.
+              </div>
+            }
+          >
+            <Checkbox disabled={info?.data?.default}>
+              Fulfill online orders from this location
+            </Checkbox>
+          </Form.Item>
+        </SCard>
       </Form>
     </Page>
   )
