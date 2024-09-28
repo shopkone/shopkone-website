@@ -18,7 +18,7 @@ export interface STableProps<T=any> extends Omit<BaseTableProps, omit> {
   width?: number
   rowKey?: string
   style?: React.CSSProperties
-  init: boolean
+  init?: boolean
   rowSelection?: {
     value: number[]
     onChange: (value: number[]) => void

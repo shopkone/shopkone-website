@@ -1,9 +1,8 @@
 import { useEffect, useMemo, useRef } from 'react'
-import { useDebounce, useRequest } from 'ahooks'
+import { useDebounce } from 'ahooks'
 import { Flex, Form, Input } from 'antd'
 import random from 'lodash/random'
 
-import { AddressConfigApi } from '@/api/base/address-config'
 import { useCountries } from '@/api/base/countries'
 import { usePhonePrefix } from '@/api/base/phone-prefix'
 import { AddressType } from '@/api/common/address'
@@ -42,7 +41,6 @@ export default function Address (props: AddressProps) {
 
   const countries = useCountries()
   const phoneCodes = usePhonePrefix()
-  const config = useRequest(AddressConfigApi, { manual: true })
   const initValues = useRef<AddressType>()
 
   const country = Form.useWatch('country', form)
@@ -59,8 +57,8 @@ export default function Address (props: AddressProps) {
     onChange?.({ ...(initValues.current || {}), ...form.getFieldsValue() })
   }
 
+  const c = countries.data?.find(item => item.code === country)
   const zoneOptions = useMemo(() => {
-    const c = countries.data?.find(item => item.code === country)
     const options = c?.zones?.map(item => ({ label: item.name, value: item.code }))
     const hasZone = form.getFieldValue('zone')
     if (!hasZone && options?.length) {
@@ -70,7 +68,7 @@ export default function Address (props: AddressProps) {
     return options || []
   }, [countries.data, country])
 
-  const cardLoading = useDebounce(loading || countries.loading || phoneCodes.loading || config.loading, { wait: 60 })
+  const cardLoading = useDebounce(loading || countries.loading || phoneCodes.loading, { wait: 60 })
 
   useEffect(() => {
     if (!initValues.current) {
@@ -89,7 +87,7 @@ export default function Address (props: AddressProps) {
   }, [country, phoneCodes.data])
 
   const countryRender = (
-    <Form.Item name={'country'} label={config?.data?.country}>
+    <Form.Item name={'country'} label={c?.config?.country}>
       <SSelect
         virtual={false}
         options={countryOptions}
@@ -100,31 +98,26 @@ export default function Address (props: AddressProps) {
   )
 
   const PostalCodeMsg = useMemo((): string => {
-    const msg = config?.data?.postal_code_config?.format || ''
+    const msg = c?.postal_code_config?.format || ''
     if (!msg) return msg
     return msg.split('').map(item => {
       if (item === '#') return random(0, 9)
       return item
     }).join('')
-  }, [config?.data?.postal_code_config?.format])
+  }, [c?.postal_code_config?.format])
 
   const postalCodeRender = (
     <Form.Item
       rules={[{
-        pattern: new RegExp(config?.data?.postal_code_config?.regex || ''),
-        message: `${config?.data?.postal_code || 'Postal code'}  isn't valid.Example:` + PostalCodeMsg
+        pattern: new RegExp(c?.postal_code_config?.regex || ''),
+        message: `${c?.config?.postal_code || 'Postal code'}  isn't valid.Example:` + PostalCodeMsg
       }]}
       name={'postal_code'}
-      label={config?.data?.postal_code || 'Postal code'}
+      label={c?.config?.postal_code || 'Postal code'}
     >
       <Input autoComplete={'off'} />
     </Form.Item>
   )
-
-  useEffect(() => {
-    if (!country) return
-    config.run({ country })
-  }, [country])
 
   return (
     <SCard loading={cardLoading} title={'Address'}>
@@ -137,24 +130,24 @@ export default function Address (props: AddressProps) {
                 <Input autoComplete={'off'} />
               </Form.Item>
             </SRender>
-            <Form.Item name={'address1'} label={config?.data?.address1}>
+            <Form.Item name={'address1'} label={c?.config?.address1}>
               <Input autoComplete={'off'} />
             </Form.Item>
-            <Form.Item name={'city'} label={config?.data?.city}>
+            <Form.Item name={'city'} label={c?.config?.city}>
               <Input autoComplete={'off'} />
             </Form.Item>
-            <Form.Item name={'phone'} label={config?.data?.phone}>
+            <Form.Item name={'phone'} label={c?.config?.phone}>
               <PhoneCode />
             </Form.Item>
             <SRender render={hasEmail}>{postalCodeRender}</SRender>
           </Flex>
           <Flex vertical flex={1}>
             <SRender render={hasName}>{countryRender}</SRender>
-            <Form.Item name={'address2'} label={config?.data?.address2}>
+            <Form.Item name={'address2'} label={c?.config?.address2}>
               <Input autoComplete={'off'} />
             </Form.Item>
             <SRender render={!!zoneOptions?.length}>
-              <Form.Item name={'zone'} label={config?.data?.zone}>
+              <Form.Item name={'zone'} label={c?.config?.zone}>
                 <SSelect
                   showSearch
                   optionFilterProp={'label'}

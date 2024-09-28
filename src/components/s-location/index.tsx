@@ -1,10 +1,8 @@
-import { useEffect } from 'react'
 import { IconMapPin } from '@tabler/icons-react'
-import { useMemoizedFn, useRequest } from 'ahooks'
+import { useMemoizedFn } from 'ahooks'
 import { Flex } from 'antd'
 import classNames from 'classnames'
 
-import { AddressFormatListApi } from '@/api/base/address-format-list'
 import { useCountries } from '@/api/base/countries'
 import { AddressType } from '@/api/common/address'
 import { LocationListRes } from '@/api/location/list'
@@ -20,14 +18,13 @@ export interface SLocationProps {
 
 export default function SLocation (props: SLocationProps) {
   const { onClick, extra, value } = props
-  const formatList = useRequest(AddressFormatListApi, { manual: true })
   const countries = useCountries()
 
   const formatInfo = useMemoizedFn((address?: AddressType) => {
     if (!countries?.data?.length) return '-'
     const country = countries?.data?.find(item => item.code === address?.country)
     const zone = country?.zones?.find(item => item.code === address?.zone)?.name
-    const format = formatList.data?.find(item => address?.country === item.country)?.format
+    const format = country?.formatting
     const formatArr = format?.replaceAll('{', '').replaceAll('}', '').split('_')
     return formatArr?.map(item => item?.split(' ').map(item => {
       if (item === 'firstName') return address?.first_name
@@ -39,14 +36,8 @@ export default function SLocation (props: SLocationProps) {
     }).filter(i => i?.trim()).join(' ')).filter(i => i?.trim()).join(', ') || '-'
   })
 
-  useEffect(() => {
-    if (!value?.length) return
-    const countries = [...new Set(value?.map(item => item.address?.country))]
-    formatList.run({ countries })
-  }, [value])
-
   return (
-    <SLoading loading={formatList.loading || countries.loading}>
+    <SLoading loading={countries.loading}>
       <div className={styles.container}>
         {
           value?.map(item => (
