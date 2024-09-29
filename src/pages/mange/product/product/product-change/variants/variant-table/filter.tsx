@@ -4,7 +4,7 @@ import { Button, Flex } from 'antd'
 import TableFilter from '@/components/table-filter'
 import { Options } from '@/pages/mange/product/product/product-change/variants/variant-changer'
 import { Variant } from '@/pages/mange/product/product/product-change/variants/variant-table/index'
-import { genId } from '@/utils/random'
+import { isEqualHandle } from '@/utils/isEqual'
 
 // @ts-expect-error
 import GroupNameHandle from './group-name-handle?worker'
@@ -14,6 +14,7 @@ import OptionsHandle from './options-handle?worker'
 
 export interface FilterProps {
   onChange: (variants: Variant[]) => void
+  value: Variant[]
   options: Options[]
   hide?: boolean
   groupName?: string
@@ -21,7 +22,7 @@ export interface FilterProps {
 }
 
 export default function Filter (props: FilterProps) {
-  const { onChange, hide, groupName, options, isSingleVariantType = true } = props
+  const { onChange, hide, groupName, options, isSingleVariantType = true, value } = props
   const [variants, setVariants] = useState<Variant[]>([])
   const [filter, setFilter] = useState<Record<string, string>>()
 
@@ -41,12 +42,10 @@ export default function Filter (props: FilterProps) {
   }, [options, isSingleVariantType])
 
   useEffect(() => {
-    if (isSingleVariantType) {
-      setVariants([{ name: [], id: genId(), weight_uint: 'g', price: 0, isParent: false, inventories: [] }])
-    } else {
-      setVariants([])
-    }
-  }, [isSingleVariantType])
+    if (isEqualHandle(variants, value)) return
+    console.log(variants, value)
+    setVariants(value)
+  }, [value])
 
   useEffect(() => {
     if (!variants?.length) {

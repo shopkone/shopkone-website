@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Button, Flex, Form } from 'antd'
 
 import Page from '@/components/page'
@@ -8,6 +8,7 @@ import ProductOrganization from '@/pages/mange/product/product/product-change/pr
 import Status from '@/pages/mange/product/product/product-change/status'
 import Variants from '@/pages/mange/product/product/product-change/variants'
 import VariantsSettings from '@/pages/mange/product/product/product-change/variants-settings'
+import { isEqualHandle } from '@/utils/isEqual'
 
 import styles from './index.module.less'
 
@@ -17,18 +18,63 @@ const INIT_DATA = {
   taxable: true,
   inventory_tracking: true,
   inventory_policy: 2,
-  variant_type: 1
+  spu: '',
+  vendor: '',
+  tags: [],
+  title: '',
+  description: '',
+  seo: {
+    page_title: '',
+    meta_description: '',
+    url_handle: '',
+    follow: true
+  }
 }
 
 export default function ProductChange () {
   const [form] = Form.useForm()
 
+  const [isChange, setIsChange] = useState(false)
+  const init = useRef()
+
+  const onOK = async () => {
+    await form.validateFields()
+    console.log(form.getFieldsValue())
+  }
+
+  const onValuesChange = () => {
+    if (!init.current) return
+    const values = form.getFieldsValue()
+    if (!init.current?.variants?.length) {
+      init.current = values
+      return
+    }
+    const isSame = isEqualHandle(init.current, values)
+    if (!isSame) {
+      Object.keys(values).forEach(key => {
+        if (!isEqualHandle(values[key], init.current[key])) {
+          console.log(key, values[key], init.current[key])
+        }
+      })
+    }
+    setIsChange(!isSame)
+  }
+
+  const onCancel = () => {
+    form.setFieldsValue(init.current)
+    setIsChange(false)
+  }
+
   useEffect(() => {
     form.setFieldsValue(INIT_DATA)
+    init.current = form.getFieldsValue()
   }, [])
 
   return (
     <Page
+      onOk={onOK}
+      onCancel={onCancel}
+      isChange={isChange}
       title={'Add product'}
       back={'/products/products'}
       width={950}
@@ -47,7 +93,7 @@ export default function ProductChange () {
         </Flex>
       }
     >
-      <Form className={styles.container} form={form} layout={'vertical'}>
+      <Form onValuesChange={onValuesChange} className={styles.container} form={form} layout={'vertical'}>
         <Flex gap={16}>
           <Flex vertical gap={16} flex={1}>
             <Flex gap={16}>

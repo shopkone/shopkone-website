@@ -10,7 +10,7 @@ import styles from './index.module.less'
 
 export interface SeoProps {
   value?: SeoType
-  onChange?: (seo: SeoType) => void
+  onChange?: (seo?: SeoType) => void
 }
 
 export default function Seo (props: SeoProps) {
@@ -53,7 +53,7 @@ export default function Seo (props: SeoProps) {
                   <Button
                     onClick={() => {
                       setEditing(!editing)
-                      tempSeoRef.current = undefined
+                      onChange?.(tempSeoRef.current)
                     }}
                     size={'small'}
                     type={'text'}
@@ -65,10 +65,7 @@ export default function Seo (props: SeoProps) {
             }
             <Button
               onClick={() => {
-                if (editing && tempSeoRef.current) {
-                  onChange?.(tempSeoRef.current)
-                }
-                tempSeoRef.current = undefined
+                tempSeoRef.current = value
                 setEditing(!editing)
               }}
               size={'small'}
@@ -118,7 +115,7 @@ export default function Seo (props: SeoProps) {
             ? (
               <Edit
                 onChange={(seo) => {
-                  tempSeoRef.current = seo
+                  onChange?.(seo)
                 }}
                 seo={value}
                 title={title}

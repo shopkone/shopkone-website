@@ -11,26 +11,17 @@ import {
   errorCheck,
   ErrorResult
 } from '@/pages/mange/product/product/product-change/variants/variant-changer/error-check'
+import { userVariantTableState } from '@/pages/mange/product/product/product-change/variants/variant-table/state'
 import { genId } from '@/utils/random'
 
 import styles from './index.module.less'
 
-export interface Options {
-  name: string
-  values: Array<{ value: string, id: number }>
-  id: number
-  isDone: boolean
-}
-
-export interface VariantChangerProps {
-  onChange: (options: Options[]) => void
-}
-
-export default function VariantChanger (props: VariantChangerProps) {
-  const [options, setOptions] = useState<Options[]>([])
+export default function VariantChanger () {
   const [err, setErr] = useState<ErrorResult>()
   const form = Form.useFormInstance()
   const variantType: VariantType = Form.useWatch('variant_type', form)
+  const options = userVariantTableState(state => state.options)
+  const setOptions = userVariantTableState(state => state.setOptions)
 
   const onChangeOptions = () => {
     const err = errorCheck(options)
@@ -38,13 +29,12 @@ export default function VariantChanger (props: VariantChangerProps) {
     if (!err.noError) return
     setTimeout(() => {
       if (variantType === VariantType.Single) {
-        props.onChange([])
         return
       }
       if (options.some(item => item.values?.every(i => !i.value))) {
         return
       }
-      props.onChange(options)
+      setOptions(options)
     })
   }
 
@@ -94,7 +84,6 @@ export default function VariantChanger (props: VariantChangerProps) {
         values
       }
     })
-    form.setFieldValue('options', newOptions)
     setOptions(newOptions)
   })
 

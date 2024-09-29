@@ -6,7 +6,7 @@ export default function BaseInfo () {
   return (
     <Card style={{ width: 612, flex: 1 }} bordered>
       <div>
-        <Form.Item name={'title'} label={'Title'}>
+        <Form.Item rules={[{ required: true, message: 'Please enter the title' }]} name={'title'} label={'Title'}>
           <Input autoComplete={'off'} placeholder={'Short sleeve t-shirt'} />
         </Form.Item>
         <Form.Item name={'description'} label={'Description'}>

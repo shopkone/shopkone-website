@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react'
 import { useMemoizedFn } from 'ahooks'
-import { Flex, Form } from 'antd'
+import { Flex } from 'antd'
 import isEqual from 'lodash/isEqual'
 
 import SRender from '@/components/s-render'
-import { Options } from '@/pages/mange/product/product/product-change/variants/variant-changer'
 import Actions from '@/pages/mange/product/product/product-change/variants/variant-table/actions'
 import Filter from '@/pages/mange/product/product/product-change/variants/variant-table/filter'
 import Group from '@/pages/mange/product/product/product-change/variants/variant-table/group'
+import { Options } from '@/pages/mange/product/product/product-change/variants/variant-table/state'
 import Table from '@/pages/mange/product/product/product-change/variants/variant-table/table'
+import { genId } from '@/utils/random'
 
 import styles from './index.module.less'
 
@@ -38,13 +39,14 @@ export interface VariantTableProps {
   options: Options[]
   isSingle: boolean
   hide?: boolean
+  value?: Variant[]
+  onChange?: (value: Variant[]) => void
 }
 
 export default function VariantTable (props: VariantTableProps) {
-  const { options, isSingle, hide } = props
+  const { options, isSingle, hide, onChange, value } = props
   const [groupName, setGroupName] = useState<string>()
   const [dataSource, setDataSource] = useState<Variant[]>([])
-  const form = Form.useFormInstance()
 
   const flat = (v: Variant[]) => {
     const result: Variant[] = []
@@ -84,8 +86,24 @@ export default function VariantTable (props: VariantTableProps) {
   })
 
   useEffect(() => {
-    form.setFieldValue('variants', flat(dataSource))
+    onChange?.(flat(dataSource))
   }, [dataSource])
+
+  useEffect(() => {
+    if (isSingle) {
+      onChange?.([{
+        name: [],
+        id: genId(),
+        weight_uint: 'g',
+        price: 0,
+        isParent: false,
+        inventories: [],
+        children: []
+      }])
+    } else {
+      onChange?.([])
+    }
+  }, [isSingle])
 
   return (
     <div style={{ display: hide ? 'none' : 'block' }} className={styles['variant-table']}>
@@ -94,6 +112,7 @@ export default function VariantTable (props: VariantTableProps) {
           Single Variant Mode
         </SRender>
         <Filter
+          value={value || []}
           isSingleVariantType={isSingle}
           options={options}
           groupName={groupName}

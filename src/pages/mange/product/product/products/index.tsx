@@ -60,6 +60,7 @@ export default function Products () {
           </Flex>
         </SRender>
         <STable
+          init
           empty={{
             title: 'Add your products',
             desc: 'Start by stocking your store with products your customers will love',
