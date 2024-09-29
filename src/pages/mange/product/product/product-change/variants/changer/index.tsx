@@ -1,21 +1,49 @@
-import { IconX } from '@tabler/icons-react'
+import { useEffect } from 'react'
+import { IconPlus, IconX } from '@tabler/icons-react'
 import { Button, Drawer, Flex, Form } from 'antd'
 
 import SRender from '@/components/s-render'
+import { UseOpenType } from '@/hooks/useOpen'
+import { Options } from '@/pages/mange/product/product/product-change/state'
 import Item from '@/pages/mange/product/product/product-change/variants/changer/item'
+import { genId } from '@/utils/random'
 
-export default function Changer () {
+export interface ChangerProps {
+  info: UseOpenType<unknown>
+}
+
+export default function Changer (props: ChangerProps) {
+  const { info } = props
+  const [form] = Form.useForm()
+
+  const getItem = () => {
+    const item: Options = {
+      name: '',
+      values: [{ value: '', id: genId() }],
+      isDone: false,
+      id: genId()
+    }
+    return item
+  }
+
+  useEffect(() => {
+    if (info.open) {
+      form.setFieldsValue({ options: [getItem()] })
+    }
+  }, [info.open])
+
   return (
     <Drawer
+      open={info.open}
+      onClose={info.close}
       width={420}
       closeIcon={false}
       maskClosable={false}
       extra={
-        <Button size={'small'} type={'text'}>
+        <Button onClick={info.close} size={'small'} type={'text'}>
           <IconX size={18} />
         </Button>
       }
-      open
       title={'Edit options'}
       footer={
         <Flex justify={'space-between'}>
@@ -26,7 +54,7 @@ export default function Changer () {
         </Flex>
       }
     >
-      <Form layout={'vertical'} style={{ paddingBottom: 48 }}>
+      <Form form={form} layout={'vertical'} style={{ paddingBottom: 48 }}>
         <Form.List name={'options'}>
           {
             (fields, { add, remove }) => (
@@ -34,14 +62,30 @@ export default function Changer () {
                 {
                   fields.map(item => (
                     <Item
+                      name={item.name}
                       onRemove={fields.length > 1 ? () => { remove(item.name) } : undefined}
                       key={item.name}
                     />
                   ))
                 }
                 <SRender render={fields?.length !== 3}>
-                  <Button onClick={() => { add() }} block style={{ marginTop: fields?.length ? 20 : 0 }}>
-                    Add another option
+                  <Button
+                    onClick={() => {
+                      add(getItem())
+                    }}
+                    block
+                    style={{ marginTop: fields?.length ? 20 : 0 }}
+                  >
+                    <Flex style={{ position: 'relative', top: -1 }} justify={'center'} align={'center'} gap={4}>
+                      <IconPlus
+                        size={13}
+                        style={{
+                          position: 'relative',
+                          top: -1
+                        }}
+                      />
+                      Add another option
+                    </Flex>
                   </Button>
                 </SRender>
               </div>

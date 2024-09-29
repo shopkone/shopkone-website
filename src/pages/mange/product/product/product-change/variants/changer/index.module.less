@@ -2,7 +2,8 @@
   padding: 12px 0;
   background: #f8f8f8;
   border-radius: 8px;
-  margin-top: 20px;
+  margin-top: 24px;
+  box-shadow: 0 0 12px 0 #f8f8f8;
   border: 1px solid #ccc;
   &:first-child {
     margin-top: 0;
@@ -10,17 +11,42 @@
   :global .shopkone-input-outlined {
     background-color: #fdfdfd !important;
   }
+  .header {
+    margin-top: -6px;
+    margin-bottom: 12px;
+    padding: 0 2px 6px;
+    border-bottom: 1px solid var(--color-border);
+    font-weight: 550;
+    .dragBtn {
+      width: 24px;
+      height: 24px;
+    }
+    .dragIcon {
+      position: relative;
+      left: -4px;
+    }
+    .title {
+      font-weight: bolder;
+    }
+  }
+  .optionName {
+    margin-bottom: 12px;
+    margin-left: 8px;
+    margin-right: 8px;
+  }
+  .optionNameInput {
+    margin-left: 27px;
+    width: calc(100% - 54px);
+  }
+  .optionValues {
+    margin: 0 8px;
+    margin-bottom: 0;
+  }
 }
 
 .footer {
-  height: 32px;
-  border: 1px solid #ccc;
-  background-color: #fdfdfd;
   border-radius: 8px;
-  margin: 12px 34px 0 36px;
+  margin-top: 8px;
+  margin-left: 22px;
   padding: 0 8px;
-  :global .shopkone-btn-text {
-    height: 20px !important;
-    padding: 0 4px !important;
-  }
 }
