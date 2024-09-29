@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { IconDots, IconExternalLink } from '@tabler/icons-react'
+import { IconDots } from '@tabler/icons-react'
 import { Button, Card, Flex, Form, Popover, Typography } from 'antd'
 import { useWatch } from 'antd/es/form/Form'
 
@@ -58,7 +58,7 @@ export default function Seo (props: SeoProps) {
                     size={'small'}
                     type={'text'}
                   >
-                    <div style={{ color: '#646a73' }}>Cancel</div>
+                    <div>Cancel</div>
                   </Button>
                   )
                 : null
@@ -80,7 +80,7 @@ export default function Seo (props: SeoProps) {
                     <div style={{ color: '#3370ff' }}>Done</div>
                     )
                   : (
-                    <div style={{ color: '#646a73' }}>Edit</div>
+                    <div>Edit</div>
                     )
               }
             </Button>
@@ -89,17 +89,11 @@ export default function Seo (props: SeoProps) {
               overlayInnerStyle={{ minWidth: 'unset' }}
               content={
                 <Flex vertical gap={4}>
-                  <Button type={'text'} size={'small'}>
-                    <Flex align={'center'} style={{ color: '#646a73' }} gap={8}>
-                      <div>Check Google indexing</div>
-                      <IconExternalLink size={14} strokeWidth={3} style={{ opacity: 0.8 }} />
-                    </Flex>
+                  <Button type={'link'} style={{ textAlign: 'left', paddingLeft: 0 }}>
+                    Check Google indexing
                   </Button>
-                  <Button type={'text'} size={'small'}>
-                    <Flex align={'center'} style={{ color: '#646a73' }} gap={8}>
-                      <div>Submit for indexing</div>
-                      <IconExternalLink size={14} strokeWidth={3} style={{ opacity: 0.8 }} />
-                    </Flex>
+                  <Button style={{ textAlign: 'left', paddingLeft: 0 }} type={'link'}>
+                    Submit for indexing
                   </Button>
                 </Flex>
               }
@@ -113,7 +107,7 @@ export default function Seo (props: SeoProps) {
                 size={'small'}
                 type={'text'}
               >
-                <IconDots size={16} color={'#646a73'} />
+                <IconDots size={16} />
               </Button>
             </Popover>
           </Flex>

@@ -1,13 +1,13 @@
 import { useEffect } from 'react'
+import { IconTag } from '@tabler/icons-react'
 import { Button, Card, Empty, Flex, Form, Input, Radio } from 'antd'
 
 import Page from '@/components/page'
 import SRender from '@/components/s-render'
 import Seo from '@/components/seo'
 import Conditions from '@/pages/mange/product/collections/change/conditions'
+import Uploader from '@/pages/mange/product/collections/change/uploader'
 import { genId } from '@/utils/random'
-
-import styles from './index.module.less'
 
 const INIT_VALUES = {
   collection_type: 'manual',
@@ -61,10 +61,12 @@ export default function Change () {
             </SRender>
             <Card title={'Products'} className={'fit-width'}>
               <Empty
-                image={Empty.PRESENTED_IMAGE_SIMPLE}
-                style={{ padding: '32px 0' }}
+                image={
+                  <IconTag size={48} color={'#ddd'} />
+                }
+                style={{ paddingBottom: 32 }}
                 description={(
-                  <Flex style={{ marginTop: 16 }} vertical gap={12}>
+                  <Flex vertical gap={12}>
                     <div>
                       There are no products in this collection.
                     </div>
@@ -79,12 +81,9 @@ export default function Change () {
             </Card>
           </Flex>
           <Flex vertical gap={16} style={{ width: 300 }}>
-            <Card title={'Image'} className={'fit-width'}>
-              <Flex align={'center'} justify={'center'} vertical gap={8} className={styles.cover}>
-                <Button>Add image</Button>
-                <div className={'tips'}>or drop an image to upload</div>
-              </Flex>
-            </Card>
+            <Form.Item className={'mb0'} name={'cover_id'}>
+              <Uploader />
+            </Form.Item>
             <Seo />
           </Flex>
         </Flex>

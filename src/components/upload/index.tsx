@@ -1,6 +1,7 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { useMemoizedFn } from 'ahooks'
 import { Flex, FlexProps } from 'antd'
+import classNames from 'classnames'
 
 import { FileSource, FileType } from '@/api/file/add-file-record'
 import { UploadFileType } from '@/api/file/UploadFileType'
@@ -11,13 +12,16 @@ import { genId } from '@/utils/random'
 
 import styles from './index.module.less'
 
-export interface UploadProps extends Omit<FlexProps, 'onChange'> {
+export interface UploadProps extends Omit<FlexProps, 'onChange' | 'onClick'> {
   directory?: boolean
   multiple: boolean
   maxSize: number
   accepts: Array<'video' | 'image' | 'audio' | 'zip'>
   onChange?: (files: UploadFileType[]) => void
   groupId?: number
+  onDragIn?: (enter: boolean) => void
+  onTypeError?: (isError: boolean) => void
+  onClick?: () => void
 }
 
 export default function Upload (props: UploadProps) {
@@ -29,11 +33,15 @@ export default function Upload (props: UploadProps) {
     accepts,
     onChange,
     groupId = 0,
+    onDragIn,
+    onTypeError,
     ...rest
   } = props
   const oss = useOss()
 
+  const isDragIn = useRef(false)
   const inputRef = useRef<HTMLInputElement>(null)
+  const [onDragging, setDragging] = useState(false)
 
   const directoryProps = {
     webkitdirectory: directory ? '' : false,
@@ -57,7 +65,9 @@ export default function Upload (props: UploadProps) {
   }).join(',')
 
   const onClickHandle = () => {
-    inputRef.current?.click()
+    props.onClick
+      ? props.onClick?.()
+      : inputRef.current?.click()
   }
 
   const checkFile = (file: UploadFileType) => {
@@ -164,13 +174,6 @@ export default function Upload (props: UploadProps) {
     return info
   }
 
-  /*   const onChange = useMemoizedFn((files: UploadFileType[]) => {
-    const list = oldFileList.filter(item => {
-      return !files.find(i => item.uuid === i.uuid)
-    })
-    setFileList(files.concat(list))
-  }) */
-
   const onInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || [])
     if (!files?.length) {
@@ -183,8 +186,42 @@ export default function Upload (props: UploadProps) {
     e.target.value = ''
   }
 
+  const onDrop = async (e: React.DragEvent) => {
+    e.preventDefault()
+    isDragIn.current = false
+    onDragIn?.(false)
+    setDragging(false)
+    onTypeError?.(false)
+  }
+
+  const onDropLeave = (e: React.DragEvent) => {
+    e.preventDefault()
+    if (!isDragIn.current) {
+      return
+    }
+    isDragIn.current = false
+    onDragIn?.(false)
+    setDragging(false)
+    onTypeError?.(false)
+  }
+
+  const onDropIn = (e: React.DragEvent) => {
+    e.preventDefault()
+    if (isDragIn.current) {
+      return
+    }
+    isDragIn.current = true
+    onDragIn?.(true)
+    setDragging(true)
+    const typeList = Array.from(e.dataTransfer.items).map(item => item.type)
+    const isEvery = typeList.every(item => {
+      return accepts.every(accept => item.includes(accept))
+    })
+    onTypeError?.(!isEvery)
+  }
+
   return (
-    <div className={styles.container}>
+    <>
       <input
         accept={accept}
         onChange={onInputChange}
@@ -194,7 +231,17 @@ export default function Upload (props: UploadProps) {
         multiple={multiple}
         {...directoryProps}
       />
-      <Flex onClick={onClickHandle} {...rest} />
-    </div>
+      <Flex
+        onDragEnter={onDropIn}
+        onDragOver={onDropIn}
+        onDragLeave={onDropLeave}
+        onDragEnd={onDropLeave}
+        onDragExit={onDropLeave}
+        onDrop={onDrop}
+        onClick={onClickHandle}
+        {...rest}
+        className={classNames({ [styles.container]: onDragging }, rest.className)}
+      />
+    </>
   )
 }

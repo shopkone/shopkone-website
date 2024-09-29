@@ -7,7 +7,7 @@ export interface PhonePrefixRes {
   prefix: number
 }
 
-export const PhonePrefixApi = async () => {
+const PhonePrefixApi = async () => {
   return await api<PhonePrefixRes[]>('/base/phone-prefix')
 }
 

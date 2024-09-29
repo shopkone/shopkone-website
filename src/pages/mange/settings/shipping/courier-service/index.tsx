@@ -10,7 +10,7 @@ import styles from './index.module.less'
 
 export default function CourierService () {
   const nav = useNavigate()
-  const locations = useShippingState().locations
+  const defaultLocation = useShippingState().locations?.find(item => item.default)
 
   return (
     <Flex vertical gap={16}>
@@ -21,7 +21,7 @@ export default function CourierService () {
         )}
         title={'Default location'}
       >
-        <SLocation value={locations} />
+        <SLocation hideTag value={defaultLocation ? [defaultLocation] : []} />
       </SCard>
 
       <SCard
@@ -29,7 +29,7 @@ export default function CourierService () {
         title={'Shipping point routing'}
         tips={'When a new order is generated, according to this routing rule, the inventory will be automatically assigned to the order to meet the shipping location.'}
       >
-        <SLocation value={locations} />
+        <SLocation hideTag value={defaultLocation ? [defaultLocation] : []} />
       </SCard>
 
       <SCard
@@ -78,12 +78,12 @@ export default function CourierService () {
             }
             description={(
               <div className={'secondary'}>
-                Manage the places you sell products, ship orders, and keep inventory.
+                Create a new profile to add custom rates or destination restrictions for groups of products.
               </div>
             )}
             style={{ paddingBottom: 24 }}
           >
-            <Button onClick={() => { nav('/settings/locations/change') }} type={'primary'}>
+            <Button onClick={() => { nav('/settings/shipping/courier-service/change') }} type={'primary'}>
               New profile
             </Button>
           </Empty>

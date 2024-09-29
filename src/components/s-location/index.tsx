@@ -15,10 +15,11 @@ export interface SLocationProps {
   onClick?: (item: LocationListRes) => void
   extra?: (item: LocationListRes) => React.ReactNode
   value?: LocationListRes[]
+  hideTag?: boolean
 }
 
 export default function SLocation (props: SLocationProps) {
-  const { onClick, extra, value } = props
+  const { onClick, extra, value, hideTag } = props
   const countries = useCountries()
 
   const formatInfo = useMemoizedFn((address?: AddressType) => {
@@ -57,20 +58,22 @@ export default function SLocation (props: SLocationProps) {
                   <Typography.Text ellipsis={{ tooltip: true }} style={{ maxWidth: 500 }}>
                     {item?.name || '-'}
                   </Typography.Text>
-                  <SRender render={item.default}>
-                    <Tag style={{ background: '#3370ff30', color: '#3370ff', borderColor: '#3370ff30', borderRadius: 8, marginLeft: 12 }}>
-                      Default
-                    </Tag>
-                  </SRender>
-                  <SRender render={item.active ? !item.default : null}>
-                    <Tag style={{ background: '#32a64530', color: '#32a645', borderColor: '#32a64530', borderRadius: 8 }}>
-                      Active
-                    </Tag>
-                  </SRender>
-                  <SRender render={!item.active}>
-                    <Tag style={{ background: '#646A7330', color: '#646A73', borderColor: '#646A7330', borderRadius: 8 }}>
-                      Inactive
-                    </Tag>
+                  <SRender render={!hideTag}>
+                    <SRender render={item.default}>
+                      <Tag style={{ background: '#3370ff30', color: '#3370ff', borderColor: '#3370ff30', borderRadius: 8, marginLeft: 12 }}>
+                        Default
+                      </Tag>
+                    </SRender>
+                    <SRender render={item.active ? !item.default : null}>
+                      <Tag style={{ background: '#32a64530', color: '#32a645', borderColor: '#32a64530', borderRadius: 8 }}>
+                        Active
+                      </Tag>
+                    </SRender>
+                    <SRender render={!item.active}>
+                      <Tag style={{ background: '#646A7330', color: '#646A73', borderColor: '#646A7330', borderRadius: 8 }}>
+                        Inactive
+                      </Tag>
+                    </SRender>
                   </SRender>
                 </Flex>
                 <Typography.Text ellipsis={{ tooltip: true }} style={{ width: 500 }}>

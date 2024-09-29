@@ -10,6 +10,7 @@ export default function Collections () {
     <Page title={'Collections'}>
       <Card>
         <STable
+          init
           columns={[]}
           data={[]}
           empty={{
