@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { IconArrowLeft } from '@tabler/icons-react'
 import { Button, Flex, Typography } from 'antd'
@@ -17,16 +17,26 @@ export interface PageProps {
   back?: string
   isChange?: boolean
   bottom?: number
-  onOk?: () => void
+  onOk?: () => Promise<void>
   onCancel?: () => void
 }
 
 export default function Page (props: PageProps) {
   const { children, width, header, footer, title, back, isChange, bottom, onOk, onCancel } = props
   const nav = useNavigate()
+  const [confirmLoading, setConfirmLoading] = useState(false)
   const setIsChange = useLayoutState(state => state.setChange)
   const setAction = useLayoutState(state => state.setAction)
   const resetPage = useLayoutState(state => state.reset)
+
+  const onOkHandle = async () => {
+    try {
+      setConfirmLoading(true)
+      await onOk?.()
+    } finally {
+      setConfirmLoading(false)
+    }
+  }
 
   useEffect(() => {
     setIsChange(isChange)
@@ -37,7 +47,7 @@ export default function Page (props: PageProps) {
   }, [onOk, onCancel])
 
   useEffect(() => {
-    return () => { resetPage() }
+    return () => { resetPage(); setConfirmLoading(false) }
   }, [])
 
   return (
@@ -70,7 +80,7 @@ export default function Page (props: PageProps) {
       <Flex gap={12} align={'center'} className={styles.footer}>
         {footer}
         <SRender render={isChange !== undefined}>
-          <Button disabled={!isChange} type={'primary'}>Save</Button>
+          <Button onClick={onOkHandle} loading={confirmLoading} disabled={!isChange} type={'primary'}>Save</Button>
         </SRender>
       </Flex>
     </div>

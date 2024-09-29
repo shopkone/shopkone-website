@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import { CSSTransition, TransitionGroup } from 'react-transition-group'
 import { AddOne, DeleteFour, Drag } from '@icon-park/react'
+import { IconPhotoPlus } from '@tabler/icons-react'
 import { useMemoizedFn } from 'ahooks'
-import { Button, Flex, Form, Input, Modal } from 'antd'
+import { Button, Flex, Form, Input, Modal, Tooltip } from 'antd'
 
 import { VariantType } from '@/constant/product'
 import DoneItem from '@/pages/mange/product/product/product-change/variants/variant-changer/done-item'
@@ -261,6 +262,11 @@ export default function VariantChanger (props: VariantChangerProps) {
                                           </Button>
                                         }
                                       />
+                                      <Tooltip title={'Add option value image'}>
+                                        <Button className={'secondary'} style={{ padding: 4, marginLeft: 12 }} type={'text'}>
+                                          <IconPhotoPlus style={{ position: 'relative', top: -1 }} size={18} />
+                                        </Button>
+                                      </Tooltip>
                                     </Flex>
                                     <div className={styles['err-msg']} style={{ display: err?.valueError?.find(i => i.id === value.id)?.message ? 'block' : 'none' }}>
                                       {err?.valueError?.find(i => i.id === value.id)?.message}

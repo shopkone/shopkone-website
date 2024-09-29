@@ -20,7 +20,7 @@ export const useModal = () => {
     if (icon) {
       return icon
     }
-    return <IconInfoCircleFilled style={{ marginRight: 8, marginTop: -5 }} size={32} color={'#1456f0'} />
+    return <IconInfoCircleFilled style={{ marginRight: 8, marginTop: -2 }} size={24} color={'#1456f0'} />
   }
 
   useEffect(() => {

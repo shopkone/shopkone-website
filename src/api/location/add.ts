@@ -11,5 +11,5 @@ export interface LocationAddRes {
 }
 
 export const LocationAddApi = async (params: LocationAddReq) => {
-  return await api('location/add', params)
+  return await api<LocationAddRes>('location/add', params)
 }

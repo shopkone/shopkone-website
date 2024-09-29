@@ -15,6 +15,7 @@ export default function Locations () {
 
   return (
     <Page
+      bottom={64}
       header={
         <SRender render={list.data?.length}>
           <Button onClick={() => { nav('/settings/locations/change') }} type={'primary'}>
