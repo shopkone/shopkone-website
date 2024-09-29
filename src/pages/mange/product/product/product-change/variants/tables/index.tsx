@@ -3,7 +3,6 @@ import { Flex } from 'antd'
 import SSelect from '@/components/s-select'
 import STable from '@/components/s-table'
 import TableFilter from '@/components/table-filter'
-import Changer from '@/pages/mange/product/product/product-change/variants/changer'
 import { useColumns } from '@/pages/mange/product/product/product-change/variants/tables/useColumns'
 
 export default function Tables () {
@@ -26,7 +25,6 @@ export default function Tables () {
         </Flex>
       </Flex>
       <STable init columns={columns} data={[]} />
-      <Changer />
     </div>
   )
 }

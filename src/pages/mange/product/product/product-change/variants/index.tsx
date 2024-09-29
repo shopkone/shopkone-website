@@ -1,5 +1,6 @@
 import { Button, Card, Flex } from 'antd'
 
+import Changer from '@/pages/mange/product/product/product-change/variants/changer'
 import Tables from '@/pages/mange/product/product/product-change/variants/tables'
 
 import styles from './index.module.less'
@@ -22,6 +23,7 @@ export default function Variants () {
       }
     >
       <Tables />
+      <Changer />
     </Card>
   )
 }

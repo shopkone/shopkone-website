@@ -1,6 +1,7 @@
 import { IconX } from '@tabler/icons-react'
 import { Button, Drawer, Flex, Form } from 'antd'
 
+import SRender from '@/components/s-render'
 import Item from '@/pages/mange/product/product/product-change/variants/changer/item'
 
 export default function Changer () {
@@ -28,16 +29,21 @@ export default function Changer () {
       <Form layout={'vertical'} style={{ paddingBottom: 48 }}>
         <Form.List name={'options'}>
           {
-            (fields, { add }) => (
+            (fields, { add, remove }) => (
               <div>
                 {
                   fields.map(item => (
-                    <Item key={item.key} />
+                    <Item
+                      onRemove={fields.length > 1 ? () => { remove(item.name) } : undefined}
+                      key={item.name}
+                    />
                   ))
                 }
-                <Button onClick={() => { add() }} block style={{ marginTop: 20 }}>
-                  Add another option
-                </Button>
+                <SRender render={fields?.length !== 3}>
+                  <Button onClick={() => { add() }} block style={{ marginTop: fields?.length ? 20 : 0 }}>
+                    Add another option
+                  </Button>
+                </SRender>
               </div>
             )
           }

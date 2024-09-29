@@ -1,9 +1,16 @@
 import { IconGripVertical, IconPhotoPlus, IconPlus, IconTrash } from '@tabler/icons-react'
 import { Button, Flex, Form, Input, Tooltip } from 'antd'
 
+import SRender from '@/components/s-render'
+
 import styles from './index.module.less'
 
-export default function Item () {
+export interface ItemProps {
+  onRemove?: () => void
+}
+
+export default function Item (props: ItemProps) {
+  const { onRemove } = props
   return (
     <div className={styles.item}>
       <Form.Item
@@ -117,7 +124,11 @@ export default function Item () {
           </Flex>
         </Button>
         <Flex justify={'flex-end'} gap={4}>
-          <Button size={'small'} type={'text'} danger>Delete</Button>
+          <SRender render={onRemove}>
+            <Button size={'small'} type={'text'} danger onClick={onRemove}>
+              Delete
+            </Button>
+          </SRender>
           <Button size={'small'} type={'text'} className={'primary-text'}>Done</Button>
         </Flex>
       </Flex>
