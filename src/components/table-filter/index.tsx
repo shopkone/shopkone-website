@@ -87,10 +87,12 @@ export default function TableFilter (props: TableFilterProps) {
       arrow={false}
     >
       <Button style={{ background: '#fff' }} type={label ? undefined : 'dashed'} size={'small'}>
-        <Flex gap={2} align={'center'}>
+        <Flex gap={2} align={'center'} style={{ position: 'relative', top: -1 }}>
           <Flex gap={4} style={{ fontWeight: label ? 550 : 400 }}>
             <span style={{ color: '#666' }}>{children}</span>{label ? ':' : ''}
-            <Typography.Text ellipsis={{ tooltip: true }} style={{ maxWidth: 150, lineHeight: 1.2 }}>{label}</Typography.Text>
+            <Typography.Text ellipsis={{ tooltip: true }} style={{ maxWidth: 150, position: 'relative', top: 1, lineHeight: '14px' }}>
+              {label}
+            </Typography.Text>
           </Flex>
           {
             label

@@ -43,7 +43,6 @@ export default function Filter (props: FilterProps) {
 
   useEffect(() => {
     if (isEqualHandle(variants, value)) return
-    console.log(variants, value)
     setVariants(value)
   }, [value])
 

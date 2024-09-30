@@ -1,7 +1,9 @@
+import { useRef } from 'react'
 import { Button, Card, Flex } from 'antd'
 
 import { useOpen } from '@/hooks/useOpen'
 import Changer from '@/pages/mange/product/product/product-change/variants/changer'
+import { Options } from '@/pages/mange/product/product/product-change/variants/changer/item'
 import Tables from '@/pages/mange/product/product/product-change/variants/tables'
 import { Variant } from '@/pages/mange/product/product/product-change/variants/variant-table'
 
@@ -15,6 +17,7 @@ export interface VariantsProps {
 export default function Variants (props: VariantsProps) {
   const { value, onChange } = props
   const openInfo = useOpen<Variant[]>([])
+  const optionsRef = useRef<Options[]>([])
 
   return (
     <Card
@@ -32,8 +35,16 @@ export default function Variants (props: VariantsProps) {
         </Flex>
       }
     >
-      <Tables value={value} onChange={onChange} />
-      <Changer onChangeVariants={onChange} info={openInfo} />
+      <Tables
+        options={optionsRef.current}
+        value={value}
+        onChange={onChange}
+      />
+      <Changer
+        onChangeOptions={options => { optionsRef.current = options }}
+        onChangeVariants={onChange}
+        info={openInfo}
+      />
     </Card>
   )
 }

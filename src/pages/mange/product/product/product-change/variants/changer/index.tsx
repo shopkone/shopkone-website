@@ -16,15 +16,16 @@ import OptionsHandle from './options-handle?worker'
 export interface ChangerProps {
   info: UseOpenType<Variant[]>
   onChangeVariants?: (variants: Variant[]) => void
+  onChangeOptions?: (options: Options[]) => void
 }
 
 export default function Changer (props: ChangerProps) {
-  const { info, onChangeVariants } = props
+  const { info, onChangeVariants, onChangeOptions } = props
   const [form] = Form.useForm()
   const [errors, setErrors] = useState<ItemProps['errors']>([])
   const [variants, setVariants] = useState<Variant[]>([])
 
-  const options: Options[] = Form.useWatch('options', form)
+  const options: Options[] = Form.useWatch('options', form) || []
 
   const getItem = () => {
     const item: Options = {
@@ -97,6 +98,10 @@ export default function Changer (props: ChangerProps) {
     if (errors?.length) {
       return
     }
+    if (!options.length) {
+      return
+    }
+    onChangeOptions?.(options)
     onSetVariants(options?.filter(i => i.name && i.values?.[0]?.value) || [])
   }, [options])
 
