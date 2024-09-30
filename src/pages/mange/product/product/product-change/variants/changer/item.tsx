@@ -1,63 +1,90 @@
 import { IconGripVertical } from '@tabler/icons-react'
-import { useMemoizedFn } from 'ahooks'
-import { Button, Flex, Form, Input, Typography } from 'antd'
+import { Button, Flex, Input } from 'antd'
 
 import SRender from '@/components/s-render'
-import ItemValues from '@/pages/mange/product/product/product-change/variants/changer/item-values'
+import { Option } from '@/pages/mange/product/product/product-change/variants/state'
+import { genId } from '@/utils/random'
 
 import styles from './index.module.less'
-
-export interface Options {
-  name: string
-  values: Array<{ value: string, id: number }>
-  id: number
-  isDone: boolean
-}
+import Value, { ValueProps } from './value'
 
 export interface ItemProps {
-  onRemove?: () => void
-  name: number
-  item: Options
-  errors?: Array<{ id: number, msg: string }>
+  value: Option
+  onChange: (value: ItemProps['value']) => void
+  onRemove?: (id: number) => void
+  name: string
+  errors: Array<{ id: number, msg: string }>
 }
 
 export default function Item (props: ItemProps) {
-  const { onRemove, name, item, errors } = props
+  const { value, onChange, name, onRemove, errors } = props
 
-  const NameInputRender = useMemoizedFn((props: any) => {
-    const error = errors?.find(e => e.id === item.id)
-    return (
-      <div>
-        <Input {...props} autoComplete={'off'} />
-        <div className={styles.error}>{error?.msg}</div>
-      </div>
-    )
-  })
+  const onRemoveValue = (id: number) => {
+    onChange({ ...value, values: value.values.filter(item => item.id !== id) })
+  }
+
+  const onChangeValue = (val: ValueProps['value'], index: number) => {
+    let values = value.values.map((item) => {
+      return val.id === item.id ? val : item
+    })
+    const nextValue = values[index + 1]
+    if (!nextValue) {
+      values = [...values, { id: genId(), value: '' }]
+    }
+    onChange({ ...value, values })
+  }
+
+  const errMsg = errors?.find(item => item.id === value.id)?.msg
 
   return (
     <div className={styles.item}>
-      <Flex gap={4} className={styles.header} align={'center'}>
-        <Button className={styles.dragBtn} type={'text'} size={'small'}>
-          <IconGripVertical className={styles.dragIcon} size={15} />
-        </Button>
-        <Typography.Text ellipsis={true} className={styles.title}>
-          {item.name || `Option ${name + 1}`}
-        </Typography.Text>
-        <Flex style={{ position: 'relative', top: -1 }} flex={1} justify={'flex-end'} gap={4}>
+      <Flex className={styles.title} align={'center'} justify={'space-between'}>
+        <Flex align={'center'} gap={4}>
+          <Button type={'text'} size={'small'} className={styles.dragBtn}>
+            <IconGripVertical size={13} />
+          </Button>
+          <div>{name}</div>
+        </Flex>
+        <Flex align={'center'} gap={4}>
           <SRender render={onRemove}>
-            <Button size={'small'} type={'text'} danger onClick={onRemove}>
+            <Button onClick={() => { onRemove?.(value.id) }} type={'text'} size={'small'} danger>
               Delete
             </Button>
           </SRender>
-          <Button size={'small'} type={'text'} className={'primary-text'}>Done</Button>
+          <Button type={'text'} size={'small'} className={'primary-text'}>Done</Button>
         </Flex>
       </Flex>
-      <Form.Item style={{ marginBottom: 8 }} name={[name, 'name']} className={styles.optionName} label={'Option name'}>
-        <NameInputRender className={styles.optionNameInput} />
-      </Form.Item>
-      <Form.Item style={{ marginBottom: 8 }} name={[name, 'values']} className={styles.optionValues} label={'Option values'}>
-        <ItemValues errors={errors} />
-      </Form.Item>
+
+      <div className={styles.inner}>
+        <div className={styles.values}>
+          <div className={styles.label}>Option name</div>
+          <Input
+            value={value.name}
+            onChange={(e) => { onChange({ ...value, name: e.target.value }) }}
+            className={styles.input}
+          />
+          <div className={styles.error} style={{ marginLeft: 32, marginBottom: errMsg ? 4 : 0, height: errMsg ? 16 : 0 }}>
+            {errMsg}
+          </div>
+        </div>
+
+        <div className={styles.values}>
+          <div className={styles.label}>Option value</div>
+          <Flex vertical gap={4}>
+            {
+              value?.values.map((item, index) => (
+                <Value
+                  errors={errors}
+                  value={item}
+                  key={item.id}
+                  onRemove={(value?.values?.length > 1 && index !== value?.values?.length - 1) ? onRemoveValue : undefined}
+                  onChange={(v) => { onChangeValue(v, index) }}
+                />
+              ))
+            }
+          </Flex>
+        </div>
+      </div>
     </div>
   )
 }

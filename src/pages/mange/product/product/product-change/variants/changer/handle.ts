@@ -1,11 +1,5 @@
-import { Variant } from '@/pages/mange/product/product/product-change/variants/variant-table/index'
+import { Option, Variant } from '@/pages/mange/product/product/product-change/variants/state'
 import { genId } from '@/utils/random'
-
-interface Options {
-  name: string
-  values: Array<{ value: string, id: number }>
-  id: number
-}
 
 interface Result {
   label: string
@@ -13,7 +7,7 @@ interface Result {
   id: number
 }
 
-const combineOptions = function (options: Options[]): Result[][] {
+const combineOptions = function (options: Option[]): Result[][] {
   const chunks = options.map(option =>
     option.values.map(value => ({
       label: option.name,
@@ -44,12 +38,21 @@ const combineOptions = function (options: Options[]): Result[][] {
 }
 
 self.onmessage = (e) => {
-  const { options }: { options: Options[] } = e.data || {}
+  const { options, variants }: { options: Option[], variants: Variant[] } = e.data || {}
   let data = options?.filter(item => item.name)
   data = data.map(item => ({ ...item, values: item.values.filter(item => item.value) }))
   const list = combineOptions(data).filter(item => item.length)
-  const result: Variant[] = list?.map(variant => {
+  let result: Variant[] = list?.map(variant => {
     return { name: variant, id: genId(), weight_uint: 'g', price: 0, parentId: 0, isParent: false, inventories: [] }
+  })
+  result = result.map(item => {
+    const variant = variants.find(v => {
+      const vName = v.name.map(i => `${i.label}_${i.value}`).join('_')
+      const iName = item.name.map(i => `${i.label}_${i.value}`).join('_')
+      return vName === iName
+    })
+    if (variant) return { ...variant, name: item.name }
+    return item
   })
   self.postMessage(result)
 }

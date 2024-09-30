@@ -1,66 +1,74 @@
-.item {
-  padding: 12px 0;
-  background: #f8f8f8;
-  border-radius: 8px;
-  margin-top: 24px;
-  box-shadow: 0 0 12px 0 #f8f8f8;
-  border: 1px solid #ccc;
-  &:first-child {
-    margin-top: 0;
-  }
-  :global .shopkone-input-outlined {
-    background-color: #fdfdfd !important;
-  }
-  :global .shopkone-form-item-label {
+.container {
+  :global .shopkone-btn .shopkone-flex-align-center {
     position: relative;
-    left: 27px;
-  }
-  .header {
-    margin-top: -6px;
-    margin-bottom: 12px;
-    padding: 0 2px 6px;
-    border-bottom: 1px solid var(--color-border);
-    font-weight: 550;
-    .dragBtn {
-      margin-left: 4px;
-      width: 24px;
-      height: 24px;
-    }
-    .dragIcon {
-      position: relative;
-      left: -4px;
-    }
-    .title {
-      font-weight: bolder;
-      line-height: 1;
-      position: relative;
-      top: -2px;
-    }
-  }
-  .optionName {
-    margin-bottom: 12px;
-    margin-left: 8px;
-    margin-right: 8px;
-  }
-  .optionNameInput {
-    margin-left: 27px;
-    width: calc(100% - 54px);
-  }
-  .optionValues {
-    margin: 0 8px;
-    margin-bottom: 0;
+    top: -2px !important;
   }
 }
 
-.footer {
+.item {
+  background-color: #f7f7f7;
   border-radius: 8px;
-  margin-top: 8px;
-  margin-left: 22px;
-  padding: 0 8px;
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+  margin-bottom: 24px;
+  div {
+    position: relative;
+    top: -1px;
+  }
+  :global .shopkone-btn-text:hover {
+    background-color: #cccccca0 !important;
+  }
+}
+
+.title {
+  padding: 8px;
+  font-weight: 500 !important;
+  background-color: #cccccc40;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.inner {
+  padding: 0 8px 8px 8px;
+}
+
+.input {
+  margin-left: 32px;
+  width: calc(100% - 68px);
+  transition: all 0.2s;
+}
+
+.dragBtn {
+  padding: 0 !important;
+  width: 24px !important;
+  height: 24px !important;
+  flex-shrink: 0;
+}
+
+.label {
+  margin-left: 32px;
+  margin-bottom: 6px;
+}
+
+.values {
+  margin-top: 12px;
+}
+
+.suffixBtn {
+  width: 28px !important;
+  height: 28px !important;
+  padding: 0 !important;
+  flex-shrink: 0;
+}
+
+.trashBtn {
+  width: 20px !important;
+  height: 20px !important;
+  padding: 0 !important;
+  flex-shrink: 0;
 }
 
 .error {
-  font-size: 12px;
   color: var(--color--error);
-  margin-left: 32px;
+  transition: all 0.2s;
 }
+
