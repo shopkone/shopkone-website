@@ -109,7 +109,9 @@ export default function ProductChange () {
                 </Form.Item>
               </Flex>
             </Flex>
-            <Variants />
+            <Form.Item name={'variants'}>
+              <Variants />
+            </Form.Item>
           </Flex>
         </Flex>
       </Form>
