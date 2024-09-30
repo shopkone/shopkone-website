@@ -99,7 +99,7 @@ export default function Changer (props: ChangerProps) {
           option?.values?.push({ value: name.value, id: genId() })
         })
       })
-      setOptions(options || [])
+      setOptions((options || []).map(option => ({ ...option, values: [...option.values, { id: genId(), value: '' }] })))
     } else {
       setOptions([getItem()])
     }

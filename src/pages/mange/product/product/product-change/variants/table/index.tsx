@@ -24,7 +24,8 @@ export default function Table (props: TableProps) {
     data: value,
     options,
     onChange: setGroupVariants,
-    groupName
+    groupName,
+    onUpdate: onChange
   })
 
   return (

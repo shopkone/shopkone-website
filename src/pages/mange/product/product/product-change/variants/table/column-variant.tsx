@@ -14,8 +14,6 @@ export interface ColumnVariantProps {
 export default function ColumnVariant (props: ColumnVariantProps) {
   const { item, groupName, expands } = props
 
-  console.log(item)
-
   return (
     <div>
       <SRender render={item.isParent}>

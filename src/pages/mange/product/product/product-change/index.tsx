@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useDebounceFn } from 'ahooks'
 import { Button, Flex, Form } from 'antd'
 
 import Page from '@/components/page'
@@ -42,7 +43,7 @@ export default function ProductChange () {
     console.log(form.getFieldsValue())
   }
 
-  const onValuesChange = () => {
+  const onValuesChange = useDebounceFn(() => {
     if (!init.current) return
     const values = form.getFieldsValue()
     if (!init.current?.variants?.length) {
@@ -50,15 +51,8 @@ export default function ProductChange () {
       return
     }
     const isSame = isEqualHandle(init.current, values)
-    if (!isSame) {
-      Object.keys(values).forEach(key => {
-        if (!isEqualHandle(values[key], init.current[key])) {
-          console.log(key, values[key], init.current[key])
-        }
-      })
-    }
     setIsChange(!isSame)
-  }
+  }, { wait: 300 }).run
 
   const onCancel = () => {
     form.setFieldsValue(init.current)

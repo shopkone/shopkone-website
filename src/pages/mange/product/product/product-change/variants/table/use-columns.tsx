@@ -11,6 +11,7 @@ import ColumnTitle from '@/pages/mange/product/product/product-change/variants/t
 import ColumnVariant from '@/pages/mange/product/product/product-change/variants/table/column-variant'
 import ColumnWeight from '@/pages/mange/product/product/product-change/variants/table/column-weight'
 import ColumnsInput from '@/pages/mange/product/product/product-change/variants/table/columns-input'
+import { isEqualHandle } from '@/utils/isEqual'
 
 // @ts-expect-error
 import GroupNameHandle from './handle?worker'
@@ -18,14 +19,22 @@ import GroupNameHandle from './handle?worker'
 export interface useColumnsParams {
   data: Variant[]
   onChange: (variants: Variant[]) => void
+  onUpdate?: (variants: Variant[]) => void
   options: Option[]
   groupName: string
 }
 
 export const useColumns = (params: useColumnsParams) => {
-  const { data, onChange, options, groupName } = params
+  const { data, onChange, options, groupName, onUpdate } = params
   const [expands, setExpands] = useState<number[]>([])
   const preData = useRef<Variant[]>([])
+  const preGroupName = useRef<string>()
+
+  const onUpdateData = (row?: Variant) => {
+    if (!row) return
+    const newData = data.map(item => item.id === row.id ? row : item)
+    onUpdate?.(newData)
+  }
 
   const columns: STableProps['columns'] = [
     {
@@ -40,21 +49,21 @@ export const useColumns = (params: useColumnsParams) => {
       title: 'Price',
       name: 'price',
       code: 'price',
-      render: (money: number, row: Variant) => <ColumnPrice item={row} />,
+      render: (money: number, row: Variant) => <ColumnPrice onChange={onUpdateData} type={'price'} item={row} />,
       width: 150
     },
     {
       title: 'Cost per item',
       name: 'cost_per_item',
       code: 'cost_per_item',
-      render: (money: number, row: Variant) => <ColumnPrice item={row} />,
+      render: (money: number, row: Variant) => <ColumnPrice onChange={onUpdateData} type={'cost_per_item'} item={row} />,
       width: 150
     },
     {
       title: 'Compare at price',
       name: 'compare_at_price',
       code: 'compare_at_price',
-      render: (money: number, row: Variant) => <ColumnPrice item={row} />,
+      render: (money: number, row: Variant) => <ColumnPrice onChange={onUpdateData} type={'compare_at_price'} item={row} />,
       width: 150
     },
     {
@@ -99,16 +108,26 @@ export const useColumns = (params: useColumnsParams) => {
       )
     }
   ]
-  console.log(123)
 
-  useEffect(() => {
-    if (isEqual(preData.current, data)) return
+  const isSameData = () => {
+    const v1 = data.map(item => ({ id: item.id, isParent: item.isParent, name: item.name, parentId: item.parentId }))
+    const v2 = preData.current.map(item => ({ id: item.id, isParent: item.isParent, name: item.name, parentId: item.parentId }))
+    return isEqualHandle(v1, v2)
+  }
+
+  const onChangeHandle = () => {
+    if (isSameData() && isEqual(preGroupName.current, groupName)) return
     const worker: Worker = new GroupNameHandle()
     worker.postMessage({ groupName, variants: data, options })
+    preData.current = data
+    preGroupName.current = groupName
     worker.onmessage = (e) => {
-      preData.current = data
       onChange(e.data)
     }
+  }
+
+  useEffect(() => {
+    onChangeHandle()
   }, [data, groupName])
 
   return { columns, expands, setExpands }
