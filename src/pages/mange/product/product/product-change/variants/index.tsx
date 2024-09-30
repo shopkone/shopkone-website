@@ -34,7 +34,7 @@ export default function Variants (props: VariantsProps) {
         </Flex>
       }
     >
-      <Table value={value} onChange={onChange} />
+      <Table options={optionsRef.current || []} value={value} onChange={onChange} />
       <Changer
         onChangeOptions={(options) => { optionsRef.current = options }}
         openInfo={openInfo}

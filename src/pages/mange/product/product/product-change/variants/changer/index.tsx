@@ -50,7 +50,6 @@ export default function Changer (props: ChangerProps) {
     worker.postMessage({ options, variants: openInfo.data || [] })
     worker.onmessage = (e) => {
       setVariants(e.data)
-      console.log('variants', e.data)
     }
   }, { wait: 300 }).run
 
@@ -150,7 +149,7 @@ export default function Changer (props: ChangerProps) {
         ))
       }
       <SRender render={options?.length !== 3}>
-        <Button onClick={onAdd}>
+        <Button style={{ marginTop: -8 }} onClick={onAdd}>
           <Flex align={'center'} gap={4}>
             <IconPlus size={13} />
             <div>Add another option</div>

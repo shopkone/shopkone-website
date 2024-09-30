@@ -1,5 +1,6 @@
 import { IconGripVertical } from '@tabler/icons-react'
 import { Button, Flex, Input } from 'antd'
+import classNames from 'classnames'
 
 import SRender from '@/components/s-render'
 import { Option } from '@/pages/mange/product/product/product-change/variants/state'
@@ -39,7 +40,7 @@ export default function Item (props: ItemProps) {
   return (
     <div className={styles.item}>
       <Flex className={styles.title} align={'center'} justify={'space-between'}>
-        <Flex align={'center'} gap={4}>
+        <Flex align={'center'} gap={8}>
           <Button type={'text'} size={'small'} className={styles.dragBtn}>
             <IconGripVertical size={13} />
           </Button>
@@ -61,7 +62,7 @@ export default function Item (props: ItemProps) {
           <Input
             value={value.name}
             onChange={(e) => { onChange({ ...value, name: e.target.value }) }}
-            className={styles.input}
+            className={classNames({ [styles.errInput]: errMsg }, styles.input)}
           />
           <div className={styles.error} style={{ marginLeft: 32, marginBottom: errMsg ? 4 : 0, height: errMsg ? 16 : 0 }}>
             {errMsg}
@@ -74,6 +75,7 @@ export default function Item (props: ItemProps) {
             {
               value?.values.map((item, index) => (
                 <Value
+                  drag={value?.values?.length > 1 && index !== value?.values?.length - 1}
                   errors={errors}
                   value={item}
                   key={item.id}
