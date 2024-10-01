@@ -19,7 +19,7 @@ self.onmessage = (e) => {
     let children = variants?.filter(variant => {
       return variant.name?.find(n => n.label === groupName && n.value === item.value)
     }).map(i => ({ ...i, parentId: 0 }))
-    const id = children?.reduce((p, c) => p + c.id, 0) || genId()
+    const id = (children?.reduce((p, c) => p + c.id, 0) + 1) || genId()
     children = children?.map(i => ({ ...i, parentId: id }))
     const i: Variant = { id, price: 0, weight_uint: 'g', children, parentId: 0, name: [{ label: groupName, value: item.value, id: 0 }], isParent: true, inventories: [] }
     return i

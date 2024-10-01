@@ -156,7 +156,7 @@ function STable (props: STableProps) {
             getRowProps={(row, rowIndex) => ({
               ...pipeline.getProps()?.getRowProps,
               onClick: (e) => {
-                const className = (e.target as any)?.className?.split(' ') || []
+                const className = (e?.target as any)?.className?.split(' ') || []
                 if (className?.[0] === 'art-table-cell' && className?.[1] === 'first') {
                   return
                 }
