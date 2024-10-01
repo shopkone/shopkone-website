@@ -2,7 +2,7 @@ import { Suspense, useEffect } from 'react'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { IconTruckDelivery } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
-import { Button, Empty, Tabs, TabsProps } from 'antd'
+import { Button, Empty, Flex, TabsProps } from 'antd'
 
 import { useCountries } from '@/api/base/countries'
 import { LocationListApi } from '@/api/location/list'
@@ -11,6 +11,8 @@ import SCard from '@/components/s-card'
 import SLoading from '@/components/s-loading'
 import SRender from '@/components/s-render'
 import { useShippingState } from '@/pages/mange/settings/shipping/state'
+
+import styles from './index.module.less'
 
 export default function Shipping () {
   const location = useLocation()
@@ -59,9 +61,16 @@ export default function Shipping () {
       </SRender>
 
       <SRender render={!!locationList.data?.length}>
-        <div style={{ marginTop: 8 }}>
-          <Tabs onTabClick={onTabClick} activeKey={location?.pathname?.split('/')?.[3]} items={tabs} />
-        </div>
+        <Flex className={styles.tabs}>
+          {
+            tabs.map(tab => (
+              <Button type={'text'} key={tab.key}>
+                {tab.label}
+              </Button>
+            ))
+          }
+          {/*           <Tabs onTabClick={onTabClick} activeKey={location?.pathname?.split('/')?.[3]} items={tabs} /> */}
+        </Flex>
 
         <Suspense fallback={<SLoading minHeight={400} />}>
           <Outlet />
