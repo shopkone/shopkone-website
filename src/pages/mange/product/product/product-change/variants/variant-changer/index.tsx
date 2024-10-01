@@ -4,6 +4,7 @@ import { AddOne, DeleteFour, Drag } from '@icon-park/react'
 import { IconPhotoPlus } from '@tabler/icons-react'
 import { useMemoizedFn } from 'ahooks'
 import { Button, Flex, Form, Input, Modal, Tooltip } from 'antd'
+import classNames from 'classnames'
 
 import { VariantType } from '@/constant/product'
 import DoneItem from '@/pages/mange/product/product/product-change/variants/variant-changer/done-item'
@@ -78,9 +79,9 @@ export default function VariantChanger (props: VariantChangerProps) {
   const onUpdateName = useMemoizedFn((name: string, id: number) => {
     setOptions(options.map(item => item.id === id
       ? {
-        ...item,
-        name
-      }
+          ...item,
+          name
+        }
       : item))
   })
 
@@ -128,9 +129,9 @@ export default function VariantChanger (props: VariantChangerProps) {
   const onUpdateDone = useMemoizedFn((id: number, done: boolean) => {
     setOptions(options.map(item => item.id === id
       ? {
-        ...item,
-        isDone: done
-      }
+          ...item,
+          isDone: done
+        }
       : item))
   })
 
@@ -196,10 +197,10 @@ export default function VariantChanger (props: VariantChangerProps) {
                       ? (
                         <DoneItem
                           option={option} onClick={() => {
-                          onUpdateDone(option.id, false)
-                        }}
+                            onUpdateDone(option.id, false)
+                          }}
                         />
-                      )
+                        )
                       : (
                         <Flex flex={1} vertical className={styles.option}>
                           <Flex gap={4} vertical className={styles['option-name']}>
@@ -211,10 +212,11 @@ export default function VariantChanger (props: VariantChangerProps) {
                               }}
                               value={option.name}
                               placeholder={'Add option name'}
+                              className={err?.nameError?.find(i => i.id === option.id)?.message ? classNames(styles.errInput) : ''}
                             />
                             <div
+                              style={{ height: err?.nameError?.find(i => i.id === option.id)?.message ? 16 : 0 }}
                               className={styles.error}
-                              style={{ display: err?.nameError?.find(i => i.id === option.id)?.message ? 'block' : 'none' }}
                             >
                               {err?.nameError?.find(i => i.id === option.id)?.message}
                             </div>
@@ -250,6 +252,7 @@ export default function VariantChanger (props: VariantChangerProps) {
                                         }}
                                         placeholder={'Add a value'}
                                         rootClassName={'fit-width'}
+                                        className={err?.valueError?.find(i => i.id === value.id)?.message ? classNames(styles.errInput) : ''}
                                         suffix={
                                           <Button
                                             className={styles['delete-btn']}
@@ -263,12 +266,15 @@ export default function VariantChanger (props: VariantChangerProps) {
                                         }
                                       />
                                       <Tooltip title={'Add option value image'}>
-                                        <Button className={'secondary'} style={{ padding: 4, marginLeft: 12 }} type={'text'}>
-                                          <IconPhotoPlus style={{ position: 'relative', top: -1 }} size={18} />
+                                        <Button className={'secondary'} style={{ padding: 4, marginLeft: 8 }} type={'text'}>
+                                          <IconPhotoPlus style={{ position: 'relative', top: -1 }} size={16} />
                                         </Button>
                                       </Tooltip>
                                     </Flex>
-                                    <div className={styles['err-msg']} style={{ display: err?.valueError?.find(i => i.id === value.id)?.message ? 'block' : 'none' }}>
+                                    <div
+                                      style={{ height: err?.valueError?.find(i => i.id === value.id)?.message ? 16 : 0 }}
+                                      className={styles['err-msg']}
+                                    >
                                       {err?.valueError?.find(i => i.id === value.id)?.message}
                                     </div>
                                   </Flex>
@@ -305,7 +311,7 @@ export default function VariantChanger (props: VariantChangerProps) {
                             </Button>
                           </Flex>
                         </Flex>
-                      )
+                        )
                   }
                 </Flex>
                 {

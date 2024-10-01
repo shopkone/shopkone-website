@@ -93,14 +93,20 @@
 
 .error {
   font-size: 12px;
-  color: #f54a45;
+  color: var(--color--error);
   font-weight: 450;
+  transition: all 0.2s ;
 }
 
 .err-msg {
+  transition: all 0.2s ;
   margin-left: 20px;
-  color: var(--color-error);
+  color: var(--color--error);
   font-size: 12px;
+}
+
+.errInput {
+  border-color: var(--color--error) !important;
 }
 
 .delete-btn {

@@ -4,6 +4,7 @@ import { Button, Flex, Form } from 'antd'
 
 import Page from '@/components/page'
 import Seo from '@/components/seo'
+import { VariantType } from '@/constant/product'
 import BaseInfo from '@/pages/mange/product/product/product-change/base-info'
 import ProductOrganization from '@/pages/mange/product/product/product-change/product-organization'
 import Status from '@/pages/mange/product/product/product-change/status'
@@ -24,6 +25,7 @@ const INIT_DATA = {
   tags: [],
   title: '',
   description: '',
+  variant_type: VariantType.Single,
   seo: {
     page_title: '',
     meta_description: '',
