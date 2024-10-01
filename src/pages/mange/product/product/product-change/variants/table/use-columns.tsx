@@ -33,6 +33,7 @@ export const useColumns = (params: useColumnsParams) => {
   const onUpdateData = (row?: Variant) => {
     if (!row) return
     const newData = data.map(item => item.id === row.id ? row : item)
+    console.log(newData)
     onUpdate?.(newData)
   }
 
@@ -77,7 +78,7 @@ export const useColumns = (params: useColumnsParams) => {
       title: 'Weight',
       name: 'weight',
       code: 'weight',
-      render: (weight: number, row: Variant) => <ColumnWeight row={row} />,
+      render: (weight: number, row: Variant) => <ColumnWeight onChange={onUpdateData} row={row} />,
       width: 150
     },
     {

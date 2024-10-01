@@ -36,7 +36,7 @@ export default function ProductChange () {
   const [form] = Form.useForm()
 
   const [isChange, setIsChange] = useState(false)
-  const init = useRef()
+  const init = useRef<any>()
 
   const onOK = async () => {
     await form.validateFields()

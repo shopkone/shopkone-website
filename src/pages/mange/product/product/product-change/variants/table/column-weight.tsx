@@ -10,10 +10,11 @@ import styles from './index.module.less'
 
 export interface ColumnWeightProps {
   row: Variant
+  onChange: (value?: Variant) => void
 }
 
 export default function ColumnWeight (props: ColumnWeightProps) {
-  const { row } = props
+  const { row, onChange } = props
   return (
     <div>
       <SRender render={row.isParent}>
@@ -50,6 +51,7 @@ export default function ColumnWeight (props: ColumnWeightProps) {
             value={row.weight}
             placeholder={'0'}
             onChange={(v) => {
+              onChange({ ...row, weight: v })
             }}
           />
           <Flex
@@ -60,6 +62,7 @@ export default function ColumnWeight (props: ColumnWeightProps) {
             <Select
               value={row?.weight_uint}
               onChange={(v) => {
+                onChange({ ...row, weight_uint: v })
               }}
               style={{ padding: 0 }}
               variant={'borderless'}

@@ -1,6 +1,6 @@
-import { memo, useEffect, useRef, useState } from 'react'
+import { memo, useEffect, useState } from 'react'
 import { useMemoizedFn } from 'ahooks'
-import { Input, InputProps, InputRef } from 'antd'
+import { Input, InputProps } from 'antd'
 
 import { roundPrice } from '@/utils/num'
 
@@ -29,7 +29,6 @@ function SInputNumber (props: SInputNumberProps) {
     ...rest
   } = props
 
-  const ref = useRef<InputRef>(null)
   const [num, setNum] = useState<string>()
 
   const onChangeHandle: InputProps['onChange'] = useMemoizedFn((e) => {
@@ -57,19 +56,12 @@ function SInputNumber (props: SInputNumberProps) {
     onChange?.(num)
   })
 
-  const select = useMemoizedFn(() => {
-    if (value) return
-    ref.current?.select()
-  })
-
   useEffect(() => {
     setNum(typeof value === 'number' ? value.toString() : undefined)
   }, [value])
 
   return (
     <Input
-      onClick={select}
-      ref={ref}
       value={num}
       style={{ width: '100%' }}
       autoComplete={'off'}
