@@ -1,9 +1,9 @@
+import { Options } from '@/pages/mange/product/product/product-change/variants/changer/item'
+import { Variant } from '@/pages/mange/product/product/product-change/variants/variant-table/index'
 import { genId } from '@/utils/random'
 
-import { Option, Variant } from '..//state'
-
 self.onmessage = (e) => {
-  const { groupName, variants, options }: { groupName: string, variants: Variant[], options: Option[] } = e.data || {}
+  const { groupName, variants, options }: { groupName: string, variants: Variant[], options: Options[] } = e.data || {}
   // 如果没有设置分组名称，直接返回
   if (!groupName || !variants?.length || (options?.length < 2)) {
     self.postMessage(variants); return
@@ -16,13 +16,11 @@ self.onmessage = (e) => {
   }
   // 开始设置分组
   const groups: Variant[] = groupOption?.values?.filter(i => i.value)?.map(item => {
-    let children = variants?.filter(variant => {
+    const id = genId()
+    const children = variants?.filter(variant => {
       return variant.name?.find(n => n.label === groupName && n.value === item.value)
-    }).map(i => ({ ...i, parentId: 0 }))
-    const id = (children?.reduce((p, c) => p + c.id, 0) + 1) || genId()
-    children = children?.map(i => ({ ...i, parentId: id }))
-    const i: Variant = { id, price: 0, weight_uint: 'g', children, parentId: 0, name: [{ label: groupName, value: item.value, id: 0 }], isParent: true, inventories: [] }
-    return i
-  }).filter(i => i.children?.length)
+    }).map(i => ({ ...i, parentId: id }))
+    return { id, price: 0, weight_uint: 'g', children, parentId: 0, name: [{ label: groupName, value: item.value, id: 0 }], isParent: true }
+  }).filter(i => i.children?.length) as any
   self.postMessage(groups)
 }
