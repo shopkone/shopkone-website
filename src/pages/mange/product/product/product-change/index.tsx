@@ -13,6 +13,8 @@ import BaseInfo from '@/pages/mange/product/product/product-change/base-info'
 import ProductOrganization from '@/pages/mange/product/product/product-change/product-organization'
 import Status from '@/pages/mange/product/product/product-change/status'
 import Variants from '@/pages/mange/product/product/product-change/variants'
+import { Variant } from '@/pages/mange/product/product/product-change/variants/variant-table'
+import { Options } from '@/pages/mange/product/product/product-change/variants/variant-table/state'
 import VariantsSettings from '@/pages/mange/product/product/product-change/variants-settings'
 import { isEqualHandle } from '@/utils/isEqual'
 
@@ -45,6 +47,8 @@ export default function ProductChange () {
   const [isChange, setIsChange] = useState(false)
   const [isVariantChange, setIsVariantChange] = useState(false)
   const [resetFlag, setResetFlag] = useState(1)
+  const [remoteVariants, setRemoteVariants] = useState<Variant[]>([])
+  const [remoteOptions, setRemoveOptions] = useState<Options[]>([])
   const init = useRef<any>()
   const create = useRequest(ProductCreateApi, { manual: true })
   const info = useRequest(ProductInfoApi, { manual: true })
@@ -75,6 +79,11 @@ export default function ProductChange () {
     }
     const newValues = { ...values, variants: undefined, options: undefined, seo: { ...values.seo, id: 0 } }
     const oldValues = { ...init.current, variants: undefined, options: undefined, seo: { ...init.current.seo, id: 0 } }
+    Object.keys(newValues).forEach(k => {
+      if (!isEqualHandle(oldValues[k], newValues[k])) {
+        console.log(oldValues[k], newValues[k], k)
+      }
+    })
     const isSame = isEqualHandle(newValues, oldValues)
     setIsChange(!isSame)
   }, { wait: 100 }).run
@@ -90,6 +99,7 @@ export default function ProductChange () {
     if (info.data) {
       form.setFieldsValue(info.data)
       init.current = info.data
+      setRemoteVariants(info.data.variants)
     } else {
       form.setFieldsValue(INIT_DATA)
       init.current = form.getFieldsValue()
@@ -100,6 +110,26 @@ export default function ProductChange () {
     if (!id) return
     info.run({ id: Number(id) })
   }, [id])
+
+  useEffect(() => {
+    const options: Options[] = []
+    remoteVariants.forEach(item => {
+      item?.name?.forEach(i => {
+        let find = options.find(o => o.name === i.label)
+        if (!find) {
+          find = {
+            id: item.id,
+            isDone: false,
+            name: i.label,
+            values: []
+          }
+        }
+        find.values = [...find.values, { value: i.value, id: i.id }]
+        options.push(find)
+      })
+    })
+    setRemoveOptions(options)
+  }, [remoteVariants])
 
   return (
     <Page
@@ -142,7 +172,12 @@ export default function ProductChange () {
               </Flex>
             </Flex>
             <Form.Item name={'variants'}>
-              <Variants resetFlag={resetFlag} onIsChange={setIsVariantChange} />
+              <Variants
+                remoteOptions={remoteOptions}
+                remoteVariants={remoteVariants}
+                resetFlag={resetFlag}
+                onIsChange={setIsVariantChange}
+              />
             </Form.Item>
           </Flex>
         </Flex>

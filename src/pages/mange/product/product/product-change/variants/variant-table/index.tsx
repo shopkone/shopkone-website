@@ -41,10 +41,11 @@ export interface VariantTableProps {
   hide?: boolean
   onIsChange: (isChange: boolean) => void
   resetFlag: number
+  remoteVariants: Variant[]
 }
 
 export default function VariantTable (props: VariantTableProps) {
-  const { options, isSingle, hide, onIsChange, resetFlag } = props
+  const { remoteVariants, options, isSingle, hide, onIsChange, resetFlag } = props
   const [groupName, setGroupName] = useState<string>()
   const [dataSource, setDataSource] = useState<Variant[]>([])
   const form = Form.useFormInstance()
@@ -107,6 +108,10 @@ export default function VariantTable (props: VariantTableProps) {
     setDataSource(initVariants.current)
   }, [resetFlag])
 
+  useEffect(() => {
+    initVariants.current = remoteVariants
+  }, [remoteVariants])
+
   return (
     <div style={{ display: hide ? 'none' : 'block' }} className={styles['variant-table']}>
       <Flex align={'center'} style={{ marginBottom: 12 }} justify={'space-between'}>
@@ -114,6 +119,7 @@ export default function VariantTable (props: VariantTableProps) {
           Single Variant Mode
         </SRender>
         <Filter
+          remoteVariants={remoteVariants}
           isSingleVariantType={isSingle}
           options={options}
           groupName={groupName}

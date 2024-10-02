@@ -25,6 +25,7 @@ export interface Options {
 
 export interface VariantChangerProps {
   onChange: (options: Options[]) => void
+  remoteOptions: Options[]
 }
 
 export default function VariantChanger (props: VariantChangerProps) {
@@ -152,6 +153,11 @@ export default function VariantChanger (props: VariantChangerProps) {
       }])
     }
   }, [variantType])
+
+  useEffect(() => {
+    console.log({ a: props.remoteOptions })
+    setOptions(props.remoteOptions)
+  }, [props.remoteOptions])
 
   if (variantType === VariantType.Single) {
     return null

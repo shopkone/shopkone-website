@@ -18,6 +18,7 @@ export interface FilterProps {
   hide?: boolean
   groupName?: string
   isSingleVariantType: boolean
+  remoteVariants: Variant[]
 }
 
 const INIT_VARIANT: Variant = {
@@ -37,7 +38,7 @@ const INIT_VARIANT: Variant = {
 }
 
 export default function Filter (props: FilterProps) {
-  const { onChange, hide, groupName, options, isSingleVariantType = true } = props
+  const { onChange, hide, groupName, options, isSingleVariantType = true, remoteVariants } = props
   const [variants, setVariants] = useState<Variant[]>([])
   const [filter, setFilter] = useState<Record<string, string>>()
 
@@ -55,6 +56,13 @@ export default function Filter (props: FilterProps) {
       setVariants(e.data)
     }
   }, [options, isSingleVariantType])
+
+  useEffect(() => {
+    if (remoteVariants?.length) {
+      setVariants(remoteVariants)
+      onChange(remoteVariants)
+    }
+  }, [remoteVariants])
 
   useEffect(() => {
     if (isSingleVariantType) {
