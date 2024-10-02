@@ -7,7 +7,13 @@ import VariantTable from '@/pages/mange/product/product/product-change/variants/
 
 import styles from './index.module.less'
 
-export default function Variants () {
+export interface VariantsProps {
+  onIsChange: (isChange: boolean) => void
+  resetFlag: number
+}
+
+export default function Variants (props: VariantsProps) {
+  const { onIsChange, resetFlag } = props
   const [options, setOptions] = useState<Options[]>([])
   const form = Form.useFormInstance()
   const variantType: VariantType = Form.useWatch('variant_type', form)
@@ -17,7 +23,13 @@ export default function Variants () {
     <Card bordered className={styles.container} title={'Variants'}>
       <Flex vertical gap={24}>
         <VariantChanger onChange={setOptions} />
-        <VariantTable hide={!options.length && !isSingle} isSingle={isSingle} options={options} />
+        <VariantTable
+          resetFlag={resetFlag}
+          onIsChange={onIsChange}
+          hide={!options.length && !isSingle}
+          isSingle={isSingle}
+          options={options}
+        />
       </Flex>
     </Card>
   )

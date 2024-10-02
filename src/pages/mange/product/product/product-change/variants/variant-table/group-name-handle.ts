@@ -1,4 +1,4 @@
-import { Options } from '@/pages/mange/product/product/product-change/variants/changer/item'
+import { Options } from '@/pages/mange/product/product/product-change/variants/variant-changer'
 import { Variant } from '@/pages/mange/product/product/product-change/variants/variant-table/index'
 import { genId } from '@/utils/random'
 

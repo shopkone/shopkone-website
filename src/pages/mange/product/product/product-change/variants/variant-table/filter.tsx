@@ -20,6 +20,22 @@ export interface FilterProps {
   isSingleVariantType: boolean
 }
 
+const INIT_VARIANT: Variant = {
+  id: 0,
+  name: [],
+  weight_uint: 'g',
+  weight: undefined,
+  compare_at_price: undefined,
+  children: [],
+  barcode: undefined,
+  parentId: undefined,
+  price: 0,
+  isParent: false,
+  inventories: [],
+  cost_per_item: undefined,
+  sku: undefined
+}
+
 export default function Filter (props: FilterProps) {
   const { onChange, hide, groupName, options, isSingleVariantType = true } = props
   const [variants, setVariants] = useState<Variant[]>([])
@@ -42,7 +58,7 @@ export default function Filter (props: FilterProps) {
 
   useEffect(() => {
     if (isSingleVariantType) {
-      setVariants([{ name: [], id: genId(), weight_uint: 'g', price: 0, isParent: false, inventories: [] }])
+      setVariants([{ ...INIT_VARIANT, id: genId() }])
     } else {
       setVariants([])
     }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useMemoizedFn } from 'ahooks'
 import { Flex, Form } from 'antd'
 import isEqual from 'lodash/isEqual'
@@ -9,6 +9,7 @@ import Actions from '@/pages/mange/product/product/product-change/variants/varia
 import Filter from '@/pages/mange/product/product/product-change/variants/variant-table/filter'
 import Group from '@/pages/mange/product/product/product-change/variants/variant-table/group'
 import Table from '@/pages/mange/product/product/product-change/variants/variant-table/table'
+import { isEqualHandle } from '@/utils/isEqual'
 
 import styles from './index.module.less'
 
@@ -38,13 +39,16 @@ export interface VariantTableProps {
   options: Options[]
   isSingle: boolean
   hide?: boolean
+  onIsChange: (isChange: boolean) => void
+  resetFlag: number
 }
 
 export default function VariantTable (props: VariantTableProps) {
-  const { options, isSingle, hide } = props
+  const { options, isSingle, hide, onIsChange, resetFlag } = props
   const [groupName, setGroupName] = useState<string>()
   const [dataSource, setDataSource] = useState<Variant[]>([])
   const form = Form.useFormInstance()
+  const initVariants = useRef<Variant[]>([])
 
   const flat = (v: Variant[]) => {
     const result: Variant[] = []
@@ -83,9 +87,25 @@ export default function VariantTable (props: VariantTableProps) {
     setDataSource(list)
   })
 
+  const isChange = (variants: Variant[]) => {
+    if (!initVariants.current?.length) {
+      initVariants.current = variants
+    }
+    const newVariants = variants.map(item => ({ ...item, id: undefined }))
+    const oldVariants = initVariants.current.map(item => ({ ...item, id: undefined }))
+    return isEqualHandle(newVariants, oldVariants)
+  }
+
   useEffect(() => {
-    form.setFieldValue('variants', flat(dataSource))
+    const flatData = flat(dataSource)
+    const is = isChange(flatData)
+    onIsChange(!is)
+    form.setFieldValue('variants', flatData)
   }, [dataSource])
+
+  useEffect(() => {
+    setDataSource(initVariants.current)
+  }, [resetFlag])
 
   return (
     <div style={{ display: hide ? 'none' : 'block' }} className={styles['variant-table']}>

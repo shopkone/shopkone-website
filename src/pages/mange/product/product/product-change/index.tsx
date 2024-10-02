@@ -38,6 +38,8 @@ export default function ProductChange () {
   const [form] = Form.useForm()
 
   const [isChange, setIsChange] = useState(false)
+  const [isVariantChange, setIsVariantChange] = useState(false)
+  const [resetFlag, setResetFlag] = useState(1)
   const init = useRef<any>()
 
   const onOK = async () => {
@@ -52,12 +54,13 @@ export default function ProductChange () {
       init.current = values
       return
     }
-    const isSame = isEqualHandle(init.current, values)
+    const isSame = isEqualHandle({ ...init.current, variants: undefined, options: undefined }, { ...values, variants: undefined, options: undefined })
     setIsChange(!isSame)
-  }, { wait: 300 }).run
+  }, { wait: 100 }).run
 
   const onCancel = () => {
     form.setFieldsValue(init.current)
+    setResetFlag(resetFlag + 1)
     setIsChange(false)
   }
 
@@ -70,7 +73,7 @@ export default function ProductChange () {
     <Page
       onOk={onOK}
       onCancel={onCancel}
-      isChange={isChange}
+      isChange={isChange || isVariantChange}
       title={'Add product'}
       back={'/products/products'}
       width={950}
@@ -106,7 +109,7 @@ export default function ProductChange () {
               </Flex>
             </Flex>
             <Form.Item name={'variants'}>
-              <Variants />
+              <Variants resetFlag={resetFlag} onIsChange={setIsVariantChange} />
             </Form.Item>
           </Flex>
         </Flex>
