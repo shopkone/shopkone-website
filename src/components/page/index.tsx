@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { IconArrowLeft } from '@tabler/icons-react'
 import { Button, Flex, Typography } from 'antd'
 
+import SLoading from '@/components/s-loading'
 import SRender from '@/components/s-render'
 import { useLayoutState } from '@/pages/mange/layout/state'
 
@@ -19,10 +20,11 @@ export interface PageProps {
   bottom?: number
   onOk?: () => Promise<void>
   onCancel?: () => void
+  loading?: boolean
 }
 
 export default function Page (props: PageProps) {
-  const { children, width, header, footer, title, back, isChange, bottom, onOk, onCancel } = props
+  const { children, width, header, footer, title, back, isChange, bottom, onOk, onCancel, loading = false } = props
   const nav = useNavigate()
   const [confirmLoading, setConfirmLoading] = useState(false)
   const setIsChange = useLayoutState(state => state.setChange)
@@ -57,32 +59,34 @@ export default function Page (props: PageProps) {
       paddingBottom: isChange !== undefined ? 60 : bottom
     }}
     >
-      <SRender render={title || header}>
-        <Flex align={'center'} justify={'space-between'} className={styles.title}>
-          <Flex gap={8} align={'center'}>
-            <SRender render={!!back}>
-              <Button onClick={() => { nav(back || '') }} type={'text'} className={styles['back-icon']}>
-                <IconArrowLeft size={20} />
-              </Button>
-            </SRender>
-            <SRender render={!!title}>
-              <Typography.Text ellipsis={{ tooltip: true }} style={{ fontSize: 20, maxWidth: width ? (width - 200) : undefined }}>
-                {title}
-              </Typography.Text>
-            </SRender>
+      <SLoading loading={loading} foreShow>
+        <SRender render={title || header}>
+          <Flex align={'center'} justify={'space-between'} className={styles.title}>
+            <Flex gap={8} align={'center'}>
+              <SRender render={!!back}>
+                <Button onClick={() => { nav(back || '') }} type={'text'} className={styles['back-icon']}>
+                  <IconArrowLeft size={20} />
+                </Button>
+              </SRender>
+              <SRender render={!!title}>
+                <Typography.Text ellipsis={{ tooltip: true }} style={{ fontSize: 20, maxWidth: width ? (width - 200) : undefined }}>
+                  {title}
+                </Typography.Text>
+              </SRender>
+            </Flex>
+            <div className={styles.header}>
+              {header}
+            </div>
           </Flex>
-          <div className={styles.header}>
-            {header}
-          </div>
-        </Flex>
-      </SRender>
-      {children}
-      <Flex gap={12} align={'center'} className={styles.footer}>
-        {footer}
-        <SRender render={isChange !== undefined}>
-          <Button onClick={onOkHandle} loading={confirmLoading} disabled={!isChange} type={'primary'}>Save</Button>
         </SRender>
-      </Flex>
+        {children}
+        <Flex gap={12} align={'center'} className={styles.footer}>
+          {footer}
+          <SRender render={isChange !== undefined}>
+            <Button onClick={onOkHandle} loading={confirmLoading} disabled={!isChange} type={'primary'}>Save</Button>
+          </SRender>
+        </Flex>
+      </SLoading>
     </div>
   )
 }

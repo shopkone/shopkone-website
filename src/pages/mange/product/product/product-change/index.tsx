@@ -1,8 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
-import { useDebounceFn } from 'ahooks'
+import { useNavigate, useParams } from 'react-router-dom'
+import { useDebounceFn, useRequest } from 'ahooks'
 import { Button, Flex, Form } from 'antd'
 
+import { ProductCreateApi } from '@/api/product/create'
+import { ProductInfoApi } from '@/api/product/info'
 import Page from '@/components/page'
+import { sMessage } from '@/components/s-message'
 import Seo from '@/components/seo'
 import { VariantType } from '@/constant/product'
 import BaseInfo from '@/pages/mange/product/product/product-change/base-info'
@@ -31,7 +35,8 @@ const INIT_DATA = {
     meta_description: '',
     url_handle: '',
     follow: true
-  }
+  },
+  collections: undefined
 }
 
 export default function ProductChange () {
@@ -41,20 +46,36 @@ export default function ProductChange () {
   const [isVariantChange, setIsVariantChange] = useState(false)
   const [resetFlag, setResetFlag] = useState(1)
   const init = useRef<any>()
+  const create = useRequest(ProductCreateApi, { manual: true })
+  const info = useRequest(ProductInfoApi, { manual: true })
+  const nav = useNavigate()
+  const { id } = useParams()
 
   const onOK = async () => {
     await form.validateFields()
-    console.log(form.getFieldsValue())
+    const values = form.getFieldsValue()
+    if (id) {
+    } else {
+      const ret = await create.runAsync(values)
+      form.resetFields()
+      nav(`/products/products/change/${ret.id}`)
+      sMessage.success('Product created')
+      onCancel()
+    }
   }
 
   const onValuesChange = useDebounceFn(() => {
     if (!init.current) return
     const values = form.getFieldsValue()
-    if (!init.current?.variants?.length) {
+    let noInitSeo = init.current?.seo?.follow && (init.current?.seo?.page_title !== init?.current?.title)
+    noInitSeo = noInitSeo || (!init.current?.seo?.follow && !init.current?.seo?.page_title)
+    if (!init.current?.variants?.length || noInitSeo) {
       init.current = values
       return
     }
-    const isSame = isEqualHandle({ ...init.current, variants: undefined, options: undefined }, { ...values, variants: undefined, options: undefined })
+    const newValues = { ...values, variants: undefined, options: undefined, seo: { ...values.seo, id: 0 } }
+    const oldValues = { ...init.current, variants: undefined, options: undefined, seo: { ...init.current.seo, id: 0 } }
+    const isSame = isEqualHandle(newValues, oldValues)
     setIsChange(!isSame)
   }, { wait: 100 }).run
 
@@ -65,12 +86,24 @@ export default function ProductChange () {
   }
 
   useEffect(() => {
-    form.setFieldsValue(INIT_DATA)
-    init.current = form.getFieldsValue()
-  }, [])
+    if (!info.data && id) return
+    if (info.data) {
+      form.setFieldsValue(info.data)
+      init.current = info.data
+    } else {
+      form.setFieldsValue(INIT_DATA)
+      init.current = form.getFieldsValue()
+    }
+  }, [info.data])
+
+  useEffect(() => {
+    if (!id) return
+    info.run({ id: Number(id) })
+  }, [id])
 
   return (
     <Page
+      loading={info.loading}
       onOk={onOK}
       onCancel={onCancel}
       isChange={isChange || isVariantChange}

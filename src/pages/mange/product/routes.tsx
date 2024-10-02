@@ -15,6 +15,7 @@ const GiftCardProductChange = lazy(async () => await import('./gift-card/product
 export const ProductRoutes: RouteObject[] = [
   { element: <Products />, path: '/products/products' },
   { element: <ProductChange />, path: '/products/products/change' },
+  { element: <ProductChange />, path: '/products/products/change/:id' },
   { element: <Collections />, path: '/products/collections' },
   { element: <CollectionsChange />, path: '/products/collections/change' },
   { element: <Inventory />, path: '/products/inventory' },
