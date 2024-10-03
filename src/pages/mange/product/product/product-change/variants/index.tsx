@@ -84,7 +84,7 @@ export default function Variants (props: VariantsProps) {
       const item: Variant = {
         price: 0,
         cost_per_item: null,
-        compare_at_price: 0,
+        compare_at_price: null,
         weight_unit: 'g' as unknown as any,
         weight: null,
         sku: '',
@@ -126,13 +126,15 @@ export default function Variants (props: VariantsProps) {
       title={'Variants'}
       extra={
         <Flex gap={8}>
-          <Button
-            onClick={() => { openInfo.edit() }}
-            type={'text'}
-            size={'small'}
-          >
-            Set columns
-          </Button>
+          <SRender render={variants?.length}>
+            <Button
+              onClick={() => { openInfo.edit() }}
+              type={'text'}
+              size={'small'}
+            >
+              Set columns
+            </Button>
+          </SRender>
           <SRender render={variantType === VariantType.Multiple && !!variants?.length}>
             <Button
               onClick={() => { openInfo.edit(form.getFieldValue('variants')) }}
@@ -152,7 +154,9 @@ export default function Variants (props: VariantsProps) {
         info={openInfo}
       />
       <Table
-        onChange={onIsChange}
+        onChange={setVariants}
+        onOpenOptions={() => openInfo.edit() }
+        onChangeGroupVariants={onIsChange}
         loading={loading}
         variants={variants}
         options={options}

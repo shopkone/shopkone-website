@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Flex, Form } from 'antd'
+import { Button, Flex, Form } from 'antd'
 
 import STable from '@/components/s-table'
 import { Option, Variant } from '@/pages/mange/product/product/product-change/variants/state'
@@ -11,11 +11,13 @@ export interface TableProps {
   variants: Variant[]
   options: Option[]
   loading: boolean
+  onChangeGroupVariants: (variants: Variant[]) => void
+  onOpenOptions: () => void
   onChange: (variants: Variant[]) => void
 }
 
 export default function Table (props: TableProps) {
-  const { variants, options, loading, onChange } = props
+  const { variants, options, loading, onChangeGroupVariants ,onOpenOptions,onChange} = props
   const form = Form.useFormInstance()
   const [groupVariants, setGroupVariants] = useState<Variant[]>([])
   const [expandedRowKeys, setExpandedRowKeys] = useState<number[]>([])
@@ -27,13 +29,13 @@ export default function Table (props: TableProps) {
 
   useEffect(() => {
     form.setFieldValue('variants', groupVariants)
-    onChange(groupVariants)
-  }, [groupVariants]) 
+    onChangeGroupVariants(groupVariants)
+  }, [groupVariants])
 
   return (
     <div>
       <Flex style={{ marginBottom: 12 }} align={'center'} gap={48}>
-        <Filters options={options}/>
+        <Filters variants={variants} onChange={onChange} options={options}/>
         <GroupBy onChange={setGroupVariants} variants={variants} options={options} />
       </Flex>
       <STable
@@ -42,6 +44,16 @@ export default function Table (props: TableProps) {
         columns={columns}
         data={groupVariants}
         expand={{ value: expandedRowKeys, onChange: setExpandedRowKeys }}
+        empty={{
+          img:"asd",
+          desc:"adsad",
+          title:"xxx",
+          actions: (
+            <Flex align={'center'} justify={'center'}>
+              <Button type={'primary'} onClick={onOpenOptions}>Edit options</Button>
+            </Flex>
+          )
+        }}
       />
     </div>
   )

@@ -63,7 +63,7 @@ self.onmessage = (e) => {
       name: variant,
       price: 0,
       cost_per_item: null,
-      compare_at_price: 12,
+      compare_at_price: null,
       weight_unit: 'g' as unknown as any,
       weight: null,
       sku: '',
