@@ -14,6 +14,7 @@ import { genId } from '@/utils/random'
 // @ts-expect-error
 import ReserveHandle from './changer/reserve-handle?worker'
 import styles from './index.module.less'
+import { useParams } from 'react-router-dom'
 
 export interface VariantsProps {
   setIsChange: (isChange: boolean) => void
@@ -28,7 +29,7 @@ export default function Variants (props: VariantsProps) {
   const [variants, setVariants] = useState<Variant[]>([])
   const [options, setOptions] = useState<Option[]>([])
   const [loading, setLoading] = useState(false)
-
+  const { id } = useParams()
   const init = useRef<Variant[]>()
   const variantType: VariantType = Form.useWatch('variant_type', form)
 
@@ -77,6 +78,7 @@ export default function Variants (props: VariantsProps) {
   }, [remoteVariants])
 
   useEffect(() => {
+    if(id && !variants?.length) return
     if (!variantType) return
     if (variantType === VariantType.Single) {
       const item: Variant = {

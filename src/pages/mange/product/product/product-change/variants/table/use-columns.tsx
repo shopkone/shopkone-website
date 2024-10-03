@@ -55,6 +55,7 @@ export default function useColumns (params: ColumnsParams) {
       render: (price: number, row: Variant) => {
         return (
           <ColumnPrice
+            type={'price'}
             row={row}
             onChange={v => { onUpdate(row, 'price', v) }}
             value={price}
@@ -69,6 +70,7 @@ export default function useColumns (params: ColumnsParams) {
       render: (compare_at_price: number, row: Variant) => {
         return (
           <ColumnPrice
+            type={'compare_at_price'}
             row={row}
             onChange={v => { onUpdate(row, 'compare_at_price', v) }}
             value={compare_at_price}
@@ -83,6 +85,7 @@ export default function useColumns (params: ColumnsParams) {
       render: (cost_per_item: number, row: Variant) => {
         return (
           <ColumnPrice
+            type={'cost_per_item'}
             row={row}
             onChange={v => { onUpdate(row, 'cost_per_item', v) }}
             value={cost_per_item}
