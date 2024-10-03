@@ -36,7 +36,7 @@ export default function GroupBy (props: GroupByProps) {
 
   return (
     <Flex align={'center'} gap={8}>
-      <div style={{ flexShrink: 0 }}>By group</div>
+      <div style={{ flexShrink: 0 }}>Group by</div>
       <SSelect
         value={groupName}
         onChange={setGroupName}
