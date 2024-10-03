@@ -2,11 +2,13 @@ import { useEffect, useRef, useState } from 'react'
 import { Button, Card, Flex, Form } from 'antd'
 import cloneDeep from 'lodash/cloneDeep'
 
+import { VariantType } from '@/constant/product'
 import { useOpen } from '@/hooks/useOpen'
 import Changer, { Option } from '@/pages/mange/product/product/product-change/variants/changer'
 import Table from '@/pages/mange/product/product/product-change/variants/table'
 import { Variant } from '@/pages/mange/product/product/product-change/variants/variant-table'
 import { isEqualHandle } from '@/utils/is-equal-handle'
+import { genId } from '@/utils/random'
 
 // @ts-expect-error
 import ReserveHandle from './changer/reserve-handle?worker'
@@ -27,6 +29,7 @@ export default function Variants (props: VariantsProps) {
   const [loading, setLoading] = useState(false)
 
   const init = useRef<Variant[]>()
+  const variantType: VariantType = Form.useWatch('variant_type', form)
 
   const onChange = (data: Variant[]) => {
     setVariants(data)
@@ -61,16 +64,48 @@ export default function Variants (props: VariantsProps) {
       if (!find) return false
       return isEqualHandle(find, item)
     })
-    console.log(isSame, list, init.current)
     setIsChange(!isSame)
   }
 
   useEffect(() => {
+    if (!remoteVariants?.length) return
     setVariants(remoteVariants)
     onReverseVariants(remoteVariants).then(() => {
       onIsChange(remoteVariants, true)
     })
   }, [remoteVariants])
+
+  useEffect(() => {
+    if (!variantType) return
+    if (variantType === VariantType.Single) {
+      const item: Variant = {
+        price: 0,
+        cost_per_item: null,
+        compare_at_price: 0,
+        weight_unit: 'g' as unknown as any,
+        weight: null,
+        sku: '',
+        barcode: '',
+        name: [],
+        id: genId(),
+        isParent: false,
+        inventories: []
+      }
+      if (remoteVariants?.length && !remoteVariants?.[0]?.name?.length) {
+        setVariants(remoteVariants)
+      } else {
+        setVariants([item])
+      }
+      return
+    }
+    if (variantType === VariantType.Multiple) {
+      if (remoteVariants?.length && remoteVariants?.[0]?.name?.length) {
+        setVariants(remoteVariants)
+      } else {
+        setVariants([])
+      }
+    }
+  }, [variantType])
 
   useEffect(() => {
     if (!resetFlag) return

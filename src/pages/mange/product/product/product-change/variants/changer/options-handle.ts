@@ -59,7 +59,19 @@ self.onmessage = (e) => {
   data = data.map(item => ({ ...item, values: item.values.filter(item => item.value) }))
   const list = combineOptions(data).filter(item => item.length)
   let result: Variant[] = list?.map(variant => {
-    return { name: variant, id: genId(), weight_uint: 'g', price: 0, parentId: 0, isParent: false, inventories: [] }
+    return {
+      name: variant,
+      price: 0,
+      cost_per_item: null,
+      compare_at_price: 12,
+      weight_unit: 'g' as unknown as any,
+      weight: null,
+      sku: '',
+      barcode: '',
+      id: genId(),
+      isParent: false,
+      inventories: []
+    }
   })
   result = result.map(item => {
     const temp = v.find(variant => {
