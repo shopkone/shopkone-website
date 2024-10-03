@@ -1,5 +1,4 @@
-import { Option } from '@/pages/mange/product/product/product-change/variants/changer/index'
-import { Variant } from '@/pages/mange/product/product/product-change/variants/variant-table'
+import { Option, Variant } from '@/pages/mange/product/product/product-change/variants/state'
 import { genId } from '@/utils/random'
 
 self.onmessage = (e) => {

@@ -18,6 +18,10 @@
     "paths": {
       "@/*": ["*"]
     },
+    "lib": [
+      "esnext.full",
+      "dom"
+    ]
   },
   "include": ["src"],
   "exclude": ["node_modules"],

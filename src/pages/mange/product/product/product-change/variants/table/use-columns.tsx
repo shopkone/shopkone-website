@@ -1,7 +1,7 @@
 import { STableProps } from '@/components/s-table'
+import { Variant } from '@/pages/mange/product/product/product-change/variants/state'
 import ColumnPrice from '@/pages/mange/product/product/product-change/variants/table/columns/column-price'
 import ColumnText from '@/pages/mange/product/product/product-change/variants/table/columns/column-text'
-import { Variant } from '@/pages/mange/product/product/product-change/variants/variant-table'
 
 export interface ColumnsParams {
   variants: Variant[]
@@ -9,7 +9,7 @@ export interface ColumnsParams {
 }
 
 export default function useColumns (params: ColumnsParams) {
-  const onUpdate = (row: Variant, key: keyof Variant, value: number | string) => {
+  const onUpdate = (row: Variant, key: keyof Variant, value: number | string | null) => {
     if (row.children?.length) {
       row.children.forEach(child => {
         // @ts-expect-error

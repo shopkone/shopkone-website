@@ -2,10 +2,9 @@ import { useEffect, useState } from 'react'
 import { Flex, Form } from 'antd'
 
 import STable from '@/components/s-table'
-import { Option } from '@/pages/mange/product/product/product-change/variants/changer'
+import { Option, Variant } from '@/pages/mange/product/product/product-change/variants/state'
 import GroupBy from '@/pages/mange/product/product/product-change/variants/table/group-by'
 import useColumns from '@/pages/mange/product/product/product-change/variants/table/use-columns'
-import { Variant } from '@/pages/mange/product/product/product-change/variants/variant-table'
 
 export interface TableProps {
   variants: Variant[]

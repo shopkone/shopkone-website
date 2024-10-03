@@ -1,9 +1,8 @@
-import { Options } from '@/pages/mange/product/product/product-change/variants/variant-changer'
-import { Variant } from '@/pages/mange/product/product/product-change/variants/variant-table/index'
+import { Option, Variant } from '@/pages/mange/product/product/product-change/variants/state'
 import { genId } from '@/utils/random'
 
 self.onmessage = (e) => {
-  const { groupName, variants, options }: { groupName: string, variants: Variant[], options: Options[] } = e.data || {}
+  const { groupName, variants, options }: { groupName: string, variants: Variant[], options: Option[] } = e.data || {}
   // 如果没有设置分组名称，直接返回
   if (!groupName || !variants?.length || (options?.length < 2)) {
     self.postMessage(variants); return

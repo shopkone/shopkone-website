@@ -6,7 +6,7 @@ import classNames from 'classnames'
 import SLoading from '@/components/s-loading'
 import SRender from '@/components/s-render'
 import { UseOpenType } from '@/hooks/useOpen'
-import { Variant } from '@/pages/mange/product/product/product-change/variants/variant-table'
+import { Option, Variant } from '@/pages/mange/product/product/product-change/variants/state'
 import { genId } from '@/utils/random'
 
 import styles from './index.module.less'
@@ -14,13 +14,6 @@ import styles from './index.module.less'
 import Handle from './options-handle?worker'
 // @ts-expect-error
 import ReserveHandle from './reserve-handle?worker'
-
-export interface Option {
-  name: string
-  values: Array<{ value: string, id: number }>
-  id: number
-  isDone: boolean
-}
 
 export interface ChangerProps {
   info: UseOpenType<Variant[]>

@@ -4,9 +4,9 @@ import cloneDeep from 'lodash/cloneDeep'
 
 import { VariantType } from '@/constant/product'
 import { useOpen } from '@/hooks/useOpen'
-import Changer, { Option } from '@/pages/mange/product/product/product-change/variants/changer'
+import Changer from '@/pages/mange/product/product/product-change/variants/changer'
+import { Option, Variant } from '@/pages/mange/product/product/product-change/variants/state'
 import Table from '@/pages/mange/product/product/product-change/variants/table'
-import { Variant } from '@/pages/mange/product/product/product-change/variants/variant-table'
 import { isEqualHandle } from '@/utils/is-equal-handle'
 import { genId } from '@/utils/random'
 

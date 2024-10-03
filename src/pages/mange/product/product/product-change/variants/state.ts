@@ -9,10 +9,10 @@ export interface Variant {
   id: number
   name: VariantName[]
   price: number
-  weight_uint: 'kg' | 'lb' | 'oz' | 'g'
-  weight?: number
-  compare_at_price?: number
-  cost_per_item?: number
+  weight_unit: 'kg' | 'lb' | 'oz' | 'g'
+  weight: number | null
+  compare_at_price: number | null
+  cost_per_item: number | null
   barcode?: string
   inventories: Array<{ id: number, quantity: number, location_id: number }>
   sku?: string

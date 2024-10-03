@@ -2,7 +2,7 @@ import { Tooltip } from 'antd'
 
 import SInputNumber from '@/components/s-input-number'
 import SRender from '@/components/s-render'
-import { Variant } from '@/pages/mange/product/product/product-change/variants/variant-table'
+import { Variant } from '@/pages/mange/product/product/product-change/variants/state'
 
 export interface ColumnPriceProps {
   value: number

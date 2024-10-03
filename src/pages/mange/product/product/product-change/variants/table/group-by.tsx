@@ -2,8 +2,7 @@ import { useEffect, useState } from 'react'
 import { Flex } from 'antd'
 
 import SSelect from '@/components/s-select'
-import { Option } from '@/pages/mange/product/product/product-change/variants/changer'
-import { Variant } from '@/pages/mange/product/product/product-change/variants/state'
+import { Option, Variant } from '@/pages/mange/product/product/product-change/variants/state'
 
 // @ts-expect-error
 import Handle from './group-handle?worker'

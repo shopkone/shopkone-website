@@ -13,7 +13,7 @@ import BaseInfo from '@/pages/mange/product/product/product-change/base-info'
 import ProductOrganization from '@/pages/mange/product/product/product-change/product-organization'
 import Status from '@/pages/mange/product/product/product-change/status'
 import Variants from '@/pages/mange/product/product/product-change/variants'
-import { Variant } from '@/pages/mange/product/product/product-change/variants/variant-table'
+import { Variant } from '@/pages/mange/product/product/product-change/variants/state'
 import VariantsSettings from '@/pages/mange/product/product/product-change/variants-settings'
 import { isEqualHandle } from '@/utils/is-equal-handle'
 

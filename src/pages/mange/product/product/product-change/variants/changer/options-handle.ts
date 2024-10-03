@@ -1,6 +1,6 @@
 import isEqual from 'lodash/isEqual'
 
-import { Variant } from '@/pages/mange/product/product/product-change/variants/variant-table/index'
+import { Variant } from '@/pages/mange/product/product/product-change/variants/state'
 import { genId } from '@/utils/random'
 
 interface Options {
