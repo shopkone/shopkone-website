@@ -21,15 +21,17 @@ export interface PageProps {
   onOk?: () => Promise<void>
   onCancel?: () => void
   loading?: boolean
+  resetLoading?: boolean
 }
 
 export default function Page (props: PageProps) {
-  const { children, width, header, footer, title, back, isChange, bottom, onOk, onCancel, loading = false } = props
+  const { children, width, header, footer, title, back, isChange, bottom, onOk, onCancel, loading = false, resetLoading = false } = props
   const nav = useNavigate()
   const [confirmLoading, setConfirmLoading] = useState(false)
   const setIsChange = useLayoutState(state => state.setChange)
   const setAction = useLayoutState(state => state.setAction)
   const resetPage = useLayoutState(state => state.reset)
+  const setResetLoading = useLayoutState(state => state.setResetLoading)
 
   const onOkHandle = async () => {
     try {
@@ -51,6 +53,10 @@ export default function Page (props: PageProps) {
   useEffect(() => {
     return () => { resetPage(); setConfirmLoading(false) }
   }, [])
+
+  useEffect(() => {
+    setResetLoading(resetLoading)
+  }, [resetLoading])
 
   return (
     <div style={{

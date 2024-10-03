@@ -6,7 +6,7 @@ import { Variant } from '@/pages/mange/product/product/product-change/variants/v
 
 export interface ColumnPriceProps {
   value: number
-  onChange: (value: number) => void
+  onChange: (value: number | null) => void
   row: Variant
 }
 
@@ -17,11 +17,11 @@ export default function ColumnPrice (props: ColumnPriceProps) {
     <div>
       <SRender render={row.children?.length}>
         <Tooltip title={`Applies to all ${row?.children?.length} variants`}>
-          <SInputNumber value={value} onChange={e => { onChange(Number(e || 0)) }} money />
+          <SInputNumber value={value} onChange={e => { onChange(e) }} money />
         </Tooltip>
       </SRender>
       <SRender render={!row.children?.length}>
-        <SInputNumber value={value} onChange={e => { onChange(Number(e || 0)) }} money />
+        <SInputNumber value={value} onChange={e => { onChange(e) }} money />
       </SRender>
     </div>
   )

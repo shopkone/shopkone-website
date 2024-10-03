@@ -17,11 +17,18 @@ export default function useColumns (params: ColumnsParams) {
       })
       const newValues = params.variants.map(v => v.id === row.id ? row : v)
       params.setVariants(newValues)
+    } else if (row.parentId) {
+      const parent = params.variants.find(v => v.id === row.parentId)
+      if (!parent) return
+      // @ts-expect-error
+      row[key] = value
+      parent.children = parent.children?.map(child => child.id === row.id ? row : child)
+      const newValues = params.variants.map(v => v.id === parent.id ? parent : v)
+      params.setVariants(newValues)
     } else {
       // @ts-expect-error
       row[key] = value
-      const newValues = params.variants.map(v => v.id === row.id ? row : v)
-      params.setVariants(newValues)
+      params.setVariants(params.variants.map(v => v.id === row.id ? row : v))
     }
   }
 

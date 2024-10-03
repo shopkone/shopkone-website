@@ -1,6 +1,7 @@
 import { api } from '@/api/api'
 import { SeoType } from '@/components/seo/edit'
 import { InventoryPolicy, VariantStatus, VariantType } from '@/constant/product'
+import { Variant } from '@/pages/mange/product/product/product-change/variants/state'
 
 export interface ProductCreateReq {
   title: string
@@ -15,6 +16,7 @@ export interface ProductCreateReq {
   variant_type: VariantType
   inventory_policy: InventoryPolicy
   file_ids: number[]
+  variants: Variant[]
 }
 export interface ProductCreateRes {
   id: number

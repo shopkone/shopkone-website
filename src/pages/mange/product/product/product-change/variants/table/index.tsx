@@ -11,10 +11,11 @@ export interface TableProps {
   variants: Variant[]
   options: Option[]
   loading: boolean
+  onChange: (variants: Variant[]) => void
 }
 
 export default function Table (props: TableProps) {
-  const { variants, options, loading } = props
+  const { variants, options, loading, onChange } = props
   const form = Form.useFormInstance()
   const [groupVariants, setGroupVariants] = useState<Variant[]>([])
   const [expandedRowKeys, setExpandedRowKeys] = useState<number[]>([])
@@ -26,6 +27,7 @@ export default function Table (props: TableProps) {
 
   useEffect(() => {
     form.setFieldValue('variants', groupVariants)
+    onChange(groupVariants)
   }, [groupVariants])
 
   return (

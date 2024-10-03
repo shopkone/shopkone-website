@@ -58,7 +58,7 @@ export default function Header () {
               <div>Unsaved</div>
             </Flex>
             <Flex align={'center'} gap={12}>
-              <Button onClick={page.onCancel}>Discard</Button>
+              <Button loading={page.resetLoading} onClick={page.onCancel}>Discard</Button>
               <Button onClick={onOkHandler} type={'primary'} loading={confirmLoading}>Save</Button>
             </Flex>
           </Flex>
