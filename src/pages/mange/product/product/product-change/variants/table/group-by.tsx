@@ -31,7 +31,7 @@ export default function GroupBy (props: GroupByProps) {
     if (!option && options.length >= 2) {
       setGroupName(options?.[0]?.name)
     }
-  }, [variants, groupName])
+  }, [variants, groupName, options])
 
   if (options.length < 2) return null
 

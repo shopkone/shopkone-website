@@ -15,7 +15,6 @@ import { sMessage } from '@/components/s-message'
 import { useModal } from '@/components/s-modal'
 import SRender from '@/components/s-render'
 import { useManageState } from '@/pages/mange/state'
-import { isEqualHandle } from '@/utils/isEqual'
 
 export default function Change () {
   const [form] = Form.useForm()
@@ -53,7 +52,7 @@ export default function Change () {
       setIsChange(true)
       return
     }
-    if (!isEqualHandle(values.address, init.current?.address)) {
+    if (!isEqual(values.address, init.current?.address)) {
       const isAllSame = Object.keys(init.current?.address).every(key => {
         return isEqual(values.address[key], init.current.address[key])
       })

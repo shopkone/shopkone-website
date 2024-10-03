@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useRequest } from 'ahooks'
 import { Checkbox, Flex, Form, Input } from 'antd'
+import isEqual from 'lodash/isEqual'
 
 import { useCurrencyList } from '@/api/base/currency-list'
 import { useTimezoneList } from '@/api/base/timezone-list'
@@ -14,7 +15,6 @@ import { useModal } from '@/components/s-modal'
 import SSelect from '@/components/s-select'
 import Uploader from '@/pages/mange/settings/general/uploader'
 import { useManageState } from '@/pages/mange/state'
-import { isEqualHandle } from '@/utils/isEqual'
 
 export default function General () {
   const general = useRequest(ShopGeneralApi)
@@ -42,7 +42,7 @@ export default function General () {
   const modal = useModal()
 
   const onValuesChange = (_: any, allValues: any) => {
-    const isSame = isEqualHandle(allValues, general.data)
+    const isSame = isEqual(allValues, general.data)
     setIsChange(!isSame)
   }
 

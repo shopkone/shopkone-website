@@ -28,8 +28,6 @@ export default function Table (props: TableProps) {
     form.setFieldValue('variants', groupVariants)
   }, [groupVariants])
 
-  console.log({ groupVariants })
-
   return (
     <div>
       <Flex>

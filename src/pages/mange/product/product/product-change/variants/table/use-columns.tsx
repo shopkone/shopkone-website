@@ -9,13 +9,20 @@ export interface ColumnsParams {
 }
 
 export default function useColumns (params: ColumnsParams) {
-  const onUpdate = (parentId: number, id: number, key: string, value: number | string) => {
-    if (parentId) {
+  const onUpdate = (row: Variant, key: keyof Variant, value: number | string) => {
+    if (row.children?.length) {
+      row.children.forEach(child => {
+        // @ts-expect-error
+        child[key] = value
+      })
+      const newValues = params.variants.map(v => v.id === row.id ? row : v)
+      params.setVariants(newValues)
     } else {
-      const row = params.variants.find(v => v.id === id)
+      // @ts-expect-error
       row[key] = value
+      const newValues = params.variants.map(v => v.id === row.id ? row : v)
+      params.setVariants(newValues)
     }
-    params.setVariants([...params.variants])
   }
 
   const columns: STableProps['columns'] = [
@@ -34,7 +41,8 @@ export default function useColumns (params: ColumnsParams) {
       render: (price: number, row: Variant) => {
         return (
           <ColumnPrice
-            onChange={v => { onUpdate(row.parentId || 0, row.id, 'price', v) }}
+            row={row}
+            onChange={v => { onUpdate(row, 'price', v) }}
             value={price}
           />
         )
@@ -47,7 +55,8 @@ export default function useColumns (params: ColumnsParams) {
       render: (compare_at_price: number, row: Variant) => {
         return (
           <ColumnPrice
-            onChange={v => { onUpdate(row.parentId || 0, row.id, 'compare_at_price', v) }}
+            row={row}
+            onChange={v => { onUpdate(row, 'compare_at_price', v) }}
             value={compare_at_price}
           />
         )
@@ -60,7 +69,8 @@ export default function useColumns (params: ColumnsParams) {
       render: (cost_per_item: number, row: Variant) => {
         return (
           <ColumnPrice
-            onChange={v => { onUpdate(row.parentId || 0, row.id, 'cost_per_item', v) }}
+            row={row}
+            onChange={v => { onUpdate(row, 'cost_per_item', v) }}
             value={cost_per_item}
           />
         )
@@ -73,7 +83,7 @@ export default function useColumns (params: ColumnsParams) {
       render: (sku: string, row: Variant) => {
         return (
           <ColumnText
-            onChange={v => { onUpdate(row.parentId || 0, row.id, 'sku', v) }}
+            onChange={v => { onUpdate(row, 'sku', v) }}
             value={sku}
           />
         )
@@ -86,7 +96,7 @@ export default function useColumns (params: ColumnsParams) {
       render: (barcode: string, row: Variant) => {
         return (
           <ColumnText
-            onChange={v => { onUpdate(row.parentId || 0, row.id, 'barcode', v) }}
+            onChange={v => { onUpdate(row, 'barcode', v) }}
             value={barcode}
           />
         )

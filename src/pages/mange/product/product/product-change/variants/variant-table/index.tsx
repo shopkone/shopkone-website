@@ -9,7 +9,6 @@ import Actions from '@/pages/mange/product/product/product-change/variants/varia
 import Filter from '@/pages/mange/product/product/product-change/variants/variant-table/filter'
 import Group from '@/pages/mange/product/product/product-change/variants/variant-table/group'
 import Table from '@/pages/mange/product/product/product-change/variants/variant-table/table'
-import { isEqualHandle } from '@/utils/isEqual'
 
 import styles from './index.module.less'
 
@@ -94,7 +93,7 @@ export default function VariantTable (props: VariantTableProps) {
     }
     const newVariants = variants.map(item => ({ ...item, id: undefined }))
     const oldVariants = initVariants.current.map(item => ({ ...item, id: undefined }))
-    return isEqualHandle(newVariants, oldVariants)
+    return isEqual(newVariants, oldVariants)
   }
 
   useEffect(() => {

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useDebounceFn, useRequest } from 'ahooks'
 import { Button, Flex, Form } from 'antd'
+import isEqual from 'lodash/isEqual'
 
 import { ProductCreateApi } from '@/api/product/create'
 import { ProductInfoApi } from '@/api/product/info'
@@ -14,9 +15,7 @@ import ProductOrganization from '@/pages/mange/product/product/product-change/pr
 import Status from '@/pages/mange/product/product/product-change/status'
 import Variants from '@/pages/mange/product/product/product-change/variants'
 import { Variant } from '@/pages/mange/product/product/product-change/variants/variant-table'
-import { Options } from '@/pages/mange/product/product/product-change/variants/variant-table/state'
 import VariantsSettings from '@/pages/mange/product/product/product-change/variants-settings'
-import { isEqualHandle } from '@/utils/isEqual'
 
 import styles from './index.module.less'
 
@@ -48,7 +47,6 @@ export default function ProductChange () {
   const [isVariantChange, setIsVariantChange] = useState(false)
   const [resetFlag, setResetFlag] = useState(1)
   const [remoteVariants, setRemoteVariants] = useState<Variant[]>([])
-  const [remoteOptions, setRemoteOptions] = useState<Options[]>([])
   const init = useRef<any>()
   const create = useRequest(ProductCreateApi, { manual: true })
   const info = useRequest(ProductInfoApi, { manual: true })
@@ -58,7 +56,17 @@ export default function ProductChange () {
   const onOK = async () => {
     await form.validateFields()
     const values = form.getFieldsValue()
+    const variants: Variant[] = []
+    values?.variants?.forEach((variant: Variant) => {
+      if (variant.children?.length) {
+        variants.push(...variant.children)
+      } else {
+        variants.push(variant)
+      }
+    })
+    values.variants = variants
     if (id) {
+      console.log(values.variants)
     } else {
       const ret = await create.runAsync(values)
       form.resetFields()
@@ -79,13 +87,15 @@ export default function ProductChange () {
     }
     const newValues = { ...values, variants: undefined, options: undefined, seo: { ...values.seo, id: 0 } }
     const oldValues = { ...init.current, variants: undefined, options: undefined, seo: { ...init.current.seo, id: 0 } }
-    Object.keys(newValues).forEach(k => {
-      if (!isEqualHandle(oldValues[k], newValues[k])) {
-        console.log(oldValues[k], newValues[k], k)
-      }
-    })
-    const isSame = isEqualHandle(newValues, oldValues)
+    const isSame = isEqual(newValues, oldValues)
     setIsChange(!isSame)
+    if (!isSame) {
+      Object.keys(newValues).forEach(k => {
+        if (!isEqual(oldValues[k], newValues[k])) {
+          console.log(oldValues[k], newValues[k], k)
+        }
+      })
+    }
   }, { wait: 100 }).run
 
   const onCancel = () => {
@@ -110,26 +120,6 @@ export default function ProductChange () {
     if (!id) return
     info.run({ id: Number(id) })
   }, [id])
-
-  useEffect(() => {
-    const options: Options[] = []
-    remoteVariants.forEach(item => {
-      item?.name?.forEach(i => {
-        let find = options.find(o => o.name === i.label)
-        if (!find) {
-          find = {
-            id: item.id,
-            isDone: false,
-            name: i.label,
-            values: []
-          }
-        }
-        find.values = [...find.values, { value: i.value, id: i.id }]
-        options.push(find)
-      })
-    })
-    setRemoteOptions(options)
-  }, [remoteVariants])
 
   return (
     <Page
@@ -173,7 +163,6 @@ export default function ProductChange () {
             </Flex>
             <Form.Item name={'variants'}>
               <Variants
-                remoteOptions={remoteOptions}
                 remoteVariants={remoteVariants}
                 resetFlag={resetFlag}
                 onIsChange={setIsVariantChange}
