@@ -1,4 +1,7 @@
+import { Form } from 'antd'
+
 import { STableProps } from '@/components/s-table'
+import { VariantType } from '@/constant/product'
 import { Variant } from '@/pages/mange/product/product/product-change/variants/state'
 import ColumnPrice from '@/pages/mange/product/product/product-change/variants/table/columns/column-price'
 import ColumnText from '@/pages/mange/product/product/product-change/variants/table/columns/column-text'
@@ -9,6 +12,9 @@ export interface ColumnsParams {
 }
 
 export default function useColumns (params: ColumnsParams) {
+  const form = Form.useFormInstance()
+  const variantType: VariantType = Form.useWatch('variant_type', form)
+
   const onUpdate = (row: Variant, key: keyof Variant, value: number | string | null) => {
     if (row.children?.length) {
       row.children.forEach(child => {
@@ -39,7 +45,8 @@ export default function useColumns (params: ColumnsParams) {
       name: 'id',
       render: (text, record) => {
         return <div>123</div>
-      }
+      },
+      hidden: variantType === VariantType.Single
     },
     {
       title: 'Price',

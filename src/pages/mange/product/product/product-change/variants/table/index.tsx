@@ -31,7 +31,7 @@ export default function Table (props: TableProps) {
 
   return (
     <div>
-      <Flex>
+      <Flex style={{ marginBottom: 12 }}>
         <GroupBy onChange={setGroupVariants} variants={variants} options={options} />
       </Flex>
       <STable

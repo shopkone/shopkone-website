@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Button, Card, Flex, Form } from 'antd'
 import cloneDeep from 'lodash/cloneDeep'
 
+import SRender from '@/components/s-render'
 import { VariantType } from '@/constant/product'
 import { useOpen } from '@/hooks/useOpen'
 import Changer from '@/pages/mange/product/product/product-change/variants/changer'
@@ -128,16 +129,18 @@ export default function Variants (props: VariantsProps) {
             type={'text'}
             size={'small'}
           >
-            调整列
+            Set columns
           </Button>
-          <Button
-            onClick={() => { openInfo.edit(form.getFieldValue('variants')) }}
-            type={'text'}
-            size={'small'}
-            className={'primary-text'}
-          >
-            编辑变体
-          </Button>
+          <SRender render={variantType === VariantType.Multiple && !!variants?.length}>
+            <Button
+              onClick={() => { openInfo.edit(form.getFieldValue('variants')) }}
+              type={'text'}
+              size={'small'}
+              className={'primary-text'}
+            >
+              Edit options
+            </Button>
+          </SRender>
         </Flex>
       }
     >

@@ -122,7 +122,7 @@ export default function ProductChange () {
       onOk={onOK}
       onCancel={onCancel}
       isChange={isChange || isVariantChange}
-      title={'Add product'}
+      title={id ? (info?.data?.title || '--') : 'Add product'}
       back={'/products/products'}
       width={950}
       bottom={48}

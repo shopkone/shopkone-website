@@ -46,7 +46,7 @@ const combineOptions = function (options: Options[]): Result[][] {
 }
 
 self.onmessage = (e) => {
-  const { options, variants }: { options: Options[], variants: Variant[] } = e.data || {}
+  const { options, variants = [] }: { options: Options[], variants: Variant[] } = e.data || {}
   const v: Variant[] = []
   variants.forEach(item => {
     if (item.children) {
