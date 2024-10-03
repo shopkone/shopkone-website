@@ -1,9 +1,11 @@
-import { useState } from 'react'
-import { Card, Flex, Form } from 'antd'
+import { useEffect, useState } from 'react'
+import { Button, Card, Flex, Form } from 'antd'
 
-import { VariantType } from '@/constant/product'
-import VariantChanger, { Options } from '@/pages/mange/product/product/product-change/variants/variant-changer'
-import VariantTable, { Variant } from '@/pages/mange/product/product/product-change/variants/variant-table'
+import { useOpen } from '@/hooks/useOpen'
+import Changer, { Option } from '@/pages/mange/product/product/product-change/variants/changer'
+import Table from '@/pages/mange/product/product/product-change/variants/table'
+import { Options } from '@/pages/mange/product/product/product-change/variants/variant-changer'
+import { Variant } from '@/pages/mange/product/product/product-change/variants/variant-table'
 
 import styles from './index.module.less'
 
@@ -15,25 +17,53 @@ export interface VariantsProps {
 }
 
 export default function Variants (props: VariantsProps) {
-  const { onIsChange, resetFlag, remoteVariants, remoteOptions } = props
-  const [options, setOptions] = useState<Options[]>([])
+  const { remoteOptions, remoteVariants } = props
   const form = Form.useFormInstance()
-  const variantType: VariantType = Form.useWatch('variant_type', form)
-  const isSingle = variantType !== VariantType.Multiple
+  const [variants, setVariants] = useState<Variant[]>([])
+  const [options, setOptions] = useState<Option[]>([])
+  const [loading, setLoading] = useState(false)
+
+  const onChange = (data: Variant[]) => {
+    setVariants(data)
+  }
+  const openInfo = useOpen<Variant[]>([])
+
+  useEffect(() => {
+    setOptions(remoteOptions)
+    setVariants(remoteVariants)
+  }, [remoteOptions])
 
   return (
-    <Card bordered className={styles.container} title={'Variants'}>
-      <Flex vertical gap={24}>
-        <VariantChanger remoteOptions={remoteOptions} onChange={setOptions} />
-        <VariantTable
-          remoteVariants={remoteVariants}
-          resetFlag={resetFlag}
-          onIsChange={onIsChange}
-          hide={!options.length && !isSingle}
-          isSingle={isSingle}
-          options={options}
-        />
-      </Flex>
+    <Card
+      bordered
+      className={styles.container}
+      title={'Variants'}
+      extra={
+        <Flex gap={8}>
+          <Button
+            onClick={() => { openInfo.edit() }}
+            type={'text'}
+            size={'small'}
+          >
+            调整列
+          </Button>
+          <Button
+            onClick={() => { openInfo.edit(form.getFieldValue('variants')) }}
+            type={'text'}
+            size={'small'}
+            className={'primary-text'}
+          >
+            编辑变体
+          </Button>
+        </Flex>
+      }
+    >
+      <Changer
+        onChangeLoading={setLoading}
+        onChange={(v, o) => { onChange(v); setOptions(o) }}
+        info={openInfo}
+      />
+      <Table loading={loading} variants={variants} options={options} />
     </Card>
   )
 }

@@ -48,7 +48,7 @@ export default function ProductChange () {
   const [isVariantChange, setIsVariantChange] = useState(false)
   const [resetFlag, setResetFlag] = useState(1)
   const [remoteVariants, setRemoteVariants] = useState<Variant[]>([])
-  const [remoteOptions, setRemoveOptions] = useState<Options[]>([])
+  const [remoteOptions, setRemoteOptions] = useState<Options[]>([])
   const init = useRef<any>()
   const create = useRequest(ProductCreateApi, { manual: true })
   const info = useRequest(ProductInfoApi, { manual: true })
@@ -128,7 +128,7 @@ export default function ProductChange () {
         options.push(find)
       })
     })
-    setRemoveOptions(options)
+    setRemoteOptions(options)
   }, [remoteVariants])
 
   return (
