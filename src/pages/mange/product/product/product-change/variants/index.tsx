@@ -7,7 +7,7 @@ import SRender from '@/components/s-render'
 import { VariantType } from '@/constant/product'
 import { useOpen } from '@/hooks/useOpen'
 import Changer from '@/pages/mange/product/product/product-change/variants/changer'
-import { Option, Variant } from '@/pages/mange/product/product/product-change/variants/state'
+import { Option, useProductChange, Variant } from '@/pages/mange/product/product/product-change/variants/state'
 import Table from '@/pages/mange/product/product/product-change/variants/table'
 import { isEqualHandle } from '@/utils/is-equal-handle'
 import { genId } from '@/utils/random'
@@ -37,6 +37,8 @@ export default function Variants (props: VariantsProps) {
     setVariants(data)
   }
   const openInfo = useOpen<Variant[]>([])
+
+  const info = useProductChange(state => state.info)
 
   const onReverseVariants = async (variants: Variant[]) => await new Promise(resolve => {
     const worker: Worker = new ReserveHandle()
@@ -78,7 +80,7 @@ export default function Variants (props: VariantsProps) {
   }, [remoteVariants])
 
   useEffect(() => {
-    if (id && !init.current?.length) return
+    if (id && !info?.variants?.length) return
     if (!variantType) return
     if (variantType === VariantType.Single) {
       const item: Variant = {
@@ -94,15 +96,15 @@ export default function Variants (props: VariantsProps) {
         isParent: false,
         inventories: []
       }
-      if (remoteVariants?.length && !remoteVariants?.[0]?.name?.length) {
+      if (info?.variant_type === VariantType.Single) {
         setVariants(remoteVariants)
       } else {
-        setVariants([item])
+        setVariants([init.current?.[0] || item])
       }
       return
     }
     if (variantType === VariantType.Multiple) {
-      if (remoteVariants?.length && remoteVariants?.[0]?.name?.length) {
+      if (info?.variant_type === VariantType.Multiple) {
         setVariants(remoteVariants)
       } else {
         setVariants([])

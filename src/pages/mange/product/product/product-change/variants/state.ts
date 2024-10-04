@@ -1,3 +1,7 @@
+import { create } from 'zustand/react'
+
+import { ProductInfoRes } from '@/api/product/info'
+
 export interface VariantName {
   id: number
   label: string
@@ -27,3 +31,15 @@ export interface Option {
   id: number
   isDone?: boolean
 }
+
+export interface ProductChangeState {
+  info?: ProductInfoRes
+}
+
+export interface ProductChangeAction {
+  setInfo: (info?: ProductInfoRes) => void
+}
+
+export const useProductChange = create<ProductChangeState & ProductChangeAction>((set, get, store) => ({
+  setInfo: (info) => { set({ info }) }
+}))

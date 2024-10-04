@@ -13,7 +13,7 @@ import BaseInfo from '@/pages/mange/product/product/product-change/base-info'
 import ProductOrganization from '@/pages/mange/product/product/product-change/product-organization'
 import Status from '@/pages/mange/product/product/product-change/status'
 import Variants from '@/pages/mange/product/product/product-change/variants'
-import { Variant } from '@/pages/mange/product/product/product-change/variants/state'
+import { useProductChange, Variant } from '@/pages/mange/product/product/product-change/variants/state'
 import VariantsSettings from '@/pages/mange/product/product/product-change/variants-settings'
 import { isEqualHandle } from '@/utils/is-equal-handle'
 
@@ -54,6 +54,7 @@ export default function ProductChangeInner (props: ProductChangeInnerProps) {
   const init = useRef<any>()
   const create = useRequest(ProductCreateApi, { manual: true })
   const info = useRequest(ProductInfoApi, { manual: true })
+  const setInfo = useProductChange(state => state.setInfo)
   const { id } = useParams()
 
   const onOK = async () => {
@@ -117,6 +118,7 @@ export default function ProductChangeInner (props: ProductChangeInnerProps) {
       form.setFieldsValue(INIT_DATA)
       init.current = form.getFieldsValue()
     }
+    setInfo(info.data)
   }, [info.data])
 
   useEffect(() => {
