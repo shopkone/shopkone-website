@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from 'react'
+import { memo, useEffect, useRef, useState } from 'react'
 import { IconSearch, IconTrash } from '@tabler/icons-react'
 import { useInViewport, useRequest } from 'ahooks'
-import { Button, Checkbox, Flex, Input, Modal, Typography } from 'antd'
+import { Button, Checkbox, Flex, Input, Typography } from 'antd'
 import classNames from 'classnames'
 
 import { AddFileApi, FileType } from '@/api/file/add-file-record'
@@ -10,6 +10,7 @@ import { FileListApi, FileListReq, FileListRes } from '@/api/file/file-list'
 import { UploadFileType } from '@/api/file/UploadFileType'
 import FileImage from '@/components/file-image'
 import SLoading from '@/components/s-loading'
+import SModal from '@/components/s-modal'
 import SRender from '@/components/s-render'
 import Empty from '@/components/s-table/empty'
 import Index from '@/components/table-filter'
@@ -26,7 +27,7 @@ export interface SelectFilesProps {
   multiple?: boolean
 }
 
-export default function SelectFiles (props: SelectFilesProps) {
+function SelectFiles (props: SelectFilesProps) {
   const { info, onConfirm, multiple } = props
   const headerRef = useRef<HTMLDivElement>(null)
   const moreRef = useRef<HTMLDivElement>(null)
@@ -109,7 +110,7 @@ export default function SelectFiles (props: SelectFilesProps) {
     return () => {
       io?.disconnect()
     }
-  }, [info.open])
+  }, [info.open, headerRef.current])
 
   useEffect(() => {
     if (!info.open) return
@@ -120,6 +121,7 @@ export default function SelectFiles (props: SelectFilesProps) {
   }, [info.open])
 
   useEffect(() => {
+    if (!info.open) return
     fileList.runAsync(params).then(res => {
       if (res.page.page === 1) {
         setList(res.list)
@@ -150,11 +152,12 @@ export default function SelectFiles (props: SelectFilesProps) {
   }, [list])
 
   return (
-    <Modal
+    <SModal
       className={styles.modal}
       title={'Select file'}
       width={936}
       onCancel={info.close}
+      destroyOnClose={true}
       footer={
         (
           <Flex justify={'space-between'}>
@@ -270,94 +273,94 @@ export default function SelectFiles (props: SelectFilesProps) {
                         <Button type={'primary'}>Upload file</Button>
                         <Button>Add from URL</Button>
                       </Flex>
-                    }
+                      }
                   />
                 </div>
               </SRender>
               <Flex style={{ paddingBottom: 24 }} wrap={'wrap'} gap={9}>
                 {
-                  list?.map(item => (
-                    <Flex
-                      onClick={() => {
-                        if (item.uuid) return
-                        setSelected(pre => {
-                          if (pre.includes(item.id)) {
-                            return pre.filter(i => i !== item.id)
-                          } else {
-                            if (multiple) return [...pre, item.id]
-                            return [item.id]
-                          }
-                        })
-                      }}
-                      align={'center'}
-                      vertical
-                      justify={'center'}
-                      key={item.id}
-                      className={
-                      classNames(styles['item-wrap'], { [styles.itemWrapNoDone]: item.uuid, [styles.itemSelected]: selected.includes(item.id) })
-                      }
-                      gap={12}
-                    >
-                      <div className={styles.imgWrap}>
-                        <SRender render={!item.uuid}>
-                          <FileImage
-                            width={100}
-                            height={100}
-                            className={styles.img}
-                            src={item.cover || item.src} type={item.type}
-                          />
-                          <div className={styles.mask} />
-                        </SRender>
-                        <SRender render={item.uuid ? !item.errMsg : null}>
-                          <SLoading size={28} loading>
-                            <div style={{ width: 100, height: 100 }} />
-                          </SLoading>
-                        </SRender>
-                        <SRender render={item.uuid ? item.errMsg : null}>
-                          <div style={{ position: 'relative' }}>
+                    list?.map(item => (
+                      <Flex
+                        onClick={() => {
+                          if (item.uuid) return
+                          setSelected(pre => {
+                            if (pre.includes(item.id)) {
+                              return pre.filter(i => i !== item.id)
+                            } else {
+                              if (multiple) return [...pre, item.id]
+                              return [item.id]
+                            }
+                          })
+                        }}
+                        align={'center'}
+                        vertical
+                        justify={'center'}
+                        key={item.id}
+                        className={
+                          classNames(styles['item-wrap'], { [styles.itemWrapNoDone]: item.uuid, [styles.itemSelected]: selected.includes(item.id) })
+                        }
+                        gap={12}
+                      >
+                        <div className={styles.imgWrap}>
+                          <SRender render={!item.uuid}>
                             <FileImage
+                              width={100}
+                              height={100}
                               className={styles.img}
-                              width={100} height={100}
-                              src={''}
-                              type={FileType.Image}
+                              src={item.cover || item.src} type={item.type}
                             />
-                            <div
-                              className={styles.errMask}
-                            >
-                              <IconTrash
-                                onClick={() => { onRemoveErrFile(item.uuid) }}
-                                size={24}
+                            <div className={styles.mask} />
+                          </SRender>
+                          <SRender render={item.uuid ? !item.errMsg : null}>
+                            <SLoading size={28} loading>
+                              <div style={{ width: 100, height: 100 }} />
+                            </SLoading>
+                          </SRender>
+                          <SRender render={item.uuid ? item.errMsg : null}>
+                            <div style={{ position: 'relative' }}>
+                              <FileImage
+                                className={styles.img}
+                                width={100} height={100}
+                                src={''}
+                                type={FileType.Image}
                               />
+                              <div
+                                className={styles.errMask}
+                              >
+                                <IconTrash
+                                  onClick={() => { onRemoveErrFile(item.uuid) }}
+                                  size={24}
+                                />
+                              </div>
                             </div>
+                          </SRender>
+                        </div>
+                        <Flex vertical justify={'center'} align={'center'}>
+                          <div>
+                            <Typography.Text style={{ maxWidth: 100 }} ellipsis={{ tooltip: true }}>
+                              {item.file_name}
+                            </Typography.Text>
+                          </div>
+                          <SRender render={!item.uuid}>
+                            <div style={{ marginTop: -1 }} className={'secondary'}>{item.suffix}</div>
+                          </SRender>
+                          <SRender render={item.uuid ? !item.errMsg : null}>
+                            <div style={{ marginTop: -1, color: '#32a645' }}>uploading</div>
+                          </SRender>
+                          <SRender render={item.uuid ? item.errMsg : null}>
+                            <Typography.Text ellipsis={{ tooltip: true }} style={{ marginTop: -1, color: '#f54a45', width: 120 }}>
+                              {item.errMsg}
+                            </Typography.Text>
+                          </SRender>
+                        </Flex>
+                        <SRender render={!item.uuid}>
+                          <div className={styles.checkbox}>
+                            <Checkbox checked={selected.includes(item.id)} />
                           </div>
                         </SRender>
-                      </div>
-                      <Flex vertical justify={'center'} align={'center'}>
-                        <div>
-                          <Typography.Text style={{ maxWidth: 100 }} ellipsis={{ tooltip: true }}>
-                            {item.file_name}
-                          </Typography.Text>
-                        </div>
-                        <SRender render={!item.uuid}>
-                          <div style={{ marginTop: -1 }} className={'secondary'}>{item.suffix}</div>
-                        </SRender>
-                        <SRender render={item.uuid ? !item.errMsg : null}>
-                          <div style={{ marginTop: -1, color: '#32a645' }}>uploading</div>
-                        </SRender>
-                        <SRender render={item.uuid ? item.errMsg : null}>
-                          <Typography.Text ellipsis={{ tooltip: true }} style={{ marginTop: -1, color: '#f54a45', width: 120 }}>
-                            {item.errMsg}
-                          </Typography.Text>
-                        </SRender>
                       </Flex>
-                      <SRender render={!item.uuid}>
-                        <div className={styles.checkbox}>
-                          <Checkbox checked={selected.includes(item.id)} />
-                        </div>
-                      </SRender>
-                    </Flex>
-                  ))
-                }
+                    ))
+                  }
               </Flex>
               <SRender style={{ paddingTop: 24, paddingBottom: 48 }} render={showMoreLoading ? (!isUploading && list?.length) : null}>
                 <Flex ref={moreRef} gap={12} justify={'center'} align={'center'}>
@@ -375,7 +378,9 @@ export default function SelectFiles (props: SelectFilesProps) {
           </SLoading>
         </div>
       </Flex>
-    </Modal>
+    </SModal>
 
   )
 }
+
+export default memo(SelectFiles)
