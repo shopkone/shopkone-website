@@ -145,9 +145,15 @@ export default function useColumns (params: ColumnsParams) {
       code: 'weight',
       name: 'weight',
       render: (weight: number, row: Variant) => {
-        return <ColumnWeight row={row} />
+        return (
+          <ColumnWeight
+            onChangeWeight={v => { onUpdate(row, 'weight', v) }}
+            onChangeWeightUnit={v => { onUpdate(row, 'weight_unit', v) }}
+            row={row}
+          />
+        )
       },
-      width: 200
+      width: 170
     },
     {
       title: 'Sku',
