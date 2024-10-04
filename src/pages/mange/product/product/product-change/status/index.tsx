@@ -23,6 +23,7 @@ export default function Status () {
       {
         status === VariantStatus.Draft && (
           <Form.Item
+            name={'scheduled_at'}
             tooltip={'After setting, the product will be published on schedule according to the set time'}
             label={'Schedule availability'}
           >

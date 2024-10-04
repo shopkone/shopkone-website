@@ -15,7 +15,7 @@ export default function ProductOrganization () {
         <Checkbox>Requires shipping</Checkbox>
       </Form.Item>
       <Form.Item
-        name={'taxable'}
+        name={'charge_tax_on_this_product'}
         valuePropName={'checked'}
       >
         <Checkbox>Charge tax on this product</Checkbox>

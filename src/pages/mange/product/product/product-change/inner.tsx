@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useDebounceFn, useRequest } from 'ahooks'
 import { Button, Flex, Form } from 'antd'
+import dayjs, { Dayjs } from 'dayjs'
 
 import { ProductCreateApi } from '@/api/product/create'
 import { ProductInfoApi } from '@/api/product/info'
@@ -21,7 +22,7 @@ import styles from './index.module.less'
 const INIT_DATA = {
   status: 2,
   requires_shipping: true,
-  taxable: true,
+  charge_tax_on_this_product: true,
   inventory_tracking: true,
   inventory_policy: 2,
   spu: '',
@@ -59,6 +60,9 @@ export default function ProductChangeInner (props: ProductChangeInnerProps) {
     await form.validateFields()
     const values = form.getFieldsValue()
     const variants: Variant[] = []
+    if (values.scheduled_at) {
+      values.scheduled_at = (values.scheduled_at as Dayjs).unix()
+    }
     values?.variants?.forEach((variant: Variant) => {
       if (variant.children?.length) {
         variants.push(...variant.children)
@@ -101,8 +105,13 @@ export default function ProductChangeInner (props: ProductChangeInnerProps) {
   useEffect(() => {
     if (!info.data && id) return
     if (info.data) {
-      form.setFieldsValue(info.data)
-      init.current = info.data
+      const { scheduled_at, ...rest } = info.data
+      const values = {
+        ...rest,
+        scheduled_at: scheduled_at ? dayjs.unix(scheduled_at) : undefined
+      }
+      form.setFieldsValue(values)
+      init.current = values
       setRemoteVariants(info.data.variants)
     } else {
       form.setFieldsValue(INIT_DATA)

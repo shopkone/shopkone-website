@@ -17,6 +17,8 @@ export interface ProductCreateReq {
   inventory_policy: InventoryPolicy
   file_ids: number[]
   variants: Variant[]
+  scheduled_at: number
+  inventory_tracking: number
 }
 export interface ProductCreateRes {
   id: number
