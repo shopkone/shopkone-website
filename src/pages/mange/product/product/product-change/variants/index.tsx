@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { Button, Card, Flex, Form } from 'antd'
+import { IconMaximize, IconMenu2, IconPencil } from '@tabler/icons-react'
+import { Button, Card, Flex, Form, Tooltip } from 'antd'
 import cloneDeep from 'lodash/cloneDeep'
 
 import SRender from '@/components/s-render'
@@ -66,7 +67,9 @@ export default function Variants (props: VariantsProps) {
     const isSame = list.every(item => {
       const find = init.current?.find(i => i.id === item.id)
       if (!find) return false
-      return isEqualHandle(find, item)
+      const oldItem = { ...item, hidden: undefined, parentId: undefined }
+      const newItem = { ...find, hidden: undefined, parentId: undefined }
+      return isEqualHandle(oldItem, newItem)
     })
     setIsChange(!isSame)
   }
@@ -124,46 +127,66 @@ export default function Variants (props: VariantsProps) {
   }, [resetFlag])
 
   return (
-    <Card
-      bordered
-      className={styles.container}
-      title={'Variants'}
-      extra={
-        <Flex gap={8}>
-          <SRender render={variants?.length}>
-            <Button
-              onClick={() => { openInfo.edit() }}
-              type={'text'}
-              size={'small'}
-            >
-              Set columns
-            </Button>
-          </SRender>
-          <SRender render={variantType === VariantType.Multiple && !!variants?.length}>
-            <Button
-              onClick={() => { openInfo.edit(form.getFieldValue('variants')) }}
-              type={'text'}
-              size={'small'}
-              className={'primary-text'}
-            >
-              Edit options
-            </Button>
-          </SRender>
-        </Flex>
-      }
-    >
-      <Changer
-        onChangeLoading={setLoading}
-        onChange={(v, o) => { onChange(v); setOptions(o) }}
-        info={openInfo}
-      />
-      <Table
-        onOpenOptions={() => { openInfo.edit() }}
-        onChangeGroupVariants={onIsChange}
-        loading={loading}
-        variants={variants}
-        options={options}
-      />
-    </Card>
+    <div>
+      <Card
+        bordered
+        className={styles.container}
+        title={'Variants'}
+        extra={
+          <Flex gap={12}>
+            <SRender render={variants?.length}>
+              <Tooltip title={'Scale'}>
+                <Button
+                  style={{ height: 25, width: 25 }}
+                  onClick={() => { openInfo.edit() }}
+                  type={'text'}
+                  size={'small'}
+                >
+                  <IconMaximize style={{ position: 'relative', left: -2 }} size={16} />
+                </Button>
+              </Tooltip>
+            </SRender>
+            <SRender render={variants?.length}>
+              <Tooltip title={'Set columns'}>
+                <Button
+                  style={{ height: 25, width: 25 }}
+                  onClick={() => { openInfo.edit() }}
+                  type={'text'}
+                  size={'small'}
+                >
+                  <IconMenu2 style={{ position: 'relative', left: -2 }} size={16} />
+                </Button>
+              </Tooltip>
+            </SRender>
+            <SRender render={variantType === VariantType.Multiple && !!variants?.length}>
+              <Tooltip title={'Edit options'}>
+                <Button
+                  style={{ height: 25, width: 25 }}
+                  onClick={() => { openInfo.edit(form.getFieldValue('variants')) }}
+                  type={'text'}
+                  size={'small'}
+                  className={'primary-text'}
+                >
+                  <IconPencil style={{ position: 'relative', left: -2 }} size={16} />
+                </Button>
+              </Tooltip>
+            </SRender>
+          </Flex>
+        }
+      >
+        <Changer
+          onChangeLoading={setLoading}
+          onChange={(v, o) => { onChange(v); setOptions(o) }}
+          info={openInfo}
+        />
+        <Table
+          onOpenOptions={() => { openInfo.edit() }}
+          onChangeGroupVariants={onIsChange}
+          loading={loading}
+          variants={variants}
+          options={options}
+        />
+      </Card>
+    </div>
   )
 }
