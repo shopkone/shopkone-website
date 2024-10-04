@@ -25,13 +25,15 @@ export default function Table (props: TableProps) {
   const [expandedRowKeys, setExpandedRowKeys] = useState<number[]>([])
   const [filters, setFilters] = useState<Record<string, string>>({})
   const [groupName, setGroupName] = useState('')
+  const [locationId, setLocationId] = useState(0)
 
   const { columns } = useColumns({
     variants: groupVariants,
     setVariants: setGroupVariants,
     groupName,
     expands: expandedRowKeys,
-    setExpands: setExpandedRowKeys
+    setExpands: setExpandedRowKeys,
+    locationId
   })
 
   const filterGroup = useMemo(() => {
@@ -63,7 +65,7 @@ export default function Table (props: TableProps) {
           variants={variants}
           options={options}
         />
-        <LocationsSelect />
+        <LocationsSelect selected={locationId} setSelected={setLocationId} />
       </Flex>
       <STable
         className={styles.table}

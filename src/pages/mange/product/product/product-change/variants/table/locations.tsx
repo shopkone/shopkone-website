@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useRequest } from 'ahooks'
 import { Flex } from 'antd'
 
@@ -7,9 +7,14 @@ import SLoading from '@/components/s-loading'
 import SSelect from '@/components/s-select'
 import styles from '@/pages/mange/product/product/product-change/variants/table/index.module.less'
 
-export default function LocationsSelect () {
+export interface LocationsSelectProps {
+  selected: number
+  setSelected: (selected: number) => void
+}
+
+export default function LocationsSelect (props: LocationsSelectProps) {
+  const { selected, setSelected } = props
   const locations = useRequest(async () => await LocationListApi({ active: true }))
-  const [selected, setSelected] = useState<number>(0)
 
   const options = locations.data?.map(item => ({ label: item.name, value: item.id }))
 

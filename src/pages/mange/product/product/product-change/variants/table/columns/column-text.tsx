@@ -1,4 +1,5 @@
-import { Input } from 'antd'
+import { IconChevronDown } from '@tabler/icons-react'
+import { Flex, Input } from 'antd'
 
 import SRender from '@/components/s-render'
 import { Variant } from '@/pages/mange/product/product/product-change/variants/state'
@@ -28,7 +29,14 @@ export default function ColumnText (props: ColumnTextProps) {
   return (
     <div>
       <SRender onClick={setExpandsHandle} render={row.children?.length} className={styles.link}>
-        {row.children?.reduce((pre, cur) => pre + Number(!!cur[type]), 0)} / {row.children?.length}
+        <Flex className={styles.link} align={'center'} gap={4}>
+          {row.children?.reduce((pre, cur) => pre + Number(!!cur[type]), 0)} / {row.children?.length}
+          <IconChevronDown
+            className={styles.downIcon}
+            style={{ transform: expands?.includes(row.id) ? 'rotate(-180deg)' : 'rotate(0deg)' }}
+            size={13}
+          />
+        </Flex>
       </SRender>
 
       <SRender render={!row.children?.length}>

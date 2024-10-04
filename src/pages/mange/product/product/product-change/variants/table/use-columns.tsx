@@ -4,6 +4,7 @@ import { Button, Form } from 'antd'
 import { STableProps } from '@/components/s-table'
 import { VariantType } from '@/constant/product'
 import { Variant } from '@/pages/mange/product/product/product-change/variants/state'
+import ColumnInventory from '@/pages/mange/product/product/product-change/variants/table/columns/column-inventory'
 import ColumnPrice from '@/pages/mange/product/product/product-change/variants/table/columns/column-price'
 import ColumnText from '@/pages/mange/product/product/product-change/variants/table/columns/column-text'
 import ColumnTitle from '@/pages/mange/product/product/product-change/variants/table/columns/column-title'
@@ -15,10 +16,11 @@ export interface ColumnsParams {
   groupName: string
   expands: number[]
   setExpands: (expands: number[]) => void
+  locationId: number
 }
 
 export default function useColumns (params: ColumnsParams) {
-  const { variants, setVariants, groupName, expands, setExpands } = params
+  const { variants, setVariants, groupName, expands, setExpands, locationId } = params
   const form = Form.useFormInstance()
   const variantType: VariantType = Form.useWatch('variant_type', form)
 
@@ -100,6 +102,24 @@ export default function useColumns (params: ColumnsParams) {
             row={row}
             onChange={v => { onUpdate(row, 'cost_per_item', v) }}
             value={cost_per_item}
+          />
+        )
+      },
+      width: 150
+    },
+    {
+      title: 'Inventory',
+      code: 'inventories',
+      name: 'inventories',
+      render: (inventories: Variant['inventories'], row: Variant) => {
+        return (
+          <ColumnInventory
+            expands={expands}
+            setExpands={setExpands}
+            locationId={locationId}
+            onChange={v => { onUpdate(row, 'inventories', v as any) }}
+            value={inventories}
+            row={row}
           />
         )
       },

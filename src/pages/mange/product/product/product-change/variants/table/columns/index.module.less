@@ -14,11 +14,21 @@
   transition: all 0.2s;
 }
 
+.downIcon {
+  position: relative;
+  top: 1px;
+  transition: all 0.1s;
+  opacity: 0;
+}
+
 .link {
   cursor: pointer;
   user-select: none;
   &:hover {
     text-decoration: underline;
+    .downIcon {
+      opacity: 1;
+    }
   }
 }
 
