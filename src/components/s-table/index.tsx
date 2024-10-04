@@ -75,43 +75,44 @@ function STable (props: STableProps) {
     })
   }, [cols])
 
-  let pipeline = useTablePipeline({ components: { Checkbox } })
-    .input({
-      dataSource: data,
-      columns
-    })
-    .primaryKey(rowKey) // 每一行数据由 id 字段唯一标记
+  let p = useTablePipeline({ components: { Checkbox } })
 
-  if (rowSelection) {
-    pipeline = pipeline.use(
-      features.multiSelect({
-        checkboxColumn: { width: rowSelection?.width || 40, lock: true },
-        highlightRowWhenSelected: true,
-        checkboxPlacement: 'start',
-        value: rowSelection?.value as any,
-        onChange: rowSelection.onChange as any,
-        clickArea: 'cell'
-      })
-    )
-  }
+  const pipeline = useMemo(() => {
+    p = p.input({ dataSource: data, columns }).primaryKey(rowKey)
 
-  if (expand) {
-    pipeline = pipeline
-      .use(features.treeMode({
-        openKeys: expand?.value as any,
-        onChangeOpenKeys (nextKeys: string[], key: string, action: 'expand' | 'collapse') {
-          expand?.onChange(nextKeys as any)
-        }
-      }))
-      .use(features.treeSelect({
-        tree: data,
-        rootKey: rowKey,
-        checkboxPlacement: 'start',
-        clickArea: 'checkbox',
-        checkboxColumn: { hidden: true },
-        highlightRowWhenSelected: true
-      }))
-  }
+    if (rowSelection) {
+      p = p.use(
+        features.multiSelect({
+          checkboxColumn: { width: rowSelection?.width || 40, lock: true },
+          highlightRowWhenSelected: true,
+          checkboxPlacement: 'start',
+          value: rowSelection?.value as any,
+          onChange: rowSelection.onChange as any,
+          clickArea: 'cell'
+        })
+      )
+    }
+
+    if (expand) {
+      p = p
+        .use(features.treeMode({
+          openKeys: expand?.value as any,
+          onChangeOpenKeys (nextKeys: string[], key: string, action: 'expand' | 'collapse') {
+            expand?.onChange(nextKeys as any)
+          }
+        }))
+        .use(features.treeSelect({
+          tree: data,
+          rootKey: rowKey,
+          checkboxPlacement: 'start',
+          clickArea: 'checkbox',
+          checkboxColumn: { hidden: true },
+          highlightRowWhenSelected: true
+        }))
+    }
+
+    return p
+  }, [data, columns, rowKey, rowSelection, expand])
 
   console.log('Table Update')
 
