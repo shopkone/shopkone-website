@@ -19,6 +19,10 @@ export interface GroupByProps {
 export default function GroupBy (props: GroupByProps) {
   const { options, variants, onChange, filters, setGroupName, groupName } = props
 
+  const onChangeHandle = (newVariants: Variant[]) => {
+    onChange(newVariants)
+  }
+
   const filterHandle = () => {
     const list: Variant[] = []
     variants.forEach(variant => {
@@ -38,13 +42,14 @@ export default function GroupBy (props: GroupByProps) {
     const handle: Worker = new Handle()
     handle.postMessage({ options, variants: list, groupName })
     handle.onmessage = (e) => {
-      onChange(e.data)
+      onChangeHandle(e.data)
     }
   }, [variants, groupName, filters])
 
   useEffect(() => {
     const option = options.find(i => i.name === groupName)
     if (!option && options.length >= 2) {
+      console.log({ options, groupName, option })
       setGroupName(options?.[0]?.name)
     }
   }, [variants, groupName, options])
@@ -57,9 +62,9 @@ export default function GroupBy (props: GroupByProps) {
       <SSelect
         value={groupName}
         onChange={setGroupName}
-        options={options.map(({ id, name }) => ({
+        options={options.map(({ name }) => ({
           label: name,
-          value: id
+          value: name
         }))}
         size={'small'}
         dropdownStyle={{ minWidth: 200 }}
