@@ -188,7 +188,8 @@ export default function useColumns (params: ColumnsParams) {
       },
       align: 'center',
       lock: true,
-      width: 50
+      width: 50,
+      hidden: variantType === VariantType.Single
     }
   ]
 
