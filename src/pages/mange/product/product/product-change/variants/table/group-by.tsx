@@ -11,19 +11,35 @@ export interface GroupByProps {
   options: Option[]
   variants: Variant[]
   onChange: (grouped: Variant[]) => void
+  filters: Record<string, string>
 }
 
 export default function GroupBy (props: GroupByProps) {
-  const { options, variants, onChange } = props
+  const { options, variants, onChange, filters } = props
   const [groupName, setGroupName] = useState('')
 
+  const filterHandle = () => {
+    const list: Variant[] = []
+    variants.forEach(variant => {
+      const isEvery = variant.name.every(item => {
+        if (!filters[item.label]) return true
+        return filters[item.label] === item.value
+      })
+      if (isEvery) {
+        list.push(variant)
+      }
+    })
+    return list
+  }
+
   useEffect(() => {
+    const list = filterHandle()
     const handle: Worker = new Handle()
-    handle.postMessage({ options, variants, groupName })
+    handle.postMessage({ options, variants: list, groupName })
     handle.onmessage = (e) => {
       onChange(e.data)
     }
-  }, [variants, groupName])
+  }, [variants, groupName, filters])
 
   useEffect(() => {
     const option = options.find(i => i.name === groupName)

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import { Button, Card, Flex, Form } from 'antd'
 import cloneDeep from 'lodash/cloneDeep'
 
@@ -14,7 +15,6 @@ import { genId } from '@/utils/random'
 // @ts-expect-error
 import ReserveHandle from './changer/reserve-handle?worker'
 import styles from './index.module.less'
-import { useParams } from 'react-router-dom'
 
 export interface VariantsProps {
   setIsChange: (isChange: boolean) => void
@@ -78,7 +78,7 @@ export default function Variants (props: VariantsProps) {
   }, [remoteVariants])
 
   useEffect(() => {
-    if(id && !variants?.length) return
+    if (id && !variants?.length) return
     if (!variantType) return
     if (variantType === VariantType.Single) {
       const item: Variant = {
@@ -154,8 +154,7 @@ export default function Variants (props: VariantsProps) {
         info={openInfo}
       />
       <Table
-        onChange={setVariants}
-        onOpenOptions={() => openInfo.edit() }
+        onOpenOptions={() => { openInfo.edit() }}
         onChangeGroupVariants={onIsChange}
         loading={loading}
         variants={variants}
