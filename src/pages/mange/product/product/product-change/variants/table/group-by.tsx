@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Flex } from 'antd'
+import { Flex, Form } from 'antd'
 
 import SSelect from '@/components/s-select'
 import { Option, Variant } from '@/pages/mange/product/product/product-change/variants/state'
@@ -18,6 +18,7 @@ export interface GroupByProps {
 
 export default function GroupBy (props: GroupByProps) {
   const { options, variants, onChange, filters, setGroupName, groupName } = props
+  const form = Form.useFormInstance()
 
   const onChangeHandle = (newVariants: Variant[]) => {
     onChange(newVariants)
@@ -34,7 +35,18 @@ export default function GroupBy (props: GroupByProps) {
         list.push(variant)
       }
     })
-    return list
+    const oldVariants: Variant[] = [];
+    (form.getFieldValue('variants') as Variant[])?.forEach(item => {
+      if (item.children) {
+        oldVariants.push(...item.children)
+      } else {
+        oldVariants.push(item)
+      }
+    })
+    return list.map(item => {
+      const find = oldVariants.find(i => i.id === item.id)
+      return find || item
+    })
   }
 
   useEffect(() => {
