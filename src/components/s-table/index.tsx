@@ -113,6 +113,8 @@ function STable (props: STableProps) {
       }))
   }
 
+  console.log('Table Update')
+
   if (!init) {
     return (
       <SLoading loading size={36}>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { Flex } from 'antd'
 
 import SSelect from '@/components/s-select'
@@ -12,11 +12,12 @@ export interface GroupByProps {
   variants: Variant[]
   onChange: (grouped: Variant[]) => void
   filters: Record<string, string>
+  groupName: string
+  setGroupName: (groupName: string) => void
 }
 
 export default function GroupBy (props: GroupByProps) {
-  const { options, variants, onChange, filters } = props
-  const [groupName, setGroupName] = useState('')
+  const { options, variants, onChange, filters, setGroupName, groupName } = props
 
   const filterHandle = () => {
     const list: Variant[] = []

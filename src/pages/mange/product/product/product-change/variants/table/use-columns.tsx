@@ -5,13 +5,19 @@ import { VariantType } from '@/constant/product'
 import { Variant } from '@/pages/mange/product/product/product-change/variants/state'
 import ColumnPrice from '@/pages/mange/product/product/product-change/variants/table/columns/column-price'
 import ColumnText from '@/pages/mange/product/product/product-change/variants/table/columns/column-text'
+import ColumnTitle from '@/pages/mange/product/product/product-change/variants/table/columns/column-title'
+import ColumnVariant from '@/pages/mange/product/product/product-change/variants/table/columns/column-variant'
 
 export interface ColumnsParams {
   variants: Variant[]
   setVariants: (variants: Variant[]) => void
+  groupName: string
+  expands: number[]
+  setExpands: (expands: number[]) => void
 }
 
 export default function useColumns (params: ColumnsParams) {
+  const { variants, setVariants, groupName, expands, setExpands } = params
   const form = Form.useFormInstance()
   const variantType: VariantType = Form.useWatch('variant_type', form)
 
@@ -21,31 +27,32 @@ export default function useColumns (params: ColumnsParams) {
         // @ts-expect-error
         child[key] = value
       })
-      const newValues = params.variants.map(v => v.id === row.id ? row : v)
-      params.setVariants(newValues)
+      const newValues = variants.map(v => v.id === row.id ? row : v)
+      setVariants(newValues)
     } else if (row.parentId) {
-      const parent = params.variants.find(v => v.id === row.parentId)
+      const parent = variants.find(v => v.id === row.parentId)
       if (!parent) return
       // @ts-expect-error
       row[key] = value
       parent.children = parent.children?.map(child => child.id === row.id ? row : child)
-      const newValues = params.variants.map(v => v.id === parent.id ? parent : v)
-      params.setVariants(newValues)
+      const newValues = variants.map(v => v.id === parent.id ? parent : v)
+      setVariants(newValues)
     } else {
       // @ts-expect-error
       row[key] = value
-      params.setVariants(params.variants.map(v => v.id === row.id ? row : v))
+      setVariants(variants.map(v => v.id === row.id ? row : v))
     }
   }
 
   const columns: STableProps['columns'] = [
     {
-      title: 'Variants',
+      title: <ColumnTitle expands={expands} setExpands={setExpands} variants={variants} variantType={variantType} />,
       code: 'id',
       name: 'id',
       render: (text, record) => {
-        return <div>123</div>
+        return <ColumnVariant expands={expands} groupName={groupName} row={record} />
       },
+      width: 300,
       hidden: variantType === VariantType.Single
     },
     {

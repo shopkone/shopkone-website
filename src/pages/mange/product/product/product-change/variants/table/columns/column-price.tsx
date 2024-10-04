@@ -13,9 +13,9 @@ export interface ColumnPriceProps {
 }
 
 export default function ColumnPrice (props: ColumnPriceProps) {
-  const { value, onChange, row, type} = props
+  const { value, onChange, row, type } = props
 
-  const getPriceRange = (prices?: Array<number | undefined>) => {
+  const getPriceRange = (prices?: Array<number | undefined>): any => {
     const list = (prices?.filter(i => typeof i === 'number') || []) as number[]
     if (!list?.length) return { value: undefined, placeHolder: '0.00' }
     const max = Math.max(...list)
@@ -29,16 +29,15 @@ export default function ColumnPrice (props: ColumnPriceProps) {
     }
   }
 
-
   return (
     <div>
       <SRender render={row.children?.length}>
         <Tooltip title={`Applies to all ${row?.children?.length} variants`}>
           <SInputNumber
             onChange={e => { onChange(e) }}
-                        money
-                        value={getPriceRange(row?.children?.map(i => i?.[type]))?.value}
-                        placeholder={getPriceRange(row?.children?.map(i => i?.[type]))?.placeHolder}
+            money
+            value={getPriceRange(row?.children?.map(i => i?.[type]) as any)?.value}
+            placeholder={getPriceRange(row?.children?.map(i => i?.[type]) as any)?.placeHolder}
           />
         </Tooltip>
       </SRender>

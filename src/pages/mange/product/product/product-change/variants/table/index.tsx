@@ -21,10 +21,14 @@ export default function Table (props: TableProps) {
   const [groupVariants, setGroupVariants] = useState<Variant[]>([])
   const [expandedRowKeys, setExpandedRowKeys] = useState<number[]>([])
   const [filters, setFilters] = useState<Record<string, string>>({})
+  const [groupName, setGroupName] = useState('')
 
   const { columns } = useColumns({
     variants: groupVariants,
-    setVariants: setGroupVariants
+    setVariants: setGroupVariants,
+    groupName,
+    expands: expandedRowKeys,
+    setExpands: setExpandedRowKeys
   })
 
   useEffect(() => {
@@ -36,7 +40,14 @@ export default function Table (props: TableProps) {
     <div>
       <Flex style={{ marginBottom: 12 }} align={'center'} gap={48}>
         <Filters value={filters} onChange={setFilters} options={options} />
-        <GroupBy filters={filters} onChange={setGroupVariants} variants={variants} options={options} />
+        <GroupBy
+          groupName={groupName}
+          setGroupName={setGroupName}
+          filters={filters}
+          onChange={setGroupVariants}
+          variants={variants}
+          options={options}
+        />
       </Flex>
       <STable
         init

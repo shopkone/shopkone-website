@@ -40,7 +40,6 @@ function SInputNumber (props: SInputNumberProps) {
       }
       return
     }
-    console.log({ str })
     const num = str ? roundPrice(Number(str)) : null
     if (uint && str?.includes('.')) return
     if (num && typeof num !== 'undefined') {
@@ -54,7 +53,6 @@ function SInputNumber (props: SInputNumberProps) {
     if (str?.[str.length - 1] === '.') {
       return
     }
-    console.log({ num })
     onChange?.(num)
   })
 
