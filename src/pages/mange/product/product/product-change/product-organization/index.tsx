@@ -23,7 +23,7 @@ export default function ProductOrganization () {
       <div className={styles.line} />
       <Form.Item label={'Category'}>
         <div className={'tips'}>No categories have been created ye.</div>
-        <Button className={'primary-text'} style={{ marginLeft: -6 }} type={'text'} size={'small'}>
+        <Button className={'primary-text'} style={{ marginLeft: -10, marginTop: 4 }} type={'text'} size={'small'}>
           Create category
         </Button>
       </Form.Item>
