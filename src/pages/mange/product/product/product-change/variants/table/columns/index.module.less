@@ -16,7 +16,19 @@
 
 .link {
   cursor: pointer;
+  user-select: none;
   &:hover {
     text-decoration: underline;
+  }
+}
+
+.name {
+  width: 100%;
+  flex: 1;
+  user-select: none;
+    &:hover {
+      .nameText {
+        text-decoration: underline;
+      }
   }
 }

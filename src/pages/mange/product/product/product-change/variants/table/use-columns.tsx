@@ -53,7 +53,8 @@ export default function useColumns (params: ColumnsParams) {
         return <ColumnVariant expands={expands} groupName={groupName} row={record} />
       },
       width: 300,
-      hidden: variantType === VariantType.Single
+      hidden: variantType === VariantType.Single,
+      lock: true
     },
     {
       title: 'Price',
@@ -68,7 +69,8 @@ export default function useColumns (params: ColumnsParams) {
             value={price}
           />
         )
-      }
+      },
+      width: 150
     },
     {
       title: 'Compare at price',
@@ -83,7 +85,8 @@ export default function useColumns (params: ColumnsParams) {
             value={compare_at_price}
           />
         )
-      }
+      },
+      width: 150
     },
     {
       title: 'Cost per item',
@@ -98,7 +101,8 @@ export default function useColumns (params: ColumnsParams) {
             value={cost_per_item}
           />
         )
-      }
+      },
+      width: 150
     },
     {
       title: 'Sku',
@@ -107,11 +111,16 @@ export default function useColumns (params: ColumnsParams) {
       render: (sku: string, row: Variant) => {
         return (
           <ColumnText
+            expands={expands}
+            setExpands={setExpands}
+            type={'sku'}
+            row={row}
             onChange={v => { onUpdate(row, 'sku', v) }}
             value={sku}
           />
         )
-      }
+      },
+      width: 200
     },
     {
       title: 'Barcode',
@@ -120,11 +129,16 @@ export default function useColumns (params: ColumnsParams) {
       render: (barcode: string, row: Variant) => {
         return (
           <ColumnText
+            expands={expands}
+            setExpands={setExpands}
+            type={'barcode'}
+            row={row}
             onChange={v => { onUpdate(row, 'barcode', v) }}
             value={barcode}
           />
         )
-      }
+      },
+      width: 200
     }
   ]
 

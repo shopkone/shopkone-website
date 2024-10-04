@@ -16,19 +16,23 @@ export default function ColumnVariant (props: ColumnVariantProps) {
   const { row, groupName, expands } = props
 
   return (
-    <Flex style={{ userSelect: 'none' }}>
+    <Flex className={'fit-width flex1'} style={{ userSelect: 'none' }}>
       <SRender render={row.children}>
         <Flex onClick={e => { e.stopPropagation() }} style={{ cursor: 'pointer', paddingRight: 16 }}>
           <Checkbox />
         </Flex>
-        <Flex align={'center'} gap={16}>
+        <Flex flex={1} align={'center'} gap={16}>
           <Button className={styles.bigImg} size={'large'}>
             <IconPhotoPlus style={{ position: 'relative', top: 1 }} size={18} />
           </Button>
-          <div>
-            {(row?.name?.find(i => i.label === groupName))?.value}
+          <div className={styles.name}>
+            <div className={styles.nameText}>
+              {(row?.name?.find(i => i.label === groupName))?.value}
+            </div>
             <Flex align={'center'} gap={8}>
-              <div className={'secondary'}>{row.children?.length} variants</div>
+              <div className={'secondary}'}>
+                {row.children?.length} variants
+              </div>
               <IconChevronDown
                 className={styles.icon}
                 style={{ transform: expands?.includes(row.id) ? 'rotate(-180deg)' : 'rotate(0deg)' }}

@@ -197,7 +197,7 @@ function STable (props: STableProps) {
             pageSizeOptions={['20', '50', '100']}
             {...page}
             onChange={(...p) => {
-              if (p?.[0] !== page?.current) {
+              if (p?.[0] !== page?.current || p?.[1] < Number(page?.pageSize || 0)) {
                 document?.getElementById('shopkone-main')?.scrollTo({ top: 0 })
               }
               page?.onChange?.(...p)

@@ -7,6 +7,8 @@ import Filters from '@/pages/mange/product/product/product-change/variants/table
 import GroupBy from '@/pages/mange/product/product/product-change/variants/table/group-by'
 import useColumns from '@/pages/mange/product/product/product-change/variants/table/use-columns'
 
+import styles from './index.module.less'
+
 export interface TableProps {
   variants: Variant[]
   options: Option[]
@@ -50,6 +52,8 @@ export default function Table (props: TableProps) {
         />
       </Flex>
       <STable
+        className={styles.table}
+        width={916}
         init
         loading={loading}
         columns={columns}

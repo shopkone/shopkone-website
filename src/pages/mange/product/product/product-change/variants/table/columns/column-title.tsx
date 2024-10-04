@@ -21,6 +21,7 @@ export default function ColumnTitle (props: ColumnTitleProps) {
   const hasChild = variants.some(v => v.children?.length)
 
   const onExpandAll = () => {
+    console.log(expands, variants.map(v => v.id))
     setExpands(isAllExpanded ? [] : variants.map(v => v.id))
   }
 
