@@ -9,6 +9,7 @@ import ColumnPrice from '@/pages/mange/product/product/product-change/variants/t
 import ColumnText from '@/pages/mange/product/product/product-change/variants/table/columns/column-text'
 import ColumnTitle from '@/pages/mange/product/product/product-change/variants/table/columns/column-title'
 import ColumnVariant from '@/pages/mange/product/product/product-change/variants/table/columns/column-variant'
+import ColumnWeight from '@/pages/mange/product/product/product-change/variants/table/columns/column-weight'
 
 export interface ColumnsParams {
   variants: Variant[]
@@ -138,6 +139,15 @@ export default function useColumns (params: ColumnsParams) {
         )
       },
       width: 150
+    },
+    {
+      title: 'Weight',
+      code: 'weight',
+      name: 'weight',
+      render: (weight: number, row: Variant) => {
+        return <ColumnWeight row={row} />
+      },
+      width: 200
     },
     {
       title: 'Sku',
