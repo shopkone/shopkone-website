@@ -3,6 +3,7 @@ import { Flex, Form } from 'antd'
 
 import SSelect from '@/components/s-select'
 import { Option, Variant } from '@/pages/mange/product/product/product-change/variants/state'
+import styles from '@/pages/mange/product/product/product-change/variants/table/index.module.less'
 
 // @ts-expect-error
 import Handle from './group-handle?worker'
@@ -25,15 +26,12 @@ export default function GroupBy (props: GroupByProps) {
   }
 
   const filterHandle = () => {
-    const list: Variant[] = []
-    variants.forEach(variant => {
+    const list = variants.map(variant => {
       const isEvery = variant.name.every(item => {
         if (!filters[item.label]) return true
         return filters[item.label] === item.value
       })
-      if (isEvery) {
-        list.push(variant)
-      }
+      return { ...variant, hidden: !isEvery }
     })
     const oldVariants: Variant[] = [];
     (form.getFieldValue('variants') as Variant[])?.forEach(item => {
@@ -45,7 +43,7 @@ export default function GroupBy (props: GroupByProps) {
     })
     return list.map(item => {
       const find = oldVariants.find(i => i.id === item.id)
-      return find || item
+      return find ? { ...find, hidden: item.hidden } : item
     })
   }
 
@@ -68,19 +66,22 @@ export default function GroupBy (props: GroupByProps) {
   if (options.length < 2) return null
 
   return (
-    <Flex align={'center'} gap={8}>
-      <div style={{ flexShrink: 0 }}>Group by</div>
-      <SSelect
-        value={groupName}
-        onChange={setGroupName}
-        options={options.map(({ name }) => ({
-          label: name,
-          value: name
-        }))}
-        size={'small'}
-        dropdownStyle={{ minWidth: 200 }}
-        style={{ minWidth: 120 }}
-      />
-    </Flex>
+    <>
+      <span className={styles.textLine}>|</span>
+      <Flex align={'center'} gap={8}>
+        <div style={{ flexShrink: 0 }}>Group by</div>
+        <SSelect
+          value={groupName}
+          onChange={setGroupName}
+          options={options.map(({ name }) => ({
+            label: name,
+            value: name
+          }))}
+          size={'small'}
+          dropdownStyle={{ minWidth: 200 }}
+          style={{ minWidth: 120 }}
+        />
+      </Flex>
+    </>
   )
 }

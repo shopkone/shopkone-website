@@ -30,7 +30,7 @@ export default function ColumnVariant (props: ColumnVariantProps) {
               {(row?.name?.find(i => i.label === groupName))?.value}
             </div>
             <Flex align={'center'} gap={8}>
-              <div className={'secondary}'}>
+              <div className={'secondary'}>
                 {row.children?.length} variants
               </div>
               <IconChevronDown

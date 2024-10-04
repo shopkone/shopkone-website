@@ -23,6 +23,7 @@ export interface Variant {
   children?: Variant[]
   parentId?: number
   isParent: boolean
+  hidden?: boolean
 }
 
 export interface Option {

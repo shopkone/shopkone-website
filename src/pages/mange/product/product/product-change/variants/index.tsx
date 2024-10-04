@@ -101,11 +101,13 @@ export default function Variants (props: VariantsProps) {
       } else {
         setVariants([init.current?.[0] || item])
       }
+      setOptions([])
       return
     }
     if (variantType === VariantType.Multiple) {
       if (info?.variant_type === VariantType.Multiple) {
         setVariants(remoteVariants)
+        onReverseVariants(remoteVariants)
       } else {
         setVariants([])
       }

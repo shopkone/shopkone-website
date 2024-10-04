@@ -1,4 +1,4 @@
-import { Flex } from 'antd'
+import { Button, Flex } from 'antd'
 
 import TableFilter from '@/components/table-filter'
 import { Option } from '@/pages/mange/product/product/product-change/variants/state'
@@ -16,23 +16,32 @@ export default function Filters (props: FiltersProps) {
 
   return (
     <Flex align={'center'} gap={8}>
-      filter
+      Filters
       {
-        options.map(option => (
-          <TableFilter
-            radio={{
-              onChange: (v) => {
-                onChange({ ...value, [option.name]: v?.toString() || '' })
-              },
-              value: value[option.name],
-              options: option.values.filter(i => i.value).map(v => ({ label: v.value, value: v.value }))
-            }}
-            key={option.id}
-          >
-            {option.name}
-          </TableFilter>
-        ))
-      }
+          options.map(option => (
+            <TableFilter
+              radio={{
+                onChange: (v) => {
+                  onChange({
+                    ...value,
+                    [option.name]: v?.toString() || ''
+                  })
+                },
+                value: value[option.name],
+                options: option.values.filter(i => i.value).map(v => ({
+                  label: v.value,
+                  value: v.value
+                }))
+              }}
+              key={option.id}
+            >
+              {option.name}
+            </TableFilter>
+          ))
+        }
+      <Button type={'link'}>
+        Clear all
+      </Button>
     </Flex>
   )
 }

@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Button, Flex, Form } from 'antd'
 
 import STable from '@/components/s-table'
 import { Option, Variant } from '@/pages/mange/product/product/product-change/variants/state'
 import Filters from '@/pages/mange/product/product/product-change/variants/table/filters'
 import GroupBy from '@/pages/mange/product/product/product-change/variants/table/group-by'
+import LocationsSelect from '@/pages/mange/product/product/product-change/variants/table/locations'
 import useColumns from '@/pages/mange/product/product/product-change/variants/table/use-columns'
 
 import styles from './index.module.less'
@@ -33,6 +34,18 @@ export default function Table (props: TableProps) {
     setExpands: setExpandedRowKeys
   })
 
+  const filterGroup = useMemo(() => {
+    if (!Object.values(filters).filter(Boolean).length) return groupVariants
+    let v = groupVariants.filter(item => {
+      return !item.hidden
+    })
+    v = v.map(i => {
+      const children = i.children?.filter(item => !item.hidden)
+      return { ...i, children }
+    })
+    return v
+  }, [groupVariants])
+
   useEffect(() => {
     form.setFieldValue('variants', groupVariants)
     onChangeGroupVariants(groupVariants)
@@ -40,7 +53,7 @@ export default function Table (props: TableProps) {
 
   return (
     <div>
-      <Flex style={{ marginBottom: 12 }} align={'center'} gap={48}>
+      <Flex style={{ marginBottom: 12 }} align={'center'} gap={24}>
         <Filters value={filters} onChange={setFilters} options={options} />
         <GroupBy
           groupName={groupName}
@@ -50,6 +63,7 @@ export default function Table (props: TableProps) {
           variants={variants}
           options={options}
         />
+        <LocationsSelect />
       </Flex>
       <STable
         className={styles.table}
@@ -57,7 +71,7 @@ export default function Table (props: TableProps) {
         init
         loading={loading}
         columns={columns}
-        data={groupVariants}
+        data={filterGroup}
         expand={{ value: expandedRowKeys, onChange: setExpandedRowKeys }}
         empty={{
           img: 'asd',

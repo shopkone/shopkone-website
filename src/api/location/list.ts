@@ -1,6 +1,10 @@
 import { api } from '@/api/api'
 import { AddressType } from '@/api/common/address'
 
+export interface LocationListReq {
+  active?: boolean
+}
+
 export interface LocationListRes {
   id: number
   name: string
@@ -9,6 +13,6 @@ export interface LocationListRes {
   default: boolean
 }
 
-export const LocationListApi = async (): Promise<LocationListRes[]> => {
-  return await api('/location/list')
+export const LocationListApi = async (params?: LocationListReq): Promise<LocationListRes[]> => {
+  return await api('/location/list', params)
 }
