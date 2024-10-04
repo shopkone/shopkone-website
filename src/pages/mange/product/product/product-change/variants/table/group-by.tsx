@@ -61,7 +61,6 @@ export default function GroupBy (props: GroupByProps) {
   useEffect(() => {
     const option = options.find(i => i.name === groupName)
     if (!option && options.length >= 2) {
-      console.log({ options, groupName, option })
       setGroupName(options?.[0]?.name)
     }
   }, [variants, groupName, options])

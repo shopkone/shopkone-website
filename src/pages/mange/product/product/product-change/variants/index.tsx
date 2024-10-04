@@ -78,7 +78,7 @@ export default function Variants (props: VariantsProps) {
   }, [remoteVariants])
 
   useEffect(() => {
-    if (id && !variants?.length) return
+    if (id && !init.current?.length) return
     if (!variantType) return
     if (variantType === VariantType.Single) {
       const item: Variant = {
