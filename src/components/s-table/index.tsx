@@ -94,21 +94,12 @@ function STable (props: STableProps) {
     }
 
     if (expand) {
-      p = p
-        .use(features.treeMode({
-          openKeys: expand?.value as any,
-          onChangeOpenKeys (nextKeys: string[], key: string, action: 'expand' | 'collapse') {
-            expand?.onChange(nextKeys as any)
-          }
-        }))
-        .use(features.treeSelect({
-          tree: data,
-          rootKey: rowKey,
-          checkboxPlacement: 'start',
-          clickArea: 'checkbox',
-          checkboxColumn: { hidden: true },
-          highlightRowWhenSelected: true
-        }))
+      p = p.use(features.treeMode({
+        openKeys: expand?.value as any,
+        onChangeOpenKeys (nextKeys: string[], key: string, action: 'expand' | 'collapse') {
+          expand?.onChange(nextKeys as any)
+        }
+      }))
     }
 
     return p

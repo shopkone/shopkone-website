@@ -1,4 +1,5 @@
-import { Form } from 'antd'
+import { IconTrash } from '@tabler/icons-react'
+import { Button, Form } from 'antd'
 
 import { STableProps } from '@/components/s-table'
 import { VariantType } from '@/constant/product'
@@ -139,6 +140,21 @@ export default function useColumns (params: ColumnsParams) {
         )
       },
       width: 200
+    },
+    {
+      title: '',
+      code: 'id',
+      name: 'id',
+      render: (id: number, row: Variant) => {
+        return (
+          <Button style={{ height: 32 }} size={'small'} type={'text'}>
+            <IconTrash size={16} />
+          </Button>
+        )
+      },
+      align: 'center',
+      lock: true,
+      width: 50
     }
   ]
 
