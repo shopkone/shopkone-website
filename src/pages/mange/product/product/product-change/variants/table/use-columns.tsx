@@ -17,10 +17,11 @@ export interface ColumnsParams {
   expands: number[]
   setExpands: (expands: number[]) => void
   locationId: number
+  forceChange: (row: Variant[]) => void
 }
 
 export default function useColumns (params: ColumnsParams) {
-  const { variants, setVariants, groupName, expands, setExpands, locationId } = params
+  const { variants, setVariants, groupName, expands, setExpands, locationId, forceChange } = params
   const form = Form.useFormInstance()
   const variantType: VariantType = Form.useWatch('variant_type', form)
 
@@ -45,6 +46,19 @@ export default function useColumns (params: ColumnsParams) {
       row[key] = value
       setVariants(variants.map(v => v.id === row.id ? row : v))
     }
+  }
+
+  const onRemove = (row: Variant) => {
+    const list = variants.filter(v => v.id !== row.id)
+    const vs: Variant[] = []
+    list.forEach(v => {
+      if (v.children?.length) {
+        vs.push(...v.children)
+      } else {
+        vs.push(v)
+      }
+    })
+    forceChange(vs)
   }
 
   const columns: STableProps['columns'] = [
@@ -167,7 +181,7 @@ export default function useColumns (params: ColumnsParams) {
       name: 'id',
       render: (id: number, row: Variant) => {
         return (
-          <Button style={{ height: 32 }} size={'small'} type={'text'}>
+          <Button onClick={() => { onRemove(row) }} style={{ height: 32 }} size={'small'} type={'text'}>
             <IconTrash size={16} />
           </Button>
         )

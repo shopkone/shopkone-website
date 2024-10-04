@@ -16,10 +16,11 @@ export interface TableProps {
   loading: boolean
   onChangeGroupVariants: (variants: Variant[]) => void
   onOpenOptions: () => void
+  forceChange: (variants: Variant[]) => void
 }
 
 export default function Table (props: TableProps) {
-  const { variants, options, loading, onChangeGroupVariants, onOpenOptions } = props
+  const { variants, options, loading, onChangeGroupVariants, onOpenOptions, forceChange } = props
   const form = Form.useFormInstance()
   const [groupVariants, setGroupVariants] = useState<Variant[]>([])
   const [expandedRowKeys, setExpandedRowKeys] = useState<number[]>([])
@@ -33,7 +34,8 @@ export default function Table (props: TableProps) {
     groupName,
     expands: expandedRowKeys,
     setExpands: setExpandedRowKeys,
-    locationId
+    locationId,
+    forceChange
   })
 
   const filterGroup = useMemo(() => {

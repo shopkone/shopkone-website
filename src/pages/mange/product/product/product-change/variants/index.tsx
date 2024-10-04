@@ -180,6 +180,7 @@ export default function Variants (props: VariantsProps) {
           info={openInfo}
         />
         <Table
+          forceChange={onChange}
           onOpenOptions={() => { openInfo.edit() }}
           onChangeGroupVariants={onIsChange}
           loading={loading}
