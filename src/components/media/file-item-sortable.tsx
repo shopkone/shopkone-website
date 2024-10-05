@@ -25,6 +25,10 @@ export default function FileItemSortable (props: FileItemSortableProps) {
     transition
   }
 
+  if (isDragging) {
+    console.log(props.index)
+  }
+
   return (
     <FileItem
       ref={setNodeRef}
