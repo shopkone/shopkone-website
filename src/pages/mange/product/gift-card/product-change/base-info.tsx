@@ -12,7 +12,7 @@ export default function BaseInfo () {
         <Form.Item name={'description'} label={'Description'}>
           <Input.TextArea autoSize={{ minRows: 4, maxRows: 4 }} />
         </Form.Item>
-        <Form.Item className={'mb0'} label={'Media'}>
+        <Form.Item className={'mb0'} label={'Media'} name={'file_ids'}>
           <Media />
         </Form.Item>
       </div>

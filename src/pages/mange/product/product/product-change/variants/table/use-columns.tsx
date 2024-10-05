@@ -25,6 +25,7 @@ export default function useColumns (params: ColumnsParams) {
   const { variants, setVariants, groupName, expands, setExpands, locationId, forceChange } = params
   const form = Form.useFormInstance()
   const variantType: VariantType = Form.useWatch('variant_type', form)
+  const inventoryTracking = Form.useWatch('inventory_tracking', form)
 
   const onUpdate = (row: Variant, key: keyof Variant, value: number | string | null) => {
     if (row.children?.length) {
@@ -138,7 +139,8 @@ export default function useColumns (params: ColumnsParams) {
           />
         )
       },
-      width: 150
+      width: 150,
+      hidden: !inventoryTracking
     },
     {
       title: 'Weight',
@@ -153,7 +155,7 @@ export default function useColumns (params: ColumnsParams) {
           />
         )
       },
-      width: 170
+      width: 150
     },
     {
       title: 'Sku',

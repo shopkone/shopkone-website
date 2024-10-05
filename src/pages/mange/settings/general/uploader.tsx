@@ -5,12 +5,12 @@ import { Flex } from 'antd'
 import classNames from 'classnames'
 
 import { FileType } from '@/api/file/add-file-record'
+import { fileListByIds, FileListByIdsRes } from '@/api/file/file-list-by-ids'
 import FileImage from '@/components/file-image'
 import SelectFiles from '@/components/media/select-files'
 import SLoading from '@/components/s-loading'
 import SRender from '@/components/s-render'
 import { useOpen } from '@/hooks/useOpen'
-import { fileListByIds, FileListByIdsRes } from '@/pages/mange/settings/files/file-list-by-ids'
 import styles from '@/pages/mange/settings/general/index.module.less'
 
 export interface UploaderProps {

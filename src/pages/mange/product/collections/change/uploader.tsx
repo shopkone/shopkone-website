@@ -5,6 +5,7 @@ import { Button, Flex, Popover } from 'antd'
 import classNames from 'classnames'
 
 import { FileType } from '@/api/file/add-file-record'
+import { fileListByIds, FileListByIdsRes } from '@/api/file/file-list-by-ids'
 import FileImage from '@/components/file-image'
 import SelectFiles from '@/components/media/select-files'
 import SCard from '@/components/s-card'
@@ -13,7 +14,6 @@ import Upload from '@/components/upload'
 import { useOpen } from '@/hooks/useOpen'
 import styles from '@/pages/mange/product/collections/change/index.module.less'
 import FileInfo from '@/pages/mange/settings/files/file-info'
-import { fileListByIds, FileListByIdsRes } from '@/pages/mange/settings/files/file-list-by-ids'
 
 export interface UploaderProps {
   value?: number
