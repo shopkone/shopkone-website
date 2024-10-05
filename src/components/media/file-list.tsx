@@ -1,10 +1,9 @@
-import { ReactNode, useEffect, useMemo, useState } from 'react'
+import { HTMLAttributes, ReactNode, useEffect, useMemo, useState } from 'react'
 import { SortableContainer, SortableElement } from 'react-sortable-hoc'
 import { useRequest } from 'ahooks'
+import classNames from 'classnames'
 
-import { FileType } from '@/api/file/add-file-record'
-import { fileListByIds, FileListByIdsRes } from '@/api/file/file-list-by-ids'
-import FileImage from '@/components/file-image'
+import { fileListByIds } from '@/api/file/file-list-by-ids'
 import SLoading from '@/components/s-loading'
 
 import styles from './index.module.less'
@@ -13,18 +12,18 @@ export interface FileListProps {
   ids: number[]
 }
 
-export interface SortableElementProps {
-  item: FileListByIdsRes
-}
-
 export default function FileList (props: FileListProps) {
   const { ids } = props
   const list = useRequest(fileListByIds, { manual: true })
-  const [draggingIndex, setDraggingIndex] = useState(-1)
+  const [draggingId, setDraggingId] = useState(-1)
 
-  const SortableItemElement = useMemo(() => SortableElement<SortableElementProps>((p: SortableElementProps) => (
-    <FileImage src={p.item.path} type={FileType.Image} />
-  )), [draggingIndex])
+  const SortableItemElement = useMemo(() => SortableElement<HTMLAttributes<HTMLDivElement>>((p: HTMLAttributes<HTMLDivElement>) => (
+    <div {...p}>
+      asd
+    </div>
+  )), [draggingId])
+
+  console.log({ draggingId })
 
   const SortableContainerElement = useMemo(() => SortableContainer<{ children: ReactNode }>(({ children }: { children: ReactNode }) => {
     return <div style={{ userSelect: 'none' }}>{children}</div>
@@ -48,18 +47,38 @@ export default function FileList (props: FileListProps) {
       <SortableContainerElement
         hideSortableGhost={false}
         onSortEnd={e => {
-          setDraggingIndex(-1)
-          console.log(e)
+          setDraggingId(-1)
         }}
         onSortOver={e => {
-          setDraggingIndex(e.oldIndex)
-          console.log(e)
+
+        }}
+        onSortStart={e => {
+          const item = list.data?.find((i, index) => index === e.index)
+          setDraggingId(item?.id ?? -1)
         }}
         axis={'xy'}
       >
         {
           list.data?.map((i, index) => (
-            <SortableItemElement key={`item-${i.id}`} index={index} item={i} />
+            <div className={classNames(styles.item, index === 0 && styles.itemBig)} key={i.id}>
+              <SortableItemElement
+                key={`item-${i.id}`}
+                index={index}
+                className={
+                classNames(
+                  styles['item-real'],
+                  draggingId === i.id && styles.dragging
+
+                )
+                }
+              >
+                asd
+              </SortableItemElement>
+
+              <div className={styles['item-bg']}>
+                123
+              </div>
+            </div>
           ))
         }
       </SortableContainerElement>

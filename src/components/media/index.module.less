@@ -14,19 +14,41 @@
 .fileList {
 }
 
-.fileListItem {
-  width: 100px;
-  height: 100px;
-  background-color: #000;
+.item {
+  width: 115px;
+  height: 115px;
   float: left;
-  margin-left: 16px;
-  margin-top: 16px;
+  position: relative;
+  user-select: none;
+  .dragging {
+    background-color: blue;
+    z-index: 0;
+    margin-right: 15px;
+  }
 }
 
-.fileListItemBig {
-  margin-top: 16px;
+.itemBig {
+  width: 230px;
+  height: 230px;
+  &:after, &:before {
+    content: '';
+    clear: both;
+  }
+}
+
+.item-real {
   background-color: #000;
-  width: 216px;
-  height: 216px;
-  float: left;
+  position: absolute;
+  inset: 0;
+  margin-bottom: 15px;
+  margin-right: 15px;
+  z-index: 1;
+}
+
+.item-bg {
+  margin-bottom: 15px;
+  margin-right: 15px;
+  inset: 0;
+  position: absolute;
+  background-color: blue;
 }
