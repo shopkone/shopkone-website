@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { IconDots } from '@tabler/icons-react'
-import { Button, Card, Flex, Form, Popover, Typography } from 'antd'
+import { Button, Flex, Form, Popover, Typography } from 'antd'
 import { useWatch } from 'antd/es/form/Form'
 
+import SCard from '@/components/s-card'
 import Edit, { SeoType } from '@/components/seo/edit'
 import { useManageState } from '@/pages/mange/state'
 
@@ -11,12 +12,14 @@ import styles from './index.module.less'
 export interface SeoProps {
   value?: SeoType
   onChange?: (seo?: SeoType) => void
+  height?: boolean
 }
 
 export default function Seo (props: SeoProps) {
   const {
     value,
-    onChange
+    onChange,
+    height
   } = props
   const [editing, setEditing] = useState(false)
 
@@ -42,12 +45,13 @@ export default function Seo (props: SeoProps) {
   }, [title, description, editing])
 
   return (
-    <div className={styles.card} style={{ height: editing ? 413 : 160 }}>
-      <Card
-        title={'SEO'}
-        extra={
-          <Flex>
-            {
+    <SCard
+      style={{ height: !height ? undefined : (editing ? 413 : 160) }}
+      className={'fit-height'}
+      title={'SEO'}
+      extra={
+        <Flex>
+          {
               editing
                 ? (
                   <Button
@@ -63,15 +67,15 @@ export default function Seo (props: SeoProps) {
                   )
                 : null
             }
-            <Button
-              onClick={() => {
-                tempSeoRef.current = value
-                setEditing(!editing)
-              }}
-              size={'small'}
-              type={'text'}
-            >
-              {
+          <Button
+            onClick={() => {
+              tempSeoRef.current = value
+              setEditing(!editing)
+            }}
+            size={'small'}
+            type={'text'}
+          >
+            {
                 editing
                   ? (
                     <div style={{ color: '#3370ff' }}>Done</div>
@@ -80,37 +84,37 @@ export default function Seo (props: SeoProps) {
                     <div>Edit</div>
                     )
               }
-            </Button>
-            <Popover
-              placement={'bottom'}
-              overlayInnerStyle={{ minWidth: 'unset' }}
-              content={
-                <Flex vertical gap={4}>
-                  <Button type={'link'} style={{ textAlign: 'left', paddingLeft: 0 }}>
-                    Check Google indexing
-                  </Button>
-                  <Button style={{ textAlign: 'left', paddingLeft: 0 }} type={'link'}>
-                    Submit for indexing
-                  </Button>
-                </Flex>
+          </Button>
+          <Popover
+            placement={'bottom'}
+            overlayInnerStyle={{ minWidth: 'unset' }}
+            content={
+              <Flex vertical gap={4}>
+                <Button type={'link'} style={{ textAlign: 'left', paddingLeft: 0 }}>
+                  Check Google indexing
+                </Button>
+                <Button style={{ textAlign: 'left', paddingLeft: 0 }} type={'link'}>
+                  Submit for indexing
+                </Button>
+              </Flex>
               }
-              trigger={'click'}
+            trigger={'click'}
+          >
+            <Button
+              style={{
+                position: 'relative',
+                right: -4
+              }}
+              size={'small'}
+              type={'text'}
             >
-              <Button
-                style={{
-                  position: 'relative',
-                  right: -4
-                }}
-                size={'small'}
-                type={'text'}
-              >
-                <IconDots size={16} />
-              </Button>
-            </Popover>
-          </Flex>
+              <IconDots size={16} />
+            </Button>
+          </Popover>
+        </Flex>
         }
-      >
-        {
+    >
+      {
           editing
             ? (
               <Edit
@@ -137,7 +141,6 @@ export default function Seo (props: SeoProps) {
               </Flex>
               )
         }
-      </Card>
-    </div>
+    </SCard>
   )
 }

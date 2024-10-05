@@ -47,7 +47,7 @@ export default function Media (props: MediaProps) {
         info={openInfo}
         multiple
       />
-      <FileList />
+      <FileList ids={value || []} />
     </div>
   )
 }

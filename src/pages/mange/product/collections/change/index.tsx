@@ -84,7 +84,7 @@ export default function Change () {
             <Form.Item className={'mb0'} name={'cover_id'}>
               <Uploader />
             </Form.Item>
-            <Seo />
+            <Seo height />
           </Flex>
         </Flex>
       </Form>

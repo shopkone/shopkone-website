@@ -162,7 +162,7 @@ export default function ProductChangeInner (props: ProductChangeInnerProps) {
               <Flex vertical style={{ width: 320 }} gap={16}>
                 <Status />
                 <ProductOrganization />
-                <Form.Item className={'mb0'} name={'seo'}>
+                <Form.Item style={{ flex: 1 }} className={'mb0'} name={'seo'}>
                   <Seo />
                 </Form.Item>
               </Flex>
