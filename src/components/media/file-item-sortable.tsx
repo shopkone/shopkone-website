@@ -1,15 +1,16 @@
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 
+import { FileListByIdsRes } from '@/api/file/file-list-by-ids'
 import FileItem from '@/components/media/file-item'
 
 export interface FileItemSortableProps {
-  path: string
   index: number
   k: number
   onClick?: () => void
   onSelect: () => void
   select: boolean
+  item: FileListByIdsRes
 }
 
 export default function FileItemSortable (props: FileItemSortableProps) {

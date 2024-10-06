@@ -139,7 +139,7 @@ export default function FileList (props: FileListProps) {
                   onClick={() => { onClick(item) }}
                   index={index}
                   key={item.id}
-                  path={item.path}
+                  item={item}
                   k={item.id}
                 />
               ))
@@ -158,14 +158,22 @@ export default function FileList (props: FileListProps) {
               select={select.includes(activeId)}
               onSelect={() => { onSelectHandle?.(activeId) }}
               dragging={!!activeId}
-              path={items.find(item => item.id === activeId)?.path}
+              item={items.find(item => item.id === activeId)}
               index={items.findIndex(item => item.id === activeId)}
             />
           </SRender>
         </DragOverlay>
       </DndContext>
 
-      <FileInfo open={fileOpen} groups={[]} reFresh={() => {}} />
+      <FileInfo
+        open={fileOpen}
+        groups={[]}
+        reFresh={() => {
+          list.runAsync({ ids }).then(res => {
+            setItems(res)
+          })
+        }}
+      />
     </div>
   )
 }

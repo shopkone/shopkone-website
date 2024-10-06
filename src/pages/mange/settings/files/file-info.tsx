@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { IconCopy, IconReplace } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
 import { Button, Flex, Form, Input, Typography } from 'antd'
 import dayjs from 'dayjs'
@@ -6,12 +7,15 @@ import dayjs from 'dayjs'
 import { FileType } from '@/api/file/add-file-record'
 import { FileInfoApi } from '@/api/file/file-info'
 import { FileUpdateApi } from '@/api/file/file-update'
+import { UploadFileType } from '@/api/file/UploadFileType'
 import FileImage from '@/components/file-image'
 import FileVideo from '@/components/file-video'
 import SLoading from '@/components/s-loading'
 import { sMessage } from '@/components/s-message'
 import SModal from '@/components/s-modal'
 import SRender from '@/components/s-render'
+import Upload from '@/components/upload'
+import { useOss } from '@/hooks/use-oss'
 import { UseOpenType } from '@/hooks/useOpen'
 import { formatFileSize } from '@/utils/format'
 
@@ -27,12 +31,16 @@ export default function FileInfo (props: FileInfoProps) {
   const { open, groups, reFresh } = props
   const { data } = open
 
+  const [updaloadFile, setUploadFile] = useState<UploadFileType>()
+
   const info = useRequest(FileInfoApi, { manual: true })
   const update = useRequest(FileUpdateApi, { manual: true })
 
   const [name, setName] = useState<string>()
+  const [cover, setCover] = useState<string>()
   const [alt, setAlt] = useState<string>()
   const [src, setSrc] = useState('')
+  const oss = useOss()
 
   const groupName = groups.find(item => item.id === info?.data?.group_id)?.name
 
@@ -43,8 +51,8 @@ export default function FileInfo (props: FileInfoProps) {
   }
 
   const isChange = useMemo(() => {
-    return (name !== info?.data?.name) || (alt !== info?.data?.alt)
-  }, [info.data, alt, name])
+    return (name !== info?.data?.name) || (alt !== info?.data?.alt) || (cover !== info?.data?.cover)
+  }, [info.data, alt, name, cover])
 
   const onSave = async () => {
     await update.runAsync({
@@ -52,11 +60,16 @@ export default function FileInfo (props: FileInfoProps) {
       name: name || info?.data?.name || '',
       alt: alt || '',
       src: info?.data?.path || '',
-      cover: info?.data?.cover || info?.data?.path || ''
+      cover: cover || ''
     })
     sMessage.success('Update file info successfully')
     open.close()
     reFresh()
+  }
+
+  const onCopyCoverLink = () => {
+    navigator.clipboard.writeText(cover || '')
+    sMessage.success('Cover link copied!')
   }
 
   useEffect(() => {
@@ -68,11 +81,21 @@ export default function FileInfo (props: FileInfoProps) {
     info.runAsync({ id: data }).then(res => {
       setName(res.name)
       setAlt(res.alt)
+      setCover(res.cover)
       if (src !== (res.cover || res.path || '')) {
         setSrc(res.cover || res.path || '')
       }
     })
   }, [data, open.open])
+
+  useEffect(() => {
+    if (updaloadFile?.status === 'wait') {
+      oss.run(updaloadFile.name, updaloadFile.fileInstance).then(res => {
+        setUploadFile({ ...updaloadFile, status: 'uploading', path: res?.url })
+        setCover(res?.url)
+      })
+    }
+  }, [updaloadFile])
 
   return (
     <SModal
@@ -83,7 +106,7 @@ export default function FileInfo (props: FileInfoProps) {
       onCancel={open.close}
     >
       <SLoading loading={info.loading}>
-        <Flex className={styles.container}>
+        <Flex className={styles.container} align={'center'}>
           <SRender style={{ width: 600, height: 450, flexShrink: 0 }} render={info?.data?.type === FileType.Image}>
             <FileImage
               src={src}
@@ -94,10 +117,10 @@ export default function FileInfo (props: FileInfoProps) {
               style={{ background: 'transparent', border: 'none' }}
             />
           </SRender>
-          <SRender style={{ width: 600, height: 450, flexShrink: 0 }} render={info?.data?.type === FileType.Video}>
+          <SRender style={{ width: 600, height: 350, flexShrink: 0 }} render={info?.data?.type === FileType.Video}>
             <FileVideo
               duration={info?.data?.duration}
-              cover={info?.data?.cover}
+              cover={cover}
               src={info?.data?.path || ''}
               style={{ height: 350, width: 600, marginRight: 60 }}
             />
@@ -112,6 +135,32 @@ export default function FileInfo (props: FileInfoProps) {
                     autoComplete={'off'}
                   />
                 </Form.Item>
+                <SRender render={info?.data?.type === FileType.Video}>
+                  <Form.Item label={'Cover'}>
+                    <Flex gap={8}>
+                      <div style={{ display: 'inline-block' }}>
+                        <FileImage loading={updaloadFile?.status === 'wait'} width={48} height={48} src={cover || ''} type={FileType.Image} />
+                      </div>
+                      <SRender className={' '} render={updaloadFile?.status !== 'wait' && (info.data?.cover || updaloadFile?.path)}>
+                        <Upload onChange={files => { setUploadFile(files[0]) }} multiple={false} maxSize={1024 * 1024 * 10} accepts={['image']}>
+                          <Button type={'text'} size={'small'} className={'primary-text'}>
+                            <Flex align={'center'} gap={6}>
+                              <IconReplace size={14} style={{ position: 'relative', top: -1 }} />
+                              Replace cover
+                            </Flex>
+                          </Button>
+                        </Upload>
+
+                        <Button onClick={onCopyCoverLink} type={'text'} size={'small'}>
+                          <Flex align={'center'} gap={6}>
+                            <IconCopy size={14} style={{ position: 'relative', top: -1 }} />
+                            <div>Copy cover link</div>
+                          </Flex>
+                        </Button>
+                      </SRender>
+                    </Flex>
+                  </Form.Item>
+                </SRender>
                 <SRender render={info?.data?.type === FileType.Image}>
                   <Form.Item label={'Alt text'}>
                     <Input
