@@ -30,10 +30,12 @@ export interface FileListProps {
   ids: number[]
   onChange?: (value: number[]) => Promise<void>
   selectOpenInfo: UseOpenType<number[]>
+  onSelect: (ids: number[]) => void
+  select: number[]
 }
 
 export default function FileList (props: FileListProps) {
-  const { ids, onChange, selectOpenInfo } = props
+  const { ids, onChange, selectOpenInfo, select, onSelect } = props
   const list = useRequest(fileListByIds, { manual: true })
   const [activeId, setActiveId] = useState(0)
   const [items, setItems] = useState<FileListByIdsRes[]>([])
@@ -44,18 +46,6 @@ export default function FileList (props: FileListProps) {
     useSensor(MouseSensor, { activationConstraint: { distance: 5 } }),
     useSensor(TouchSensor, { activationConstraint: { distance: 5 } })
   )
-
-  // 加载数据
-  useEffect(() => {
-    if (isEqual(items.map(item => item.id), ids)) return
-    if (!ids?.length) {
-      setItems([])
-      return
-    }
-    list.runAsync({ ids }).then(res => {
-      setItems(res)
-    })
-  }, [ids])
 
   // 拖动事件监听
   const onDragStart = useMemoizedFn((e: DragStartEvent) => {
@@ -78,12 +68,36 @@ export default function FileList (props: FileListProps) {
   })
 
   const onClick = useMemoizedFn((row: FileListByIdsRes) => {
-    fileOpen.edit(row.id)
+    if (select.includes(row.id)) {
+      onSelectHandle(row.id)
+    } else {
+      fileOpen.edit(row.id)
+    }
+  })
+
+  const onSelectHandle = useMemoizedFn((id: number) => {
+    if (select?.includes(id)) {
+      onSelect?.(select.filter(i => i !== id))
+    } else {
+      onSelect?.([...(select || []), id])
+    }
   })
 
   useEffect(() => {
     onChange?.(items.map(item => item.id))
   }, [items])
+
+  // 加载数据
+  useEffect(() => {
+    if (isEqual(items.map(item => item.id), ids)) return
+    if (!ids?.length) {
+      setItems([])
+      return
+    }
+    list.runAsync({ ids }).then(res => {
+      setItems(res)
+    })
+  }, [ids])
 
   // 空或者加载直接返回
   if (list.loading) return <div style={{ marginTop: 64 }}><SLoading /></div>
@@ -109,6 +123,8 @@ export default function FileList (props: FileListProps) {
             {
               items.map((item, index) => (
                 <FileItemSortable
+                  onSelect={() => { onSelectHandle?.(item.id) }}
+                  select={select.includes(item.id)}
                   onClick={() => { onClick(item) }}
                   index={index}
                   key={item.id}
@@ -128,6 +144,8 @@ export default function FileList (props: FileListProps) {
         <DragOverlay adjustScale={true}>
           <SRender render={activeId}>
             <FileItem
+              select={select.includes(activeId)}
+              onSelect={() => { onSelectHandle?.(activeId) }}
               dragging={!!activeId}
               path={items.find(item => item.id === activeId)?.path}
               index={items.findIndex(item => item.id === activeId)}

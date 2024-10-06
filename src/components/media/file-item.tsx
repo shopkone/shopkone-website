@@ -6,17 +6,19 @@ import SRender from '@/components/s-render'
 
 import styles from './index.module.less'
 
-export interface FileItemProps extends HTMLAttributes<HTMLDivElement> {
+export interface FileItemProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onSelect'> {
   faded?: boolean
   style?: React.CSSProperties
   path?: string
   index: number
   dragging?: boolean
   bgDragging?: boolean
+  onSelect: () => void
+  select: boolean
 }
 
 const FileItem = (props: FileItemProps, ref: React.Ref<HTMLDivElement>) => {
-  const { faded, style, path, index, dragging, bgDragging, ...rest } = props
+  const { faded, style, path, index, dragging, bgDragging, onSelect, ...rest } = props
   const inlineStyles: CSSProperties = {
     opacity: faded ? '0.2' : '1',
     transformOrigin: '0 0',
@@ -42,9 +44,16 @@ const FileItem = (props: FileItemProps, ref: React.Ref<HTMLDivElement>) => {
         classNames(styles.file, dragging && styles.dragging, bgDragging && styles.bgDragging)
       }
     >
-      <SRender className={styles.mask} render={!dragging}>
+      <SRender
+        className={classNames(styles.mask, { [styles.checkedMask]: props.select })}
+        render={!dragging}
+      >
         <div onClick={e => { e.stopPropagation() }}>
-          <Checkbox style={{ marginLeft: 4, marginTop: 4 }} />
+          <Checkbox
+            checked={props.select}
+            onClick={() => { onSelect?.() }}
+            style={{ marginLeft: 4, marginTop: 4 }}
+          />
         </div>
       </SRender>
     </div>

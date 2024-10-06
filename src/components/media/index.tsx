@@ -11,10 +11,12 @@ import styles from './index.module.less'
 export interface MediaProps {
   value?: number[]
   onChange?: (value: number[]) => Promise<void>
+  onSelect: (ids: number[]) => void
+  select: number[]
 }
 
 export default function Media (props: MediaProps) {
-  const { value, onChange } = props
+  const { value, onChange, select, onSelect } = props
   const openInfo = useOpen<number[]>()
 
   return (
@@ -50,7 +52,13 @@ export default function Media (props: MediaProps) {
         info={openInfo}
         multiple
       />
-      <FileList selectOpenInfo={openInfo} onChange={onChange} ids={value || []} />
+      <FileList
+        select={select}
+        onSelect={onSelect}
+        selectOpenInfo={openInfo}
+        onChange={onChange}
+        ids={value || []}
+      />
     </div>
   )
 }

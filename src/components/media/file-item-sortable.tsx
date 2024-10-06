@@ -8,6 +8,8 @@ export interface FileItemSortableProps {
   index: number
   k: number
   onClick?: () => void
+  onSelect: () => void
+  select: boolean
 }
 
 export default function FileItemSortable (props: FileItemSortableProps) {
