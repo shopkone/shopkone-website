@@ -87,7 +87,7 @@ function SelectFiles (props: SelectFilesProps) {
     const waitFileList = files.filter(item => !item.errMsg)
     setList([...fileList, ...list])
     for await (const item of waitFileList) {
-      const ret = await upload(item)
+      const ret = await upload(item, true)
       const res = await addFile.runAsync(ret)
       setList(pre => pre.map(item => {
         if (item.uuid !== ret.uuid) return item

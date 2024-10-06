@@ -108,6 +108,8 @@ export default function Uploading (props: UploadingProps) {
     ids.current = []
   }, [files])
 
+  if (!files?.length) return null
+
   return (
     <SModal
       onCancel={onConfirm}
@@ -118,9 +120,9 @@ export default function Uploading (props: UploadingProps) {
           align={'center'}
           justify={'space-between'}
         >
-          <div>{files.find(i => i.status === 'uploading') ? 'Uploading' : 'Upload Complete!'}</div>
+          <div>{files.find(i => i.status === 'wait') ? 'Uploading' : 'Upload Complete!'}</div>
           <div style={{ fontSize: 12, fontWeight: 450 }}>
-            <SRender render={files.filter(i => i.status === 'uploading')?.length}>
+            <SRender render={files.filter(i => i.status === 'wait')?.length}>
               <Flex style={{ marginLeft: -100 }} align={'center'} gap={6}>
                 <SLoading black size={18} />
                 <div>Uploading</div>
@@ -129,7 +131,7 @@ export default function Uploading (props: UploadingProps) {
                 </div>
               </Flex>
             </SRender>
-            <SRender render={!files.filter(i => i.status === 'uploading')?.length}>
+            <SRender render={!files.filter(i => i.status === 'wait')?.length}>
               <Button onClick={onConfirm} type={'text'} size={'small'}>
                 <IconX size={16} />
               </Button>
@@ -140,15 +142,6 @@ export default function Uploading (props: UploadingProps) {
       width={800} open={isStart.current}
       footer={null}
       closeIcon={null}
-/*       closeIcon={
-        <div style={{ position: 'relative', left: -16, width: 100 }}>
-          {/!* <Button size={'small'} type={'primary'}>Finish</Button> *!/}
-          <Flex style={{ marginLeft: -100 }} align={'center'} gap={4}>
-            <SLoading size={20} />
-            <div>Uploading</div>
-          </Flex>
-        </div>
-      } */
     >
       <div style={{ height: 600 }}>
         <STable init={true} columns={columns} data={files} />

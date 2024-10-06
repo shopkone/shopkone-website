@@ -77,7 +77,7 @@ export default function Files () {
           />
           <div className={styles.title}>
             <Flex align={'center'} gap={12} className={styles.name}>
-              <Typography.Text style={{ maxWidth: '18vw' }} ellipsis={{ tooltip: true }}>
+              <Typography.Text style={{ maxWidth: 'calc(34.5vw - 300px)' }} ellipsis={{ tooltip: true }}>
                 {name}
               </Typography.Text>
               <Flex
@@ -224,9 +224,7 @@ export default function Files () {
           <Card styles={{ body: { padding: '8px 0' } }}>
             <Filters
               groupName={groupList?.data?.find(item => item.id === params.group_id)?.name}
-              // @ts-expect-error
               value={params}
-              // @ts-expect-error
               onChange={(v) => { setParams({ ...params, ...(v || {}), page: 1 }) }}
             />
             <STable

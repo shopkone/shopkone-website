@@ -4,9 +4,9 @@ import { useOss } from '@/hooks/use-oss'
 export const useUpload = () => {
   const oss = useOss()
 
-  const upload = async (fileInfo: UploadFileType): Promise<UploadFileType> => {
+  const upload = async (fileInfo: UploadFileType, wait?: boolean): Promise<UploadFileType> => {
     try {
-      if (fileInfo.status !== 'uploading') {
+      if (fileInfo.status !== 'uploading' && !wait) {
         return fileInfo
       }
       const { fileInstance } = fileInfo
