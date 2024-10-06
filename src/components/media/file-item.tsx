@@ -28,24 +28,24 @@ const FileItem = (props: FileItemProps, ref: React.Ref<HTMLDivElement>) => {
     backgroundPosition: 'center',
     backgroundColor: '#e3e3e3',
     borderColor: dragging ? '#bbb' : undefined,
-    boxShadow: bgDragging ? '0 0 12px 0 #bbb' : undefined,
+    borderWidth: dragging && !index ? 2 : undefined,
+    borderRadius: dragging && !index ? 16 : undefined,
     ...style
   }
 
   return (
     <div
-      onClick={() => {
-        console.log(123)
-      }}
       ref={ref}
       style={inlineStyles}
       {...rest}
       className={
-      classNames(styles.file, dragging && styles.dragging, bgDragging && styles.bgDragging)
+        classNames(styles.file, dragging && styles.dragging, bgDragging && styles.bgDragging)
       }
     >
       <SRender className={styles.mask} render={!dragging}>
-        <Checkbox style={{ marginLeft: 4, marginTop: 4 }} />
+        <div onClick={e => { e.stopPropagation() }}>
+          <Checkbox style={{ marginLeft: 4, marginTop: 4 }} />
+        </div>
       </SRender>
     </div>
   )
