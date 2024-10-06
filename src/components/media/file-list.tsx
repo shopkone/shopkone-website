@@ -32,7 +32,10 @@ export default function FileList (props: FileListProps) {
   const [items, setItems] = useState<FileListByIdsRes[]>([])
 
   // dnd 相关
-  const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor))
+  const sensors = useSensors(
+    useSensor(MouseSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(TouchSensor, { activationConstraint: { distance: 5 } })
+  )
 
   // 加载数据
   useEffect(() => {
