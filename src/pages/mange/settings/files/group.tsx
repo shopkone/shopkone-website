@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { IconDots, IconPlus } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
 import { Button, Flex, Popover, Typography } from 'antd'
@@ -30,15 +30,15 @@ export default function Group (props: GroupProps) {
   const modal = useModal()
   const [expand, setExpand] = useState<number>()
 
-  const queryString = window.location.search
-  const params = new URLSearchParams(queryString)
-  const groupId = Number(params.get('groupId') || 0)
+  const gid = useParams().groupId
+  const groupId = Number(gid || 0)
 
   const groups = useMemo(() => [{ id: 0, name: 'All files', count: 0 }, ...(list || [])], [list])
 
   const onSelect = (id: number) => {
+    console.log(id)
     if (id === groupId) return
-    nav(`/settings/files?groupId=${id}`)
+    nav(`/settings/files/${id}`)
   }
 
   const onRemove = async (id: number) => {

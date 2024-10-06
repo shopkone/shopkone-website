@@ -25,6 +25,7 @@ export interface SelectFilesProps {
   info: UseOpenType<number[]>
   onConfirm: (data: number[]) => Promise<void>
   multiple?: boolean
+  types?: FileType[]
 }
 
 function SelectFiles (props: SelectFilesProps) {

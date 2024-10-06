@@ -25,5 +25,10 @@ export interface FileListRes {
 }
 
 export const FileListApi = async (params: FileListReq) => {
-  return await api<PageRes<FileListRes[]>>('/file/list', params)
+  const allFileType: FileType[] = [FileType.Audio, FileType.Image, FileType.Video, FileType.Other]
+  const query: FileListReq = {
+    ...params,
+    file_type: params?.file_type?.length ? params.file_type : allFileType
+  }
+  return await api<PageRes<FileListRes[]>>('/file/list', query)
 }

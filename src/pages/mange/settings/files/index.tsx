@@ -1,5 +1,5 @@
 import { ReactNode, useEffect, useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { IconLink } from '@tabler/icons-react'
 import { useDebounceFn, useMemoizedFn, useRequest } from 'ahooks'
 import { Button, Card, Flex, Tooltip, Typography } from 'antd'
@@ -34,7 +34,8 @@ export default function Files () {
   const [params, setParams] = useState<FileListReq>({ page: 1, page_size: 20, group_id: 0 })
   const groupList = useRequest(FileGroupListApi)
   const filesDelete = useRequest(FilesDeleteApi, { manual: true })
-  const location = useLocation()
+  const gid = useParams().groupId
+  const groupId = Number(gid || 0)
   const [selected, setSelected] = useState<number[]>([])
   const fileInfoOpen = useOpen<number>()
   const moveGroupOpen = useOpen<number[]>()
@@ -191,12 +192,12 @@ export default function Files () {
   }, [params])
 
   useEffect(() => {
-    const groupId = Number(new URLSearchParams(location.search).get('groupId') || 0)
     if (groupId !== params.group_id) {
       setParams({ ...params, group_id: groupId, page: 1 })
       document?.getElementById('shopkone-main')?.scrollTo({ top: 0 })
     }
-  }, [location.search])
+    console.log(123)
+  }, [groupId])
 
   useEffect(() => {
     if (!fileDoneFlag) return
@@ -259,7 +260,9 @@ export default function Files () {
               init={!!list?.data?.list}
               loading={list.loading}
               empty={{
-                title: params.group_id ? 'No files in this group' : 'Upload and manage your files',
+                title: params.group_id
+                  ? `No files in ${groupList?.data?.find(item => item.id === params.group_id)?.name} group`
+                  : 'Upload and manage your files',
                 desc: 'Files can be images, videos and zip.',
                 actions: (
                   <Uploader>
