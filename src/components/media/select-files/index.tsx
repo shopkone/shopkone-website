@@ -26,10 +26,12 @@ export interface SelectFilesProps {
   onConfirm: (data: number[]) => Promise<void>
   multiple?: boolean
   types?: FileType[]
+  includes?: FileType[]
 }
 
 function SelectFiles (props: SelectFilesProps) {
-  const { info, onConfirm, multiple } = props
+  const { info, onConfirm, multiple, includes } = props
+  const extra = [FileType.Video, FileType.Image, FileType.Other, FileType.Audio].filter(i => !includes?.includes(i))
   const headerRef = useRef<HTMLDivElement>(null)
   const moreRef = useRef<HTMLDivElement>(null)
   const [showShadow, setShowShadow] = useState(false)
@@ -123,7 +125,7 @@ function SelectFiles (props: SelectFilesProps) {
 
   useEffect(() => {
     if (!info.open) return
-    fileList.runAsync(params).then(res => {
+    fileList.runAsync(params, extra).then(res => {
       if (res.page.page === 1) {
         setList(res.list)
       } else {
@@ -186,7 +188,10 @@ function SelectFiles (props: SelectFilesProps) {
       open={info.open}
     >
       <Flex vertical style={{ height: '70vh' }}>
-        <SRender render={!(!hasSearch && !list?.length && !fileList.loading)} className={classNames([styles.header, { [styles.shadow]: !showShadow && (fileList.loading || list?.length) }])}>
+        <SRender
+          render={!(!hasSearch && !list?.length && !fileList.loading)}
+          className={classNames([styles.header, { [styles.shadow]: !showShadow && (fileList.loading || list?.length) }])}
+        >
           <div className={styles.mb12}>
             <Input
               allowClear
@@ -202,7 +207,7 @@ function SelectFiles (props: SelectFilesProps) {
           </div>
           <Flex align={'center'} gap={4}>
             <Index checkbox={{
-              options,
+              options: options.filter(i => !extra?.includes(i.value)),
               onChange: (v) => {
                 setParams({ ...params, file_type: v.map(i => Number(i || 0)), page: 1 })
               },
@@ -217,8 +222,10 @@ function SelectFiles (props: SelectFilesProps) {
                 minLabel: 'Min size',
                 unit: 'MB',
                 onChange: (v) => {
+                  // @ts-expect-error
                   setParams({ ...params, file_size: v, page: 1 })
                 },
+                // @ts-expect-error
                 value: params.file_size
               }}
             >

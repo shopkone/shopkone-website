@@ -3,7 +3,7 @@ import { Input } from 'antd'
 import SInputNumber from '@/components/s-input-number'
 
 type ValueType = string | number
-type onChangeType = (value?: ValueType) => void
+type onChangeType = (value: ValueType | null) => void
 interface ComponentProps { value?: ValueType, onChange: onChangeType }
 
 const eq = { label: 'is equal to', value: 'eq' }

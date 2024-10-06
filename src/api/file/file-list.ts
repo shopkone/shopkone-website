@@ -24,8 +24,9 @@ export interface FileListRes {
   errMsg?: string
 }
 
-export const FileListApi = async (params: FileListReq) => {
-  const allFileType: FileType[] = [FileType.Audio, FileType.Image, FileType.Video, FileType.Other]
+export const FileListApi = async (params: FileListReq, extra?: FileType[]) => {
+  let allFileType: FileType[] = [FileType.Audio, FileType.Image, FileType.Video, FileType.Other]
+  allFileType = allFileType.filter(item => !extra?.includes(item))
   const query: FileListReq = {
     ...params,
     file_type: params?.file_type?.length ? params.file_type : allFileType

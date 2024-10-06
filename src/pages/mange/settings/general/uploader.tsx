@@ -49,6 +49,7 @@ export default function Uploader (props: UploaderProps) {
         </Flex>
       </SRender>
       <SelectFiles
+        includes={[FileType.Image]}
         onConfirm={async select => {
           openInfo.close()
           props.onChange?.(select?.[0])

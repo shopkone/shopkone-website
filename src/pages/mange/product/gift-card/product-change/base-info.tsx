@@ -1,7 +1,5 @@
 import { Card, Form, Input } from 'antd'
 
-import Media from '@/components/media'
-
 export default function BaseInfo () {
   return (
     <Card style={{ width: 612, flex: 1 }} bordered>
@@ -13,7 +11,7 @@ export default function BaseInfo () {
           <Input.TextArea autoSize={{ minRows: 4, maxRows: 4 }} />
         </Form.Item>
         <Form.Item className={'mb0'} label={'Media'} name={'file_ids'}>
-          <Media />
+          asd
         </Form.Item>
       </div>
     </Card>

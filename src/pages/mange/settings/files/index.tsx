@@ -196,7 +196,6 @@ export default function Files () {
       setParams({ ...params, group_id: groupId, page: 1 })
       document?.getElementById('shopkone-main')?.scrollTo({ top: 0 })
     }
-    console.log(123)
   }, [groupId])
 
   useEffect(() => {
@@ -225,7 +224,9 @@ export default function Files () {
           <Card styles={{ body: { padding: '8px 0' } }}>
             <Filters
               groupName={groupList?.data?.find(item => item.id === params.group_id)?.name}
+              // @ts-expect-error
               value={params}
+              // @ts-expect-error
               onChange={(v) => { setParams({ ...params, ...(v || {}), page: 1 }) }}
             />
             <STable

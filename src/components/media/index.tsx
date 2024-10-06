@@ -1,5 +1,6 @@
 import { Button, Flex } from 'antd'
 
+import { FileType } from '@/api/file/add-file-record'
 import FileList from '@/components/media/file-list'
 import SelectFiles from '@/components/media/select-files'
 import SRender from '@/components/s-render'
@@ -48,6 +49,7 @@ export default function Media (props: MediaProps) {
         </Flex>
       </SRender>
       <SelectFiles
+        includes={[FileType.Image, FileType.Video]}
         onConfirm={async (v) => { await onChange?.(v); openInfo.close() }}
         info={openInfo}
         multiple
