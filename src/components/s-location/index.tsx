@@ -27,8 +27,7 @@ export default function SLocation (props: SLocationProps) {
     const country = countries?.data?.find(item => item.code === address?.country)
     const zone = country?.zones?.find(item => item.code === address?.zone)?.name
     const format = country?.formatting
-    // @ts-expect-error
-    const formatArr: string[] = format?.replaceAll('{', '').replaceAll('}', '').split('_')
+    const formatArr = format?.replaceAll('{', '').replaceAll('}', '').split('_')
     return formatArr?.map(item => item?.split(' ').map(item => {
       if (item === 'firstName') return address?.first_name
       if (item === 'lastName') return address?.last_name

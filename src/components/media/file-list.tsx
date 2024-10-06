@@ -106,7 +106,8 @@ export default function FileList (props: FileListProps) {
       })
     } else {
       const newItems = items.filter(item => ids.includes(item.id))
-      setItems(newItems)
+      const s = ids.map(ii => newItems.find(item => item.id === ii))
+      setItems(s as FileListByIdsRes[])
     }
   }, [ids])
 

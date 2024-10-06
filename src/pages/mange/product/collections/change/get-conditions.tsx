@@ -3,7 +3,7 @@ import { Input } from 'antd'
 import SInputNumber from '@/components/s-input-number'
 
 type ValueType = string | number
-type onChangeType = (value: ValueType | null) => void
+type onChangeType = (value?: ValueType) => void
 interface ComponentProps { value?: ValueType, onChange: onChangeType }
 
 const eq = { label: 'is equal to', value: 'eq' }
@@ -78,7 +78,7 @@ export const conditions = [
     label: 'Weight',
     key: 'weight',
     component: (p: ComponentProps) => {
-      return <SInputNumber suffix={'kg'} className={'flex1'} onChange={e => { p.onChange(e) }} value={Number(p.value || 0)} />
+      return <SInputNumber suffix={'kg'} className={'flex1'} onChange={e => { p.onChange(e) }} value={Number(p.value)} />
     },
     actions: [eq, neq, gt, lt]
   },

@@ -6,7 +6,7 @@ export interface FilterNumberRangeProps {
   minLabel: string
   maxLabel: string
   unit: string
-  value?: { max: number | null, min?: number | null }
+  value?: { max?: number, min?: number }
   onChange?: (value?: FilterNumberRangeProps['value']) => void
 }
 
@@ -17,14 +17,14 @@ export default function FilterNumberRange (props: FilterNumberRangeProps) {
     <Form style={{ width: 250 }} layout={'vertical'}>
       <Form.Item style={{ marginBottom: 8 }} label={`${minLabel}`}>
         <SInputNumber
-          value={value?.min || undefined}
-          onChange={(v) => onChange?.({ min: v, max: value?.max || null })}
+          value={value?.min}
+          onChange={(v) => onChange?.({ min: v, max: value?.max })}
           suffix={unit}
         />
       </Form.Item>
       <Form.Item className={'mb0'} label={`${maxLabel}`}>
         <SInputNumber
-          value={value?.max || undefined}
+          value={value?.max}
           onChange={(v) => onChange?.({ min: value?.min, max: v })}
           suffix={unit}
         />

@@ -222,10 +222,8 @@ function SelectFiles (props: SelectFilesProps) {
                 minLabel: 'Min size',
                 unit: 'MB',
                 onChange: (v) => {
-                  // @ts-expect-error
                   setParams({ ...params, file_size: v, page: 1 })
                 },
-                // @ts-expect-error
                 value: params.file_size
               }}
             >

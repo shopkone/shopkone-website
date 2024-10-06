@@ -51,7 +51,6 @@ export default function TableFilter (props: TableFilterProps) {
       radio?.onChange?.(undefined)
     }
     if (numberRange) {
-      // @ts-expect-error
       numberRange?.onChange?.({})
     }
     if (checkbox) {
