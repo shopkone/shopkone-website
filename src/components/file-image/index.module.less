@@ -1,5 +1,4 @@
 .img {
-  border: 1px solid var(--color-border);
   background-color: #f5f5f5;
   border-radius: 8px;
   position: relative;
@@ -7,9 +6,19 @@
   object-fit: contain;
 }
 
+.container {
+  border: 1px solid var(--color-border);
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  position: relative;
+  flex-shrink: 0;
+  object-fit: contain;
+  overflow: hidden;
+}
+
 .container :global {
   background-color: #f1f1f1;
-  border-radius: 12px;
+  border-radius: 8px;
   .shopkone-image-error {
     display: flex;
     align-items: center;

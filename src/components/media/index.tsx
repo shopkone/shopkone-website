@@ -1,8 +1,10 @@
 import { Button, Flex } from 'antd'
 
 import { FileType } from '@/api/file/add-file-record'
+import { UploadFileType } from '@/api/file/UploadFileType'
 import FileList from '@/components/media/file-list'
 import SelectFiles from '@/components/media/select-files'
+import Uploader from '@/components/media/uploader'
 import SRender from '@/components/s-render'
 import Upload from '@/components/upload'
 import { useOpen } from '@/hooks/useOpen'
@@ -19,6 +21,7 @@ export interface MediaProps {
 export default function Media (props: MediaProps) {
   const { value, onChange, select, onSelect } = props
   const openInfo = useOpen<number[]>()
+  const uploaderOpen = useOpen<UploadFileType[]>()
 
   return (
     <div>
@@ -34,6 +37,7 @@ export default function Media (props: MediaProps) {
           <Flex gap={12}>
             <div onClick={e => { e.stopPropagation() }}>
               <Upload
+                onChange={async (files) => { uploaderOpen.edit(files) }}
                 multiple={true}
                 accepts={['video', 'image']}
                 maxSize={1024 * 1024 * 20}
@@ -61,6 +65,7 @@ export default function Media (props: MediaProps) {
         onChange={onChange}
         ids={value || []}
       />
+      <Uploader info={uploaderOpen} />
     </div>
   )
 }

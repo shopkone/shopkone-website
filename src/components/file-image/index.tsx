@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
+import { IconPhotoX } from '@tabler/icons-react'
 import { useDebounce } from 'ahooks'
-import { Image } from 'antd'
+import { Flex, Image } from 'antd'
 import classNames from 'classnames'
 
 import { FileType } from '@/api/file/add-file-record'
@@ -21,10 +22,11 @@ export interface FileImageProps {
   style?: React.CSSProperties
   className?: string
   size?: number
+  error?: boolean
 }
 
 export default function FileImage (props: FileImageProps) {
-  const { src, alt, width = 40, height = 40, type, loading = false, padding, style, className, size = 24 } = props
+  const { src, alt, width = 40, height = 40, type, loading = false, padding, style, className, size = 24, error } = props
   const [imgLoading, setImgLoading] = useState(true)
   const [init, setInit] = useState<string>()
 
@@ -49,15 +51,36 @@ export default function FileImage (props: FileImageProps) {
     setInit(link)
   }, [link])
 
+  if (error) {
+    return (
+      <Flex justify={'center'} align={'center'}>
+        <IconPhotoX color={'#f54a45'} />
+      </Flex>
+    )
+  }
+
+  console.log({ loading, imgLoading })
+
   return (
-    <SLoading size={size} loading={loading || imgLoading}>
-      <div className={styles.container}>
+    <div style={{ height: (height || width) }}>
+      <Flex align={'center'} justify={'center'} style={{ width, height: height || width, display: (loading || imgLoading) ? undefined : 'none' }}>
+        <SLoading loading size={size} />
+      </Flex>
+      <div style={{ display: (loading || imgLoading) ? 'none' : undefined }} className={styles.container}>
         <SRender render={init}>
           <Image
-            onError={() => { setImgLoading(false) }}
-            onLoadCapture={() => { setImgLoading(false) }}
-            onLoad={() => { setImgLoading(false) }}
-            onLoadStart={() => { setImgLoading(true) }}
+            onError={() => {
+              setImgLoading(false)
+            }}
+            onLoadCapture={() => {
+              setImgLoading(false)
+            }}
+            onLoad={() => {
+              setImgLoading(false)
+            }}
+            onLoadStart={() => {
+              setImgLoading(true)
+            }}
             fallback={PhotoX as unknown as string}
             preview={false}
             alt={alt}
@@ -65,10 +88,15 @@ export default function FileImage (props: FileImageProps) {
             width={width || style?.width}
             height={height || style?.height}
             className={classNames(styles.img, className)}
-            style={{ width, height, padding, ...style }}
+            style={{
+              width,
+              height,
+              padding,
+              ...style
+            }}
           />
         </SRender>
       </div>
-    </SLoading>
+    </div>
   )
 }
