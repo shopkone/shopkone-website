@@ -20,7 +20,7 @@ const FileItem = (props: FileItemProps, ref: React.Ref<HTMLDivElement>) => {
   const inlineStyles: CSSProperties = {
     opacity: faded ? '0.2' : '1',
     transformOrigin: '0 0',
-    height: index === 0 ? 187 : 89,
+    height: index === 0 ? 187 : 89.57,
     gridRowStart: index === 0 ? 'span 2' : undefined,
     gridColumnStart: index === 0 ? 'span 2' : undefined,
     backgroundImage: bgDragging ? '' : `url("${path}")`,

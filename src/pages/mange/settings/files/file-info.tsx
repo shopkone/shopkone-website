@@ -84,7 +84,7 @@ export default function FileInfo (props: FileInfoProps) {
     >
       <SLoading loading={info.loading}>
         <Flex className={styles.container}>
-          <SRender render={info?.data?.type === FileType.Image}>
+          <SRender style={{ width: 600, height: 450, flexShrink: 0 }} render={info?.data?.type === FileType.Image}>
             <FileImage
               src={src}
               type={info?.data?.type || FileType.Other}
@@ -94,7 +94,7 @@ export default function FileInfo (props: FileInfoProps) {
               style={{ background: 'transparent', border: 'none' }}
             />
           </SRender>
-          <SRender render={info?.data?.type === FileType.Video}>
+          <SRender style={{ width: 600, height: 450, flexShrink: 0 }} render={info?.data?.type === FileType.Video}>
             <FileVideo
               duration={info?.data?.duration}
               cover={info?.data?.cover}

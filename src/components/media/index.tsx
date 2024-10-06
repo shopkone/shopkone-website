@@ -50,7 +50,7 @@ export default function Media (props: MediaProps) {
         info={openInfo}
         multiple
       />
-      <FileList onChange={onChange} ids={value || []} />
+      <FileList selectOpenInfo={openInfo} onChange={onChange} ids={value || []} />
     </div>
   )
 }
