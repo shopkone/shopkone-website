@@ -1,7 +1,8 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRequest } from 'ahooks'
 
 import { AddFileApi } from '@/api/file/add-file-record'
+import { UploadFileType } from '@/api/file/UploadFileType'
 import { useUpload } from '@/components/upload/use-upload'
 import { useGlobalTask } from '@/pages/mange/task/state'
 
@@ -13,13 +14,21 @@ export const useTaskUpload = () => {
   const setFileDone = useGlobalTask(state => state.setFileDone)
   const expand = useGlobalTask(state => state.expand)
   const { upload } = useUpload()
+  const [uploadingList, setUploadingList] = useState<UploadFileType[]>([])
 
   const uploadList = async () => {
-    const waitList = files.filter(item => item.status === 'wait')
+    let waitList = files.filter(item => item.status === 'wait' && !uploadingList.find(i => i.uuid === item.uuid))
+    waitList = waitList.map(item => ({ ...item, status: 'uploading' }))
     if (!waitList?.length) return
+    setUploadingList(waitList || [])
     open()
     expand()
-    for await (const file of waitList) {
+  }
+
+  const startUploadList = async () => {
+    const list = uploadingList.filter(item => item.status === 'uploading')
+    if (!list?.length) return
+    for await (const file of list) {
       const res = await upload(file)
       await addFileRecord.runAsync(res)
       setFileDone()
@@ -30,4 +39,8 @@ export const useTaskUpload = () => {
   useEffect(() => {
     uploadList()
   }, [files])
+
+  useEffect(() => {
+    startUploadList()
+  }, [uploadingList])
 }

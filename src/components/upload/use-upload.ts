@@ -6,6 +6,9 @@ export const useUpload = () => {
 
   const upload = async (fileInfo: UploadFileType): Promise<UploadFileType> => {
     try {
+      if (fileInfo.status !== 'uploading') {
+        return fileInfo
+      }
       const { fileInstance } = fileInfo
       const result = await oss.run(fileInfo.name, fileInstance)
       return { ...fileInfo, path: result?.url, status: 'done' }

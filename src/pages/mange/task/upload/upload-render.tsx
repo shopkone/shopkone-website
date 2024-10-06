@@ -23,6 +23,7 @@ export default function UploadRender () {
           >
             <Flex gap={8} align={'center'}>
               <FileImage
+                error={file.status === 'error'}
                 src={file.cover || file.path}
                 type={file.type} width={36}
                 height={36}

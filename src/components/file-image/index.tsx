@@ -53,13 +53,11 @@ export default function FileImage (props: FileImageProps) {
 
   if (error) {
     return (
-      <Flex justify={'center'} align={'center'}>
+      <Flex style={{ width, height: height || width }} justify={'center'} align={'center'} className={styles.container}>
         <IconPhotoX color={'#f54a45'} />
       </Flex>
     )
   }
-
-  console.log({ loading, imgLoading })
 
   return (
     <div style={{ height: (height || width) }}>
