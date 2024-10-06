@@ -34,12 +34,17 @@ export default function SLoading (props: SLoadingProps) {
   if (children) {
     return (
       <Spin
+        rootClassName={styles.animation}
         spinning={loading}
+        delay={0}
         indicator={
           <div><IconLoader2 className={styles.loading} size={size} /></div>
         }
       >
-        <div className={'fit-width fit-height'} style={{ opacity: loading ? Number(!!foreShow) : 1, flexShrink: 0 }}>
+        <div
+          className={`fit-width fit-height ${styles.animation}`}
+          style={{ opacity: loading ? (foreShow ? 1 : 0) : 1, flexShrink: 0 }}
+        >
           {children}
         </div>
       </Spin>
