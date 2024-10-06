@@ -43,8 +43,8 @@ export default function FileList (props: FileListProps) {
 
   // dnd 相关
   const sensors = useSensors(
-    useSensor(MouseSensor, { activationConstraint: { distance: 5 } }),
-    useSensor(TouchSensor, { activationConstraint: { distance: 5 } })
+    useSensor(MouseSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(TouchSensor, { activationConstraint: { distance: 8 } })
   )
 
   // 拖动事件监听
@@ -68,7 +68,7 @@ export default function FileList (props: FileListProps) {
   })
 
   const onClick = useMemoizedFn((row: FileListByIdsRes) => {
-    if (select.includes(row.id)) {
+    if (select.length) {
       onSelectHandle(row.id)
     } else {
       fileOpen.edit(row.id)
@@ -94,9 +94,20 @@ export default function FileList (props: FileListProps) {
       setItems([])
       return
     }
-    list.runAsync({ ids }).then(res => {
-      setItems(res)
-    })
+    const needFetch = ids.filter(id => !items.find(item => item.id === id))
+    if (needFetch?.length) {
+      list.runAsync({ ids: needFetch }).then(res => {
+        const newItems = ids.map(i => {
+          const itemValue = items.find(item => item.id === i)
+          const resValue = res.find(item => item.id === i)
+          return resValue || itemValue
+        })
+        setItems(newItems.filter(Boolean) as FileListByIdsRes[])
+      })
+    } else {
+      const newItems = items.filter(item => ids.includes(item.id))
+      setItems(newItems)
+    }
   }, [ids])
 
   // 空或者加载直接返回
