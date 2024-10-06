@@ -48,11 +48,11 @@ const FileItem = (props: FileItemProps, ref: React.Ref<HTMLDivElement>) => {
         className={classNames(styles.mask, { [styles.checkedMask]: props.select })}
         render={!dragging}
       >
-        <div onClick={e => { e.stopPropagation() }}>
+        <div onClick={e => { e.stopPropagation() }} style={{ cursor: 'default' }}>
           <Checkbox
             checked={props.select}
             onClick={() => { onSelect?.() }}
-            style={{ marginLeft: 4, marginTop: 4 }}
+            style={{ marginLeft: 4, marginTop: 4, cursor: 'default' }}
           />
         </div>
       </SRender>
