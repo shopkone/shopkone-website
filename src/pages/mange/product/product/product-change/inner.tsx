@@ -73,7 +73,7 @@ export default function ProductChangeInner (props: ProductChangeInnerProps) {
     })
     values.variants = variants
     if (id) {
-      console.log(values.variants)
+      console.log(values)
     } else {
       const ret = await create.runAsync(values)
       props.onFresh(ret.id)

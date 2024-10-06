@@ -7,6 +7,7 @@ export interface FileItemSortableProps {
   path: string
   index: number
   k: number
+  onClick?: () => void
 }
 
 export default function FileItemSortable (props: FileItemSortableProps) {
@@ -29,6 +30,7 @@ export default function FileItemSortable (props: FileItemSortableProps) {
     <FileItem
       ref={setNodeRef}
       style={style}
+      bgDragging={isDragging}
       {...props}
       {...attributes}
       {...listeners}
