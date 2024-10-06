@@ -30,11 +30,9 @@ const FileItem = (props: FileItemProps, ref: React.Ref<HTMLDivElement>) => {
     backgroundImage: bgDragging ? '' : `url("${item?.cover || item?.path}")`,
     backgroundSize: 'contain',
     backgroundPosition: 'center',
-    backgroundColor: '#e3e3e3',
+    backgroundColor: bgDragging ? '#e3e3e3' : '#fff',
     backgroundRepeat: 'no-repeat',
     borderColor: dragging ? '#bbb' : undefined,
-    borderWidth: dragging && !index ? 2 : undefined,
-    borderRadius: dragging && !index ? 16 : undefined,
     ...style
   }
 
