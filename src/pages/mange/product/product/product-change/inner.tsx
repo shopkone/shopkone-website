@@ -7,6 +7,7 @@ import dayjs, { Dayjs } from 'dayjs'
 import { ProductCreateApi } from '@/api/product/create'
 import { ProductInfoApi } from '@/api/product/info'
 import Page from '@/components/page'
+import SRender from '@/components/s-render'
 import Seo from '@/components/seo'
 import { VariantType } from '@/constant/product'
 import BaseInfo from '@/pages/mange/product/product/product-change/base-info'
@@ -138,17 +139,21 @@ export default function ProductChangeInner (props: ProductChangeInnerProps) {
       width={950}
       bottom={48}
       header={
-        <Flex gap={8}>
-          <Button type={'text'}>Duplicate</Button>
-          <Button type={'text'}>Preview</Button>
-          <Button type={'text'}>Share</Button>
-          <Button type={'text'}>More actions</Button>
-        </Flex>
+        <SRender render={info?.data?.title}>
+          <Flex gap={8}>
+            <Button type={'text'}>Duplicate</Button>
+            <Button type={'text'}>Preview</Button>
+            <Button type={'text'}>Share</Button>
+            <Button type={'text'}>More actions</Button>
+          </Flex>
+        </SRender>
       }
       footer={
-        <Flex gap={8}>
-          <Button type={'primary'} danger>Delete Product</Button>
-        </Flex>
+        <SRender render={info?.data?.title}>
+          <Flex gap={8}>
+            <Button type={'primary'} danger>Delete Product</Button>
+          </Flex>
+        </SRender>
       }
     >
       <Form onValuesChange={onValuesChange} className={styles.container} form={form} layout={'vertical'}>
