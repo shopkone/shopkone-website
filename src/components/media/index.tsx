@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Button, Flex } from 'antd'
+import classNames from 'classnames'
 
 import { FileType } from '@/api/file/add-file-record'
 import { UploadFileType } from '@/api/file/UploadFileType'
@@ -23,36 +24,59 @@ export default function Media (props: MediaProps) {
   const { value, onChange, select, onSelect } = props
   const openInfo = useOpen<number[]>()
   const [files, setFiles] = useState<UploadFileType[]>([])
+  const [uploadImageErr, seUploadImageErr] = useState(false)
+  const [uploadDragIn, setUploadDragIn] = useState(false)
+  const inputRef = useRef<HTMLInputElement>(null)
 
   return (
     <div>
       <SRender render={!value?.length}>
-        <Flex
+        <Upload
+          className={
+              classNames(
+                styles.container,
+                { [styles.dragIn]: uploadDragIn },
+                { [styles.error]: uploadImageErr }
+              )
+            }
+          getElement={ele => { // @ts-expect-error
+            inputRef.current = ele
+          }}
           onClick={() => { openInfo.edit() }}
-          vertical
-          gap={4}
-          justify={'center'}
+          onDragIn={setUploadDragIn}
+          onTypeError={seUploadImageErr}
+          onChange={setFiles}
+          multiple={true}
+          accepts={['video', 'image']}
+          maxSize={1024 * 1024 * 20}
+          gap={8}
           align={'center'}
-          className={styles.container}
+          justify={'center'}
+          vertical
         >
-          <Flex gap={12}>
-            <div onClick={e => { e.stopPropagation() }}>
-              <Upload
-                onChange={setFiles}
-                multiple={true}
-                accepts={['video', 'image']}
-                maxSize={1024 * 1024 * 20}
+          <SRender render={uploadDragIn ? !uploadImageErr : null}>
+            Drag image to upload.
+          </SRender>
+          <SRender render={uploadImageErr ? uploadDragIn : null}>
+            Invalid image file.
+          </SRender>
+          <SRender render={!uploadDragIn}>
+            <Flex gap={8}>
+              <Button
+                size={'small'}
+                onClick={(e) => { e.stopPropagation(); inputRef?.current?.click() }}
               >
-                <Button size={'small'}>Upload new</Button>
-              </Upload>
-            </div>
-            <Button type={'text'} size={'small'} className={'primary-text'}>
-              Select existing
-            </Button>
-          </Flex>
-          <div className={'tips'}>Accepts images, videos, or 3D models</div>
-        </Flex>
+                Upload new
+              </Button>
+              <Button type={'text'} size={'small'} className={'primary-text'}>
+                Select existing
+              </Button>
+            </Flex>
+            <div className={'tips'}>Accepts images or videos</div>
+          </SRender>
+        </Upload>
       </SRender>
+
       <SelectFiles
         includes={[FileType.Image, FileType.Video]}
         onConfirm={async (v) => { await onChange?.(v); openInfo.close() }}

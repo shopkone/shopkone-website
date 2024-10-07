@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useMemoizedFn } from 'ahooks'
 import { Flex, FlexProps } from 'antd'
 import classNames from 'classnames'
@@ -22,6 +22,7 @@ export interface UploadProps extends Omit<FlexProps, 'onChange' | 'onClick'> {
   onDragIn?: (enter: boolean) => void
   onTypeError?: (isError: boolean) => void
   onClick?: () => void
+  getElement?: (element: HTMLInputElement) => void
 }
 
 export default function Upload (props: UploadProps) {
@@ -35,6 +36,7 @@ export default function Upload (props: UploadProps) {
     groupId = 0,
     onDragIn,
     onTypeError,
+    getElement,
     ...rest
   } = props
   const oss = useOss()
@@ -215,10 +217,15 @@ export default function Upload (props: UploadProps) {
     setDragging(true)
     const typeList = Array.from(e.dataTransfer.items).map(item => item.type)
     const isEvery = typeList.every(item => {
-      return accepts.every(accept => item.includes(accept))
+      return accepts.some(accept => item.includes(accept))
     })
     onTypeError?.(!isEvery)
   }
+
+  useEffect(() => {
+    if (!inputRef.current) return
+    getElement?.(inputRef.current)
+  }, [inputRef.current])
 
   return (
     <>
