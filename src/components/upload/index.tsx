@@ -194,6 +194,7 @@ export default function Upload (props: UploadProps) {
     onDragIn?.(false)
     setDragging(false)
     onTypeError?.(false)
+    console.log(e.dataTransfer.files)
   }
 
   const onDropLeave = (e: React.DragEvent) => {
