@@ -44,7 +44,7 @@ export default function ColumnVariant (props: ColumnVariantProps) {
         </Flex>
       </SRender>
       <SRender render={!row.children}>
-        <Flex align={'center'} gap={12} style={{ marginLeft: 12 }}>
+        <Flex align={'center'} gap={12} style={{ marginLeft: groupName ? 12 : -8 }}>
           <Checkbox />
           <Button className={styles.smallImg} size={'large'}>
             <IconPhotoPlus size={16} />
