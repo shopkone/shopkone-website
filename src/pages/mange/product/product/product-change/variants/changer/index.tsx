@@ -129,9 +129,13 @@ export default function Changer (props: ChangerProps) {
       onClose={info.close}
       title={
         <Flex align={'center'} justify={'space-between'}>
-          <span>变体编辑</span>
-          <Button onClick={info.close} type={'text'} size={'small'}>
-            <IconX size={16} />
+          <span>Edit options</span>
+          <Button
+            style={{ width: 24 }}
+            onClick={info.close}
+            type={'text'} size={'small'}
+          >
+            <IconX style={{ position: 'relative', left: -5 }} size={16} />
           </Button>
         </Flex>
       }

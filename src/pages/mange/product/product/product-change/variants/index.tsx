@@ -1,10 +1,9 @@
-import { ReactNode, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { IconMaximize, IconPencil } from '@tabler/icons-react'
-import { Button, Flex, Form, Tooltip } from 'antd'
+import { Button, Card, Flex, Form, Tooltip } from 'antd'
 import cloneDeep from 'lodash/cloneDeep'
 
-import SCard from '@/components/s-card'
 import SRender from '@/components/s-render'
 import { VariantType } from '@/constant/product'
 import { useOpen } from '@/hooks/useOpen'
@@ -34,7 +33,6 @@ export default function Variants (props: VariantsProps) {
   const { id } = useParams()
   const init = useRef<Variant[]>()
   const variantType: VariantType = Form.useWatch('variant_type', form)
-  const columnsSettings = useRef<ReactNode>()
 
   const onChange = (data: Variant[]) => {
     setVariants(data)
@@ -73,7 +71,7 @@ export default function Variants (props: VariantsProps) {
       const newItem = { ...find, hidden: undefined, parentId: undefined }
       return isEqualHandle(oldItem, newItem)
     })
-    setIsChange(!isSame)
+    setIsChange(!isSame || (init.current?.length !== list?.length))
   }
 
   useEffect(() => {
@@ -130,7 +128,7 @@ export default function Variants (props: VariantsProps) {
 
   return (
     <div>
-      <SCard
+      <Card
         bordered
         className={styles.container}
         title={'Variants'}
@@ -144,15 +142,11 @@ export default function Variants (props: VariantsProps) {
                   type={'text'}
                   size={'small'}
                 >
-                  <IconMaximize style={{ position: 'relative', left: -2 }} size={16} />
+                  <IconMaximize style={{ position: 'relative', left: -2, top: 2 }} size={16} />
                 </Button>
               </Tooltip>
             </SRender>
-            <SRender render={variants?.length}>
-              <div>
-                {columnsSettings.current}
-              </div>
-            </SRender>
+            <SRender render={variants?.length} style={{ width: 24, height: 24 }} />
             <SRender render={variantType === VariantType.Multiple && !!variants?.length}>
               <Tooltip title={'Edit options'}>
                 <Button
@@ -162,7 +156,7 @@ export default function Variants (props: VariantsProps) {
                   size={'small'}
                   className={'primary-text'}
                 >
-                  <IconPencil style={{ position: 'relative', left: -2 }} size={16} />
+                  <IconPencil style={{ position: 'relative', left: -2, top: 2 }} size={16} />
                 </Button>
               </Tooltip>
             </SRender>
@@ -175,7 +169,7 @@ export default function Variants (props: VariantsProps) {
           info={openInfo}
         />
         <Table
-          getColumnsSettings={(v) => { columnsSettings.current = v }}
+          settingsStyle={{ display: variants?.length ? 'unset' : 'none', right: variantType === VariantType.Single ? 16 : 52 }}
           forceChange={onChange}
           onOpenOptions={() => { openInfo.edit() }}
           onChangeGroupVariants={onIsChange}
@@ -183,7 +177,7 @@ export default function Variants (props: VariantsProps) {
           variants={variants}
           options={options}
         />
-      </SCard>
+      </Card>
     </div>
   )
 }
