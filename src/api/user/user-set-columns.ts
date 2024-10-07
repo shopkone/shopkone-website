@@ -6,6 +6,7 @@ export interface ColumnItem {
   lock?: boolean
   hidden?: boolean
   required?: boolean
+  forceHidden?: boolean
 }
 
 export type UserColumnType = 'product' | 'variant'

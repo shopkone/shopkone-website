@@ -7,6 +7,7 @@ import isEqual from 'lodash/isEqual'
 
 import { GetColumnsApi } from '@/api/user/user-get-columns'
 import { ColumnItem, SetColumnsApi, UserColumnType } from '@/api/user/user-set-columns'
+import SRender from '@/components/s-render'
 import { STableProps } from '@/components/s-table'
 import Sortable from '@/components/sortable'
 import ItemSortable from '@/components/sortable/sortable-item'
@@ -25,7 +26,7 @@ export const useColumn = (local: UseColumnType[], type: UserColumnType) => {
   const remote = useRequest(GetColumnsApi, { manual: true })
   const setColumns = useRequest(SetColumnsApi, { manual: true })
   const [cols, setCols] = useState<Array<ColumnItem & { id: number }>>([])
-  // const [columns, setColumns] = useState<ColumnItem[]>([])
+  const [update, setUpdate] = useState(0)
 
   const initCols = async (res: ColumnItem[]) => {
     if (!local?.length) return
@@ -69,8 +70,16 @@ export const useColumn = (local: UseColumnType[], type: UserColumnType) => {
     return { ...find, ...item, hidden: find?.forceHidden || item.hidden }
   }).filter(Boolean) as ColumnType[]
 
+  const renderCols = cols.map(item => {
+    const find = local.find(i => i.name === item.name)
+    return { ...item, forceHidden: find?.forceHidden }
+  }).filter(Boolean) as any[]
+
+  console.log(123)
+
   const ColumnSettings = useMemo(() => (
     <Popover
+      key={update}
       arrow={false}
       trigger={'click'}
       overlayInnerStyle={{ padding: 0, overflow: 'hidden' }}
@@ -78,27 +87,37 @@ export const useColumn = (local: UseColumnType[], type: UserColumnType) => {
       content={
         <Sortable<ColumnItem>
           onChange={onChange}
-          items={cols}
+          items={renderCols}
         >
           {
             (items, id, isBg) => items?.map((item, index) => (
-              <ItemSortable
-                className={classNames(styles.item, isBg && styles.draggingItem)}
-                draggingClassName={styles.hidden}
-                rowKey={item?.id}
-                index={index}
-                key={item.id}
-              >
-                <Flex gap={8}>
-                  <Checkbox checked={!item.hidden} />
-                  <Flex align={'center'} style={{ pointerEvents: 'none' }} flex={1}>
-                    {item.nick}
+              <SRender key={item.id} render={!item.forceHidden}>
+                <ItemSortable
+                  className={classNames(styles.item, isBg && styles.draggingItem)}
+                  draggingClassName={styles.hidden}
+                  rowKey={item?.id}
+                  index={index}
+                  key={item.id}
+                >
+                  <Flex gap={8}>
+                    <Checkbox
+                      disabled={item.required}
+                      checked={!item.hidden || item.required}
+                      onClick={() => {
+                        if (item.required) return
+                        const newItem = { ...item, hidden: !item.hidden }
+                        onChange(cols.map(i => i.id === newItem.id ? newItem : i))
+                      }}
+                    />
+                    <Flex align={'center'} style={{ pointerEvents: 'none' }} flex={1}>
+                      {item.nick}
+                    </Flex>
+                    <Button style={{ cursor: isBg ? 'grabbing' : undefined }} className={styles.btn} type={'text'} size={'small'}>
+                      <IconGripVertical style={{ position: 'relative', left: -4 }} size={14} />
+                    </Button>
                   </Flex>
-                  <Button style={{ cursor: isBg ? 'grabbing' : undefined }} className={styles.btn} type={'text'} size={'small'}>
-                    <IconGripVertical style={{ position: 'relative', left: -4 }} size={14} />
-                  </Button>
-                </Flex>
-              </ItemSortable>
+                </ItemSortable>
+              </SRender>
             ))
           }
         </Sortable>
@@ -112,7 +131,7 @@ export const useColumn = (local: UseColumnType[], type: UserColumnType) => {
         <IconMenu2 style={{ position: 'relative', left: -4 }} size={16} />
       </Button>
     </Popover>
-  ), [cols])
+  ), [renderCols])
 
   return { columns: columns || [], ColumnSettings }
 }

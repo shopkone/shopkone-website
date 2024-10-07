@@ -26,7 +26,7 @@ export interface SortableProps<T> {
 }
 
 export default function Sortable<T> (props: SortableProps<T>) {
-  const { children, items, onChange, draggingClassName } = props
+  const { children, items, onChange } = props
 
   const [activeId, setActiveId] = useState(0)
 
