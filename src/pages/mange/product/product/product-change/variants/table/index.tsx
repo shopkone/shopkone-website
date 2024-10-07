@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { ReactNode, useEffect, useMemo, useState } from 'react'
 import { Button, Flex, Form } from 'antd'
 
 import STable from '@/components/s-table'
@@ -17,10 +17,11 @@ export interface TableProps {
   onChangeGroupVariants: (variants: Variant[]) => void
   onOpenOptions: () => void
   forceChange: (variants: Variant[]) => void
+  getColumnsSettings: (v: ReactNode) => void
 }
 
 export default function Table (props: TableProps) {
-  const { variants, options, loading, onChangeGroupVariants, onOpenOptions, forceChange } = props
+  const { variants, options, loading, onChangeGroupVariants, getColumnsSettings, onOpenOptions, forceChange } = props
   const form = Form.useFormInstance()
   const [groupVariants, setGroupVariants] = useState<Variant[]>([])
   const [expandedRowKeys, setExpandedRowKeys] = useState<number[]>([])
@@ -55,9 +56,12 @@ export default function Table (props: TableProps) {
     onChangeGroupVariants(groupVariants)
   }, [groupVariants])
 
+  useEffect(() => {
+    getColumnsSettings(ColumnSettings)
+  }, [])
+
   return (
     <div>
-      <div>{ColumnSettings}</div>
       <Flex style={{ marginBottom: 12 }} align={'center'} gap={32}>
         <Filters key={'filters'} value={filters} onChange={setFilters} options={options} />
         <GroupBy

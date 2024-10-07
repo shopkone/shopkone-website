@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from 'react'
+import { ReactNode, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { IconMaximize, IconMenu2, IconPencil } from '@tabler/icons-react'
+import { IconMaximize, IconPencil } from '@tabler/icons-react'
 import { Button, Card, Flex, Form, Tooltip } from 'antd'
 import cloneDeep from 'lodash/cloneDeep'
 
@@ -33,6 +33,7 @@ export default function Variants (props: VariantsProps) {
   const { id } = useParams()
   const init = useRef<Variant[]>()
   const variantType: VariantType = Form.useWatch('variant_type', form)
+  const columnsSettings = useRef<ReactNode>()
 
   const onChange = (data: Variant[]) => {
     setVariants(data)
@@ -147,16 +148,9 @@ export default function Variants (props: VariantsProps) {
               </Tooltip>
             </SRender>
             <SRender render={variants?.length}>
-              <Tooltip title={'Set columns'}>
-                <Button
-                  style={{ height: 25, width: 25 }}
-                  onClick={() => { openInfo.edit() }}
-                  type={'text'}
-                  size={'small'}
-                >
-                  <IconMenu2 style={{ position: 'relative', left: -2 }} size={16} />
-                </Button>
-              </Tooltip>
+              <div>
+                {columnsSettings.current}
+              </div>
             </SRender>
             <SRender render={variantType === VariantType.Multiple && !!variants?.length}>
               <Tooltip title={'Edit options'}>
@@ -180,6 +174,7 @@ export default function Variants (props: VariantsProps) {
           info={openInfo}
         />
         <Table
+          getColumnsSettings={(v) => { columnsSettings.current = v }}
           forceChange={onChange}
           onOpenOptions={() => { openInfo.edit() }}
           onChangeGroupVariants={onIsChange}
