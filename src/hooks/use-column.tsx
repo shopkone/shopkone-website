@@ -26,14 +26,13 @@ export const useColumn = (local: UseColumnType[], type: UserColumnType) => {
   const remote = useRequest(GetColumnsApi, { manual: true })
   const setColumns = useRequest(SetColumnsApi, { manual: true })
   const [cols, setCols] = useState<Array<ColumnItem & { id: number }>>([])
-  const [update, setUpdate] = useState(0)
 
   const initCols = async (res: ColumnItem[]) => {
     if (!local?.length) return
-    if (!remote?.data) return
+    if (remote?.loading) return
     const localNames = local.map(item => item.name)
     const remoteNames = res.map(item => item.name)
-    if (localNames.length === remoteNames.length) return
+    if (localNames.length === remoteNames.length && remoteNames.length) return
     const cols: ColumnItem[] = local.map(item => ({
       name: item.name,
       lock: item.lock,
@@ -75,11 +74,8 @@ export const useColumn = (local: UseColumnType[], type: UserColumnType) => {
     return { ...item, forceHidden: find?.forceHidden }
   }).filter(Boolean) as any[]
 
-  console.log(123)
-
   const ColumnSettings = useMemo(() => (
     <Popover
-      key={update}
       arrow={false}
       trigger={'click'}
       overlayInnerStyle={{ padding: 0, overflow: 'hidden' }}

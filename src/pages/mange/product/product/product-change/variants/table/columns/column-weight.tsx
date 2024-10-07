@@ -26,7 +26,7 @@ export default function ColumnWeight (props: ColumnWeightProps) {
             value={row.weight_unit}
             onClick={e => { e.stopPropagation() }}
             size={'small'}
-            style={{ padding: 0, height: 20, position: 'relative', right: -12, top: -3 }}
+            style={{ padding: 0, height: 20, position: 'relative', right: -12, top: -1 }}
             variant={'borderless'}
             options={WEIGHT_UNIT_OPTIONS}
             dropdownStyle={{ width: 100 }}
