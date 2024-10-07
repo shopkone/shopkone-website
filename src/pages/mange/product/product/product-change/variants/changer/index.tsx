@@ -124,7 +124,7 @@ export default function Changer (props: ChangerProps) {
 
   return (
     <Drawer
-      width={450}
+      width={420}
       open={info.open}
       onClose={info.close}
       title={

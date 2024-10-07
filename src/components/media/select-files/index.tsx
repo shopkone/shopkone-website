@@ -276,7 +276,14 @@ function SelectFiles (props: SelectFilesProps) {
                     desc={hasSearch ? 'Edit your search criteria, or upload a new file.' : 'Files can be images, videos and zip.'}
                     actions={
                       <Flex gap={12}>
-                        <Button type={'primary'}>Upload file</Button>
+                        <Upload
+                          onChange={onUpload}
+                          multiple
+                          maxSize={20 * 1024 * 1024}
+                          accepts={['video', 'image', 'zip', 'audio']}
+                        >
+                          <Button type={'primary'}>Upload file</Button>
+                        </Upload>
                         <Button>Add from URL</Button>
                       </Flex>
                       }
