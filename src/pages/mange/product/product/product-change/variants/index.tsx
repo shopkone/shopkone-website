@@ -1,9 +1,10 @@
 import { ReactNode, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { IconMaximize, IconPencil } from '@tabler/icons-react'
-import { Button, Card, Flex, Form, Tooltip } from 'antd'
+import { Button, Flex, Form, Tooltip } from 'antd'
 import cloneDeep from 'lodash/cloneDeep'
 
+import SCard from '@/components/s-card'
 import SRender from '@/components/s-render'
 import { VariantType } from '@/constant/product'
 import { useOpen } from '@/hooks/useOpen'
@@ -129,7 +130,7 @@ export default function Variants (props: VariantsProps) {
 
   return (
     <div>
-      <Card
+      <SCard
         bordered
         className={styles.container}
         title={'Variants'}
@@ -182,7 +183,7 @@ export default function Variants (props: VariantsProps) {
           variants={variants}
           options={options}
         />
-      </Card>
+      </SCard>
     </div>
   )
 }
