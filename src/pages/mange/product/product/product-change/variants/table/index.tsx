@@ -28,7 +28,7 @@ export default function Table (props: TableProps) {
   const [groupName, setGroupName] = useState('')
   const [locationId, setLocationId] = useState(0)
 
-  const { columns } = useColumns({
+  const { columns, ColumnSettings } = useColumns({
     variants: groupVariants,
     setVariants: setGroupVariants,
     groupName,
@@ -57,6 +57,7 @@ export default function Table (props: TableProps) {
 
   return (
     <div>
+      <div>{ColumnSettings}</div>
       <Flex style={{ marginBottom: 12 }} align={'center'} gap={32}>
         <Filters key={'filters'} value={filters} onChange={setFilters} options={options} />
         <GroupBy
@@ -73,7 +74,7 @@ export default function Table (props: TableProps) {
       <STable
         className={styles.table}
         width={916}
-        init
+        init={!!columns.length}
         loading={loading}
         columns={columns}
         data={filterGroup}

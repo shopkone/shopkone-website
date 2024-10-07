@@ -1,8 +1,8 @@
 import { IconTrash } from '@tabler/icons-react'
 import { Button, Form } from 'antd'
 
-import { STableProps } from '@/components/s-table'
 import { VariantType } from '@/constant/product'
+import { useColumn, UseColumnType } from '@/hooks/use-column'
 import { Variant } from '@/pages/mange/product/product/product-change/variants/state'
 import ColumnInventory from '@/pages/mange/product/product/product-change/variants/table/columns/column-inventory'
 import ColumnPrice from '@/pages/mange/product/product/product-change/variants/table/columns/column-price'
@@ -63,16 +63,17 @@ export default function useColumns (params: ColumnsParams) {
     forceChange(vs)
   }
 
-  const columns: STableProps['columns'] = [
+  const cols: UseColumnType[] = [
     {
       title: <ColumnTitle expands={expands} setExpands={setExpands} variants={variants} variantType={variantType} />,
-      code: 'id',
-      name: 'id',
+      nick: 'Variant',
+      code: 'variant',
+      name: 'variant',
       render: (text, record) => {
         return <ColumnVariant expands={expands} groupName={groupName} row={record} />
       },
       width: 300,
-      hidden: variantType === VariantType.Single,
+      forceHidden: variantType === VariantType.Single,
       lock: true
     },
     {
@@ -105,7 +106,8 @@ export default function useColumns (params: ColumnsParams) {
           />
         )
       },
-      width: 150
+      width: 150,
+      hidden: true
     },
     {
       title: 'Cost per item',
@@ -121,7 +123,8 @@ export default function useColumns (params: ColumnsParams) {
           />
         )
       },
-      width: 150
+      width: 150,
+      hidden: true
     },
     {
       title: 'Inventory',
@@ -140,7 +143,7 @@ export default function useColumns (params: ColumnsParams) {
         )
       },
       width: 150,
-      hidden: !inventoryTracking
+      forceHidden: !inventoryTracking
     },
     {
       title: 'Weight',
@@ -191,12 +194,14 @@ export default function useColumns (params: ColumnsParams) {
           />
         )
       },
-      width: 200
+      width: 200,
+      hidden: true
     },
     {
       title: '',
-      code: 'id',
-      name: 'id',
+      code: 'actions',
+      name: 'actions',
+      nick: 'Actions',
       render: (id: number, row: Variant) => {
         return (
           <Button onClick={() => { onRemove(row) }} style={{ height: 32 }} size={'small'} type={'text'}>
@@ -207,9 +212,11 @@ export default function useColumns (params: ColumnsParams) {
       align: 'center',
       lock: true,
       width: 50,
-      hidden: variantType === VariantType.Single
+      forceHidden: variantType === VariantType.Single
     }
   ]
 
-  return { columns }
+  const { columns, ColumnSettings } = useColumn(cols, 'variant')
+
+  return { columns, ColumnSettings }
 }
