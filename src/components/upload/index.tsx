@@ -194,7 +194,12 @@ export default function Upload (props: UploadProps) {
     onDragIn?.(false)
     setDragging(false)
     onTypeError?.(false)
-    console.log(e.dataTransfer.files)
+    const files = Array.from(e.dataTransfer.files)
+    if (!files?.length) {
+      return
+    }
+    const fileInfos = await Promise.all(files.map(async file => await getFileInfo(file)))
+    onChange?.(fileInfos)
   }
 
   const onDropLeave = (e: React.DragEvent) => {

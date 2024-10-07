@@ -57,9 +57,10 @@ export default function Table (props: TableProps) {
 
   return (
     <div>
-      <Flex style={{ marginBottom: 12 }} align={'center'} gap={24}>
-        <Filters value={filters} onChange={setFilters} options={options} />
+      <Flex style={{ marginBottom: 12 }} align={'center'} gap={32}>
+        <Filters key={'filters'} value={filters} onChange={setFilters} options={options} />
         <GroupBy
+          key={'groupBy'}
           groupName={groupName}
           setGroupName={setGroupName}
           filters={filters}
@@ -67,7 +68,7 @@ export default function Table (props: TableProps) {
           variants={variants}
           options={options}
         />
-        <LocationsSelect selected={locationId} setSelected={setLocationId} />
+        <LocationsSelect key={'location'} selected={locationId} setSelected={setLocationId} />
       </Flex>
       <STable
         className={styles.table}

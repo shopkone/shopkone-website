@@ -3,7 +3,6 @@ import { Flex, Form } from 'antd'
 
 import SSelect from '@/components/s-select'
 import { Option, Variant } from '@/pages/mange/product/product/product-change/variants/state'
-import styles from '@/pages/mange/product/product/product-change/variants/table/index.module.less'
 
 // @ts-expect-error
 import Handle from './group-handle?worker'
@@ -70,22 +69,19 @@ export default function GroupBy (props: GroupByProps) {
   if (options.length < 2) return null
 
   return (
-    <>
-      <span className={styles.textLine}>|</span>
-      <Flex align={'center'} gap={8}>
-        <div style={{ flexShrink: 0 }}>Group by</div>
-        <SSelect
-          value={groupName}
-          onChange={setGroupName}
-          options={options.map(({ name }) => ({
-            label: name,
-            value: name
-          }))}
-          size={'small'}
-          dropdownStyle={{ minWidth: 200 }}
-          style={{ minWidth: 120 }}
-        />
-      </Flex>
-    </>
+    <Flex align={'center'} gap={8}>
+      <div style={{ flexShrink: 0 }}>Group by</div>
+      <SSelect
+        value={groupName}
+        onChange={setGroupName}
+        options={options.map(({ name }) => ({
+          label: name,
+          value: name
+        }))}
+        size={'small'}
+        dropdownStyle={{ minWidth: 200 }}
+        style={{ minWidth: 120 }}
+      />
+    </Flex>
   )
 }

@@ -5,7 +5,6 @@ import { Flex } from 'antd'
 import { LocationListApi } from '@/api/location/list'
 import SLoading from '@/components/s-loading'
 import SSelect from '@/components/s-select'
-import styles from '@/pages/mange/product/product/product-change/variants/table/index.module.less'
 
 export interface LocationsSelectProps {
   selected: number
@@ -31,19 +30,16 @@ export default function LocationsSelect (props: LocationsSelectProps) {
   if (Number(locations?.data?.length) < 2) return null
 
   return (
-    <>
-      <span className={styles.textLine}>|</span>
-      <Flex align={'center'} gap={8}>
-        <div style={{ flexShrink: 0 }}>Location</div>
-        <SSelect
-          value={selected}
-          onChange={setSelected}
-          options={[{ label: 'All locations', value: 0 }].concat(options || [])}
-          size={'small'}
-          dropdownStyle={{ minWidth: 200 }}
-          style={{ minWidth: 120 }}
-        />
-      </Flex>
-    </>
+    <Flex align={'center'} gap={8}>
+      <div style={{ flexShrink: 0 }}>Location</div>
+      <SSelect
+        value={selected}
+        onChange={setSelected}
+        options={[{ label: 'All locations', value: 0 }].concat(options || [])}
+        size={'small'}
+        dropdownStyle={{ minWidth: 200 }}
+        style={{ minWidth: 120 }}
+      />
+    </Flex>
   )
 }
