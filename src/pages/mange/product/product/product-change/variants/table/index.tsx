@@ -18,10 +18,11 @@ export interface TableProps {
   onOpenOptions: () => void
   forceChange: (variants: Variant[]) => void
   settingsStyle: React.CSSProperties
+  isFull: boolean
 }
 
 export default function Table (props: TableProps) {
-  const { variants, options, loading, onChangeGroupVariants, onOpenOptions, forceChange, settingsStyle } = props
+  const { isFull, variants, options, loading, onChangeGroupVariants, onOpenOptions, forceChange, settingsStyle } = props
   const form = Form.useFormInstance()
   const [groupVariants, setGroupVariants] = useState<Variant[]>([])
   const [expandedRowKeys, setExpandedRowKeys] = useState<number[]>([])
@@ -57,8 +58,8 @@ export default function Table (props: TableProps) {
   }, [groupVariants])
 
   return (
-    <div>
-      <div style={{ position: 'absolute', top: 17, ...settingsStyle }}>
+    <div style={{ position: 'relative' }}>
+      <div style={{ position: 'absolute', top: -36, ...settingsStyle }}>
         {ColumnSettings}
       </div>
       <Flex style={{ marginBottom: 12 }} align={'center'} gap={32}>
@@ -76,7 +77,7 @@ export default function Table (props: TableProps) {
       </Flex>
       <STable
         className={styles.table}
-        width={916}
+        width={isFull ? undefined : 916}
         init={!!columns.length}
         loading={loading}
         columns={columns}

@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { IconMaximize, IconPencil } from '@tabler/icons-react'
-import { Button, Card, Flex, Form, Tooltip } from 'antd'
+import { Button, Flex, Form, Tooltip } from 'antd'
 import cloneDeep from 'lodash/cloneDeep'
 
+import SCard from '@/components/s-card'
 import SRender from '@/components/s-render'
 import { VariantType } from '@/constant/product'
 import { useOpen } from '@/hooks/useOpen'
@@ -33,6 +34,7 @@ export default function Variants (props: VariantsProps) {
   const { id } = useParams()
   const init = useRef<Variant[]>()
   const variantType: VariantType = Form.useWatch('variant_type', form)
+  const [isFull, setIsFull] = useState(false)
 
   const onChange = (data: Variant[]) => {
     setVariants(data)
@@ -127,8 +129,8 @@ export default function Variants (props: VariantsProps) {
   }, [resetFlag])
 
   return (
-    <div>
-      <Card
+    <div className={isFull ? styles.global : ''}>
+      <SCard
         bordered
         className={styles.container}
         title={'Variants'}
@@ -138,7 +140,7 @@ export default function Variants (props: VariantsProps) {
               <Tooltip title={'Scale'}>
                 <Button
                   style={{ height: 25, width: 25 }}
-                  onClick={() => { openInfo.edit() }}
+                  onClick={() => { setIsFull(!isFull) }}
                   type={'text'}
                   size={'small'}
                 >
@@ -169,15 +171,16 @@ export default function Variants (props: VariantsProps) {
           info={openInfo}
         />
         <Table
-          settingsStyle={{ display: variants?.length ? 'unset' : 'none', right: variantType === VariantType.Single ? 16 : 52 }}
+          settingsStyle={{ display: variants?.length ? 'unset' : 'none', right: variantType === VariantType.Single ? 0 : 36 }}
           forceChange={onChange}
           onOpenOptions={() => { openInfo.edit() }}
           onChangeGroupVariants={onIsChange}
           loading={loading}
           variants={variants}
           options={options}
+          isFull={isFull}
         />
-      </Card>
+      </SCard>
     </div>
   )
 }
