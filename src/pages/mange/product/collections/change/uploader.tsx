@@ -128,6 +128,7 @@ export default function Uploader (props: UploaderProps) {
         </div>
       </SRender>
       <SelectFiles
+        includes={[FileType.Image]}
         info={openInfo}
         onConfirm={async (v) => { onChange?.(v?.[0]); openInfo.close() }}
       />

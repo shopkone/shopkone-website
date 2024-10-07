@@ -22,7 +22,7 @@ export const useOss = () => {
 
   const run = async (fileName: string, file: File, onProgress?: (p: number) => void) => {
     if (!client?.current) return
-    await fetToken()
+    await getToken.runAsync()
     const name = `${manageState.shopInfo?.uuid}/${fileName}`
 
     let abortCheckpoint: OSS.Checkpoint | undefined

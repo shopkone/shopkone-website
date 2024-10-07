@@ -117,7 +117,7 @@ export default function FileInfo (props: FileInfoProps) {
               style={{ background: 'transparent', border: 'none' }}
             />
           </SRender>
-          <SRender style={{ width: 600, height: 350, flexShrink: 0 }} render={info?.data?.type === FileType.Video}>
+          <SRender style={{ width: 600, height: 450, flexShrink: 0 }} render={info?.data?.type === FileType.Video}>
             <FileVideo
               duration={info?.data?.duration}
               cover={cover}
