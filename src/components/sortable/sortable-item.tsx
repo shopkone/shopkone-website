@@ -14,10 +14,11 @@ export interface ItemSortableProps {
   draggingClassName?: string
   handle?: ReactNode
   style?: React.CSSProperties
+  disabled?: boolean
 }
 
 export default function ItemSortable (props: ItemSortableProps) {
-  const { rowKey, handle, children, style, ...rest } = props
+  const { rowKey, handle, children, disabled, style, ...rest } = props
   const sortable = useSortable({ id: rowKey })
   const {
     attributes,
@@ -29,13 +30,13 @@ export default function ItemSortable (props: ItemSortableProps) {
   } = sortable
 
   const s = {
-    transform: CSS.Transform.toString(transform),
+    transform: disabled ? undefined : CSS.Transform.toString(transform),
     transition
   }
 
   return (
     <Item
-      ref={setNodeRef}
+      ref={disabled ? undefined : setNodeRef}
       style={{ ...style, ...s }}
       isDragging={isDragging}
       {...rest}

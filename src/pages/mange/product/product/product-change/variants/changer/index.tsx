@@ -255,6 +255,7 @@ export default function Changer (props: ChangerProps) {
                               index={index}
                               rowKey={value.id}
                               key={value.id}
+                              disabled={isLast}
                             >
                               <Flex flex={1} align={'center'}>
                                 <Input
