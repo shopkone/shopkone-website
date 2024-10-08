@@ -24,6 +24,7 @@ export interface Variant {
   parentId?: number
   isParent: boolean
   hidden?: boolean
+  image_id?: number
 }
 
 export interface Option {

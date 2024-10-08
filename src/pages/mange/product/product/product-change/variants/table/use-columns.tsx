@@ -1,8 +1,14 @@
+import { useEffect, useRef, useState } from 'react'
 import { IconTrash } from '@tabler/icons-react'
+import { useRequest } from 'ahooks'
 import { Button, Form } from 'antd'
 
+import { FileType } from '@/api/file/add-file-record'
+import { fileListByIds, FileListByIdsRes } from '@/api/file/file-list-by-ids'
+import SelectFiles from '@/components/media/select-files'
 import { VariantType } from '@/constant/product'
 import { useColumn, UseColumnType } from '@/hooks/use-column'
+import { useOpen } from '@/hooks/useOpen'
 import { Variant } from '@/pages/mange/product/product/product-change/variants/state'
 import ColumnInventory from '@/pages/mange/product/product/product-change/variants/table/columns/column-inventory'
 import ColumnPrice from '@/pages/mange/product/product/product-change/variants/table/columns/column-price'
@@ -26,6 +32,10 @@ export default function useColumns (params: ColumnsParams) {
   const form = Form.useFormInstance()
   const variantType: VariantType = Form.useWatch('variant_type', form)
   const inventoryTracking = Form.useWatch('inventory_tracking', form)
+  const imageOpenInfo = useOpen<number[]>([])
+  const editingRow = useRef<Variant | undefined>()
+  const fileList = useRequest(fileListByIds, { manual: true })
+  const [imageResult, setImageResult] = useState<FileListByIdsRes[]>([])
 
   const onUpdate = (row: Variant, key: keyof Variant, value: number | string | null) => {
     if (row.children?.length) {
@@ -63,14 +73,48 @@ export default function useColumns (params: ColumnsParams) {
     forceChange(vs)
   }
 
+  // 加载列表
+  useEffect(() => {
+    if (imageOpenInfo.open) return
+    const list: Variant[] = []
+    variants.forEach(v => {
+      if (v.children?.length) {
+        v.children.forEach(child => {
+          list.push(child)
+        })
+      } else {
+        list.push(v)
+      }
+    })
+    const imageIds = list.map(v => v.image_id).filter(Boolean)
+    const fetchList = imageIds.filter(item => {
+      return !imageResult?.find(i => i.id === item)
+    })
+    if (!fetchList?.length) return
+    fileList.runAsync({ ids: fetchList.filter(Boolean) as any }).then(r => {
+      setImageResult(ii => [...ii, ...r])
+    })
+  }, [variants, imageOpenInfo.open])
+
   const cols: UseColumnType[] = [
     {
       title: <ColumnTitle expands={expands} setExpands={setExpands} variants={variants} variantType={variantType} />,
       nick: 'Variant',
       code: 'variant',
       name: 'variant',
-      render: (text, record) => {
-        return <ColumnVariant expands={expands} groupName={groupName} row={record} />
+      render: (text, record: Variant) => {
+        return (
+          <ColumnVariant
+            fileList={imageResult || []}
+            expands={expands}
+            groupName={groupName}
+            row={record}
+            onClick={() => {
+              editingRow.current = record
+              imageOpenInfo.edit(record.image_id ? [record.image_id] : [])
+            }}
+          />
+        )
       },
       width: 300,
       forceHidden: variantType === VariantType.Single,
@@ -220,5 +264,20 @@ export default function useColumns (params: ColumnsParams) {
 
   const { columns, ColumnSettings } = useColumn(cols, 'variant')
 
-  return { columns, ColumnSettings }
+  const ImageUploader = (
+    <SelectFiles
+      onConfirm={async (list) => {
+        const imageId = list[0]
+        if (!imageId || !editingRow?.current) return
+        onUpdate(editingRow.current, 'image_id', imageId)
+        editingRow.current = undefined
+        imageOpenInfo.close()
+      }}
+      info={imageOpenInfo}
+      multiple={false}
+      includes={[FileType.Image]}
+    />
+  )
+
+  return { columns, ColumnSettings, ImageUploader }
 }

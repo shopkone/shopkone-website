@@ -30,7 +30,7 @@ export default function Table (props: TableProps) {
   const [groupName, setGroupName] = useState('')
   const [locationId, setLocationId] = useState(0)
 
-  const { columns, ColumnSettings } = useColumns({
+  const { columns, ColumnSettings, ImageUploader } = useColumns({
     variants: groupVariants,
     setVariants: setGroupVariants,
     groupName,
@@ -59,6 +59,7 @@ export default function Table (props: TableProps) {
 
   return (
     <div style={{ position: 'relative' }}>
+      {ImageUploader}
       <div style={{ position: 'absolute', top: -36, ...settingsStyle }}>
         {ColumnSettings}
       </div>

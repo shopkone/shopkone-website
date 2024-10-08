@@ -12,7 +12,7 @@ import { genId } from '@/utils/random'
 
 import styles from './index.module.less'
 
-export interface UploadProps extends Omit<FlexProps, 'onChange' | 'onClick'> {
+export interface UploadProps extends Omit<FlexProps, 'onChange' | 'onClick' | 'children'> {
   directory?: boolean
   multiple: boolean
   maxSize: number
@@ -23,6 +23,7 @@ export interface UploadProps extends Omit<FlexProps, 'onChange' | 'onClick'> {
   onTypeError?: (isError: boolean) => void
   onClick?: () => void
   getElement?: (element: HTMLInputElement) => void
+  children?: React.ReactNode
 }
 
 export default function Upload (props: UploadProps) {
@@ -37,6 +38,7 @@ export default function Upload (props: UploadProps) {
     onDragIn,
     onTypeError,
     getElement,
+    children,
     ...rest
   } = props
   const oss = useOss()
@@ -254,7 +256,9 @@ export default function Upload (props: UploadProps) {
         onClick={onClickHandle}
         {...rest}
         className={classNames({ [styles.container]: onDragging }, rest.className)}
-      />
+      >
+        {children}
+      </Flex>
     </>
   )
 }
