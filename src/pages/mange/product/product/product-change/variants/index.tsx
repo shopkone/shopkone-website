@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { IconMaximize, IconPencil } from '@tabler/icons-react'
+import { IconMaximize, IconMinimize, IconPencil } from '@tabler/icons-react'
 import { Button, Flex, Form, Tooltip } from 'antd'
 import cloneDeep from 'lodash/cloneDeep'
 
@@ -137,16 +137,30 @@ export default function Variants (props: VariantsProps) {
         extra={
           <Flex gap={12}>
             <SRender render={variants?.length}>
-              <Tooltip title={'Scale'}>
-                <Button
-                  style={{ height: 25, width: 25 }}
-                  onClick={() => { setIsFull(!isFull) }}
-                  type={'text'}
-                  size={'small'}
-                >
-                  <IconMaximize style={{ position: 'relative', left: -2, top: 2 }} size={16} />
-                </Button>
-              </Tooltip>
+              <SRender render={!isFull}>
+                <Tooltip title={'Maximize'}>
+                  <Button
+                    style={{ height: 25, width: 25 }}
+                    onClick={() => { setIsFull(!isFull) }}
+                    type={'text'}
+                    size={'small'}
+                  >
+                    <IconMaximize style={{ position: 'relative', left: -2, top: 2 }} size={16} />
+                  </Button>
+                </Tooltip>
+              </SRender>
+              <SRender render={isFull}>
+                <Tooltip title={'Minimize'}>
+                  <Button
+                    style={{ height: 25, width: 25 }}
+                    onClick={() => { setIsFull(!isFull) }}
+                    type={'text'}
+                    size={'small'}
+                  >
+                    <IconMinimize style={{ position: 'relative', left: -2, top: 1 }} size={16} />
+                  </Button>
+                </Tooltip>
+              </SRender>
             </SRender>
             <SRender render={variants?.length} style={{ width: 24, height: 24 }} />
             <SRender render={variantType === VariantType.Multiple && !!variants?.length}>

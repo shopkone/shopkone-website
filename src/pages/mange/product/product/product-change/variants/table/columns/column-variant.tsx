@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { IconChevronDown, IconPhotoPlus } from '@tabler/icons-react'
 import { Button, Checkbox, Flex } from 'antd'
 
@@ -7,6 +8,7 @@ import FileImage from '@/components/file-image'
 import SLoading from '@/components/s-loading'
 import SRender from '@/components/s-render'
 import { Variant } from '@/pages/mange/product/product/product-change/variants/state'
+import ColumnImageList from '@/pages/mange/product/product/product-change/variants/table/columns/column-image-list'
 
 import styles from './index.module.less'
 
@@ -23,7 +25,11 @@ export default function ColumnVariant (props: ColumnVariantProps) {
 
   const image = row.image_id ? fileList?.find(i => i.id === row.image_id)?.path : undefined
 
-  console.log({ image })
+  const images = useMemo(() => {
+    const ids = row.children?.map(i => i.image_id).filter(Boolean)
+    const paths = ids?.map(i => fileList?.find(j => j.id === i)?.path).filter(Boolean) || []
+    return [...new Set(paths)]
+  }, [fileList, row]) as string[]
 
   return (
     <Flex className={'fit-width flex1'} style={{ userSelect: 'none' }}>
@@ -32,9 +38,16 @@ export default function ColumnVariant (props: ColumnVariantProps) {
           <Checkbox />
         </Flex>
         <Flex flex={1} align={'center'} gap={16}>
-          <Button className={styles.bigImg} size={'large'}>
-            <IconPhotoPlus style={{ position: 'relative', top: 1 }} size={18} />
-          </Button>
+          <SRender render={!images?.length}>
+            <Button onClick={e => { e.stopPropagation(); onClick?.() }} className={styles.bigImg} size={'large'}>
+              <IconPhotoPlus style={{ position: 'relative', top: 1 }} size={18} />
+            </Button>
+          </SRender>
+          <SRender render={images?.length}>
+            <div onClick={e => { e.stopPropagation(); onClick?.() }}>
+              <ColumnImageList srcList={images || []} />
+            </div>
+          </SRender>
           <div className={styles.name}>
             <div className={styles.nameText}>
               {(row?.name?.find(i => i.label === groupName))?.value}

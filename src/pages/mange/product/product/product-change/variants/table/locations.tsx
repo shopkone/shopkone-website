@@ -18,7 +18,7 @@ export default function LocationsSelect (props: LocationsSelectProps) {
   const options = locations.data?.map(item => ({ label: item.name, value: item.id }))
 
   useEffect(() => {
-    if (locations?.data?.length === 1) {
+    if (locations?.data?.length) {
       setSelected(locations?.data?.[0]?.id)
     } else {
       setSelected(0)

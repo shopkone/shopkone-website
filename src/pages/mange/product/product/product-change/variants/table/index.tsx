@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { Button, Flex, Form } from 'antd'
 
+import SRender from '@/components/s-render'
 import STable from '@/components/s-table'
 import { Option, Variant } from '@/pages/mange/product/product/product-change/variants/state'
 import Filters from '@/pages/mange/product/product/product-change/variants/table/filters'
@@ -52,6 +53,15 @@ export default function Table (props: TableProps) {
     return v
   }, [groupVariants])
 
+  const renderTable = useMemo(() => {
+    if (!ColumnSettings) return false
+    if (!columns?.length) return false
+    if (groupName && !groupVariants?.length) return false
+    if (variants?.length && !groupVariants?.length) return false
+    if (!locationId) return false
+    return true
+  }, [groupVariants, groupName, columns, variants, ColumnSettings, locationId])
+
   useEffect(() => {
     form.setFieldValue('variants', groupVariants)
     onChangeGroupVariants(groupVariants)
@@ -76,26 +86,28 @@ export default function Table (props: TableProps) {
         />
         <LocationsSelect key={'location'} selected={locationId} setSelected={setLocationId} />
       </Flex>
-      <STable
-        className={styles.table}
-        width={isFull ? undefined : 916}
-        init={!!columns.length}
-        loading={loading}
-        columns={columns}
-        data={filterGroup}
-        useVirtual={variants.length > 30}
-        expand={{ value: expandedRowKeys, onChange: setExpandedRowKeys }}
-        empty={{
-          img: 'asd',
-          desc: 'adsad',
-          title: 'xxx',
-          actions: (
-            <Flex align={'center'} justify={'center'}>
-              <Button type={'primary'} onClick={onOpenOptions}>Edit options</Button>
-            </Flex>
-          )
-        }}
-      />
+      <SRender render={renderTable}>
+        <STable
+          className={styles.table}
+          width={isFull ? undefined : 916}
+          init
+          loading={loading}
+          columns={columns}
+          data={filterGroup}
+          useVirtual={variants.length > 30}
+          expand={{ value: expandedRowKeys, onChange: setExpandedRowKeys }}
+          empty={{
+            img: 'asd',
+            desc: 'adsad',
+            title: 'xxx',
+            actions: (
+              <Flex align={'center'} justify={'center'}>
+                <Button type={'primary'} onClick={onOpenOptions}>Edit options</Button>
+              </Flex>
+            )
+          }}
+        />
+      </SRender>
     </div>
   )
 }
