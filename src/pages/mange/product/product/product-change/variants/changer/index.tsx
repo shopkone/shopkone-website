@@ -241,7 +241,7 @@ export default function Changer (props: ChangerProps) {
                               style={{ marginRight: 8 }}
                               type={'text'}
                               size={'small'}
-                              className={classNames({ [styles.hidden]: isLast }, styles.titleBtn)}
+                              className={classNames({ [styles.hidden]: isLast || (option.values?.length === 2) }, styles.titleBtn)}
                             >
                               <IconGripVertical size={15} />
                             </Button>
