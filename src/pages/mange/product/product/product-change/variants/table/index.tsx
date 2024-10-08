@@ -82,6 +82,7 @@ export default function Table (props: TableProps) {
         loading={loading}
         columns={columns}
         data={filterGroup}
+        useVirtual={variants.length > 30}
         expand={{ value: expandedRowKeys, onChange: setExpandedRowKeys }}
         empty={{
           img: 'asd',
