@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { IconGripVertical, IconPhotoPlus, IconPlus, IconTrash, IconX } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
 import { Button, Drawer, Flex, Form, Input, Tag } from 'antd'
@@ -41,7 +41,6 @@ export default function Changer (props: ChangerProps) {
   const [imageResult, setImageResult] = useState<FileListByIdsRes[]>([])
   const selectInfo = useOpen<number[]>([])
   const form = Form.useFormInstance()
-  const btnListRef = useRef<HTMLButtonElement[]>([])
   const [count, setCount] = useState(0)
 
   const getItem = () => ({
@@ -132,7 +131,7 @@ export default function Changer (props: ChangerProps) {
       }
       option.values.forEach((v, index) => {
         const isLast = index === option.values.length - 1
-        if (isLast) return
+        if (isLast && option.values.length !== 1) return
         if (!v.value) {
           errs.push({ id: v.id, msg: 'Option value is required' })
         }
@@ -179,8 +178,6 @@ export default function Changer (props: ChangerProps) {
       setImageResult(ii => [...ii, ...r])
     })
   }, [info.open, labelImages])
-
-  console.log(btnListRef?.current?.[2]?.getBoundingClientRect?.()?.top)
 
   return (
     <Drawer
