@@ -85,11 +85,16 @@ export default function ProductChangeInner (props: ProductChangeInnerProps) {
 
   const onValuesChange = useDebounceFn(() => {
     if (!init.current) return
-    const values = form.getFieldsValue()
+    const values = form.getFieldsValue() || {}
     let noInitSeo = init.current?.seo?.follow && (init.current?.seo?.page_title !== init?.current?.title)
     noInitSeo = noInitSeo || (!init.current?.seo?.follow && !init.current?.seo?.page_title)
     if (!init.current?.variants?.length || noInitSeo) {
       init.current = values
+      /*       if (!id) {
+        init.current = { ...values, ...INIT_DATA }
+      } else {
+        init.current = values
+      } */
       return
     }
     const newValues = { ...values, variants: undefined, options: undefined, seo: { ...values.seo, id: 0 } }

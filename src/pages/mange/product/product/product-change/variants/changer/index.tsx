@@ -10,6 +10,7 @@ import { ProductCreateReq } from '@/api/product/create'
 import FileImage from '@/components/file-image'
 import SelectFiles from '@/components/media/select-files'
 import SLoading from '@/components/s-loading'
+import { sMessage } from '@/components/s-message'
 import SRender from '@/components/s-render'
 import ItemSortable from '@/components/sortable/sortable-item'
 import { useOpen, UseOpenType } from '@/hooks/useOpen'
@@ -41,6 +42,7 @@ export default function Changer (props: ChangerProps) {
   const selectInfo = useOpen<number[]>([])
   const form = Form.useFormInstance()
   const btnListRef = useRef<HTMLButtonElement[]>([])
+  const [count, setCount] = useState(0)
 
   const getItem = () => ({
     name: '',
@@ -100,7 +102,14 @@ export default function Changer (props: ChangerProps) {
   }
 
   const onOk = () => {
-    if (errors.length) return
+    if (errors.length) {
+      sMessage.warning(errors?.[0]?.msg)
+      return
+    }
+    if (count > 500) {
+      sMessage.warning('Too many variants, please delete some options')
+      return
+    }
     onChangeLoading(true)
     info.close()
     const worker: Worker = new Handle()
@@ -133,6 +142,12 @@ export default function Changer (props: ChangerProps) {
       })
     })
     setErrors(errs)
+    if (errs.length) return
+    const worker: Worker = new Handle()
+    worker.postMessage({ options, variants: info.data })
+    worker.onmessage = (e) => {
+      setCount(e.data?.length || 0)
+    }
   }, [options])
 
   useEffect(() => {
@@ -188,7 +203,8 @@ export default function Changer (props: ChangerProps) {
       maskClosable={false}
       closeIcon={null}
       footer={
-        <Flex justify={'flex-end'}>
+        <Flex align={'center'} justify={'space-between'}>
+          <div className={count > 500 ? styles.err : ''}>{count} / 500</div>
           <Button onClick={onOk} type={'primary'}>
             Done
           </Button>
