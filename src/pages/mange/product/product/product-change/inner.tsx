@@ -130,7 +130,7 @@ export default function ProductChangeInner (props: ProductChangeInnerProps) {
   return (
     <Page
       resetLoading={resetLoading}
-      loading={info.loading}
+      loading={info.loading || resetLoading || create.loading}
       onOk={onOK}
       onCancel={onCancel}
       isChange={isChange || isVariantChange}
