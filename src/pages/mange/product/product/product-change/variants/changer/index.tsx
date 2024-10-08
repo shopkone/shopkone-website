@@ -219,7 +219,11 @@ export default function Changer (props: ChangerProps) {
                       <SRender render={options.length > 1}>
                         <Button
                           className={styles.titleBtn}
-                          onClick={() => { onDelete(option.id) }} danger size={'small'} type={'text'}
+                          onClick={() => { onDelete(option.id) }}
+                          danger
+                          size={'small'}
+                          type={'text'}
+                          style={{ opacity: oid ? 0 : 1 }}
                         >
                           <IconTrash color={'#f54a45'} size={16} />
                         </Button>
