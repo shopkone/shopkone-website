@@ -281,12 +281,12 @@ export default function Changer (props: ChangerProps) {
                 <SRender render={false} className={styles.content}>
                   <Flex gap={8} wrap={'wrap'}>
                     {
-                      option?.values?.filter(i => i.value)?.map(i => (
-                        <Tag key={i.value} style={{ background: '#646A7330', color: '#646A73', borderColor: '#646A7330', borderRadius: 4 }}>
-                          {i.value}
-                        </Tag>
-                      ))
-                    }
+                        option?.values?.filter(i => i.value)?.map(i => (
+                          <Tag key={i.value} style={{ background: '#646A7330', color: '#646A73', borderColor: '#646A7330', borderRadius: 4 }}>
+                            {i.value}
+                          </Tag>
+                        ))
+                      }
                   </Flex>
                 </SRender>
                 <SRender render={true}>
@@ -327,110 +327,113 @@ export default function Changer (props: ChangerProps) {
                       }}
                     >
                       {
-                        (id) => (
-                          <Flex vertical gap={4}>
-                            {
-                              option.values?.map((value, index) => {
-                                const isLast = index === option.values.length - 1
-                                return (
-                                  <ItemSortable
-                                    style={{
-                                      display: 'flex',
-                                      justifyContent: 'center',
-                                      alignItems: 'center'
-                                    }}
-                                    handle={
-                                      <Button
-                                        style={{
-                                          marginRight: 8,
-                                          cursor: id === value.id ? 'grabbing' : 'grab'
-                                        }}
-                                        type={'text'}
-                                        size={'small'}
-                                        className={classNames({ [styles.hidden]: isLast || (option.values?.length === 2) }, styles.titleBtn)}
-                                      >
-                                        <IconGripVertical size={15} />
-                                      </Button>
-                                    }
-                                    draggingClassName={styles.draggingItem}
-                                    index={index}
-                                    rowKey={value.id}
-                                    key={value.id}
-                                    disabled={isLast}
-                                  >
-                                    <Flex flex={1} align={'center'}>
-                                      <Input
-                                        value={value.value}
-                                        className={classNames({ [styles.errInput]: getErrorMsg(value.id) })}
-                                        autoComplete={'off'}
-                                        onChange={e => {
-                                          onChangeValue(option.id, e.target.value, index)
-                                        }}
-                                        suffix={
-                                          <SRender render={!isLast}>
-                                            <Button
-                                              onClick={(e) => {
-                                                e.stopPropagation()
-                                                onRemoveValue(option.id, value.id)
-                                              }}
-                                              className={styles.deleteBtn}
-                                              type={'text'}
-                                              size={'small'}
-                                            >
-                                              <IconTrash size={15} />
-                                            </Button>
-                                          </SRender>
-                                        }
-                                      />
-                                      <Button
-                                        onClick={() => {
-                                          const item = labelImages.find(l => l.label === option.name && l.value === value.value)
-                                          setEditItem({
-                                            label: option.name,
-                                            value: value.value
-                                          })
-                                          selectInfo.edit(item?.image_id ? [item.image_id] : undefined)
-                                        }}
-                                        style={{ marginLeft: 8 }}
-                                        type={'text'}
-                                        size={'small'}
-                                        className={classNames({ [styles.hidden]: isLast }, styles.actionBtn)}
-                                      >
-                                        <SRender render={getImage(option.name, value.value).image}>
-                                          <FileImage
-                                            forceNoLoading
-                                            loading={!getImage(option.name, value.value).image}
-                                            type={FileType.Image}
-                                            src={getImage(option.name, value.value).image || ''}
-                                            width={32}
-                                            height={28}
-                                            style={{
-                                              position: 'relative',
-                                              left: -2,
-                                              background: '#fff'
+                          (id) => (
+                            <Flex vertical gap={4}>
+                              {
+                                option.values?.map((value, index) => {
+                                  const isLast = index === option.values.length - 1
+                                  return (
+                                    <ItemSortable
+                                      style={{
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        alignItems: 'center'
+                                      }}
+                                      handle={
+                                        <Button
+                                          style={{
+                                            marginRight: 8,
+                                            cursor: id === value.id ? 'grabbing' : 'grab',
+                                            top: getErrorMsg(value.id) ? -10 : 0
+                                          }}
+                                          type={'text'}
+                                          size={'small'}
+                                          className={classNames({ [styles.hidden]: isLast || (option.values?.length === 2) }, styles.titleBtn)}
+                                        >
+                                          <IconGripVertical size={15} />
+                                        </Button>
+                                      }
+                                      draggingClassName={styles.draggingItem}
+                                      index={index}
+                                      rowKey={value.id}
+                                      key={value.id}
+                                      disabled={isLast}
+                                    >
+                                      <Flex flex={1} align={'center'}>
+                                        <div className={'fit-width'}>
+                                          <Input
+                                            value={value.value}
+                                            className={classNames({ [styles.errInput]: getErrorMsg(value.id) })}
+                                            autoComplete={'off'}
+                                            onChange={e => {
+                                              onChangeValue(option.id, e.target.value, index)
                                             }}
-                                            containerStyle={{
-                                              borderColor: '#ccc',
-                                              position: 'relative',
-                                              top: -1
-                                            }}
+                                            suffix={
+                                              <SRender render={!isLast}>
+                                                <Button
+                                                  onClick={(e) => {
+                                                    e.stopPropagation()
+                                                    onRemoveValue(option.id, value.id)
+                                                  }}
+                                                  className={styles.deleteBtn}
+                                                  type={'text'}
+                                                  size={'small'}
+                                                >
+                                                  <IconTrash size={15} />
+                                                </Button>
+                                              </SRender>
+                                            }
                                           />
-                                        </SRender>
-                                        <SRender render={!getImage(option.name, value.value).imageId}>
-                                          <IconPhotoPlus size={15} />
-                                        </SRender>
-                                      </Button>
-                                    </Flex>
-                                    <div className={getErrorMsg(value.id) ? styles.err : styles.errNo}>
-                                      {getErrorMsg(value.id)}
-                                    </div>
-                                  </ItemSortable>
-                                )
-                              })
-                            }
-                          </Flex>
-                        )
-                      }
+                                          <div className={getErrorMsg(value.id) ? styles.err : styles.errNo}>
+                                            {getErrorMsg(value.id)}
+                                          </div>
+                                        </div>
+                                        <Button
+                                          onClick={() => {
+                                            const item = labelImages.find(l => l.label === option.name && l.value === value.value)
+                                            setEditItem({
+                                              label: option.name,
+                                              value: value.value
+                                            })
+                                            selectInfo.edit(item?.image_id ? [item.image_id] : undefined)
+                                          }}
+                                          style={{ marginLeft: 8 }}
+                                          type={'text'}
+                                          size={'small'}
+                                          className={classNames({ [styles.hidden]: isLast }, styles.actionBtn)}
+                                        >
+                                          <SRender render={getImage(option.name, value.value).image}>
+                                            <FileImage
+                                              forceNoLoading
+                                              loading={!getImage(option.name, value.value).image}
+                                              type={FileType.Image}
+                                              src={getImage(option.name, value.value).image || ''}
+                                              width={32}
+                                              height={28}
+                                              style={{
+                                                position: 'relative',
+                                                left: -2,
+                                                background: '#fff'
+                                              }}
+                                              containerStyle={{
+                                                borderColor: '#ccc',
+                                                position: 'relative',
+                                                top: -1
+                                              }}
+                                            />
+                                          </SRender>
+                                          <SRender render={!getImage(option.name, value.value).imageId}>
+                                            <IconPhotoPlus size={15} />
+                                          </SRender>
+                                        </Button>
+                                      </Flex>
+                                    </ItemSortable>
+                                  )
+                                })
+                              }
+                            </Flex>
+                          )
+                        }
                     </Sortable>
                   </div>
                 </SRender>

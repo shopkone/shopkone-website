@@ -33,10 +33,10 @@ export default function ItemSortable (props: ItemSortableProps) {
   return (
     <Item
       ref={disabled ? undefined : setNodeRef}
-      style={{ ...style, transition, transform: disabled ? undefined : (CSS.Transform.toString(transform)), cursor: disabled ? 'not-allowed' : style?.cursor }}
+      style={{ ...style, transition, transform: disabled ? undefined : (CSS.Transform.toString(transform)) }}
       isDragging={isDragging}
-      {...(disabled ? {} : rest)}
-      {...(disabled ? {} : attributes)}
+      {...rest}
+      {...attributes}
       {...(disabled || handle ? {} : listeners)}
     >
       {handle
