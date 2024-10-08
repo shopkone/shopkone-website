@@ -84,6 +84,7 @@ export const useColumn = (local: UseColumnType[], type: UserColumnType) => {
         <Sortable<ColumnItem>
           onChange={onChange}
           items={renderCols}
+          overlay
         >
           {
             (items, id, isBg) => items?.map((item, index) => (

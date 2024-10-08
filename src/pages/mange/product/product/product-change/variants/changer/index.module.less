@@ -91,3 +91,44 @@
   margin-top: 2px;
   height: 16px;
 }
+
+.valuesDrag {
+  margin-bottom: 4px;
+}
+.valuesDragging {
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  z-index: 2;
+  padding: 0 8px;
+  background-color: #fff;
+  cursor: grabbing;
+  * {
+    cursor: grabbing !important;
+  }
+  span {
+    border: none;
+  }
+  :global .shopkone-input-suffix {
+    display: none;
+  }
+  .actionBtn {
+    display: none;
+  }
+  box-shadow: 0 0 3px 0 var(--color-border);
+}
+
+.ii {}
+
+.labelsDragging {
+  z-index: 2;
+/*  position: relative;
+  overflow: hidden;
+  &:before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: #f7f7f7;
+    z-index: 1;
+    border-radius: 8px;
+  }*/
+}
