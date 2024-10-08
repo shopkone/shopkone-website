@@ -195,18 +195,20 @@ export default function Changer (props: ChangerProps) {
             <div key={option.id} className={styles.item}>
               <Flex className={styles.header} justify={'space-between'} align={'center'}>
                 <Flex gap={4} align={'center'}>
-                  <Button className={styles.actionBtn} type={'text'} size={'small'}>
-                    <IconGripVertical size={15} />
-                  </Button>
+                  <SRender render={options.length > 1}>
+                    <Button className={styles.titleBtn} type={'text'} size={'small'}>
+                      <IconGripVertical size={15} />
+                    </Button>
+                  </SRender>
                   <div className={styles.title}>{option.name || `Option ${index + 1}`}</div>
                 </Flex>
                 <Flex gap={4} align={'center'}>
                   <SRender render={options.length > 1}>
                     <Button
-                      style={{ width: 24 }}
+                      className={styles.titleBtn}
                       onClick={() => { onDelete(option.id) }} danger size={'small'} type={'text'}
                     >
-                      <IconTrash style={{ position: 'relative', right: 6 }} size={17} />
+                      <IconTrash color={'#f54a45'} style={{ position: 'relative', right: 1 }} size={16} />
                     </Button>
                   </SRender>
                 </Flex>
@@ -239,7 +241,7 @@ export default function Changer (props: ChangerProps) {
                               style={{ marginRight: 8 }}
                               type={'text'}
                               size={'small'}
-                              className={classNames({ [styles.hidden]: isLast }, styles.actionBtn)}
+                              className={classNames({ [styles.hidden]: isLast }, styles.titleBtn)}
                             >
                               <IconGripVertical size={15} />
                             </Button>
