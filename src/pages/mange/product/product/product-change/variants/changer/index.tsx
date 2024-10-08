@@ -283,8 +283,9 @@ export default function Changer (props: ChangerProps) {
                                   type={FileType.Image}
                                   src={getImage(option.name, value.value).image || ''}
                                   width={32}
-                                  height={30}
-                                  style={{ position: 'relative', left: -2, top: -2 }}
+                                  height={28}
+                                  style={{ position: 'relative', left: -2, background: '#fff' }}
+                                  containerStyle={{ borderColor: '#ccc', position: 'relative', top: -1 }}
                                 />
                               </SRender>
                               <SRender render={!getImage(option.name, value.value).imageId}>

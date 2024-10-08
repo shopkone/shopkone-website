@@ -20,6 +20,7 @@ export interface FileImageProps {
   loading?: boolean
   padding?: number
   style?: React.CSSProperties
+  containerStyle?: React.CSSProperties
   className?: string
   size?: number
   error?: boolean
@@ -27,7 +28,7 @@ export interface FileImageProps {
 }
 
 export default function FileImage (props: FileImageProps) {
-  const { src, alt, width = 40, height = 40, type, loading = false, padding, style, className, size = 24, error, forceNoLoading } = props
+  const { src, alt, width = 40, height = 40, type, loading = false, padding, style, className, size = 24, error, forceNoLoading, containerStyle } = props
   const [imgLoading, setImgLoading] = useState(true)
   const [init, setInit] = useState<string>()
 
@@ -54,7 +55,7 @@ export default function FileImage (props: FileImageProps) {
 
   if (error) {
     return (
-      <Flex style={{ width, height: height || width }} justify={'center'} align={'center'} className={styles.container}>
+      <Flex style={{ width, height: height || width, ...containerStyle }} justify={'center'} align={'center'} className={styles.container}>
         <IconPhotoX color={'#f54a45'} />
       </Flex>
     )
@@ -65,7 +66,7 @@ export default function FileImage (props: FileImageProps) {
       <Flex align={'center'} justify={'center'} style={{ width, height: height || width, display: (loading || imgLoading) ? undefined : 'none' }}>
         <SLoading loading size={size} />
       </Flex>
-      <div style={{ display: (loading || imgLoading) ? 'none' : undefined }} className={styles.container}>
+      <div style={{ display: (loading || imgLoading) ? 'none' : undefined, ...containerStyle }} className={styles.container}>
         <SRender render={init}>
           <Image
             onError={() => {
