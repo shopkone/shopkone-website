@@ -97,12 +97,11 @@ export default function Table (props: TableProps) {
           useVirtual={variants.length > 30}
           expand={{ value: expandedRowKeys, onChange: setExpandedRowKeys }}
           empty={{
-            img: 'asd',
-            desc: 'adsad',
-            title: 'xxx',
+            title: 'Please configure the variant options for the product.',
+            desc: <span style={{ fontSize: 13 }}>Set options like size and color for the product variations.</span>,
             actions: (
               <Flex align={'center'} justify={'center'}>
-                <Button type={'primary'} onClick={onOpenOptions}>Edit options</Button>
+                <Button type={'primary'} onClick={onOpenOptions}>Set options</Button>
               </Flex>
             )
           }}

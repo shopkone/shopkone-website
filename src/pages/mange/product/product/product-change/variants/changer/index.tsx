@@ -190,7 +190,7 @@ export default function Changer (props: ChangerProps) {
       style={{ overflow: 'hidden' }}
       title={
         <Flex style={{ overflow: 'hidden' }} align={'center'} justify={'space-between'}>
-          <span>Edit options</span>
+          <span>{info?.data?.length ? 'Edit options' : 'Set options'}</span>
           <Button
             style={{ width: 24 }}
             onClick={info.close}

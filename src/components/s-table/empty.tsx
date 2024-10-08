@@ -7,7 +7,7 @@ import styles from './index.module.less'
 
 export interface EmptyProps {
   title: string
-  desc: string
+  desc: ReactNode
   actions: ReactNode
   img?: ReactNode
 }
