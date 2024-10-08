@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { IconGripVertical, IconPhotoPlus, IconPlus, IconTrash, IconX } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
 import { Button, Drawer, Flex, Form, Input, Tag } from 'antd'
@@ -40,6 +40,7 @@ export default function Changer (props: ChangerProps) {
   const [imageResult, setImageResult] = useState<FileListByIdsRes[]>([])
   const selectInfo = useOpen<number[]>([])
   const form = Form.useFormInstance()
+  const btnListRef = useRef<HTMLButtonElement[]>([])
 
   const getItem = () => ({
     name: '',
@@ -164,6 +165,8 @@ export default function Changer (props: ChangerProps) {
     })
   }, [info.open, labelImages])
 
+  console.log(btnListRef?.current?.[2]?.getBoundingClientRect?.()?.top)
+
   return (
     <Drawer
       width={420}
@@ -193,7 +196,41 @@ export default function Changer (props: ChangerProps) {
       }
     >
       <SLoading loading={loading} />
-      <Sortable<Option> items={options} onChange={() => {}}>
+      <Sortable<Option>
+        over={
+          (ii) => (
+            <div className={styles.item}>
+              <Flex justify={'space-between'} className={styles.header}>
+                <SRender render={options.length > 1}>
+                  <Button
+                    style={{ cursor: 'grabbing' }}
+                    className={styles.titleBtn}
+                    type={'text'}
+                    size={'small'}
+                  >
+                    <IconGripVertical size={15} />
+                  </Button>
+                </SRender>
+                <Flex gap={4} align={'center'}>
+                  <div className={styles.title}>{ii?.name}</div>
+                </Flex>
+                <div style={{ width: 40 }} />
+              </Flex>
+              <Flex className={classNames(styles.content)} gap={8} wrap={'wrap'}>
+                {
+                  ii?.values?.filter(i => i.value)?.map(i => (
+                    <Tag key={i.value} style={{ background: '#646A7330', color: '#646A73', borderColor: '#646A7330', borderRadius: 4 }}>
+                      {i.value}
+                    </Tag>
+                  ))
+                }
+              </Flex>
+            </div>
+          )
+        }
+        items={options}
+        onChange={setOptions}
+      >
         {
           oid => (
             options?.map((option, index) => (
@@ -201,7 +238,11 @@ export default function Changer (props: ChangerProps) {
                 noScale
                 disabled={options.length === 1}
                 handle={
-                  <Flex className={styles.header} justify={'space-between'} align={'center'}>
+                  <Flex
+                    className={styles.header}
+                    justify={'space-between'}
+                    align={'center'}
+                  >
                     <SRender render={options.length > 1}>
                       <Button
                         style={{ cursor: oid === option.id ? 'grabbing' : 'grab' }}
@@ -237,7 +278,7 @@ export default function Changer (props: ChangerProps) {
                 className={styles.item}
                 draggingClassName={styles.itemDragging}
               >
-                <SRender render={oid} className={styles.content}>
+                <SRender render={false} className={styles.content}>
                   <Flex gap={8} wrap={'wrap'}>
                     {
                       option?.values?.filter(i => i.value)?.map(i => (
@@ -248,7 +289,7 @@ export default function Changer (props: ChangerProps) {
                     }
                   </Flex>
                 </SRender>
-                <SRender render={!oid}>
+                <SRender render={true}>
                   <div className={styles.content}>
                     <div className={styles.label}>Option name</div>
                     <Input
@@ -267,7 +308,22 @@ export default function Changer (props: ChangerProps) {
                     </div>
                     <div className={styles.label} style={{ marginTop: 6 }}>Option values</div>
                     <Sortable<Option['values'][number]>
-                      items={option.values} onChange={() => {
+                      over={(k) => (
+                        <Flex align={'center'} className={styles.di}>
+                          <Button
+                            style={{ marginRight: 8, cursor: 'grabbing' }}
+                            type={'text'}
+                            size={'small'}
+                            className={classNames(styles.titleBtn)}
+                          >
+                            <IconGripVertical size={15} />
+                          </Button>
+                          {k?.value}
+                        </Flex>
+                      )}
+                      items={option.values}
+                      onChange={(vv) => {
+                        setOptions(options.map(o => o.id === option.id ? { ...o, values: vv } : o))
                       }}
                     >
                       {

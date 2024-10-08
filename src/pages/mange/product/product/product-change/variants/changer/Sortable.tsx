@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { ReactNode, useState } from 'react'
 import {
   closestCenter,
   DndContext,
+  DragOverlay,
   DragStartEvent,
   MouseSensor,
   TouchSensor,
@@ -13,6 +14,8 @@ import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-ki
 import { useMemoizedFn } from 'ahooks'
 import { Flex } from 'antd'
 
+import SRender from '@/components/s-render'
+
 type ItemType<T> = T & { id: number }
 
 export interface SortableProps<T> {
@@ -20,16 +23,18 @@ export interface SortableProps<T> {
   items: Array<ItemType<T>>
   onChange: (v: Array<ItemType<T>>) => void
   draggingClassName?: string
+  over?: (i?: ItemType<T>) => ReactNode
+  onStart?: (id: number) => void
 }
 
 export default function Sortable<T> (props: SortableProps<T>) {
-  const { children, items, onChange } = props
+  const { children, items, onChange, over, onStart } = props
 
   const [activeId, setActiveId] = useState(0)
 
   const sensors = useSensors(
-    useSensor(MouseSensor, { activationConstraint: { distance: 8 } }),
-    useSensor(TouchSensor, { activationConstraint: { distance: 8 } })
+    useSensor(MouseSensor),
+    useSensor(TouchSensor)
   )
 
   const onDragStart = useMemoizedFn((e: DragStartEvent) => {
@@ -64,6 +69,12 @@ export default function Sortable<T> (props: SortableProps<T>) {
           {children(activeId)}
         </Flex>
       </SortableContext>
+
+      <DragOverlay adjustScale={false}>
+        <SRender render={activeId ? !!over : false}>
+          {over?.(items?.find(item => item.id === activeId))}
+        </SRender>
+      </DragOverlay>
     </DndContext>
   )
 }

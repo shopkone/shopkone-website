@@ -45,6 +45,10 @@ export const useColumn = (local: UseColumnType[], type: UserColumnType) => {
   }
 
   const onChange = async (columns: Array<ColumnItem & { id: number }>) => {
+    const changeRequire = cols.some((item, index) => {
+      return columns?.[index]?.name !== item.name && (item.required || item.required)
+    })
+    if (changeRequire) return
     setCols(columns)
     await setColumns.runAsync({ type, columns })
   }
@@ -89,6 +93,7 @@ export const useColumn = (local: UseColumnType[], type: UserColumnType) => {
             (items, id, isBg) => items?.map((item, index) => (
               <SRender key={item.id} render={!item.forceHidden}>
                 <ItemSortable
+                  disabled={item.required}
                   className={classNames(styles.item, isBg && styles.draggingItem)}
                   draggingClassName={styles.hidden}
                   rowKey={item?.id}
@@ -108,7 +113,13 @@ export const useColumn = (local: UseColumnType[], type: UserColumnType) => {
                     <Flex align={'center'} style={{ pointerEvents: 'none' }} flex={1}>
                       {item.nick}
                     </Flex>
-                    <Button style={{ cursor: isBg ? 'grabbing' : undefined }} className={styles.btn} type={'text'} size={'small'}>
+                    <Button
+                      disabled={item.required}
+                      style={{ cursor: isBg ? 'grabbing' : undefined }}
+                      className={styles.btn}
+                      type={'text'}
+                      size={'small'}
+                    >
                       <IconGripVertical style={{ position: 'relative', left: -4 }} size={14} />
                     </Button>
                   </Flex>

@@ -17,7 +17,7 @@
 
 .itemDragging {
   z-index: 2;
-  box-shadow: 0 0 12px 0 var(--color-border);
+  opacity: 0 !important;
 }
 
 .label {
@@ -98,10 +98,14 @@
 
 .draggingItem {
   z-index: 2;
-  :global .shopkone-input-suffix {
-    opacity: 0;
-  }
-  .actionBtn {
-    opacity: 0;
-  }
+  opacity: 0 !important;
+}
+
+.di {
+  cursor: grabbing;
+  background-color: #fff;
+  padding: 4px;
+  width: 320px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
 }

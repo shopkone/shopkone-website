@@ -30,27 +30,14 @@ export default function ItemSortable (props: ItemSortableProps) {
     transition
   } = sortable
 
-  console.log({ transform })
-
-  const s = {
-    transform: disabled
-      ? undefined
-      : CSS.Transform.toString({
-        ...(transform || {}),
-        scaleY: noScale ? 1 : (transform?.scaleY) || 1,
-        scaleX: noScale ? 1 : (transform?.scaleX) || 1
-      } as any),
-    transition
-  }
-
   return (
     <Item
       ref={disabled ? undefined : setNodeRef}
-      style={{ ...style, ...s }}
+      style={{ ...style, transition, transform: disabled ? undefined : (CSS.Transform.toString(transform)), cursor: disabled ? 'not-allowed' : style?.cursor }}
       isDragging={isDragging}
-      {...rest}
-      {...attributes}
-      {...(handle ? {} : listeners)}
+      {...(disabled ? {} : rest)}
+      {...(disabled ? {} : attributes)}
+      {...(disabled || handle ? {} : listeners)}
     >
       {handle
         ? (
