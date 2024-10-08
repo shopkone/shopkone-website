@@ -133,7 +133,14 @@ export default function Variants (props: VariantsProps) {
       <SCard
         bordered
         className={styles.container}
-        title={'Variants'}
+        title={
+          <Flex gap={8} align={'center'}>
+            <div>Variants</div>
+            <div style={{ fontWeight: 400, fontSize: 12, position: 'relative', top: 1 }}>
+              {variants?.length > 1 ? `(${variants?.length} records)` : ''}
+            </div>
+          </Flex>
+        }
         extra={
           <Flex gap={12}>
             <SRender render={variants?.length}>
