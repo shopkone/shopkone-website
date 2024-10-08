@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { IconTrash } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
-import { Button, Form } from 'antd'
+import { Button, Form, Tooltip } from 'antd'
 
 import { FileType } from '@/api/file/add-file-record'
 import { fileListByIds, FileListByIdsRes } from '@/api/file/file-list-by-ids'
 import SelectFiles from '@/components/media/select-files'
+import SRender from '@/components/s-render'
 import { VariantType } from '@/constant/product'
 import { useColumn, UseColumnType } from '@/hooks/use-column'
 import { useOpen } from '@/hooks/useOpen'
@@ -249,9 +250,21 @@ export default function useColumns (params: ColumnsParams) {
       nick: 'Actions',
       render: (id: number, row: Variant) => {
         return (
-          <Button onClick={() => { onRemove(row) }} style={{ height: 32 }} size={'small'} type={'text'}>
-            <IconTrash size={16} />
-          </Button>
+          <div>
+            <SRender render={row?.children?.length}>
+              <Tooltip title={`Remove ${row?.children?.length} variants`}>
+                <Button onClick={() => { onRemove(row) }} style={{ height: 32 }} size={'small'} type={'text'}>
+                  <IconTrash size={16} />
+                </Button>
+              </Tooltip>
+            </SRender>
+            <SRender render={!row?.children?.length}>
+              <Button onClick={() => { onRemove(row) }} style={{ height: 32 }} size={'small'} type={'text'}>
+                <IconTrash size={16} />
+              </Button>
+            </SRender>
+          </div>
+
         )
       },
       align: 'center',

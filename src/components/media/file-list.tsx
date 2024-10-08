@@ -114,6 +114,7 @@ export default function FileList (props: FileListProps) {
   // 空或者加载直接返回
   if (list.loading) return <div style={{ marginTop: 64 }}><SLoading /></div>
   if (!list.data?.length) return null
+  if (!ids?.length) return null
 
   return (
     <div>

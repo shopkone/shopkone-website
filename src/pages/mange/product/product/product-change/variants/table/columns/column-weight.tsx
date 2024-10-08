@@ -1,4 +1,5 @@
 import { IconChevronDown } from '@tabler/icons-react'
+import { Tooltip } from 'antd'
 
 import SInputNumber from '@/components/s-input-number'
 import SSelect from '@/components/s-select'
@@ -15,7 +16,7 @@ export default function ColumnWeight (props: ColumnWeightProps) {
   const { row, onChangeWeight, onChangeWeightUnit } = props
 
   return (
-    <div>
+    <Tooltip title={row?.children?.length ? `Applies to all ${row?.children?.length} variants` : null}>
       <SInputNumber
         onChange={v => { onChangeWeight(v) }}
         value={row.weight || undefined}
@@ -33,6 +34,6 @@ export default function ColumnWeight (props: ColumnWeightProps) {
           />
       }
       />
-    </div>
+    </Tooltip>
   )
 }

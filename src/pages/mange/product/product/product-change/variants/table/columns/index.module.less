@@ -57,7 +57,6 @@
 
 .imageItem {
   border: 1px solid #aaa;
-  box-shadow: 0 0 1px #aaa;
   width: 48px;
   height: 48px;
   position: absolute;
@@ -65,8 +64,9 @@
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  background-color: #f0f0f0;
   &:first-child {
     border: none;
-    box-shadow: none;
+    background-color: transparent;
   }
 }
