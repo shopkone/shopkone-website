@@ -24,17 +24,16 @@ export interface SortableProps<T> {
   onChange: (v: Array<ItemType<T>>) => void
   draggingClassName?: string
   over?: (i?: ItemType<T>) => ReactNode
-  onStart?: (id: number) => void
 }
 
 export default function Sortable<T> (props: SortableProps<T>) {
-  const { children, items, onChange, over, onStart } = props
+  const { children, items, onChange, over } = props
 
   const [activeId, setActiveId] = useState(0)
 
   const sensors = useSensors(
-    useSensor(MouseSensor),
-    useSensor(TouchSensor)
+    useSensor(MouseSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(TouchSensor, { activationConstraint: { distance: 8 } })
   )
 
   const onDragStart = useMemoizedFn((e: DragStartEvent) => {
