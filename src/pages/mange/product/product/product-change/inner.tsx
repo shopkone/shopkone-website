@@ -74,7 +74,7 @@ export default function ProductChangeInner (props: ProductChangeInnerProps) {
     })
     values.variants = variants
     if (id) {
-      console.log(values)
+      console.log(form.getFieldsValue())
     } else {
       const ret = await create.runAsync(values)
       props.onFresh(ret.id)
@@ -157,6 +157,7 @@ export default function ProductChangeInner (props: ProductChangeInnerProps) {
       }
     >
       <Form onValuesChange={onValuesChange} className={styles.container} form={form} layout={'vertical'}>
+        <Form.Item name={'label_images'} style={{ margin: 0, padding: 0, width: 0, height: 0, overflow: 'hidden' }} />
         <Flex gap={16}>
           <Flex vertical gap={16} flex={1}>
             <Flex gap={16}>

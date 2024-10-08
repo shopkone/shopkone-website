@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { IconGripVertical, IconPhotoPlus, IconPlus, IconTrash, IconX } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
-import { Button, Drawer, Flex, Input } from 'antd'
+import { Button, Drawer, Flex, Form, Input } from 'antd'
 import classNames from 'classnames'
 
 import { FileType } from '@/api/file/add-file-record'
@@ -32,11 +32,12 @@ export default function Changer (props: ChangerProps) {
   const [options, setOptions] = useState<Option[]>([])
   const [errors, setErrors] = useState<Array<{ id: number, msg: string }>>([])
   const [loading, setLoading] = useState(false)
-  const [labels, setLabels] = useState<ProductCreateReq['labels']>([])
+  const [labelImages, setLabelImages] = useState<ProductCreateReq['label_images']>([])
   const [editItem, setEditItem] = useState<{ label: string, value: string }>()
   const fileList = useRequest(fileListByIds, { manual: true })
   const [imageResult, setImageResult] = useState<FileListByIdsRes[]>([])
   const selectInfo = useOpen<number[]>([])
+  const form = Form.useFormInstance()
 
   const getItem = () => ({
     name: '',
@@ -85,7 +86,7 @@ export default function Changer (props: ChangerProps) {
 
   const getImage = (label: string, value: string) => {
     const result: { imageId: number, image: string } = { imageId: 0, image: '' }
-    const imageId = labels.find(ii => ii.label === label && ii.value === value)
+    const imageId = labelImages.find(ii => ii.label === label && ii.value === value)
     if (imageId) {
       return {
         imageId: imageId.image_id,
@@ -105,6 +106,7 @@ export default function Changer (props: ChangerProps) {
       onChangeLoading(false)
       onChange(e.data, options)
     }
+    form.setFieldValue('label_images', labelImages)
   }
 
   useEffect(() => {
@@ -143,20 +145,22 @@ export default function Changer (props: ChangerProps) {
     } else {
       setOptions([getItem()])
     }
+    console.log(form.getFieldsValue())
+    setLabelImages(form.getFieldValue('label_images') || [])
   }, [info.open])
 
   // 加载列表
   useEffect(() => {
     if (!info.open) return
-    const imageIds = labels.map(v => v.image_id).filter(Boolean)
+    const imageIds = labelImages.map(v => v.image_id).filter(Boolean)
     const fetchList = imageIds.filter(item => {
       return !imageResult?.find(i => i.id === item)
     })
     if (!fetchList?.length) return
-    fileList.runAsync({ ids: fetchList.filter(Boolean) as any }).then(r => {
+    fileList.runAsync({ ids: fetchList.filter(Boolean) }).then(r => {
       setImageResult(ii => [...ii, ...r])
     })
-  }, [info.open, labels])
+  }, [info.open, labelImages])
 
   return (
     <Drawer
@@ -185,9 +189,8 @@ export default function Changer (props: ChangerProps) {
         </Flex>
       }
     >
-      <SRender render={info.open}>
-        <SLoading loading={loading} />
-        {
+      <SLoading loading={loading} />
+      {
           options?.map((option, index) => (
             <div key={option.id} className={styles.item}>
               <Flex className={styles.header} justify={'space-between'} align={'center'}>
@@ -262,7 +265,7 @@ export default function Changer (props: ChangerProps) {
                             />
                             <Button
                               onClick={() => {
-                                const item = labels.find(l => l.label === option.name && l.value === value.value)
+                                const item = labelImages.find(l => l.label === option.name && l.value === value.value)
                                 setEditItem({ label: option.name, value: value.value })
                                 selectInfo.edit(item?.image_id ? [item.image_id] : undefined)
                               }}
@@ -271,15 +274,15 @@ export default function Changer (props: ChangerProps) {
                               size={'small'}
                               className={classNames({ [styles.hidden]: isLast }, styles.actionBtn)}
                             >
-                              <SRender render={getImage(option.name, value.value).imageId}>
+                              <SRender render={getImage(option.name, value.value).image}>
                                 <FileImage
                                   forceNoLoading
-                                  size={16}
-                                  src={getImage(option.name, value.value).image || ''}
-                                  loading={getImage(option.name, value.value).imageId ? !getImage(option.name, value.value).image : false}
+                                  loading={!getImage(option.name, value.value).image}
                                   type={FileType.Image}
-                                  width={24}
-                                  height={24}
+                                  src={getImage(option.name, value.value).image || ''}
+                                  width={32}
+                                  height={30}
+                                  style={{ position: 'relative', left: -2, top: -2 }}
                                 />
                               </SRender>
                               <SRender render={!getImage(option.name, value.value).imageId}>
@@ -299,28 +302,27 @@ export default function Changer (props: ChangerProps) {
             </div>
           ))
         }
-        <SRender render={options.length < 3}>
-          <Button style={{ background: '#f7f7f7' }} onClick={onAdd} block>
-            <Flex style={{ position: 'relative', top: -2 }} align={'center'} justify={'center'} gap={8}>
-              <IconPlus size={13} style={{ position: 'relative', top: -1 }} />
-              <div>Add another option</div>
-            </Flex>
-          </Button>
-        </SRender>
-        <SelectFiles
-          includes={[FileType.Image]}
-          onConfirm={async (files) => {
-            const file = files[0]
-            if (!file || !editItem) return
-            const list = labels.filter(i => !(i.label === editItem.label && i.value === editItem.value))
-            setLabels([...list, { label: editItem.label, value: editItem.value, image_id: file }])
-            selectInfo.close()
-          }}
-          multiple={false}
-          info={selectInfo}
-        />
-        <div style={{ height: 80 }} />
+      <SRender render={options.length < 3}>
+        <Button style={{ background: '#f7f7f7' }} onClick={onAdd} block>
+          <Flex style={{ position: 'relative', top: -2 }} align={'center'} justify={'center'} gap={8}>
+            <IconPlus size={13} style={{ position: 'relative', top: -1 }} />
+            <div>Add another option</div>
+          </Flex>
+        </Button>
       </SRender>
+      <SelectFiles
+        includes={[FileType.Image]}
+        onConfirm={async (files) => {
+          const file = files[0]
+          if (!editItem) return
+          const list = labelImages.filter(i => !(i.label === editItem.label && i.value === editItem.value))
+          setLabelImages([...list, { label: editItem.label, value: editItem.value, image_id: file }])
+          selectInfo.close()
+        }}
+        multiple={false}
+        info={selectInfo}
+      />
+      <div style={{ height: 80 }} />
     </Drawer>
   )
 }
