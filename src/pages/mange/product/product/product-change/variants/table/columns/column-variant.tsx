@@ -2,6 +2,7 @@ import { IconChevronDown, IconPhotoPlus } from '@tabler/icons-react'
 import { Button, Checkbox, Flex } from 'antd'
 
 import SRender from '@/components/s-render'
+import Upload from '@/components/upload'
 import { Variant } from '@/pages/mange/product/product/product-change/variants/state'
 
 import styles from './index.module.less'
@@ -46,9 +47,11 @@ export default function ColumnVariant (props: ColumnVariantProps) {
       <SRender render={!row.children}>
         <Flex align={'center'} gap={12} style={{ marginLeft: groupName ? 12 : -8 }}>
           <Checkbox />
-          <Button className={styles.smallImg} size={'large'}>
-            <IconPhotoPlus size={16} />
-          </Button>
+          <Upload multiple={false} maxSize={1024 * 1024 * 20} accepts={['image']}>
+            <Button className={styles.smallImg} size={'large'}>
+              <IconPhotoPlus size={16} />
+            </Button>
+          </Upload>
           <div>
             {row?.name?.filter(i => i.label !== groupName).map(item => (
               <div key={item.id}>

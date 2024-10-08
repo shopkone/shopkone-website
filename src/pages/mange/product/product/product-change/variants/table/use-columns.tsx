@@ -74,7 +74,8 @@ export default function useColumns (params: ColumnsParams) {
       },
       width: 300,
       forceHidden: variantType === VariantType.Single,
-      lock: true
+      lock: true,
+      required: true
     },
     {
       title: 'Price',
@@ -212,7 +213,8 @@ export default function useColumns (params: ColumnsParams) {
       align: 'center',
       lock: true,
       width: 50,
-      forceHidden: variantType === VariantType.Single
+      forceHidden: variantType === VariantType.Single,
+      required: true
     }
   ]
 
