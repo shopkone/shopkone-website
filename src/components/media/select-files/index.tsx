@@ -86,13 +86,21 @@ function SelectFiles (props: SelectFilesProps) {
     })
     const waitFileList = files.filter(item => !item.errMsg)
     setList([...fileList, ...list])
-    for await (const item of waitFileList) {
-      const ret = await upload(item, true)
-      const res = await addFile.runAsync(ret)
-      setList(pre => pre.map(item => {
-        if (item.uuid !== ret.uuid) return item
-        return { ...item, uuid: '', id: res.id, src: ret.path }
-      }))
+    try {
+      for await (const item of waitFileList) {
+        const ret = await upload(item, true)
+        const res = await addFile.runAsync(ret)
+        setList(pre => pre.map(item => {
+          if (item.uuid !== ret.uuid) return item
+          return { ...item, uuid: '', id: res.id, src: ret.path }
+        }))
+        if (multiple) {
+          setSelected(s => [...s, res.id])
+        } else if (!multiple && !selected?.length) {
+          setSelected(s => [...s, res.id])
+        }
+      }
+    } catch {
     }
   }
 
