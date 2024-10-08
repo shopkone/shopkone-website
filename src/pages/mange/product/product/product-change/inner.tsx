@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { useDebounceFn, useRequest } from 'ahooks'
+import { useRequest } from 'ahooks'
 import { Button, Flex, Form } from 'antd'
 import dayjs, { Dayjs } from 'dayjs'
 
@@ -83,25 +83,24 @@ export default function ProductChangeInner (props: ProductChangeInnerProps) {
     }
   }
 
-  const onValuesChange = useDebounceFn(() => {
+  const onValuesChange = () => {
     if (!init.current) return
     const values = form.getFieldsValue() || {}
     let noInitSeo = init.current?.seo?.follow && (init.current?.seo?.page_title !== init?.current?.title)
     noInitSeo = noInitSeo || (!init.current?.seo?.follow && !init.current?.seo?.page_title)
     if (!init.current?.variants?.length || noInitSeo) {
-      init.current = values
-      /*       if (!id) {
+      if (!id) {
         init.current = { ...values, ...INIT_DATA }
       } else {
         init.current = values
-      } */
+      }
       return
     }
     const newValues = { ...values, variants: undefined, options: undefined, seo: { ...values.seo, id: 0 } }
     const oldValues = { ...init.current, variants: undefined, options: undefined, seo: { ...init.current.seo, id: 0 } }
     const isSame = isEqualHandle(newValues, oldValues)
     setIsChange(!isSame)
-  }, { wait: 100 }).run
+  }
 
   const onCancel = () => {
     form.setFieldsValue(init.current)
