@@ -15,10 +15,11 @@ export interface ItemSortableProps {
   handle?: ReactNode
   style?: React.CSSProperties
   disabled?: boolean
+  noScale?: boolean
 }
 
 export default function ItemSortable (props: ItemSortableProps) {
-  const { rowKey, handle, children, disabled, style, ...rest } = props
+  const { rowKey, handle, children, disabled, style, noScale, ...rest } = props
   const sortable = useSortable({ id: rowKey })
   const {
     attributes,
@@ -29,8 +30,16 @@ export default function ItemSortable (props: ItemSortableProps) {
     transition
   } = sortable
 
+  console.log({ transform })
+
   const s = {
-    transform: disabled ? undefined : CSS.Transform.toString(transform),
+    transform: disabled
+      ? undefined
+      : CSS.Transform.toString({
+        ...(transform || {}),
+        scaleY: noScale ? 1 : (transform?.scaleY) || 1,
+        scaleX: noScale ? 1 : (transform?.scaleX) || 1
+      } as any),
     transition
   }
 
