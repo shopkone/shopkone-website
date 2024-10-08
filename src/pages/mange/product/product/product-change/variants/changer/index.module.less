@@ -49,7 +49,6 @@
     color: var(--color-text-secondary);
   }
 }
-
 .deleteBtn {
   color: var(--color-text-secondary);
   padding: 0 !important;
@@ -90,4 +89,14 @@
   margin-bottom: 4px;
   margin-top: 2px;
   height: 16px;
+}
+
+.draggingItem {
+  z-index: 2;
+  :global .shopkone-input-suffix {
+    opacity: 0;
+  }
+  .actionBtn {
+    opacity: 0;
+  }
 }

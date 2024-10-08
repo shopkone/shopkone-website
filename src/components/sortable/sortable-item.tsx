@@ -1,3 +1,4 @@
+import { ReactNode } from 'react'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 
@@ -11,10 +12,13 @@ export interface ItemSortableProps {
 
   className?: string
   draggingClassName?: string
+  handle?: ReactNode
+  style?: React.CSSProperties
 }
 
 export default function ItemSortable (props: ItemSortableProps) {
-  const sortable = useSortable({ id: props.rowKey })
+  const { rowKey, handle, children, style, ...rest } = props
+  const sortable = useSortable({ id: rowKey })
   const {
     attributes,
     listeners,
@@ -24,7 +28,7 @@ export default function ItemSortable (props: ItemSortableProps) {
     transition
   } = sortable
 
-  const style = {
+  const s = {
     transform: CSS.Transform.toString(transform),
     transition
   }
@@ -32,11 +36,24 @@ export default function ItemSortable (props: ItemSortableProps) {
   return (
     <Item
       ref={setNodeRef}
-      style={style}
+      style={{ ...style, ...s }}
       isDragging={isDragging}
-      {...props}
+      {...rest}
       {...attributes}
-      {...listeners}
-    />
+      {...(handle ? {} : listeners)}
+    >
+      {handle
+        ? (
+          <>
+            <div {...listeners}>
+              {handle}
+            </div>
+            {children}
+          </>
+          )
+        : (
+            children
+          )}
+    </Item>
   )
 }

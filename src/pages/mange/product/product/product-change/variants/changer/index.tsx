@@ -11,7 +11,9 @@ import FileImage from '@/components/file-image'
 import SelectFiles from '@/components/media/select-files'
 import SLoading from '@/components/s-loading'
 import SRender from '@/components/s-render'
+import ItemSortable from '@/components/sortable/sortable-item'
 import { useOpen, UseOpenType } from '@/hooks/useOpen'
+import Sortable from '@/pages/mange/product/product/product-change/variants/changer/Sortable'
 import { Option, Variant } from '@/pages/mange/product/product/product-change/variants/state'
 import { genId } from '@/utils/random'
 
@@ -230,77 +232,90 @@ export default function Changer (props: ChangerProps) {
                   {getErrorMsg(option.id)}
                 </div>
                 <div className={styles.label} style={{ marginTop: 6 }}>Option values</div>
-                <Flex vertical gap={4}>
+                <Sortable<Option['values'][number]> items={option.values} onChange={() => {}}>
                   {
-                    option.values?.map((value, index) => {
-                      const isLast = index === option.values.length - 1
-                      return (
-                        <div key={value.id}>
-                          <Flex align={'center'}>
-                            <Button
-                              style={{ marginRight: 8 }}
-                              type={'text'}
-                              size={'small'}
-                              className={classNames({ [styles.hidden]: isLast || (option.values?.length === 2) }, styles.titleBtn)}
-                            >
-                              <IconGripVertical size={15} />
-                            </Button>
-                            <Input
-                              value={value.value}
-                              className={classNames({ [styles.errInput]: getErrorMsg(value.id) })}
-                              autoComplete={'off'}
-                              onChange={e => {
-                                onChangeValue(option.id, e.target.value, index)
-                              }}
-                              suffix={
-                                <SRender render={!isLast}>
-                                  <Button
-                                    onClick={(e) => { e.stopPropagation(); onRemoveValue(option.id, value.id) }}
-                                    className={styles.deleteBtn}
-                                    type={'text'}
-                                    size={'small'}
-                                  >
-                                    <IconTrash size={15} />
-                                  </Button>
-                                </SRender>
+                    (id) => (<Flex vertical gap={4}>
+                      {
+                        option.values?.map((value, index) => {
+                          const isLast = index === option.values.length - 1
+                          return (
+                            <ItemSortable
+                              style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                              handle={
+                                <Button
+                                  style={{ marginRight: 8, cursor: id === value.id ? 'grabbing' : 'grab' }}
+                                  type={'text'}
+                                  size={'small'}
+                                  className={classNames({ [styles.hidden]: isLast || (option.values?.length === 2) }, styles.titleBtn)}
+                                >
+                                  <IconGripVertical size={15} />
+                                </Button>
                               }
-                            />
-                            <Button
-                              onClick={() => {
-                                const item = labelImages.find(l => l.label === option.name && l.value === value.value)
-                                setEditItem({ label: option.name, value: value.value })
-                                selectInfo.edit(item?.image_id ? [item.image_id] : undefined)
-                              }}
-                              style={{ marginLeft: 8 }}
-                              type={'text'}
-                              size={'small'}
-                              className={classNames({ [styles.hidden]: isLast }, styles.actionBtn)}
+                              draggingClassName={styles.draggingItem}
+                              index={index}
+                              rowKey={value.id}
+                              key={value.id}
                             >
-                              <SRender render={getImage(option.name, value.value).image}>
-                                <FileImage
-                                  forceNoLoading
-                                  loading={!getImage(option.name, value.value).image}
-                                  type={FileType.Image}
-                                  src={getImage(option.name, value.value).image || ''}
-                                  width={32}
-                                  height={28}
-                                  style={{ position: 'relative', left: -2, background: '#fff' }}
-                                  containerStyle={{ borderColor: '#ccc', position: 'relative', top: -1 }}
+                              <Flex flex={1} align={'center'}>
+                                <Input
+                                  value={value.value}
+                                  className={classNames({ [styles.errInput]: getErrorMsg(value.id) })}
+                                  autoComplete={'off'}
+                                  onChange={e => {
+                                    onChangeValue(option.id, e.target.value, index)
+                                  }}
+                                  suffix={
+                                    <SRender render={!isLast}>
+                                      <Button
+                                        onClick={(e) => { e.stopPropagation(); onRemoveValue(option.id, value.id) }}
+                                        className={styles.deleteBtn}
+                                        type={'text'}
+                                        size={'small'}
+                                      >
+                                        <IconTrash size={15} />
+                                      </Button>
+                                    </SRender>
+                                  }
                                 />
-                              </SRender>
-                              <SRender render={!getImage(option.name, value.value).imageId}>
-                                <IconPhotoPlus size={15} />
-                              </SRender>
-                            </Button>
-                          </Flex>
-                          <div className={getErrorMsg(value.id) ? styles.err : styles.errNo}>
-                            {getErrorMsg(value.id)}
-                          </div>
-                        </div>
-                      )
-                    })
+                                <Button
+                                  onClick={() => {
+                                    const item = labelImages.find(l => l.label === option.name && l.value === value.value)
+                                    setEditItem({ label: option.name, value: value.value })
+                                    selectInfo.edit(item?.image_id ? [item.image_id] : undefined)
+                                  }}
+                                  style={{ marginLeft: 8 }}
+                                  type={'text'}
+                                  size={'small'}
+                                  className={classNames({ [styles.hidden]: isLast }, styles.actionBtn)}
+                                >
+                                  <SRender render={getImage(option.name, value.value).image}>
+                                    <FileImage
+                                      forceNoLoading
+                                      loading={!getImage(option.name, value.value).image}
+                                      type={FileType.Image}
+                                      src={getImage(option.name, value.value).image || ''}
+                                      width={32}
+                                      height={28}
+                                      style={{ position: 'relative', left: -2, background: '#fff' }}
+                                      containerStyle={{ borderColor: '#ccc', position: 'relative', top: -1 }}
+                                    />
+                                  </SRender>
+                                  <SRender render={!getImage(option.name, value.value).imageId}>
+                                    <IconPhotoPlus size={15} />
+                                  </SRender>
+                                </Button>
+                              </Flex>
+                              <div className={getErrorMsg(value.id) ? styles.err : styles.errNo}>
+                                {getErrorMsg(value.id)}
+                              </div>
+                            </ItemSortable>
+                          )
+                        })
+                      }
+                    </Flex>
+                    )
                   }
-                </Flex>
+                </Sortable>
               </div>
             </div>
           ))
