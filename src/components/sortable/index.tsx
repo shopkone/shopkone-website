@@ -22,11 +22,11 @@ export interface SortableProps<T> {
   children: (items: Array<ItemType<T>>, id: number, isBg?: boolean) => React.ReactNode
   items: Array<ItemType<T>>
   onChange: (v: Array<ItemType<T>>) => void
-  overlay?: boolean
+  draggingClassName?: string
 }
 
 export default function Sortable<T> (props: SortableProps<T>) {
-  const { children, items, onChange, overlay } = props
+  const { children, items, onChange } = props
 
   const [activeId, setActiveId] = useState(0)
 
@@ -64,24 +64,19 @@ export default function Sortable<T> (props: SortableProps<T>) {
       onDragEnd={onDragEnd}
       onDragCancel={onDragCancel}
     >
-      <SortableContext
-        items={items.map(item => item.id)}
-        strategy={verticalListSortingStrategy}
-      >
+      <SortableContext items={items.map(item => item.id)} strategy={verticalListSortingStrategy}>
         <Flex vertical>
           {nodes}
         </Flex>
       </SortableContext>
 
-      <SRender render={overlay}>
-        <DragOverlay adjustScale={true}>
-          <SRender render={activeId}>
-            {!!items.find(item => item.id === activeId) &&
-              // @ts-expect-error
-              children([items.find(item => item.id === activeId)], activeId, true)}
-          </SRender>
-        </DragOverlay>
-      </SRender>
+      <DragOverlay adjustScale={true}>
+        <SRender render={activeId}>
+          {!!items.find(item => item.id === activeId) &&
+            // @ts-expect-error
+            children([items.find(item => item.id === activeId)], activeId, true)}
+        </SRender>
+      </DragOverlay>
     </DndContext>
   )
 }
