@@ -41,7 +41,7 @@ export default function Products () {
       }
       title={'Products'}
     >
-      <SCard styles={{ body: { padding: 0 } }}>
+      <SCard styles={{ body: { padding: '8px 0' } }}>
         <SRender render={list?.data?.list?.length}>
           asd
         </SRender>
@@ -85,7 +85,6 @@ export default function Products () {
             }
           }}
           onRowClick={(row) => {
-            console.log(123)
             nav(`change/${row?.id}`)
           }}
           loading={list.loading}
@@ -140,7 +139,6 @@ export default function Products () {
           columns={columns}
           data={list?.data?.list || []}
         />
-        <div style={{ height: 8 }} />
       </SCard>
     </Page>
   )
