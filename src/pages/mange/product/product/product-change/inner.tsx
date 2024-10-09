@@ -8,6 +8,7 @@ import { ProductCreateApi } from '@/api/product/create'
 import { ProductInfoApi } from '@/api/product/info'
 import { ProductUpdateApi } from '@/api/product/update'
 import Page from '@/components/page'
+import { sMessage } from '@/components/s-message'
 import SRender from '@/components/s-render'
 import Seo from '@/components/seo'
 import { VariantType } from '@/constant/product'
@@ -76,12 +77,17 @@ export default function ProductChangeInner (props: ProductChangeInnerProps) {
     })
     values.variants = variants
     if (id) {
-      await update.runAsync({ ...form.getFieldsValue(), id: Number(id) })
+      await update.runAsync({ ...values, id: Number(id) })
+      form.resetFields()
+      onCancel()
+      props.onFresh(Number(id))
+      sMessage.success('Product updated')
     } else {
       const ret = await create.runAsync(values)
       props.onFresh(ret.id)
       form.resetFields()
       onCancel()
+      sMessage.success('Product created')
     }
   }
 

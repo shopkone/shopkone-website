@@ -26,7 +26,7 @@ export default function SelectCategory (props: SelectCategoryProps) {
   const selectLabel = data.find(i => i.value === value)?.label
 
   return (
-    <SLoading loading={!data.length}>
+    <SLoading size={18} loading={!data.length}>
       <SRender className={styles.category} render={selectLabel}>
         {selectLabel}
       </SRender>
