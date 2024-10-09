@@ -1,10 +1,17 @@
 import { Button, Card, Checkbox, Form, Input, Select } from 'antd'
 
+import Categories from '@/components/categories'
 import SSelect from '@/components/s-select'
+import { useOpen } from '@/hooks/useOpen'
 
 import styles from './index.module.less'
 
 export default function ProductOrganization () {
+  const selectCategoriesInfo = useOpen<number>()
+
+  const onSelectCategories = (data: number) => {
+  }
+
   return (
     <Card title={'Product organization'}>
       <Form.Item
@@ -22,7 +29,13 @@ export default function ProductOrganization () {
       </Form.Item>
       <div className={styles.line} />
       <Form.Item label={'Category'}>
-        <Button className={'primary-text'} style={{ marginLeft: -6 }} type={'text'} size={'small'}>
+        <Button
+          onClick={() => { selectCategoriesInfo.edit(111) }}
+          className={'primary-text'}
+          style={{ marginLeft: -7 }}
+          type={'text'}
+          size={'small'}
+        >
           Select category
         </Button>
       </Form.Item>
@@ -43,6 +56,7 @@ export default function ProductOrganization () {
           suffixIcon={null}
         />
       </Form.Item>
+      <Categories onConfirm={onSelectCategories} info={selectCategoriesInfo} />
     </Card>
   )
 }
