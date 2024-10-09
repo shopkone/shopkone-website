@@ -23,10 +23,11 @@ export interface VariantsProps {
   resetFlag: number
   remoteVariants: Variant[]
   onResetLoading: (isLoading: boolean) => void
+  onValueChange: () => void
 }
 
 export default function Variants (props: VariantsProps) {
-  const { remoteVariants, setIsChange, resetFlag, onResetLoading } = props
+  const { remoteVariants, setIsChange, resetFlag, onResetLoading, onValueChange } = props
   const form = Form.useFormInstance()
   const [variants, setVariants] = useState<Variant[]>([])
   const [options, setOptions] = useState<Option[]>([])
@@ -188,7 +189,7 @@ export default function Variants (props: VariantsProps) {
       >
         <Changer
           onChangeLoading={setLoading}
-          onChange={(v, o) => { onChange(v); setOptions(o) }}
+          onChange={(v, o) => { onChange(v); setOptions(o); onValueChange() }}
           info={openInfo}
         />
         <Table

@@ -6,6 +6,7 @@ import dayjs, { Dayjs } from 'dayjs'
 
 import { ProductCreateApi } from '@/api/product/create'
 import { ProductInfoApi } from '@/api/product/info'
+import { ProductUpdateApi } from '@/api/product/update'
 import Page from '@/components/page'
 import SRender from '@/components/s-render'
 import Seo from '@/components/seo'
@@ -55,6 +56,7 @@ export default function ProductChangeInner (props: ProductChangeInnerProps) {
   const init = useRef<any>()
   const create = useRequest(ProductCreateApi, { manual: true })
   const info = useRequest(ProductInfoApi, { manual: true })
+  const update = useRequest(ProductUpdateApi, { manual: true })
   const setInfo = useProductChange(state => state.setInfo)
   const { id } = useParams()
 
@@ -74,7 +76,7 @@ export default function ProductChangeInner (props: ProductChangeInnerProps) {
     })
     values.variants = variants
     if (id) {
-      console.log(form.getFieldsValue())
+      await update.runAsync({ ...form.getFieldsValue(), id: Number(id) })
     } else {
       const ret = await create.runAsync(values)
       props.onFresh(ret.id)
@@ -179,6 +181,7 @@ export default function ProductChangeInner (props: ProductChangeInnerProps) {
             </Flex>
             <Form.Item name={'variants'}>
               <Variants
+                onValueChange={onValuesChange}
                 onResetLoading={setResetLoading}
                 remoteVariants={remoteVariants}
                 resetFlag={resetFlag}

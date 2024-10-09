@@ -6,7 +6,7 @@ import { Flex, Input, Typography } from 'antd'
 import classNames from 'classnames'
 import cloneDeep from 'lodash/cloneDeep'
 
-import { CategoriesRes, useCategories } from '@/api/base/categories'
+import { CategoriesRes } from '@/api/base/categories'
 import SLoading from '@/components/s-loading'
 import SModal from '@/components/s-modal'
 import SRender from '@/components/s-render'
@@ -17,11 +17,11 @@ import styles from './index.module.less'
 export interface CategoriesProps {
   info: UseOpenType<number>
   onConfirm: (data: number) => void
+  data: CategoriesRes[]
 }
 
 export default function Categories (props: CategoriesProps) {
-  const { info, onConfirm } = props
-  const { data } = useCategories()
+  const { info, onConfirm, data } = props
 
   const [value, setValue] = useState<number[]>([])
   const [keyword, setKeyword] = useState('')
@@ -88,7 +88,13 @@ export default function Categories (props: CategoriesProps) {
   }, [data, info.open])
 
   return (
-    <SModal title={'Select categories'} open={info.open} onCancel={info.close} width={1000}>
+    <SModal
+      onOk={() => { onConfirm(value?.length ? value.pop() as number : 0) }}
+      title={'Select categories'}
+      open={info.open}
+      onCancel={info.close}
+      width={1000}
+    >
       <SLoading loading={(!data.length && !keyword)}>
         <Flex vertical style={{ height: 600 }}>
           <Flex align={'center'} justify={'space-between'}>
