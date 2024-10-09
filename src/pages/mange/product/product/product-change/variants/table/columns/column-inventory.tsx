@@ -83,7 +83,7 @@ export default function ColumnInventory (props: ColumnInventoryProps) {
         <SRender render={locationId}>
           <SInputNumber
             value={row?.inventories?.find(item => item.location_id === locationId)?.quantity || 0}
-            onChange={onChangeHandle} uint
+            onChange={v => { onChangeHandle(v || null) }} uint
           />
         </SRender>
         <SRender render={!locationId}>

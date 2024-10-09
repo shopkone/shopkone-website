@@ -18,7 +18,7 @@ export default function ColumnWeight (props: ColumnWeightProps) {
   return (
     <Tooltip title={row?.children?.length ? `Applies to all ${row?.children?.length} variants` : null}>
       <SInputNumber
-        onChange={v => { onChangeWeight(v) }}
+        onChange={v => { onChangeWeight(v || null) }}
         value={row.weight || undefined}
         suffix={
           <SSelect

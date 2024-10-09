@@ -34,7 +34,7 @@ export default function ColumnPrice (props: ColumnPriceProps) {
       <SRender render={row.children?.length}>
         <Tooltip title={`Applies to all ${row?.children?.length} variants`}>
           <SInputNumber
-            onChange={e => { onChange(e) }}
+            onChange={e => { onChange(e || null) }}
             money
             value={getPriceRange(row?.children?.map(i => i?.[type]) as any)?.value}
             placeholder={getPriceRange(row?.children?.map(i => i?.[type]) as any)?.placeHolder}
@@ -42,7 +42,7 @@ export default function ColumnPrice (props: ColumnPriceProps) {
         </Tooltip>
       </SRender>
       <SRender render={!row.children?.length}>
-        <SInputNumber value={value} onChange={e => { onChange(e) }} money />
+        <SInputNumber value={value} onChange={e => { onChange(e || null) }} money />
       </SRender>
     </div>
   )

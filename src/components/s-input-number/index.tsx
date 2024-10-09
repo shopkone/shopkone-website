@@ -6,7 +6,7 @@ import { roundPrice } from '@/utils/num'
 
 export interface SInputNumberProps extends Omit<InputProps, 'onChange' | 'value'> {
   value?: number
-  onChange?: (value: number | null) => void
+  onChange?: (value?: number) => void
 
   // 对数字进行控制
   max?: number
@@ -40,7 +40,7 @@ function SInputNumber (props: SInputNumberProps) {
       }
       return
     }
-    const num = str ? roundPrice(Number(str)) : null
+    const num = str ? roundPrice(Number(str)) : undefined
     if (uint && str?.includes('.')) return
     if (num && typeof num !== 'undefined') {
       if (num < min) return
