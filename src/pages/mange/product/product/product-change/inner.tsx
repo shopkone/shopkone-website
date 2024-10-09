@@ -60,6 +60,7 @@ export default function ProductChangeInner (props: ProductChangeInnerProps) {
   const update = useRequest(ProductUpdateApi, { manual: true })
   const setInfo = useProductChange(state => state.setInfo)
   const { id } = useParams()
+  const [loaded, setLoaded] = useState(false)
 
   const onOK = async () => {
     await form.validateFields()
@@ -142,7 +143,7 @@ export default function ProductChangeInner (props: ProductChangeInnerProps) {
   return (
     <Page
       resetLoading={resetLoading}
-      loading={info.loading || resetLoading || create.loading}
+      loading={info.loading || resetLoading || create.loading || !loaded || update.loading}
       onOk={onOK}
       onCancel={onCancel}
       isChange={isChange || isVariantChange}
@@ -187,6 +188,7 @@ export default function ProductChangeInner (props: ProductChangeInnerProps) {
             </Flex>
             <Form.Item name={'variants'}>
               <Variants
+                setLoaded={() => { setLoaded(true) }}
                 onValueChange={onValuesChange}
                 onResetLoading={setResetLoading}
                 remoteVariants={remoteVariants}

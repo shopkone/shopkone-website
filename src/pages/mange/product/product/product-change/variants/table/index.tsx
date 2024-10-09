@@ -20,10 +20,11 @@ export interface TableProps {
   forceChange: (variants: Variant[]) => void
   settingsStyle: React.CSSProperties
   isFull: boolean
+  setLoaded: () => void
 }
 
 export default function Table (props: TableProps) {
-  const { isFull, variants, options, loading, onChangeGroupVariants, onOpenOptions, forceChange, settingsStyle } = props
+  const { isFull, variants, options, loading, onChangeGroupVariants, onOpenOptions, forceChange, settingsStyle, setLoaded } = props
   const form = Form.useFormInstance()
   const [groupVariants, setGroupVariants] = useState<Variant[]>([])
   const [expandedRowKeys, setExpandedRowKeys] = useState<number[]>([])
@@ -58,13 +59,15 @@ export default function Table (props: TableProps) {
     if (!columns?.length) return false
     if (groupName && !groupVariants?.length) return false
     if (variants?.length && !groupVariants?.length) return false
-    if (!locationId) return false
     return true
   }, [groupVariants, groupName, columns, variants, ColumnSettings, locationId])
 
   useEffect(() => {
     form.setFieldValue('variants', groupVariants)
     onChangeGroupVariants(groupVariants)
+    if (groupVariants.length) {
+      setLoaded()
+    }
   }, [groupVariants])
 
   return (
