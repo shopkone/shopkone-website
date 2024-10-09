@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 import { IconLoader2 } from '@tabler/icons-react'
 import { Spin } from 'antd'
+import classNames from 'classnames'
 
 import styles from './index.module.less'
 
@@ -12,18 +13,21 @@ export interface SLoadingProps {
   minHeight?: number
   children?: ReactNode
   foreShow?: boolean
+  className?: string
+  style?: React.CSSProperties
 }
 
 export default function SLoading (props: SLoadingProps) {
-  const { text, size = 36, black, loading = true, minHeight, children, foreShow } = props
+  const { text, size = 36, black, loading = true, minHeight, children, foreShow, className, style } = props
 
   const loadingComponent = (
     <div
-      className={styles.wrapper}
+      className={classNames(styles.wrapper, className)}
       style={{
         opacity: loading ? 1 : 0,
         display: loading ? undefined : 'none',
-        minHeight
+        minHeight,
+        ...style
       }}
     >
       <IconLoader2 className={styles.loading} color={black ? '#1F2329' : '#1456f0'} size={size} />

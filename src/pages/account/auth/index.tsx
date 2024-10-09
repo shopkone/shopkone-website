@@ -18,7 +18,7 @@ export default function Auth () {
       <Flex align={'center'} justify={'center'} className={styles.main}>
         <div className={styles.content}>
           <div className={styles.form}>
-            <Suspense fallback={<SLoading />}>
+            <Suspense fallback={<SLoading minHeight={400} />}>
               <Outlet />
             </Suspense>
           </div>
