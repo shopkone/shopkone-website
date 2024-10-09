@@ -89,7 +89,7 @@ export default function Categories (props: CategoriesProps) {
 
   return (
     <SModal title={'Select categories'} open={info.open} onCancel={info.close} width={1000}>
-      <SLoading loading={!data.length && !keyword}>
+      <SLoading loading={(!data.length && !keyword)}>
         <Flex vertical style={{ height: 600 }}>
           <Flex align={'center'} justify={'space-between'}>
             <div className={styles.search}>
