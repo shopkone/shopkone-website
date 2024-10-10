@@ -28,7 +28,7 @@ export default function FilterBase (props: FilterBaseProps) {
   return (
     <Popover content={content} open={open} onOpenChange={setOpen} trigger={'click'} placement={'bottomLeft'} arrow={false}>
       <Button
-        style={{ background: '#fff', fontWeight: onClear ? '500' : '400' }}
+        style={{ background: onClear ? '#f0f0f0' : '#fff', fontWeight: onClear ? '500' : '400' }}
         type={onClear ? undefined : 'dashed'}
         size={'small'}
       >

@@ -1,4 +1,4 @@
-import { memo, useEffect, useRef, useState } from 'react'
+import { memo, ReactNode, useEffect, useRef, useState } from 'react'
 import { IconSearch, IconTrash } from '@tabler/icons-react'
 import { useInViewport, useRequest } from 'ahooks'
 import { Button, Checkbox, Flex, Input, Typography } from 'antd'
@@ -13,7 +13,10 @@ import SLoading from '@/components/s-loading'
 import SModal from '@/components/s-modal'
 import SRender from '@/components/s-render'
 import Empty from '@/components/s-table/empty'
-import Index from '@/components/table-filter'
+import FilterCheckbox from '@/components/table-filter/filter-checkbox'
+import FilterNumberRange from '@/components/table-filter/filter-number-range'
+import FilterRadio from '@/components/table-filter/filter-radio'
+import FilterLabels from '@/components/table-filter/FilterLabels'
 import Upload from '@/components/upload'
 import { useUpload } from '@/components/upload/use-upload'
 import { UseOpenType } from '@/hooks/useOpen'
@@ -45,7 +48,7 @@ function SelectFiles (props: SelectFilesProps) {
   const addFile = useRequest(AddFileApi, { manual: true })
   const [selected, setSelected] = useState<number[]>([])
   const [confirmLoading, setConfirmLoading] = useState(false)
-
+  const [labels, setLabels] = useState<Record<string, ReactNode>>({})
   const isUploading = !!list?.filter(i => i.uuid)?.length
 
   const hasSearch = params.keyword?.length || params.file_type?.length || params.file_size?.min || params.file_size?.max || params.used || params.group_id
@@ -214,43 +217,41 @@ function SelectFiles (props: SelectFilesProps) {
             />
           </div>
           <Flex align={'center'} gap={4}>
-            <Index checkbox={{
-              options: options.filter(i => !extra?.includes(i.value)),
-              onChange: (v) => {
-                setParams({ ...params, file_type: v.map(i => Number(i || 0)), page: 1 })
-              },
-              value: params.file_type
-            }}
-            >
-              File type
-            </Index>
-            <Index
-              numberRange={{
-                maxLabel: 'Max size',
-                minLabel: 'Min size',
-                unit: 'MB',
-                onChange: (v) => {
-                  setParams({ ...params, file_size: v, page: 1 })
-                },
-                value: params.file_size
-              }}
+            <FilterNumberRange
+              maxLabel={'Max size'}
+              minLabel= {'Min size'}
+              unit={'MB'}
+              onChange={(v) => { setParams?.({ ...params, file_size: v }) }}
+              onLabelChange={(l) => { setLabels({ ...labels, file_size: l }) }}
+              value={params?.file_size || {}}
             >
               File size
-            </Index>
-            <SRender render={!!fileGroupList?.data?.length}>
-              <Index
-                radio={{
-                  options: fileGroupList?.data?.map(item => ({ label: item.name, value: item.id })) || [],
-                  onChange: (value) => {
-                    setParams({ ...params, group_id: Number(value || 0), page: 1 })
-                  },
-                  value: params.group_id
-                }}
-              >
-                File group
-              </Index>
-            </SRender>
+            </FilterNumberRange>
+
+            <FilterCheckbox
+              options={options}
+              onChange={(v) => {
+                setParams?.({ ...params, file_type: v.map(i => Number(i || 0)) })
+              }}
+              value={params?.file_type}
+              onLabelChange={(l) => { setLabels({ ...labels, file_type: l }) }}
+            >
+              File type
+            </FilterCheckbox>
+
+            <FilterRadio
+              options={[
+                { label: 'Used', value: 1 },
+                { label: 'Unused', value: 2 }
+              ]}
+              value={params?.used}
+              onChange={(v) => { setParams?.({ ...params, used: Number(v || 0) }) }}
+              onLabelChange={(l) => { setLabels({ ...labels, used: l }) }}
+            >
+              Used
+            </FilterRadio>
           </Flex>
+          <FilterLabels style={{ marginTop: 12 }} labels={labels} value={params} onChange={setParams} />
         </SRender>
 
         <div className={styles.bottom}>

@@ -9,7 +9,6 @@ import Page from '@/components/page'
 import SCard from '@/components/s-card'
 import SRender from '@/components/s-render'
 import STable, { STableProps } from '@/components/s-table'
-import TableFilter from '@/components/table-filter'
 
 import styles from './index.module.less'
 
@@ -63,14 +62,6 @@ export default function Products () {
               width: '100%'
             }} className={'line'}
           />
-          <Flex gap={8} style={{ padding: '6px 8px' }}>
-            <TableFilter radio={{ options: [] }}>
-              asd
-            </TableFilter>
-            <TableFilter radio={{ options: [] }}>
-              asd
-            </TableFilter>
-          </Flex>
         </SRender>
         <STable
           page={{

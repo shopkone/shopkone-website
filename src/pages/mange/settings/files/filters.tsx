@@ -1,13 +1,13 @@
-import { useState } from 'react'
-import { IconSearch, IconX } from '@tabler/icons-react'
+import { ReactNode, useState } from 'react'
+import { IconSearch } from '@tabler/icons-react'
 import { Flex, Input, Typography } from 'antd'
 
 import { FileType } from '@/api/file/add-file-record'
 import SRender from '@/components/s-render'
-import Status from '@/components/status'
 import FilterCheckbox from '@/components/table-filter/filter-checkbox'
 import FilterNumberRange, { FilterNumberRangeProps } from '@/components/table-filter/filter-number-range'
 import FilterRadio from '@/components/table-filter/filter-radio'
+import FilterLabels from '@/components/table-filter/FilterLabels'
 
 import styles from './index.module.less'
 
@@ -24,7 +24,7 @@ export interface FiltersProps {
 
 export default function Filters (props: FiltersProps) {
   const { onChange, value, groupName } = props
-  const [labels, setLabels] = useState<Record<string, string | undefined>>({})
+  const [labels, setLabels] = useState<Record<string, ReactNode>>({})
 
   const options = [
     { value: FileType.Image, label: 'Image' },
@@ -96,21 +96,7 @@ export default function Filters (props: FiltersProps) {
           </SRender>
         </Flex>
       </Flex>
-      <Flex className={styles.filterGroups} gap={16}>
-        {
-          Object.keys(labels).filter(i => labels[i]).map(key => (
-            <Status type={'info'} key={key}>
-              {labels[key]}
-              <IconX
-                className={styles.clearBtn}
-                onClick={() => onChange?.(Object.assign({}, value, { [key]: undefined }))}
-                style={{ marginLeft: 8, marginTop: -1, marginRight: -4 }}
-                size={14}
-              />
-            </Status>
-          ))
-        }
-      </Flex>
+      <FilterLabels style={{ marginTop: 12 }} labels={labels} value={value} onChange={onChange} />
     </div>
   )
 }

@@ -1,7 +1,7 @@
 import { Button, Flex } from 'antd'
 
 import SRender from '@/components/s-render'
-import TableFilter from '@/components/table-filter'
+import FilterRadio from '@/components/table-filter/filter-radio'
 import { Option } from '@/pages/mange/product/product/product-change/variants/state'
 
 export interface FiltersProps {
@@ -24,24 +24,15 @@ export default function Filters (props: FiltersProps) {
       Filters
       {
           options.map(option => (
-            <TableFilter
-              radio={{
-                onChange: (v) => {
-                  onChange({
-                    ...value,
-                    [option.name]: v?.toString() || ''
-                  })
-                },
-                value: value[option.name],
-                options: option.values.filter(i => i.value).map(v => ({
-                  label: v.value,
-                  value: v.value
-                }))
-              }}
+            <FilterRadio
+              options={option.values.filter(i => i.value).map(v => ({ label: v.value, value: v.value }))}
               key={option.id}
+              onChange={(v) => { onChange({ ...value, [option.name]: v?.toString() || '' }) }}
+              value={value[option.name]}
+
             >
               {option.name}
-            </TableFilter>
+            </FilterRadio>
           ))
         }
       <SRender render={Object.values(value).filter(v => v).length}>
