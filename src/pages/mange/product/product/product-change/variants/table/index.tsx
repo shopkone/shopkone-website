@@ -1,8 +1,9 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { ReactNode, useEffect, useMemo, useState } from 'react'
 import { Button, Flex, Form } from 'antd'
 
 import SRender from '@/components/s-render'
 import STable from '@/components/s-table'
+import FilterLabels from '@/components/table-filter/FilterLabels'
 import { Option, Variant } from '@/pages/mange/product/product/product-change/variants/state'
 import Filters from '@/pages/mange/product/product/product-change/variants/table/filters'
 import GroupBy from '@/pages/mange/product/product/product-change/variants/table/group-by'
@@ -31,6 +32,7 @@ export default function Table (props: TableProps) {
   const [filters, setFilters] = useState<Record<string, string>>({})
   const [groupName, setGroupName] = useState('')
   const [locationId, setLocationId] = useState(0)
+  const [labels, setLabels] = useState<Record<string, ReactNode>>({})
 
   const { columns, ColumnSettings, ImageUploader } = useColumns({
     variants: groupVariants,
@@ -77,7 +79,7 @@ export default function Table (props: TableProps) {
         {ColumnSettings}
       </div>
       <Flex style={{ marginBottom: 12 }} align={'center'} gap={32}>
-        <Filters key={'filters'} value={filters} onChange={setFilters} options={options} />
+        <Filters labels={labels} setLabels={setLabels} key={'filters'} value={filters} onChange={setFilters} options={options} />
         <GroupBy
           key={'groupBy'}
           groupName={groupName}
@@ -89,6 +91,7 @@ export default function Table (props: TableProps) {
         />
         <LocationsSelect key={'location'} selected={locationId} setSelected={setLocationId} />
       </Flex>
+      <FilterLabels style={{ marginBottom: 12 }} labels={labels} value={filters} onChange={setFilters} />
       <SRender render={renderTable}>
         <STable
           className={styles.table}
