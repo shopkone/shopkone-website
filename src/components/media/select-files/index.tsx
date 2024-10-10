@@ -99,8 +99,8 @@ function SelectFiles (props: SelectFilesProps) {
         }))
         if (multiple) {
           setSelected(s => [...s, res.id])
-        } else if (!multiple && !selected?.length) {
-          setSelected(s => [...s, res.id])
+        } else if (!multiple) {
+          setSelected(s => [res.id])
         }
       }
     } catch {

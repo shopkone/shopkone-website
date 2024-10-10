@@ -1,7 +1,14 @@
 import { useState } from 'react'
-import { BellOutlined, QuestionCircleOutlined, ShopOutlined } from '@ant-design/icons'
 import { Right } from '@icon-park/react'
-import { IconCheck, IconChevronDown, IconChevronUp, IconInfoCircle } from '@tabler/icons-react'
+import {
+  IconBell,
+  IconBuildingStore,
+  IconCheck,
+  IconChevronDown,
+  IconChevronUp,
+  IconHelp,
+  IconInfoCircle
+} from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
 import { Button, Flex, Popover, Tooltip, Typography } from 'antd'
 import classNames from 'classnames'
@@ -66,17 +73,18 @@ export default function Header () {
         <div className={styles.right}>
           <Tooltip arrow={false} title={'View your online store'}>
             <Flex align={'center'} justify={'center'} className={styles.bell} >
-              <ShopOutlined />
+              <IconBuildingStore size={18} />
             </Flex>
           </Tooltip>
           <Tooltip arrow={false} title={'Help center'}>
-            <Flex align={'center'} justify={'center'} className={styles.bell} >
-              <QuestionCircleOutlined />
+            <Flex style={{ marginLeft: 4 }} align={'center'} justify={'center'} className={styles.bell} >
+              <IconHelp size={18} />
             </Flex>
           </Tooltip>
-          <Flex align={'center'} justify={'center'} className={styles.bell} >
-            <BellOutlined />
+          <Flex style={{ marginLeft: 4 }} align={'center'} justify={'center'} className={styles.bell} >
+            <IconBell size={18} />
           </Flex>
+          <span style={{ padding: '0 8px', color: '#00000030' }}>|</span>
           <SLoading loading={manageState.shopInfoLoading}>
             <Popover
               open={infoExpand}

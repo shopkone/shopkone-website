@@ -28,7 +28,7 @@ export default function Products () {
       render: (_, row: ProductListRes) => (
         row.title
       ),
-      width: 500,
+      width: 400,
       lock: true
     },
     {
@@ -38,7 +38,7 @@ export default function Products () {
       render: (_, row: ProductListRes) => (
         <div>{row.max_price}</div>
       ),
-      width: 150
+      width: 120
     },
     {
       title: 'SPU',
@@ -61,13 +61,13 @@ export default function Products () {
       render: (quantity) => (
         <div>{quantity}</div>
       ),
-      width: 150
+      width: 200
     },
     {
       title: 'Created',
       code: 'created_at',
       name: 'id',
-      width: 150,
+      width: 120,
       render: (created_at: number) => {
         if (created_at) return dayjs(created_at).format('MM/DD/YYYY')
         return renderText()
@@ -79,7 +79,7 @@ export default function Products () {
       name: 'status',
       width: 150,
       render: (status: VariantStatus) => (
-        <Flex onClick={e => { e.stopPropagation() }} align={'center'} gap={8}>
+        <Flex style={{ cursor: 'default' }} onClick={e => { e.stopPropagation() }} align={'center'} gap={8}>
           <Switch size={'small'} checked={status === VariantStatus.Published} />
           <SRender style={{ fontSize: 12, position: 'relative', top: 1 }} render={status === VariantStatus.Published}>
             Activated
@@ -95,21 +95,22 @@ export default function Products () {
       code: 'action',
       name: 'action',
       render: () => (
-        <Flex align={'center'} style={{ marginLeft: -6 }} onClick={e => { e.stopPropagation() }} gap={12}>
+        <Flex justify={'center'} align={'center'} style={{ marginLeft: -6, cursor: 'default' }} onClick={e => { e.stopPropagation() }} gap={12}>
           <Tooltip title={'Preview'}>
             <Button size={'small'} type={'text'} style={{ width: 26, height: 26 }}>
               <IconEye style={{ position: 'relative', left: -5 }} size={18} />
             </Button>
           </Tooltip>
-          <Tooltip title={'Copy'}>
+          <Tooltip title={'Duplicate'}>
             <Button size={'small'} type={'text'} style={{ width: 26, height: 26 }}>
               <IconCopy style={{ position: 'relative', left: -2, top: 1 }} size={14} />
             </Button>
           </Tooltip>
         </Flex>
       ),
-      width: 150,
-      lock: true
+      width: 100,
+      lock: true,
+      align: 'center'
     }
   ]
 

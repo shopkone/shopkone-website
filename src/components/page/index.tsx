@@ -58,6 +58,10 @@ export default function Page (props: PageProps) {
     setResetLoading(resetLoading)
   }, [resetLoading])
 
+  useEffect(() => {
+    document.getElementById('shopkone-main')?.scrollTo?.({ top: 0 })
+  }, [])
+
   return (
     <div style={{
       maxWidth: width,
@@ -67,15 +71,15 @@ export default function Page (props: PageProps) {
     >
       <SLoading loading={loading} foreShow>
         <SRender render={title || header}>
-          <Flex align={'center'} justify={'space-between'} className={styles.title}>
-            <Flex gap={8} align={'center'}>
+          <Flex justify={'space-between'} gap={24} className={styles.title}>
+            <Flex style={{ minWidth: 0 }} flex={1} gap={8}>
               <SRender render={!!back}>
-                <Button onClick={() => { nav(back || '') }} type={'text'} className={styles['back-icon']}>
+                <Button style={{ position: 'relative', top: 2 }} onClick={() => { nav(back || '') }} type={'text'} className={styles['back-icon']}>
                   <IconArrowLeft size={20} />
                 </Button>
               </SRender>
               <SRender render={!!title}>
-                <Typography.Text ellipsis={{ tooltip: true }} style={{ fontSize: 20, maxWidth: width ? (width - 200) : undefined }}>
+                <Typography.Text style={{ fontSize: 20, flex: 1 }}>
                   {title}
                 </Typography.Text>
               </SRender>

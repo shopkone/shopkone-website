@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
-import { Radio, RadioGroupProps, Typography } from 'antd'
+import { ReactNode, useEffect, useMemo, useRef, useState } from 'react'
+import { Flex, Radio, RadioGroupProps, Typography } from 'antd'
 import isEqual from 'lodash/isEqual'
 
 import FilterBase from '@/components/table-filter/filter-base'
@@ -11,7 +11,7 @@ export interface RadioGroup extends Omit<RadioGroupProps, 'options' | 'onChange'
   onChange?: (value: string | number | undefined) => void
   value?: string | number
   children: React.ReactNode
-  onLabelChange?: (label?: string) => void
+  onLabelChange?: (label?: ReactNode) => void
 }
 
 export default function FilterRadio (props: RadioGroup) {
@@ -32,7 +32,7 @@ export default function FilterRadio (props: RadioGroup) {
 
   const optionList = options.map(item => ({
     label: (
-      <Typography.Text style={{ maxWidth: 130 }} ellipsis={{ tooltip: true }}>
+      <Typography.Text style={{ maxWidth: 600 }} ellipsis={{ tooltip: true }}>
         {item.label}
       </Typography.Text>
     ),
@@ -62,7 +62,13 @@ export default function FilterRadio (props: RadioGroup) {
   }, [value])
 
   useEffect(() => {
-    onLabelChange?.(label ? `${children}: ${label}` : undefined)
+    const l = (
+      <Flex gap={4} align={'center'}>
+        {children}
+        <span style={{ fontWeight: 600 }}>: {label} </span>
+      </Flex>
+    )
+    onLabelChange?.(label ? l : undefined)
   }, [label])
 
   return (

@@ -79,7 +79,7 @@ export default function GroupBy (props: GroupByProps) {
           value: name
         }))}
         size={'small'}
-        dropdownStyle={{ minWidth: 200 }}
+        dropdownStyle={{ minWidth: 300 }}
         style={{ minWidth: 120 }}
       />
     </Flex>

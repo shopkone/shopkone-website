@@ -1,6 +1,6 @@
 import { Flex, FlexProps } from 'antd'
 
-type StatusType = 'success' | 'info' | 'warning' | 'error' | 'default'
+type StatusType = 'success' | 'info' | 'warning' | 'error' | 'default' | 'black'
 
 export interface StatusProps extends FlexProps {
   type?: StatusType
@@ -15,7 +15,8 @@ export default function Status (props: StatusProps) {
     success: '#32a645',
     info: '#3370ff',
     warning: '#ffc107',
-    error: '#f54a45'
+    error: '#f54a45',
+    black: '#1f2329'
   }
 
   if (!borderless) {
@@ -25,8 +26,8 @@ export default function Status (props: StatusProps) {
         align={'center'}
         style={{
           borderRadius: 4,
-          background: color[type] + '30',
-          border: `1px solid ${color[type] + '40'}`,
+          background: color[type] + '10',
+          border: `1px solid ${color[type] + '30'}`,
           fontSize: 12,
           padding: '0 8px',
           color: color[type],

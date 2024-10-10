@@ -157,7 +157,6 @@ export default function ProductChangeInner (props: ProductChangeInnerProps) {
             <Button type={'text'}>Duplicate</Button>
             <Button type={'text'}>Preview</Button>
             <Button type={'text'}>Share</Button>
-            <Button type={'text'}>More actions</Button>
           </Flex>
         </SRender>
       }
