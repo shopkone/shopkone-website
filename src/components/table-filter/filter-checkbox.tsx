@@ -1,27 +1,26 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Radio, RadioGroupProps, Typography } from 'antd'
+import { Checkbox, Typography } from 'antd'
+import { CheckboxGroupProps } from 'antd/es/checkbox'
 import isEqual from 'lodash/isEqual'
 
 import FilterBase from '@/components/table-filter/filter-base'
 
 import styles from './index.module.less'
 
-export interface RadioGroup extends Omit<RadioGroupProps, 'options' | 'onChange' | 'value'> {
+export interface CheckboxGroup extends Omit<CheckboxGroupProps, 'options'> {
   options: Array<{ label: string, value: string | number }>
-  onChange?: (value: string | number | undefined) => void
-  value?: string | number
   children: React.ReactNode
   onLabelChange?: (label?: string) => void
 }
 
-export default function FilterRadio (props: RadioGroup) {
+export default function FilterCheckbox (props: CheckboxGroup) {
   const { options, onChange, value, children, onLabelChange, ...rest } = props
   const [open, setOpen] = useState(false)
-  const [tempValue, setTempValue] = useState<RadioGroupProps['value']>()
+  const [tempValue, setTempValue] = useState<CheckboxGroup['value']>()
   const init = useRef(false)
 
-  const changeHandle: RadioGroupProps['onChange'] = (e) => {
-    setTempValue?.(e.target.value)
+  const changeHandle: CheckboxGroupProps['onChange'] = (e) => {
+    setTempValue?.(e)
   }
 
   const onClear = () => {
@@ -32,7 +31,7 @@ export default function FilterRadio (props: RadioGroup) {
 
   const optionList = options.map(item => ({
     label: (
-      <Typography.Text style={{ maxWidth: 130 }} ellipsis={{ tooltip: true }}>
+      <Typography.Text style={{ maxWidth: 130, position: 'relative', top: -1 }} ellipsis={{ tooltip: true }}>
         {item.label}
       </Typography.Text>
     ),
@@ -40,9 +39,9 @@ export default function FilterRadio (props: RadioGroup) {
   }))
 
   const label = useMemo(() => {
-    return options?.find((item) => {
-      return item?.value === value
-    })?.label || ''
+    return value?.map((key) => options?.find((item) => {
+      return item?.value === key
+    })?.label).join(', ')
   }, [value])
 
   useEffect(() => {
@@ -52,7 +51,7 @@ export default function FilterRadio (props: RadioGroup) {
       return
     }
     if (isEqual(value, tempValue)) return
-    onChange?.(tempValue)
+    onChange?.(tempValue || [])
     setTempValue(undefined)
   }, [open])
 
@@ -67,7 +66,7 @@ export default function FilterRadio (props: RadioGroup) {
 
   return (
     <FilterBase onClear={label ? onClear : undefined} open={open} setOpen={setOpen} label={children}>
-      <Radio.Group
+      <Checkbox.Group
         {...rest}
         className={styles.radio}
         value={tempValue}

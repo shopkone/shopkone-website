@@ -5,8 +5,9 @@ import { Flex, Input, Typography } from 'antd'
 import { FileType } from '@/api/file/add-file-record'
 import SRender from '@/components/s-render'
 import Status from '@/components/status'
-import TableFilter from '@/components/table-filter'
-import { FilterNumberRangeProps } from '@/components/table-filter/filter-number-range'
+import FilterCheckbox from '@/components/table-filter/filter-checkbox'
+import FilterNumberRange, { FilterNumberRangeProps } from '@/components/table-filter/filter-number-range'
+import FilterRadio from '@/components/table-filter/filter-radio'
 
 import styles from './index.module.less'
 
@@ -54,49 +55,39 @@ export default function Filters (props: FiltersProps) {
           align={'center'}
           gap={8}
         >
-          <TableFilter
-            numberRange={{
-              maxLabel: 'Max size',
-              minLabel: 'Min size',
-              unit: 'MB',
-              onChange: (v) => {
-                onChange?.({ ...value, file_size: v })
-              },
-              value: value?.file_size || {}
-            }}
+          <FilterNumberRange
+            maxLabel={'Max size'}
+            minLabel= {'Min size'}
+            unit={'MB'}
+            onChange={(v) => { onChange?.({ ...value, file_size: v }) }}
             onLabelChange={(l) => { setLabels({ ...labels, file_size: l }) }}
+            value={value?.file_size || {}}
           >
             File size
-          </TableFilter>
+          </FilterNumberRange>
 
-          <TableFilter
-            checkbox={{
-              options,
-              onChange: (v) => {
-                onChange?.({ ...value, file_type: v.map(i => Number(i || 0)) })
-              },
-              value: value?.file_type
+          <FilterCheckbox
+            options={options}
+            onChange={(v) => {
+              onChange?.({ ...value, file_type: v.map(i => Number(i || 0)) })
             }}
+            value={value?.file_type}
             onLabelChange={(l) => { setLabels({ ...labels, file_type: l }) }}
           >
             File type
-          </TableFilter>
+          </FilterCheckbox>
 
-          <TableFilter
-            radio={{
-              options: [
-                { label: 'Used', value: 1 },
-                { label: 'Unused', value: 2 }
-              ],
-              onChange: (v) => {
-                onChange?.({ ...value, used: Number(v || 0) })
-              },
-              value: value?.used
-            }}
+          <FilterRadio
+            options={[
+              { label: 'Used', value: 1 },
+              { label: 'Unused', value: 2 }
+            ]}
+            value={value?.used}
+            onChange={(v) => { onChange?.({ ...value, used: Number(v || 0) }) }}
             onLabelChange={(l) => { setLabels({ ...labels, used: l }) }}
           >
             Used
-          </TableFilter>
+          </FilterRadio>
 
           <SRender render={groupName}>
             <Typography.Text className={styles.tag} ellipsis={{ tooltip: true }}>
