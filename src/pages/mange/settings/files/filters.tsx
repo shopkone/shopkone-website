@@ -1,8 +1,10 @@
-import { IconSearch } from '@tabler/icons-react'
-import { Button, Flex, Input, Typography } from 'antd'
+import { useState } from 'react'
+import { IconSearch, IconX } from '@tabler/icons-react'
+import { Flex, Input, Typography } from 'antd'
 
 import { FileType } from '@/api/file/add-file-record'
 import SRender from '@/components/s-render'
+import Status from '@/components/status'
 import TableFilter from '@/components/table-filter'
 import { FilterNumberRangeProps } from '@/components/table-filter/filter-number-range'
 
@@ -21,6 +23,7 @@ export interface FiltersProps {
 
 export default function Filters (props: FiltersProps) {
   const { onChange, value, groupName } = props
+  const [labels, setLabels] = useState<Record<string, string | undefined>>({})
 
   const options = [
     { value: FileType.Image, label: 'Image' },
@@ -30,91 +33,92 @@ export default function Filters (props: FiltersProps) {
   ]
 
   return (
-    <div>
-      <Input
-        value={value?.keyword}
-        onChange={(e) => {
-          onChange?.({ ...value, keyword: e.target.value })
-        }}
-        allowClear
-        prefix={<IconSearch size={15} className={styles['filter-icon']} />}
-        placeholder={'Search files'}
-        size={'small'}
-        variant={'borderless'}
-        style={{
-          marginLeft: 8,
-          width: 320
-        }}
-      />
-      <div style={{ margin: '6px 0' }} className={'line'} />
-      <Flex
-        align={'center'}
-        gap={8}
-        style={{
-          marginLeft: 8,
-          marginBottom: 8,
-          marginTop: 8
-        }}
-      >
-        <TableFilter
-          numberRange={{
-            maxLabel: 'Max size',
-            minLabel: 'Min size',
-            unit: 'MB',
-            onChange: (v) => {
-              onChange?.({ ...value, file_size: v })
-            },
-            value: value?.file_size || {}
-          }}
-        >
-          File size
-        </TableFilter>
-
-        <TableFilter
-          checkbox={{
-            options,
-            onChange: (v) => {
-              onChange?.({ ...value, file_type: v.map(i => Number(i || 0)) })
-            },
-            value: value?.file_type
-          }}
-        >
-          File type
-        </TableFilter>
-
-        <TableFilter
-          radio={{
-            options: [
-              { label: 'Used', value: 1 },
-              { label: 'Unused', value: 2 }
-            ],
-            onChange: (v) => {
-              onChange?.({ ...value, used: Number(v || 0) })
-            },
-            value: value?.used
-          }}
-        >
-          Used
-        </TableFilter>
-
-        <SRender render={groupName}>
-          <Typography.Text className={styles.tag} ellipsis={{ tooltip: true }}>
-            {groupName}
-          </Typography.Text>
-        </SRender>
-
-        <SRender render={!!Object.values(value?.file_size || {})?.filter(i => i)?.length || !!value?.file_type?.length || !!value?.used}>
-          <Button
-            onClick={() => {
-              onChange?.({ ...value, file_size: undefined, file_type: undefined, used: undefined })
+    <div style={{ marginBottom: 12, marginTop: 4, marginLeft: 24 }}>
+      <Flex align={'center'} gap={20}>
+        <div>
+          <Input
+            value={value?.keyword}
+            onChange={(e) => {
+              onChange?.({ ...value, keyword: e.target.value })
             }}
-            type={'link'}
+            allowClear
+            prefix={<IconSearch size={15} className={styles['filter-icon']} />}
+            placeholder={'Search files'}
             size={'small'}
-            className={'link-btn'}
+            style={{
+              width: 250
+            }}
+          />
+        </div>
+        <Flex
+          align={'center'}
+          gap={8}
+        >
+          <TableFilter
+            numberRange={{
+              maxLabel: 'Max size',
+              minLabel: 'Min size',
+              unit: 'MB',
+              onChange: (v) => {
+                onChange?.({ ...value, file_size: v })
+              },
+              value: value?.file_size || {}
+            }}
+            onLabelChange={(l) => { setLabels({ ...labels, file_size: l }) }}
           >
-            Clear all
-          </Button>
-        </SRender>
+            File size
+          </TableFilter>
+
+          <TableFilter
+            checkbox={{
+              options,
+              onChange: (v) => {
+                onChange?.({ ...value, file_type: v.map(i => Number(i || 0)) })
+              },
+              value: value?.file_type
+            }}
+            onLabelChange={(l) => { setLabels({ ...labels, file_type: l }) }}
+          >
+            File type
+          </TableFilter>
+
+          <TableFilter
+            radio={{
+              options: [
+                { label: 'Used', value: 1 },
+                { label: 'Unused', value: 2 }
+              ],
+              onChange: (v) => {
+                onChange?.({ ...value, used: Number(v || 0) })
+              },
+              value: value?.used
+            }}
+            onLabelChange={(l) => { setLabels({ ...labels, used: l }) }}
+          >
+            Used
+          </TableFilter>
+
+          <SRender render={groupName}>
+            <Typography.Text className={styles.tag} ellipsis={{ tooltip: true }}>
+              {groupName}
+            </Typography.Text>
+          </SRender>
+        </Flex>
+      </Flex>
+      <Flex className={styles.filterGroups} gap={16}>
+        {
+          Object.keys(labels).filter(i => labels[i]).map(key => (
+            <Status type={'info'} key={key}>
+              {labels[key]}
+              <IconX
+                className={styles.clearBtn}
+                onClick={() => onChange?.(Object.assign({}, value, { [key]: undefined }))}
+                style={{ marginLeft: 8, marginTop: -1, marginRight: -4 }}
+                size={14}
+              />
+            </Status>
+          ))
+        }
       </Flex>
     </div>
   )

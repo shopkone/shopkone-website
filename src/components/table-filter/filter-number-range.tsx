@@ -18,14 +18,14 @@ export default function FilterNumberRange (props: FilterNumberRangeProps) {
       <Form.Item style={{ marginBottom: 8 }} label={`${minLabel}`}>
         <SInputNumber
           value={value?.min}
-          onChange={(v) => onChange?.({ min: v, max: value?.max })}
+          onChange={(v) => { onChange?.({ min: v, max: value?.max }) }}
           suffix={unit}
         />
       </Form.Item>
       <Form.Item className={'mb0'} label={`${maxLabel}`}>
         <SInputNumber
           value={value?.max}
-          onChange={(v) => onChange?.({ min: value?.min, max: v })}
+          onChange={(v) => { onChange?.({ min: value?.min, max: v }) }}
           suffix={unit}
         />
       </Form.Item>

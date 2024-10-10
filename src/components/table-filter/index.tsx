@@ -1,9 +1,10 @@
-import { MouseEventHandler, useMemo, useState } from 'react'
+import { MouseEventHandler, useEffect, useMemo, useState } from 'react'
 import { CloseOutlined } from '@ant-design/icons'
 import { IconChevronDown } from '@tabler/icons-react'
 import { Button, Checkbox, Flex, Popover, Typography } from 'antd'
 import { CheckboxGroupProps } from 'antd/es/checkbox'
 
+import SRender from '@/components/s-render'
 import FilterNumberRange, { FilterNumberRangeProps } from '@/components/table-filter/filter-number-range'
 import FilterRadio, { RadioGroup } from '@/components/table-filter/filter-radio'
 
@@ -18,10 +19,11 @@ export interface TableFilterProps {
   radio?: RadioGroup
   checkbox?: CheckboxGroup
   numberRange?: FilterNumberRangeProps
+  onLabelChange?: (label?: string) => void
 }
 
 export default function TableFilter (props: TableFilterProps) {
-  const { children, radio, checkbox, numberRange } = props
+  const { children, radio, checkbox, numberRange, onLabelChange } = props
   const [open, setOpen] = useState(false)
 
   const label = useMemo(() => {
@@ -47,17 +49,15 @@ export default function TableFilter (props: TableFilterProps) {
 
   const onClear: MouseEventHandler = (e) => {
     e.stopPropagation()
-    if (radio) {
-      radio?.onChange?.(undefined)
-    }
-    if (numberRange) {
-      numberRange?.onChange?.({})
-    }
-    if (checkbox) {
-      checkbox?.onChange?.([])
-    }
+    checkbox?.onChange?.([])
+    numberRange?.onChange?.(undefined)
+    radio?.onChange?.(undefined)
     setOpen(false)
   }
+
+  useEffect(() => {
+    onLabelChange?.(label ? `${children}: ${label}` : undefined)
+  }, [label])
 
   return (
     <Popover
@@ -89,13 +89,16 @@ export default function TableFilter (props: TableFilterProps) {
       <Button style={{ background: '#fff' }} type={label ? undefined : 'dashed'} size={'small'}>
         <Flex gap={2} align={'center'} style={{ position: 'relative', top: -1 }}>
           <Flex gap={4} style={{ fontWeight: label ? 550 : 400 }}>
-            <span style={{ color: '#666' }}>{children}</span>{label ? ':' : ''}
-            <Typography.Text ellipsis={{ tooltip: true }} style={{ maxWidth: 150, position: 'relative', top: 1, lineHeight: '14px' }}>
-              {label}
-            </Typography.Text>
+            <span style={{ color: '#666' }}>{children}</span>
+            <SRender render={!onLabelChange && label}>:</SRender>
+            <SRender render={!onLabelChange}>
+              <Typography.Text ellipsis={{ tooltip: true }} style={{ maxWidth: 150, position: 'relative', top: 1, lineHeight: '14px' }}>
+                {label}
+              </Typography.Text>
+            </SRender>
           </Flex>
           {
-            label
+            (label && !onLabelChange)
               ? (
                 <div className={styles.close} onClick={onClear}>
                   <CloseOutlined className={styles.closeIcon} />
