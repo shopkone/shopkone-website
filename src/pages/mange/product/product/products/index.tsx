@@ -1,14 +1,17 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { IconDownload, IconPlus } from '@tabler/icons-react'
+import { IconCopy, IconDownload, IconEye, IconPlus } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
-import { Button, Flex, Input } from 'antd'
+import { Button, Flex, Input, Switch, Tooltip } from 'antd'
+import dayjs from 'dayjs'
 
-import { ProductListApi, ProductListReq } from '@/api/product/list'
+import { ProductListApi, ProductListReq, ProductListRes } from '@/api/product/list'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
 import SRender from '@/components/s-render'
 import STable, { STableProps } from '@/components/s-table'
+import { VariantStatus } from '@/constant/product'
+import { renderText } from '@/utils/render-text'
 
 import styles from './index.module.less'
 
@@ -18,7 +21,96 @@ export default function Products () {
   const list = useRequest(ProductListApi, { manual: true })
   const [selected, setSelected] = useState<number[]>([])
   const columns: STableProps['columns'] = [
-    { title: 'id', code: 'id', name: 'id' }
+    {
+      title: 'Product',
+      code: 'product',
+      name: 'product',
+      render: (_, row: ProductListRes) => (
+        row.title
+      ),
+      width: 500,
+      lock: true
+    },
+    {
+      title: 'Price',
+      code: 'price',
+      name: 'price',
+      render: (_, row: ProductListRes) => (
+        <div>{row.max_price}</div>
+      ),
+      width: 150
+    },
+    {
+      title: 'SPU',
+      code: 'spu',
+      name: 'spu',
+      render: (spu: string) => renderText(spu),
+      width: 150
+    },
+    {
+      title: 'Vendor',
+      code: 'vendor',
+      name: 'vendor',
+      render: (vendor: string) => renderText(vendor),
+      width: 150
+    },
+    {
+      title: 'Inventory quantity',
+      code: 'quantity',
+      name: 'quantity',
+      render: (quantity) => (
+        <div>{quantity}</div>
+      ),
+      width: 150
+    },
+    {
+      title: 'Created',
+      code: 'created_at',
+      name: 'id',
+      width: 150,
+      render: (created_at: number) => {
+        if (created_at) return dayjs(created_at).format('MM/DD/YYYY')
+        return renderText()
+      }
+    },
+    {
+      title: 'Status',
+      code: 'status',
+      name: 'status',
+      width: 150,
+      render: (status: VariantStatus) => (
+        <Flex onClick={e => { e.stopPropagation() }} align={'center'} gap={8}>
+          <Switch size={'small'} checked={status === VariantStatus.Published} />
+          <SRender style={{ fontSize: 12, position: 'relative', top: 1 }} render={status === VariantStatus.Published}>
+            Activated
+          </SRender>
+          <SRender style={{ fontSize: 12, position: 'relative', top: 1 }} render={status !== VariantStatus.Published}>
+            Draft
+          </SRender>
+        </Flex>
+      )
+    },
+    {
+      title: 'Action',
+      code: 'action',
+      name: 'action',
+      render: () => (
+        <Flex align={'center'} style={{ marginLeft: -6 }} onClick={e => { e.stopPropagation() }} gap={12}>
+          <Tooltip title={'Preview'}>
+            <Button size={'small'} type={'text'} style={{ width: 26, height: 26 }}>
+              <IconEye style={{ position: 'relative', left: -5 }} size={18} />
+            </Button>
+          </Tooltip>
+          <Tooltip title={'Copy'}>
+            <Button size={'small'} type={'text'} style={{ width: 26, height: 26 }}>
+              <IconCopy style={{ position: 'relative', left: -2, top: 1 }} size={14} />
+            </Button>
+          </Tooltip>
+        </Flex>
+      ),
+      width: 150,
+      lock: true
+    }
   ]
 
   useEffect(() => {
