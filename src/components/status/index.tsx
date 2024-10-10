@@ -1,17 +1,21 @@
 import { Flex, FlexProps } from 'antd'
 
+type StatusType = 'success' | 'info' | 'warning' | 'error' | 'default'
+
 export interface StatusProps extends FlexProps {
-  type?: 'success' | 'info' | 'warning' | 'error' | 'default'
+  type?: StatusType
   borderless?: boolean
 }
 
 export default function Status (props: StatusProps) {
   const { children, type = 'default', borderless, ...rest } = props
 
-  const color = {
+  const color: Record<StatusType, string> = {
     default: '#646A73',
     success: '#32a645',
-    info: '#3370ff'
+    info: '#3370ff',
+    warning: '#ffc107',
+    error: '#f54a45'
   }
 
   if (!borderless) {
