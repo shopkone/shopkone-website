@@ -66,7 +66,7 @@ export default function GroupBy (props: GroupByProps) {
     }
   }, [variants, groupName, options])
 
-  if (options.length < 2) return <span className={'tips'}>Single variant mode</span>
+  if (options.length < 2) return null
 
   return (
     <Flex align={'center'} gap={8}>

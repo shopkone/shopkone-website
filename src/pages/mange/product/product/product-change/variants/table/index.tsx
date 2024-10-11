@@ -92,10 +92,10 @@ export default function Table (props: TableProps) {
             variants={variants}
             options={options}
           />
-          <LocationsSelect key={'location'} selected={locationId} setSelected={setLocationId} />
         </Flex>
-        <Flex flex={1}>
+        <Flex align={'center'} justify={'space-between'} flex={1}>
           <Filters labels={labels} setLabels={setLabels} key={'filters'} value={filters} onChange={setFilters} options={options} />
+          <LocationsSelect key={'location'} selected={locationId} setSelected={setLocationId} />
         </Flex>
       </Flex>
       <FilterLabels style={{ marginBottom: 12 }} labels={labels} value={filters} onChange={setFilters} />

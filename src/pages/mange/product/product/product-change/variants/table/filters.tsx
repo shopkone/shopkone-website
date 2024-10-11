@@ -15,7 +15,7 @@ export interface FiltersProps {
 export default function Filters (props: FiltersProps) {
   const { options, onChange, value, setLabels, labels } = props
 
-  if (options.length < 2) return null
+  if (!options.length) return <div />
 
   return (
     <Flex align={'center'} gap={8}>
