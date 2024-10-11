@@ -9,6 +9,7 @@ export interface FilterNumberRangeProps {
   minLabel: string
   maxLabel: string
   unit: string
+  prefix?: boolean
   value?: { max?: number, min?: number }
   onChange: (value?: FilterNumberRangeProps['value']) => void
   onLabelChange?: (label?: string) => void
@@ -16,7 +17,7 @@ export interface FilterNumberRangeProps {
 }
 
 const FilterNumberRange = (props: FilterNumberRangeProps) => {
-  const { children, maxLabel, minLabel, unit, onChange, value, onLabelChange } = props
+  const { children, maxLabel, minLabel, unit, onChange, value, onLabelChange, prefix } = props
   const [open, setOpen] = useState(false)
   const [tempValue, setTempValue] = useState<FilterNumberRangeProps['value']>()
   const init = useRef(false)
@@ -67,14 +68,16 @@ const FilterNumberRange = (props: FilterNumberRangeProps) => {
           <SInputNumber
             value={tempValue?.min}
             onChange={(v) => { onChangeHandle?.({ min: v, max: tempValue?.max }) }}
-            suffix={unit}
+            suffix={prefix ? undefined : unit}
+            prefix={prefix ? unit : undefined}
           />
         </Form.Item>
         <Form.Item className={'mb0'} label={`${maxLabel}`}>
           <SInputNumber
             value={tempValue?.max}
             onChange={(v) => { onChangeHandle?.({ min: tempValue?.min, max: v }) }}
-            suffix={unit}
+            suffix={prefix ? undefined : unit}
+            prefix={prefix ? unit : undefined}
           />
         </Form.Item>
       </Form>

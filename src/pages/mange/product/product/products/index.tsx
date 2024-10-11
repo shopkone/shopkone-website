@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { IconAlertCircleFilled, IconCopy, IconDownload, IconEye, IconPhoto, IconPlus } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
-import { Button, Flex, Input, Switch, Tooltip } from 'antd'
+import { Button, Flex, Switch, Tooltip } from 'antd'
 import dayjs from 'dayjs'
 
 import { FileType } from '@/api/file/add-file-record'
@@ -13,10 +13,9 @@ import SCard from '@/components/s-card'
 import SRender from '@/components/s-render'
 import STable, { STableProps } from '@/components/s-table'
 import { VariantStatus } from '@/constant/product'
+import Filters from '@/pages/mange/product/product/products/filters'
 import { formatPrice } from '@/utils/num'
 import { renderText } from '@/utils/render-text'
-
-import styles from './index.module.less'
 
 export default function Products () {
   const nav = useNavigate()
@@ -177,28 +176,7 @@ export default function Products () {
       title={'Products'}
     >
       <SCard styles={{ body: { padding: '8px 0' } }}>
-        <SRender render={list?.data?.list?.length}>
-          asd
-        </SRender>
-        <SRender render={list?.data?.list?.length}>
-          <Flex align={'center'} justify={'space-between'} style={{ margin: '6px 8px' }}>
-            <Input
-              className={styles.search}
-              placeholder={'Searching all products'}
-              size={'small'}
-              variant={'filled'}
-            />
-            <div>
-              123
-            </div>
-          </Flex>
-          <div
-            style={{
-              margin: 0,
-              width: '100%'
-            }} className={'line'}
-          />
-        </SRender>
+        <Filters />
         <STable
           page={{
             current: params.page,
