@@ -100,9 +100,11 @@ export default function Products (props: ProductsProps) {
   return (
     <SCard
       extra={
-        <Button onClick={() => { selectInfo.edit(value || []) }}>
-          Select products
-        </Button>
+        <SRender render={value?.length}>
+          <Button onClick={() => { selectInfo.edit(value || []) }}>
+            Select products
+          </Button>
+        </SRender>
       }
       loading={products.loading ? !products?.data?.length : false}
       title={'Products'}

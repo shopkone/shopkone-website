@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useRequest } from 'ahooks'
 import { Card, Flex, Form, Input, Radio } from 'antd'
 
@@ -9,6 +9,7 @@ import Seo from '@/components/seo'
 import Conditions from '@/pages/mange/product/collections/change/conditions'
 import Products from '@/pages/mange/product/collections/change/products'
 import Uploader from '@/pages/mange/product/collections/change/uploader'
+import { isEqualHandle } from '@/utils/is-equal-handle'
 import { genId } from '@/utils/random'
 
 export enum CollectionType {
@@ -23,7 +24,13 @@ export enum MatchModeType {
 
 const INIT_VALUES = {
   collection_type: CollectionType.Manual,
-  match_mode: MatchModeType.All
+  match_mode: MatchModeType.All,
+  seo: {
+    page_title: '',
+    meta_description: '',
+    url_handle: '',
+    follow: true
+  }
 }
 
 export default function Change () {
@@ -31,6 +38,26 @@ export default function Change () {
   const create = useRequest(CreateProductCollectionApi, { manual: true })
   const type: CollectionType = Form.useWatch('collection_type', form)
   const [isChange, setIsChange] = useState(false)
+  const init = useRef<any>()
+
+  const onValuesChange = () => {
+    const values = form.getFieldsValue()
+    if (!init.current?.seo) {
+      init.current = values
+    }
+    const isChange = !isEqualHandle(init.current, values)
+    setIsChange(isChange)
+  }
+
+  const onReset = () => {
+    form.resetFields()
+    setIsChange(false)
+  }
+
+  const onOk = async () => {
+    const values = form.getFieldsValue()
+    await create.runAsync(values)
+  }
 
   useEffect(() => {
     if (type === CollectionType.Auto) {
@@ -41,8 +68,16 @@ export default function Change () {
   }, [type])
 
   return (
-    <Page isChange={isChange} back={'/products/collections'} width={950} title={'Create collection'}>
-      <Form initialValues={INIT_VALUES} form={form} layout={'vertical'}>
+    <Page
+      loading={create.loading}
+      onOk={onOk}
+      onCancel={onReset}
+      isChange={isChange}
+      back={'/products/collections'}
+      width={950}
+      title={'Create collection'}
+    >
+      <Form onValuesChange={onValuesChange} initialValues={INIT_VALUES} form={form} layout={'vertical'}>
         <Flex gap={16}>
           <Flex vertical flex={1} gap={16}>
             <Card className={'fit-width'}>
@@ -78,7 +113,9 @@ export default function Change () {
             <Form.Item className={'mb0'} name={'cover_id'}>
               <Uploader />
             </Form.Item>
-            <Seo height />
+            <Form.Item className={'mb0'} name={'seo'}>
+              <Seo height />
+            </Form.Item>
           </Flex>
         </Flex>
       </Form>

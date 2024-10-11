@@ -16,6 +16,7 @@ export interface CreateProductCollectionReq {
   cover_id: number
   seo: SeoType
   conditions?: BaseCondition[]
+  product_ids?: number[]
 }
 
 export interface CreateProductCollectionRes {
