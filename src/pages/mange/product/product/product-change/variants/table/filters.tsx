@@ -19,6 +19,7 @@ export default function Filters (props: FiltersProps) {
 
   return (
     <Flex align={'center'} gap={8}>
+      Filters
       {
           options.map(option => (
             <FilterRadio

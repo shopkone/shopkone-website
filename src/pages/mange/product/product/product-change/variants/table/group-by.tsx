@@ -66,7 +66,7 @@ export default function GroupBy (props: GroupByProps) {
     }
   }, [variants, groupName, options])
 
-  if (options.length < 2) return <div />
+  if (options.length < 2) return null
 
   return (
     <Flex align={'center'} gap={8}>
@@ -80,7 +80,7 @@ export default function GroupBy (props: GroupByProps) {
         }))}
         size={'small'}
         dropdownStyle={{ minWidth: 300 }}
-        style={{ minWidth: 120, maxWidth: 250 }}
+        style={{ minWidth: 120 }}
       />
     </Flex>
   )

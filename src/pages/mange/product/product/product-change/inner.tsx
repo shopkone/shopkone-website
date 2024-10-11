@@ -174,25 +174,25 @@ export default function ProductChangeInner (props: ProductChangeInnerProps) {
               <Flex vertical gap={16}>
                 <BaseInfo />
                 <VariantsSettings />
-                <Form.Item name={'variants'}>
-                  <Variants
-                    setLoaded={() => { setLoaded(true) }}
-                    onValueChange={onValuesChange}
-                    onResetLoading={setResetLoading}
-                    remoteVariants={remoteVariants}
-                    resetFlag={resetFlag}
-                    setIsChange={setIsVariantChange}
-                  />
-                </Form.Item>
               </Flex>
               <Flex vertical style={{ width: 320 }} gap={16}>
                 <Status />
                 <ProductOrganization />
                 <Form.Item style={{ flex: 1 }} className={'mb0'} name={'seo'}>
-                  <Seo height />
+                  <Seo />
                 </Form.Item>
               </Flex>
             </Flex>
+            <Form.Item name={'variants'}>
+              <Variants
+                setLoaded={() => { setLoaded(true) }}
+                onValueChange={onValuesChange}
+                onResetLoading={setResetLoading}
+                remoteVariants={remoteVariants}
+                resetFlag={resetFlag}
+                setIsChange={setIsVariantChange}
+              />
+            </Form.Item>
           </Flex>
         </Flex>
       </Form>

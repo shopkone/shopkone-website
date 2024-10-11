@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
-import { IconGripVertical, IconPhotoPlus, IconPlus, IconTrash } from '@tabler/icons-react'
-import { useDebounceFn, useRequest } from 'ahooks'
-import { Button, Card, Flex, Form, Input, Tag } from 'antd'
+import { IconGripVertical, IconPhotoPlus, IconPlus, IconTrash, IconX } from '@tabler/icons-react'
+import { useRequest } from 'ahooks'
+import { Button, Drawer, Flex, Form, Input, Tag } from 'antd'
 import classNames from 'classnames'
 
 import { FileType } from '@/api/file/add-file-record'
@@ -13,7 +13,7 @@ import SLoading from '@/components/s-loading'
 import { sMessage } from '@/components/s-message'
 import SRender from '@/components/s-render'
 import ItemSortable from '@/components/sortable/sortable-item'
-import { useOpen } from '@/hooks/useOpen'
+import { useOpen, UseOpenType } from '@/hooks/useOpen'
 import Sortable from '@/pages/mange/product/product/product-change/variants/changer/Sortable'
 import { Option, Variant } from '@/pages/mange/product/product/product-change/variants/state'
 import { genId } from '@/utils/random'
@@ -25,15 +25,14 @@ import Handle from './options-handle?worker'
 import ReserveHandle from './reserve-handle?worker'
 
 export interface ChangerProps {
+  info: UseOpenType<Variant[]>
   onChange: (data: Variant[], options: Option[]) => void
   onChangeLoading: (loading: boolean) => void
-  variants: Variant[]
-  options: Option[]
-  setOptions: (options: Option[]) => void
 }
 
 export default function Changer (props: ChangerProps) {
-  const { onChange, onChangeLoading, options, setOptions, variants } = props
+  const { info, onChange, onChangeLoading } = props
+  const [options, setOptions] = useState<Option[]>([])
   const [errors, setErrors] = useState<Array<{ id: number, msg: string }>>([])
   const [loading, setLoading] = useState(false)
   const [labelImages, setLabelImages] = useState<ProductCreateReq['label_images']>([])
@@ -42,6 +41,7 @@ export default function Changer (props: ChangerProps) {
   const [imageResult, setImageResult] = useState<FileListByIdsRes[]>([])
   const selectInfo = useOpen<number[]>([])
   const form = Form.useFormInstance()
+  const [count, setCount] = useState(0)
 
   const getItem = () => ({
     name: '',
@@ -100,20 +100,25 @@ export default function Changer (props: ChangerProps) {
     return result
   }
 
-  const onOk = useDebounceFn(() => {
+  const onOk = () => {
     if (errors.length) {
       sMessage.warning(errors?.[0]?.msg)
       return
     }
+    if (count > 500) {
+      sMessage.warning('Too many variants, please delete some options')
+      return
+    }
     onChangeLoading(true)
+    info.close()
     const worker: Worker = new Handle()
-    worker.postMessage({ options, variants })
+    worker.postMessage({ options, variants: info.data })
     worker.onmessage = (e) => {
       onChangeLoading(false)
       onChange(e.data, options)
     }
     form.setFieldValue('label_images', labelImages)
-  }, { wait: 500 }).run
+  }
 
   useEffect(() => {
     const errs: Array<{ id: number, msg: string }> = []
@@ -137,14 +142,19 @@ export default function Changer (props: ChangerProps) {
     })
     setErrors(errs)
     if (errs.length) return
-    onOk()
+    const worker: Worker = new Handle()
+    worker.postMessage({ options, variants: info.data })
+    worker.onmessage = (e) => {
+      setCount(e.data?.length || 0)
+    }
   }, [options])
 
   useEffect(() => {
-    if (variants.length) {
+    if (!info.open) return
+    if (info.data?.length) {
       setLoading(true)
       const worker: Worker = new ReserveHandle()
-      worker.postMessage({ variants })
+      worker.postMessage({ variants: info.data })
       worker.onmessage = (e) => {
         setLoading(false)
         setOptions(e.data)
@@ -152,12 +162,13 @@ export default function Changer (props: ChangerProps) {
     } else {
       setOptions([getItem()])
     }
+    console.log(form.getFieldsValue())
     setLabelImages(form.getFieldValue('label_images') || [])
-  }, [variants])
+  }, [info.open])
 
   // 加载列表
   useEffect(() => {
-    if (!labelImages?.length) return
+    if (!info.open) return
     const imageIds = labelImages.map(v => v.image_id).filter(Boolean)
     const fetchList = imageIds.filter(item => {
       return !imageResult?.find(i => i.id === item)
@@ -166,12 +177,36 @@ export default function Changer (props: ChangerProps) {
     fileList.runAsync({ ids: fetchList.filter(Boolean) }).then(r => {
       setImageResult(ii => [...ii, ...r])
     })
-  }, [labelImages])
+  }, [info.open, labelImages])
 
   return (
-    <Card
+    <Drawer
+      width={420}
+      open={info.open}
+      onClose={info.close}
       style={{ overflow: 'hidden' }}
-      title={'Set options'}
+      title={
+        <Flex style={{ overflow: 'hidden' }} align={'center'} justify={'space-between'}>
+          <span>{info?.data?.length ? 'Edit options' : 'Set options'}</span>
+          <Button
+            style={{ width: 24 }}
+            onClick={info.close}
+            type={'text'} size={'small'}
+          >
+            <IconX style={{ position: 'relative', left: -5 }} size={16} />
+          </Button>
+        </Flex>
+      }
+      maskClosable={false}
+      closeIcon={null}
+      footer={
+        <Flex align={'center'} justify={'space-between'}>
+          <div className={count > 500 ? styles.err : ''}>{count} / 500</div>
+          <Button onClick={onOk} type={'primary'}>
+            Done
+          </Button>
+        </Flex>
+      }
     >
       <SLoading loading={loading} />
       <Sortable<Option>
@@ -420,10 +455,20 @@ export default function Changer (props: ChangerProps) {
           )
         }
       </Sortable>
-      <SRender render={options.length < 5}>
-        <Button style={{ background: '#f7f7f7' }} onClick={onAdd} >
-          <Flex style={{ position: 'relative', top: -2 }} align={'center'} justify={'center'} gap={8}>
-            <IconPlus size={13} />
+      <SRender render={options.length < 3}>
+        <Button style={{ background: '#f7f7f7' }} onClick={onAdd} block>
+          <Flex
+            style={{
+              position: 'relative',
+              top: -2
+            }} align={'center'} justify={'center'} gap={8}
+          >
+            <IconPlus
+              size={13} style={{
+                position: 'relative',
+                top: -1
+              }}
+            />
             <div>Add another option</div>
           </Flex>
         </Button>
@@ -444,6 +489,7 @@ export default function Changer (props: ChangerProps) {
         multiple={false}
         info={selectInfo}
       />
-    </Card>
+      <div style={{ height: 80 }} />
+    </Drawer>
   )
 }
