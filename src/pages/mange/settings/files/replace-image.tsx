@@ -22,8 +22,9 @@ export default function ReplaceImage (props: ReplaceImageProps) {
   const onUpload = async (files: UploadFileType[]) => {
     if (files?.[0]?.status !== 'wait') return
     try {
+      if (!files.length) return
       onLoading(true)
-      const res = await upload(files[0])
+      const res = await upload({ ...files[0], status: 'uploading' })
       await updateFile.runAsync({ id, src: res.path })
       sMessage.success('Replace success')
     } finally {

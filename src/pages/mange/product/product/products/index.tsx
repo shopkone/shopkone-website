@@ -92,7 +92,7 @@ export default function Products () {
                 {row.variants?.length} variants
               </SRender>
             </Flex>
-            <Flex style={{ color: '#ffc107', display: !someInStock ? 'flex' : 'none' }} align={'center'} gap={4}>
+            <Flex style={{ color: '#ffc107', display: everyInStock ? 'none' : 'flex' }} align={'center'} gap={4}>
               <IconAlertCircleFilled size={15} strokeWidth={2} />
               <Flex><SRender render={!everyInStock && someInStock}>Partial - </SRender>Out of stock</Flex>
             </Flex>
