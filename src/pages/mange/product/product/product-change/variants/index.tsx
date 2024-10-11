@@ -133,81 +133,79 @@ export default function Variants (props: VariantsProps) {
   }, [resetFlag])
 
   return (
-    <div className={isFull ? styles.global : ''}>
-      <SCard
-        bordered
-        className={styles.container}
-        style={{ margin: isFull ? '16px 24px' : undefined }}
-        title={
-          <Flex gap={8} align={'center'}>
-            <div>Variants</div>
-            <div style={{ fontWeight: 400, fontSize: 12, position: 'relative', top: 1 }}>
-              {variants?.length > 1 ? `(${variants?.length} records)` : ''}
-            </div>
-          </Flex>
-        }
-        extra={
-          <Flex gap={12}>
-            <SRender render={variants?.length}>
-              <SRender render={!isFull}>
-                <Tooltip title={'Maximize'}>
+    <div>
+      <Changer
+        onChangeLoading={setLoading}
+        onChange={(v, o) => { onChange(v); setOptions(o); onValueChange() }}
+      />
+      <div className={isFull ? styles.global : ''}>
+        <SCard
+          bordered
+          className={styles.container}
+          style={{ margin: isFull ? '16px 24px' : undefined }}
+          title={
+            <Flex gap={8} align={'center'}>
+              <div>Variants</div>
+              <div style={{ fontWeight: 400, fontSize: 12, position: 'relative', top: 1 }}>
+                {variants?.length > 1 ? `(${variants?.length} records)` : ''}
+              </div>
+            </Flex>
+          }
+          extra={
+            <Flex gap={12}>
+              <SRender render={variants?.length}>
+                <SRender render={!isFull}>
+                  <Tooltip title={'Maximize'}>
+                    <Button
+                      style={{ height: 25, width: 25 }}
+                      onClick={() => { setIsFull(!isFull) }}
+                      type={'text'}
+                      size={'small'}
+                    >
+                      <IconMaximize style={{ position: 'relative', left: -2, top: 2 }} size={16} />
+                    </Button>
+                  </Tooltip>
+                </SRender>
+                <SRender render={isFull}>
+                  <Tooltip title={'Minimize'}>
+                    <Button
+                      style={{ height: 25, width: 25 }}
+                      onClick={() => { setIsFull(!isFull) }}
+                      type={'text'}
+                      size={'small'}
+                    >
+                      <IconMinimize style={{ position: 'relative', left: -2, top: 1 }} size={16} />
+                    </Button>
+                  </Tooltip>
+                </SRender>
+              </SRender>
+              <SRender render={variantType === VariantType.Multiple && !!variants?.length}>
+                <Tooltip title={'Edit options'}>
                   <Button
                     style={{ height: 25, width: 25 }}
-                    onClick={() => { setIsFull(!isFull) }}
+                    onClick={() => { openInfo.edit(form.getFieldValue('variants')) }}
                     type={'text'}
                     size={'small'}
+                    className={'primary-text'}
                   >
-                    <IconMaximize style={{ position: 'relative', left: -2, top: 2 }} size={16} />
+                    <IconPencil style={{ position: 'relative', left: -2, top: 2 }} size={16} />
                   </Button>
                 </Tooltip>
               </SRender>
-              <SRender render={isFull}>
-                <Tooltip title={'Minimize'}>
-                  <Button
-                    style={{ height: 25, width: 25 }}
-                    onClick={() => { setIsFull(!isFull) }}
-                    type={'text'}
-                    size={'small'}
-                  >
-                    <IconMinimize style={{ position: 'relative', left: -2, top: 1 }} size={16} />
-                  </Button>
-                </Tooltip>
-              </SRender>
-            </SRender>
-            <SRender render={variants?.length} style={{ width: 24, height: 24 }} />
-            <SRender render={variantType === VariantType.Multiple && !!variants?.length}>
-              <Tooltip title={'Edit options'}>
-                <Button
-                  style={{ height: 25, width: 25 }}
-                  onClick={() => { openInfo.edit(form.getFieldValue('variants')) }}
-                  type={'text'}
-                  size={'small'}
-                  className={'primary-text'}
-                >
-                  <IconPencil style={{ position: 'relative', left: -2, top: 2 }} size={16} />
-                </Button>
-              </Tooltip>
-            </SRender>
-          </Flex>
-        }
-      >
-        <Changer
-          onChangeLoading={setLoading}
-          onChange={(v, o) => { onChange(v); setOptions(o); onValueChange() }}
-          info={openInfo}
-        />
-        <Table
-          setLoaded={setLoaded}
-          settingsStyle={{ display: variants?.length ? 'unset' : 'none', right: variantType === VariantType.Single ? 0 : 36 }}
-          forceChange={onChange}
-          onOpenOptions={() => { openInfo.edit() }}
-          onChangeGroupVariants={onIsChange}
-          loading={loading}
-          variants={variants}
-          options={options}
-          isFull={isFull}
-        />
-      </SCard>
+            </Flex>
+          }
+        >
+          <Table
+            setLoaded={setLoaded}
+            onOpenOptions={() => { openInfo.edit() }}
+            onChangeGroupVariants={onIsChange}
+            loading={loading}
+            variants={variants}
+            options={options}
+            isFull={isFull}
+          />
+        </SCard>
+      </div>
     </div>
   )
 }

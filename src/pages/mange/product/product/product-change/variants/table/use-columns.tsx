@@ -1,14 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
-import { IconTrash } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
-import { Button, Form, Tooltip } from 'antd'
+import { Form } from 'antd'
 
 import { FileType } from '@/api/file/add-file-record'
 import { fileListByIds, FileListByIdsRes } from '@/api/file/file-list-by-ids'
 import SelectFiles from '@/components/media/select-files'
-import SRender from '@/components/s-render'
+import { STableProps } from '@/components/s-table'
 import { VariantType } from '@/constant/product'
-import { useColumn, UseColumnType } from '@/hooks/use-column'
 import { useOpen } from '@/hooks/useOpen'
 import { Variant } from '@/pages/mange/product/product/product-change/variants/state'
 import ColumnInventory from '@/pages/mange/product/product/product-change/variants/table/columns/column-inventory'
@@ -26,11 +24,11 @@ export interface ColumnsParams {
   expands: number[]
   setExpands: (expands: number[]) => void
   locationId: number
-  forceChange: (row: Variant[]) => void
+  isFull: boolean
 }
 
 export default function useColumns (params: ColumnsParams) {
-  const { variants, setVariants, groupName, expands, setExpands, locationId, forceChange } = params
+  const { variants, setVariants, groupName, expands, setExpands, locationId, isFull } = params
   const form = Form.useFormInstance()
   const variantType: VariantType = Form.useWatch('variant_type', form)
   const inventoryTracking = Form.useWatch('inventory_tracking', form)
@@ -62,19 +60,6 @@ export default function useColumns (params: ColumnsParams) {
     }
   }
 
-  const onRemove = (row: Variant) => {
-    const list = variants.filter(v => v.id !== row.id)
-    const vs: Variant[] = []
-    list.forEach(v => {
-      if (v.children?.length) {
-        vs.push(...v.children)
-      } else {
-        vs.push(v)
-      }
-    })
-    forceChange(vs)
-  }
-
   // 加载列表
   useEffect(() => {
     if (imageOpenInfo.open) return
@@ -98,10 +83,9 @@ export default function useColumns (params: ColumnsParams) {
     })
   }, [variants, imageOpenInfo.open])
 
-  const cols: UseColumnType[] = [
+  const columns: STableProps['columns'] = [
     {
       title: <ColumnTitle expands={expands} setExpands={setExpands} variants={variants} variantType={variantType} />,
-      nick: 'Variant',
       code: 'variant',
       name: 'variant',
       render: (text, record: Variant) => {
@@ -119,9 +103,8 @@ export default function useColumns (params: ColumnsParams) {
         )
       },
       width: 300,
-      forceHidden: variantType === VariantType.Single,
-      lock: true,
-      required: true
+      hidden: variantType === VariantType.Single,
+      lock: true
     },
     {
       title: 'Price',
@@ -154,7 +137,7 @@ export default function useColumns (params: ColumnsParams) {
         )
       },
       width: 150,
-      hidden: true
+      hidden: !isFull
     },
     {
       title: 'Cost per item',
@@ -171,7 +154,7 @@ export default function useColumns (params: ColumnsParams) {
         )
       },
       width: 150,
-      hidden: true
+      hidden: !isFull
     },
     {
       title: 'Inventory',
@@ -190,7 +173,7 @@ export default function useColumns (params: ColumnsParams) {
         )
       },
       width: 150,
-      forceHidden: !inventoryTracking
+      hidden: !inventoryTracking
     },
     {
       title: 'Weight',
@@ -205,7 +188,8 @@ export default function useColumns (params: ColumnsParams) {
           />
         )
       },
-      width: 150
+      width: 150,
+      hidden: !isFull
     },
     {
       title: 'Sku',
@@ -223,7 +207,8 @@ export default function useColumns (params: ColumnsParams) {
           />
         )
       },
-      width: 200
+      width: 200,
+      hidden: !isFull
     },
     {
       title: 'Barcode',
@@ -242,7 +227,7 @@ export default function useColumns (params: ColumnsParams) {
         )
       },
       width: 200,
-      hidden: true
+      hidden: !isFull
     },
     {
       title: 'Charge Tax',
@@ -258,7 +243,7 @@ export default function useColumns (params: ColumnsParams) {
         )
       },
       width: 150,
-      hidden: true
+      hidden: !isFull
     },
     {
       title: 'Shipping Required',
@@ -273,41 +258,9 @@ export default function useColumns (params: ColumnsParams) {
         )
       },
       width: 150,
-      hidden: true
-    },
-    {
-      title: '',
-      code: 'actions',
-      name: 'actions',
-      nick: 'Actions',
-      render: (id: number, row: Variant) => {
-        return (
-          <div>
-            <SRender render={row?.children?.length}>
-              <Tooltip title={`Remove ${row?.children?.length} variants`}>
-                <Button onClick={() => { onRemove(row) }} style={{ height: 32 }} size={'small'} type={'text'}>
-                  <IconTrash size={16} />
-                </Button>
-              </Tooltip>
-            </SRender>
-            <SRender render={!row?.children?.length}>
-              <Button onClick={() => { onRemove(row) }} style={{ height: 32 }} size={'small'} type={'text'}>
-                <IconTrash size={16} />
-              </Button>
-            </SRender>
-          </div>
-
-        )
-      },
-      align: 'center',
-      lock: true,
-      width: 50,
-      forceHidden: variantType === VariantType.Single,
-      required: true
+      hidden: !isFull
     }
   ]
-
-  const { columns, ColumnSettings } = useColumn(cols, 'variant')
 
   const ImageUploader = (
     <SelectFiles
@@ -324,5 +277,5 @@ export default function useColumns (params: ColumnsParams) {
     />
   )
 
-  return { columns, ColumnSettings, ImageUploader }
+  return { columns, ImageUploader }
 }

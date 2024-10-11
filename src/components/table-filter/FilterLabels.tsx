@@ -14,10 +14,10 @@ export interface FiltersProps extends Omit<FlexProps, 'children'> {
 export default function FilterLabels (props: FiltersProps) {
   const { labels, onChange, value, ...rest } = props
   return (
-    <Flex {...rest} gap={16}>
+    <Flex {...rest} gap={16} wrap={'wrap'}>
       {
         Object.keys(labels).filter(i => labels[i]).map(key => (
-          <Status type={'black'} key={key}>
+          <Status type={'info'} key={key}>
             {labels[key]}
             <IconX
               className={styles.clearBtn}

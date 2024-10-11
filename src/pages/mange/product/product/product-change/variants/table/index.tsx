@@ -18,14 +18,12 @@ export interface TableProps {
   loading: boolean
   onChangeGroupVariants: (variants: Variant[]) => void
   onOpenOptions: () => void
-  forceChange: (variants: Variant[]) => void
-  settingsStyle: React.CSSProperties
   isFull: boolean
   setLoaded: () => void
 }
 
 export default function Table (props: TableProps) {
-  const { isFull, variants, options, loading, onChangeGroupVariants, onOpenOptions, forceChange, settingsStyle, setLoaded } = props
+  const { isFull, variants, options, loading, onChangeGroupVariants, onOpenOptions, setLoaded } = props
   const form = Form.useFormInstance()
   const [groupVariants, setGroupVariants] = useState<Variant[]>([])
   const [expandedRowKeys, setExpandedRowKeys] = useState<number[]>([])
@@ -34,14 +32,14 @@ export default function Table (props: TableProps) {
   const [locationId, setLocationId] = useState(0)
   const [labels, setLabels] = useState<Record<string, ReactNode>>({})
 
-  const { columns, ColumnSettings, ImageUploader } = useColumns({
+  const { columns, ImageUploader } = useColumns({
     variants: groupVariants,
     setVariants: setGroupVariants,
     groupName,
     expands: expandedRowKeys,
     setExpands: setExpandedRowKeys,
     locationId,
-    forceChange
+    isFull
   })
 
   const filterGroup = useMemo(() => {
@@ -57,12 +55,11 @@ export default function Table (props: TableProps) {
   }, [groupVariants])
 
   const renderTable = useMemo(() => {
-    if (!ColumnSettings) return false
     if (!columns?.length) return false
     if (groupName && !groupVariants?.length) return false
     if (variants?.length && !groupVariants?.length) return false
     return true
-  }, [groupVariants, groupName, columns, variants, ColumnSettings, locationId])
+  }, [groupVariants, groupName, columns, variants, locationId])
 
   useEffect(() => {
     form.setFieldValue('variants', groupVariants)
@@ -75,27 +72,26 @@ export default function Table (props: TableProps) {
   return (
     <div style={{ position: 'relative' }}>
       {ImageUploader}
-      <div style={{ position: 'absolute', top: -36, ...settingsStyle }}>
-        {ColumnSettings}
-      </div>
-      <Flex style={{ marginBottom: 12 }} align={'center'} gap={32}>
+      <div style={{ marginBottom: 12 }}>
+        <Flex style={{ marginBottom: 12 }} align={'center'} justify={'space-between'}>
+          <GroupBy
+            key={'groupBy'}
+            groupName={groupName}
+            setGroupName={setGroupName}
+            filters={filters}
+            onChange={setGroupVariants}
+            variants={variants}
+            options={options}
+          />
+          <LocationsSelect key={'location'} selected={locationId} setSelected={setLocationId} />
+        </Flex>
         <Filters labels={labels} setLabels={setLabels} key={'filters'} value={filters} onChange={setFilters} options={options} />
-        <GroupBy
-          key={'groupBy'}
-          groupName={groupName}
-          setGroupName={setGroupName}
-          filters={filters}
-          onChange={setGroupVariants}
-          variants={variants}
-          options={options}
-        />
-        <LocationsSelect key={'location'} selected={locationId} setSelected={setLocationId} />
-      </Flex>
+      </div>
       <FilterLabels style={{ marginBottom: 12 }} labels={labels} value={filters} onChange={setFilters} />
       <SRender render={renderTable}>
         <STable
           className={styles.table}
-          width={isFull ? undefined : 916}
+          width={isFull ? undefined : 578}
           init
           loading={loading}
           columns={columns}
