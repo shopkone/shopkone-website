@@ -5,14 +5,14 @@ export const roundPrice = (value: number): number => {
   return price
 }
 
-export function formatPrice (x?: string | number) {
+export function formatPrice (x?: string | number, symbol = '') {
   if (typeof x === 'undefined' || x === '') return ''
   // 千分位
   const str = x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
   // 两位小数点
   const arr = str.split('.')
   if (arr?.length === 1) {
-    return str + '.00'
+    return symbol + str + '.00'
   }
-  return arr[0] + '.' + arr[1].padEnd(2, '0')
+  return symbol + arr[0] + '.' + arr[1].padEnd(2, '0')
 }

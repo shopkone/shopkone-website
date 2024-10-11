@@ -1,16 +1,19 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { IconCopy, IconDownload, IconEye, IconPlus } from '@tabler/icons-react'
+import { IconAlertCircleFilled, IconCopy, IconDownload, IconEye, IconPhoto, IconPlus } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
 import { Button, Flex, Input, Switch, Tooltip } from 'antd'
 import dayjs from 'dayjs'
 
+import { FileType } from '@/api/file/add-file-record'
 import { ProductListApi, ProductListReq, ProductListRes } from '@/api/product/list'
+import FileImage from '@/components/file-image'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
 import SRender from '@/components/s-render'
 import STable, { STableProps } from '@/components/s-table'
 import { VariantStatus } from '@/constant/product'
+import { formatPrice } from '@/utils/num'
 import { renderText } from '@/utils/render-text'
 
 import styles from './index.module.less'
@@ -26,7 +29,17 @@ export default function Products () {
       code: 'product',
       name: 'product',
       render: (_, row: ProductListRes) => (
-        row.title
+        <Flex align={'center'} gap={8}>
+          <SRender render={row.image}>
+            <FileImage size={16} width={32} height={32} src={row.image} type={FileType.Image} />
+          </SRender>
+          <SRender render={!row.image}>
+            <Flex align={'center'} justify={'center'} style={{ width: 34, height: 34, background: '#f5f5f5', border: '1px solid #eee', borderRadius: 8 }}>
+              <IconPhoto color={'#ddd'} />
+            </Flex>
+          </SRender>
+          <div>{row.title}</div>
+        </Flex>
       ),
       width: 400,
       lock: true
@@ -35,9 +48,13 @@ export default function Products () {
       title: 'Price',
       code: 'price',
       name: 'price',
-      render: (_, row: ProductListRes) => (
-        <div>{row.max_price}</div>
-      ),
+      render: (_, row: ProductListRes) => {
+        const allPrice = row.variants?.map(variant => variant.price)
+        const maxPrice = Math.max(...allPrice)
+        const minPrice = Math.min(...allPrice)
+        if (maxPrice === minPrice) return formatPrice(maxPrice, '$')
+        return <div>{formatPrice(minPrice, '$')} ~ {formatPrice(maxPrice, '$')}</div>
+      },
       width: 120
     },
     {
@@ -58,9 +75,31 @@ export default function Products () {
       title: 'Inventory quantity',
       code: 'quantity',
       name: 'quantity',
-      render: (quantity) => (
-        <div>{quantity}</div>
-      ),
+      render: (_, row: ProductListRes) => {
+        const everyInStock = row.variants?.every(variant => variant.quantity > 0)
+        const someInStock = row.variants?.some(variant => variant.quantity > 0)
+        return (
+          <div>
+            <Flex>
+              <div>{row.variants?.reduce((sum, variant) => sum + variant.quantity, 0)} on sale</div>
+              <SRender render={row.variants?.length !== 1}>
+                <span
+                  style={{
+                    padding: '0 6px',
+                    transform: 'scale(1.5)'
+                  }}
+                >·
+                </span>
+                {row.variants?.length} variants
+              </SRender>
+            </Flex>
+            <Flex style={{ color: '#ffc107', display: !someInStock ? 'flex' : 'none' }} align={'center'} gap={4}>
+              <IconAlertCircleFilled size={15} strokeWidth={2} />
+              <Flex><SRender render={!everyInStock && someInStock}>Partial - </SRender>Out of stock</Flex>
+            </Flex>
+          </div>
+        )
+      },
       width: 200
     },
     {
@@ -79,7 +118,11 @@ export default function Products () {
       name: 'status',
       width: 150,
       render: (status: VariantStatus) => (
-        <Flex style={{ cursor: 'default' }} onClick={e => { e.stopPropagation() }} align={'center'} gap={8}>
+        <Flex
+          style={{ cursor: 'default' }} onClick={e => {
+            e.stopPropagation()
+          }} align={'center'} gap={8}
+        >
           <Switch size={'small'} checked={status === VariantStatus.Published} />
           <SRender style={{ fontSize: 12, position: 'relative', top: 1 }} render={status === VariantStatus.Published}>
             Activated
