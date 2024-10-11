@@ -125,7 +125,7 @@ export default function Products () {
         >
           <Switch size={'small'} checked={status === VariantStatus.Published} />
           <SRender style={{ fontSize: 12, position: 'relative', top: 1 }} render={status === VariantStatus.Published}>
-            Activated
+            Active
           </SRender>
           <SRender style={{ fontSize: 12, position: 'relative', top: 1 }} render={status !== VariantStatus.Published}>
             Draft

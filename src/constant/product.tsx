@@ -17,7 +17,7 @@ export enum VariantStatus {
 
 export const useVariantStatusOptions = () => [
   { label: 'Draft', value: VariantStatus.Draft },
-  { label: 'Published', value: VariantStatus.Published }
+  { label: 'Active', value: VariantStatus.Published }
 ]
 
 // 库存策略
