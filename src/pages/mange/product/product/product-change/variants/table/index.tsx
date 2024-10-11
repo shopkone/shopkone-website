@@ -61,8 +61,11 @@ export default function Table (props: TableProps) {
     if (!columns?.length) return false
     if (groupName && !groupVariants?.length) return false
     if (variants?.length && !groupVariants?.length) return false
+    if (groupName && !groupVariants?.[0]?.children?.length) return false
+    if (variants?.[0]?.name?.length > 1 && !groupName) return false
+    if (variants?.[0]?.name?.length !== options.length) return false
     return true
-  }, [groupVariants, groupName, columns, variants, ColumnSettings, locationId])
+  }, [groupVariants, groupName, columns, variants, ColumnSettings, locationId, options])
 
   useEffect(() => {
     form.setFieldValue('variants', groupVariants)
