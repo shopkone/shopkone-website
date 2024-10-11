@@ -110,8 +110,20 @@ export const useColumn = (local: UseColumnType[], type: UserColumnType) => {
                         onChange(cols.map(i => i.id === newItem.id ? newItem : i))
                       }}
                     />
-                    <Flex align={'center'} style={{ pointerEvents: 'none' }} flex={1}>
-                      {item.nick}
+                    <Flex
+                      align={'center'}
+                      flex={1}
+                    >
+                      <span
+                        onClick={() => {
+                          if (item.required) return
+                          const newItem = { ...item, hidden: !item.hidden }
+                          onChange(cols.map(i => i.id === newItem.id ? newItem : i))
+                        }}
+                        style={{ cursor: item.required ? undefined : 'pointer', pointerEvents: item.required ? 'none' : undefined, userSelect: 'none' }}
+                      >
+                        {item.nick}
+                      </span>
                     </Flex>
                     <Button
                       disabled={item.required}

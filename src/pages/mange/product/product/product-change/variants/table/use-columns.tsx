@@ -13,6 +13,7 @@ import { useOpen } from '@/hooks/useOpen'
 import { Variant } from '@/pages/mange/product/product/product-change/variants/state'
 import ColumnInventory from '@/pages/mange/product/product/product-change/variants/table/columns/column-inventory'
 import ColumnPrice from '@/pages/mange/product/product/product-change/variants/table/columns/column-price'
+import ColumnRequired from '@/pages/mange/product/product/product-change/variants/table/columns/column-required'
 import ColumnText from '@/pages/mange/product/product/product-change/variants/table/columns/column-text'
 import ColumnTitle from '@/pages/mange/product/product/product-change/variants/table/columns/column-title'
 import ColumnVariant from '@/pages/mange/product/product/product-change/variants/table/columns/column-variant'
@@ -38,7 +39,7 @@ export default function useColumns (params: ColumnsParams) {
   const fileList = useRequest(fileListByIds, { manual: true })
   const [imageResult, setImageResult] = useState<FileListByIdsRes[]>([])
 
-  const onUpdate = (row: Variant, key: keyof Variant, value: number | string | null) => {
+  const onUpdate = (row: Variant, key: keyof Variant, value: number | string | null | boolean) => {
     if (row.children?.length) {
       row.children.forEach(child => {
         // @ts-expect-error
@@ -241,6 +242,37 @@ export default function useColumns (params: ColumnsParams) {
         )
       },
       width: 200,
+      hidden: true
+    },
+    {
+      title: 'Charge Tax',
+      code: 'tax_required',
+      name: 'tax_required',
+      render: (_, row: Variant) => {
+        return (
+          <ColumnRequired
+            onChange={v => { onUpdate(row, 'tax_required', v) }}
+            row={row}
+            type={'tax_required'}
+          />
+        )
+      },
+      width: 150,
+      hidden: true
+    },
+    {
+      title: 'Shipping Required',
+      code: 'shipping_required',
+      name: 'shipping_required',
+      render: (_, row: Variant) => {
+        return (
+          <ColumnRequired
+            onChange={v => { onUpdate(row, 'shipping_required', v) }}
+            row={row} type={'shipping_required'}
+          />
+        )
+      },
+      width: 150,
       hidden: true
     },
     {

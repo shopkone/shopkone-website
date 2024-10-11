@@ -7,8 +7,6 @@ export interface ProductCreateReq {
   title: string
   description: string
   status: VariantStatus
-  requires_shipping: boolean
-  charge_tax_on_this_product: boolean
   spu: string
   vendor: string
   tags: string[]

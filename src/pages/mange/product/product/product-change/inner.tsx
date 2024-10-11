@@ -24,8 +24,6 @@ import styles from './index.module.less'
 
 const INIT_DATA = {
   status: 2,
-  requires_shipping: true,
-  charge_tax_on_this_product: true,
   inventory_tracking: true,
   inventory_policy: 2,
   spu: '',

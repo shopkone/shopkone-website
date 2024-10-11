@@ -19,6 +19,8 @@ export interface Variant {
   cost_per_item: number | null
   barcode?: string
   inventories: Array<{ id: number, quantity: number | null, location_id: number }>
+  tax_required: boolean
+  shipping_required: boolean
   sku?: string
   children?: Variant[]
   parentId?: number

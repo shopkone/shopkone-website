@@ -70,7 +70,9 @@ self.onmessage = (e) => {
       barcode: '',
       id: genId(),
       isParent: false,
-      inventories: []
+      inventories: [],
+      shipping_required: true,
+      tax_required: true
     }
   })
   result = result.map(item => {

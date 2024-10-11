@@ -101,7 +101,9 @@ export default function Variants (props: VariantsProps) {
         name: [],
         id: genId(),
         isParent: false,
-        inventories: []
+        inventories: [],
+        shipping_required: true,
+        tax_required: true
       }
       if (info?.variant_type === VariantType.Single) {
         setVariants(remoteVariants)
@@ -135,6 +137,7 @@ export default function Variants (props: VariantsProps) {
       <SCard
         bordered
         className={styles.container}
+        style={{ margin: isFull ? '16px 24px' : undefined }}
         title={
           <Flex gap={8} align={'center'}>
             <div>Variants</div>
