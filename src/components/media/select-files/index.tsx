@@ -130,7 +130,7 @@ function SelectFiles (props: SelectFilesProps) {
     if (!info.open) return
     setList([])
     fileGroupList.run()
-    setParams({ page: 1, page_size: 50, group_id: 0 })
+    setParams({ page: 1, page_size: 20, group_id: 0 })
     setShowMoreLoading(false)
   }, [info.open])
 
