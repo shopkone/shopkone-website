@@ -455,7 +455,7 @@ export default function Changer (props: ChangerProps) {
           )
         }
       </Sortable>
-      <SRender render={options.length < 3}>
+      <SRender render={options.length < 5}>
         <Button style={{ background: '#f7f7f7' }} onClick={onAdd} block>
           <Flex
             style={{
