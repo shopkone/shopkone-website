@@ -56,7 +56,8 @@ export default function Change () {
 
   const onOk = async () => {
     const values = form.getFieldsValue()
-    await create.runAsync(values)
+    const conditions = values?.conditions?.map?.((item: any) => item?.item)
+    await create.runAsync({ ...values, conditions })
   }
 
   useEffect(() => {

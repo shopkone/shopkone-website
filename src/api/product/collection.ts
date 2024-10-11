@@ -3,8 +3,8 @@ import { SeoType } from '@/components/seo/edit'
 
 export interface BaseCondition {
   id: number
-  name: string
-  condition: string
+  action: string
+  key: string
   value: string
 }
 
