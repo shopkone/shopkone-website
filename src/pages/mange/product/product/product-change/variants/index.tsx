@@ -148,6 +148,20 @@ export default function Variants (props: VariantsProps) {
         }
         extra={
           <Flex gap={12}>
+            <SRender render={variantType === VariantType.Multiple && !!variants?.length}>
+              <Tooltip title={'Edit options'}>
+                <Button
+                  style={{ height: 25, width: 25 }}
+                  onClick={() => { openInfo.edit(form.getFieldValue('variants')) }}
+                  type={'text'}
+                  size={'small'}
+                  className={'primary-text'}
+                >
+                  <IconPencil style={{ position: 'relative', left: -1, top: 1 }} size={16} />
+                </Button>
+              </Tooltip>
+            </SRender>
+            <SRender render={variants?.length} style={{ width: 24, height: 24 }} />
             <SRender render={variants?.length}>
               <SRender render={!isFull}>
                 <Tooltip title={'Maximize'}>
@@ -173,20 +187,6 @@ export default function Variants (props: VariantsProps) {
                   </Button>
                 </Tooltip>
               </SRender>
-            </SRender>
-            <SRender render={variants?.length} style={{ width: 24, height: 24 }} />
-            <SRender render={variantType === VariantType.Multiple && !!variants?.length}>
-              <Tooltip title={'Edit options'}>
-                <Button
-                  style={{ height: 25, width: 25 }}
-                  onClick={() => { openInfo.edit(form.getFieldValue('variants')) }}
-                  type={'text'}
-                  size={'small'}
-                  className={'primary-text'}
-                >
-                  <IconPencil style={{ position: 'relative', left: -2, top: 2 }} size={16} />
-                </Button>
-              </Tooltip>
             </SRender>
           </Flex>
         }
