@@ -1,34 +1,48 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { IconTag } from '@tabler/icons-react'
+import { useRequest } from 'ahooks'
 import { Button, Card, Empty, Flex, Form, Input, Radio } from 'antd'
 
+import { CreateProductCollectionApi } from '@/api/product/collection'
 import Page from '@/components/page'
 import SRender from '@/components/s-render'
+import SelectProduct from '@/components/select-product'
 import Seo from '@/components/seo'
 import Conditions from '@/pages/mange/product/collections/change/conditions'
 import Uploader from '@/pages/mange/product/collections/change/uploader'
 import { genId } from '@/utils/random'
 
+export enum CollectionType {
+  Manual = 1,
+  Auto = 2
+}
+
+export enum MatchModeType {
+  All = 1,
+  Any = 2
+}
+
 const INIT_VALUES = {
-  collection_type: 'manual',
-  match_mode: 'all'
+  collection_type: CollectionType.Manual,
+  match_mode: MatchModeType.All
 }
 
 export default function Change () {
   const [form] = Form.useForm()
-
-  const collection_type: string = Form.useWatch('collection_type', form)
+  const create = useRequest(CreateProductCollectionApi, { manual: true })
+  const type: CollectionType = Form.useWatch('collection_type', form)
+  const [isChange, setIsChange] = useState(false)
 
   useEffect(() => {
-    if (collection_type === 'automated') {
+    if (type === CollectionType.Auto) {
       form.setFieldValue('conditions', [
         { item: { id: genId(), action: 'eq', value: undefined, key: 'tag' } }
       ])
     }
-  }, [collection_type])
+  }, [type])
 
   return (
-    <Page isChange={true} back={'/products/collections'} width={950} title={'Create collection'}>
+    <Page isChange={isChange} back={'/products/collections'} width={950} title={'Create collection'}>
       <Form initialValues={INIT_VALUES} form={form} layout={'vertical'}>
         <Flex gap={16}>
           <Flex vertical flex={1} gap={16}>
@@ -42,21 +56,17 @@ export default function Change () {
             </Card>
             <Card title={'Collection type'} className={'fit-width'}>
               <Form.Item className={'mb0'} name={'collection_type'}>
-                <Radio.Group options={[{
-                  label: 'Manual',
-                  value: 'manual'
-                }]}
-                />
+                <Radio.Group options={[{ label: 'Manual', value: CollectionType.Manual }]} />
               </Form.Item>
               <div style={{ marginBottom: 4, marginLeft: 26, marginTop: -4 }} className={'tips'}>Add products to this collection one by one.</div>
               <Form.Item className={'mb0'} name={'collection_type'}>
-                <Radio.Group options={[{ label: 'Automated', value: 'automated' }]} />
+                <Radio.Group options={[{ label: 'Automated', value: CollectionType.Auto }]} />
               </Form.Item>
               <div style={{ marginLeft: 26, marginTop: -4 }} className={'tips'}>
                 Existing and future products that match the conditions you set will automatically be added to this collection.
               </div>
             </Card>
-            <SRender render={collection_type === 'automated'}>
+            <SRender render={type === CollectionType.Auto}>
               <Conditions />
             </SRender>
             <Card title={'Products'} className={'fit-width'}>
@@ -88,6 +98,8 @@ export default function Change () {
           </Flex>
         </Flex>
       </Form>
+
+      <SelectProduct />
     </Page>
   )
 }

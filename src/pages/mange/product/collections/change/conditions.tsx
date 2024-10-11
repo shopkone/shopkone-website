@@ -1,14 +1,15 @@
-import { Plus } from '@icon-park/react'
+import { IconPlus } from '@tabler/icons-react'
 import { Button, Card, Flex, Form, Radio } from 'antd'
 
 import ConditionItem from '@/pages/mange/product/collections/change/condition-item'
+import { MatchModeType } from '@/pages/mange/product/collections/change/index'
 import styles from '@/pages/mange/product/collections/change/index.module.less'
 import { genId } from '@/utils/random'
 
 export default function Conditions () {
   const matchModeOptions = [
-    { label: 'all conditions', value: 'all' },
-    { label: 'any condition', value: 'any' }
+    { label: 'all conditions', value: MatchModeType.All },
+    { label: 'any condition', value: MatchModeType.Any }
   ]
 
   const form = Form.useFormInstance()
@@ -35,7 +36,7 @@ export default function Conditions () {
                 }
                 <Button onClick={() => { add({ item: { id: genId(), action: 'eq', value: undefined, key: 'tag' } }) }}>
                   <Flex align={'center'} gap={4} className={styles['add-btn']}>
-                    <Plus size={14} className={styles['plus-icon']} />
+                    <IconPlus size={13} className={styles['plus-icon']} />
                     <div>Add another condition</div>
                   </Flex>
                 </Button>

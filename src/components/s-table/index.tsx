@@ -23,6 +23,7 @@ export interface STableProps<T=any> extends Omit<BaseTableProps, omit> {
     value: number[]
     onChange: (value: number[]) => void
     width?: number
+    hiddenTotal?: boolean
   }
   stickyTop?: number
   expand?: {

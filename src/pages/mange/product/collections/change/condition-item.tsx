@@ -1,4 +1,4 @@
-import { DeleteFour } from '@icon-park/react'
+import { IconTrash } from '@tabler/icons-react'
 import { useMemoizedFn } from 'ahooks'
 import { Button, Flex } from 'antd'
 import cloneDeep from 'lodash/cloneDeep'
@@ -47,8 +47,8 @@ export default function ConditionItem (props: ConditionItemProps) {
       />
       {item?.component({ value: v, onChange: v => { onChange('value', v) } })}
       <SRender render={onClick}>
-        <Button onClick={onClick} style={{ width: 28, height: 28, padding: 0, marginLeft: 4 }}>
-          <DeleteFour size={14} style={{ position: 'relative', top: 1 }} />
+        <Button type={'text'} size={'small'} onClick={onClick} style={{ width: 26, height: 26, padding: 0, marginLeft: 4 }}>
+          <IconTrash size={15} style={{ position: 'relative', top: 1 }} />
         </Button>
       </SRender>
     </Flex>
