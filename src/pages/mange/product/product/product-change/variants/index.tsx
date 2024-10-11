@@ -198,7 +198,7 @@ export default function Variants (props: VariantsProps) {
         />
         <Table
           setLoaded={setLoaded}
-          settingsStyle={{ display: variants?.length ? 'unset' : 'none', right: variantType === VariantType.Single ? 0 : 36 }}
+          settingsStyle={{ display: variants?.length ? 'unset' : 'none', right: variantType === VariantType.Single ? 36 : 36 }}
           forceChange={onChange}
           onOpenOptions={() => { openInfo.edit() }}
           onChangeGroupVariants={onIsChange}

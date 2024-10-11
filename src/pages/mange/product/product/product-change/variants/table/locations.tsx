@@ -37,8 +37,8 @@ export default function LocationsSelect (props: LocationsSelectProps) {
         onChange={setSelected}
         options={[{ label: 'All locations', value: 0 }].concat(options || [])}
         size={'small'}
-        dropdownStyle={{ minWidth: 200 }}
-        style={{ minWidth: 120 }}
+        dropdownStyle={{ minWidth: 300, maxWidth: 500 }}
+        style={{ minWidth: 120, maxWidth: 300 }}
       />
     </Flex>
   )

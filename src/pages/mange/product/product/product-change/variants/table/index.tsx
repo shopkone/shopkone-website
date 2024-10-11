@@ -81,18 +81,22 @@ export default function Table (props: TableProps) {
       <div style={{ position: 'absolute', top: -36, ...settingsStyle }}>
         {ColumnSettings}
       </div>
-      <Flex style={{ marginBottom: 12 }} align={'center'} gap={32}>
-        <Filters labels={labels} setLabels={setLabels} key={'filters'} value={filters} onChange={setFilters} options={options} />
-        <GroupBy
-          key={'groupBy'}
-          groupName={groupName}
-          setGroupName={setGroupName}
-          filters={filters}
-          onChange={setGroupVariants}
-          variants={variants}
-          options={options}
-        />
-        <LocationsSelect key={'location'} selected={locationId} setSelected={setLocationId} />
+      <Flex wrap={'wrap'} style={{ marginBottom: 12 }} align={'center'} gap={12}>
+        <Flex style={{ width: '100%' }} gap={32} align={'center'} justify={'space-between'}>
+          <GroupBy
+            key={'groupBy'}
+            groupName={groupName}
+            setGroupName={setGroupName}
+            filters={filters}
+            onChange={setGroupVariants}
+            variants={variants}
+            options={options}
+          />
+          <LocationsSelect key={'location'} selected={locationId} setSelected={setLocationId} />
+        </Flex>
+        <Flex flex={1}>
+          <Filters labels={labels} setLabels={setLabels} key={'filters'} value={filters} onChange={setFilters} options={options} />
+        </Flex>
       </Flex>
       <FilterLabels style={{ marginBottom: 12 }} labels={labels} value={filters} onChange={setFilters} />
       <SRender render={renderTable}>
