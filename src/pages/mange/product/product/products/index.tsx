@@ -28,7 +28,7 @@ export default function Products () {
       code: 'product',
       name: 'product',
       render: (_, row: ProductListRes) => (
-        <Flex align={'center'} gap={8}>
+        <Flex align={'center'} gap={16}>
           <SRender render={row.image}>
             <FileImage size={16} width={32} height={32} src={row.image} type={FileType.Image} />
           </SRender>

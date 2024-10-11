@@ -8,6 +8,7 @@ import Page from '@/components/page'
 import SRender from '@/components/s-render'
 import SelectProduct from '@/components/select-product'
 import Seo from '@/components/seo'
+import { useOpen } from '@/hooks/useOpen'
 import Conditions from '@/pages/mange/product/collections/change/conditions'
 import Uploader from '@/pages/mange/product/collections/change/uploader'
 import { genId } from '@/utils/random'
@@ -32,6 +33,7 @@ export default function Change () {
   const create = useRequest(CreateProductCollectionApi, { manual: true })
   const type: CollectionType = Form.useWatch('collection_type', form)
   const [isChange, setIsChange] = useState(false)
+  const selectInfo = useOpen<number[]>([])
 
   useEffect(() => {
     if (type === CollectionType.Auto) {
@@ -81,7 +83,7 @@ export default function Change () {
                       There are no products in this collection.
                     </div>
                     <div>
-                      <Button>
+                      <Button onClick={() => { selectInfo.edit() }}>
                         Select products
                       </Button>
                     </div>
@@ -99,7 +101,7 @@ export default function Change () {
         </Flex>
       </Form>
 
-      <SelectProduct />
+      <SelectProduct info={selectInfo} />
     </Page>
   )
 }

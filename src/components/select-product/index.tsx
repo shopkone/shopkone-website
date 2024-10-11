@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
-import { IconAlertCircleFilled } from '@tabler/icons-react'
+import { IconAlertCircleFilled, IconPhoto } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
-import { Flex } from 'antd'
+import { Button, Checkbox, Flex } from 'antd'
 
+import { FileType } from '@/api/file/add-file-record'
 import { ProductListApi, ProductListReq, ProductListRes } from '@/api/product/list'
+import FileImage from '@/components/file-image'
 import SLoading from '@/components/s-loading'
 import SModal from '@/components/s-modal'
 import SRender from '@/components/s-render'
@@ -11,9 +13,16 @@ import STable, { STableProps } from '@/components/s-table'
 import Filters from '@/components/select-product/filters'
 import Status from '@/components/status'
 import { VariantStatus } from '@/constant/product'
+import { UseOpenType } from '@/hooks/useOpen'
 import { formatPrice } from '@/utils/num'
 
-export default function SelectProduct () {
+export interface SelectProductProps {
+  info: UseOpenType<number[]>
+  onConfirm?: (value: number[]) => void
+}
+
+export default function SelectProduct (props: SelectProductProps) {
+  const { info, onConfirm } = props
   const [params, setParams] = useState<ProductListReq>({ page: 1, page_size: 20 })
   const [selected, setSelected] = useState<number[]>([])
 
@@ -24,7 +33,35 @@ export default function SelectProduct () {
   }
 
   const columns: STableProps['columns'] = [
-    { title: 'Products', code: 'title', name: 'title', width: 300 },
+    {
+      title: '',
+      code: 'id',
+      name: 'id',
+      render: (id: number, row: ProductListRes) => (
+        <Checkbox onClick={() => { onClickRow(row) }} checked={selected.includes(id)} />
+      ),
+      width: 35
+    },
+    {
+      title: 'Product',
+      code: 'product',
+      name: 'product',
+      render: (_, row: ProductListRes) => (
+        <Flex align={'center'} gap={16}>
+          <SRender render={row.image}>
+            <FileImage size={16} width={32} height={32} src={row.image} type={FileType.Image} />
+          </SRender>
+          <SRender render={!row.image}>
+            <Flex align={'center'} justify={'center'} style={{ width: 34, height: 34, background: '#f5f5f5', border: '1px solid #eee', borderRadius: 8 }}>
+              <IconPhoto color={'#ddd'} />
+            </Flex>
+          </SRender>
+          <div>{row.title}</div>
+        </Flex>
+      ),
+      width: 300,
+      lock: true
+    },
     {
       title: 'Price',
       code: 'price',
@@ -83,12 +120,55 @@ export default function SelectProduct () {
     }
   ]
 
+  const onOk = () => {
+    onConfirm?.(selected)
+    info.close()
+  }
+
+  const isAllSelect = selected.length === list.data?.total
+
+  const onSelectAll = () => {
+  /*   if (selected.length && !isAllSelect && (list?.data?.total !== list?.data?.list.length)) {
+      setSelected([])
+    }
+    setSelected(list.data?.list?.map(item => item.id) || []) */
+  }
+
   useEffect(() => {
     list.run(params)
   }, [params])
 
+  useEffect(() => {
+    if (info.open) {
+      setSelected(info.data || [])
+    }
+  }, [info.open])
+
   return (
-    <SModal width={1000} title={'Select products'} open>
+    <SModal
+      footer={(
+        <Flex align={'center'} justify={'space-between'}>
+          <Flex gap={12}>
+            <Checkbox
+              onChange={onSelectAll}
+              checked={isAllSelect}
+              indeterminate={!isAllSelect && !!selected.length}
+            />
+            <div>{selected.length} selected</div>
+            <span>/</span>
+            <div>{list.data?.total} total</div>
+          </Flex>
+          <Flex gap={12}>
+            <Button onClick={info.close}>Cancel</Button>
+            <Button onClick={onOk} type={'primary'}>Add</Button>
+          </Flex>
+        </Flex>
+    )}
+      width={1000}
+      title={'Select products'}
+      onCancel={info.close}
+      open={info.open}
+    >
       <div style={{ height: 600, overflowY: 'auto', paddingBottom: 24 }}>
         <Filters />
         <STable
@@ -96,10 +176,6 @@ export default function SelectProduct () {
           init={!!list.data}
           columns={columns}
           data={list.data?.list || []}
-          rowSelection={{
-            value: selected,
-            onChange: setSelected
-          }}
           onRowClick={onClickRow}
         />
         <Flex justify={'center'} align={'center'} gap={12} style={{ paddingTop: 24 }}>
