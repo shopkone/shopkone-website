@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { IconAlertCircleFilled, IconPhoto } from '@tabler/icons-react'
-import { useRequest } from 'ahooks'
+import { useInViewport, useRequest } from 'ahooks'
 import { Button, Checkbox, Flex } from 'antd'
 
 import { FileType } from '@/api/file/add-file-record'
@@ -23,22 +23,24 @@ export interface SelectProductProps {
 
 export default function SelectProduct (props: SelectProductProps) {
   const { info, onConfirm } = props
-  const [params, setParams] = useState<ProductListReq>({ page: 1, page_size: 20 })
+  const [params, setParams] = useState<ProductListReq>({ page: 1, page_size: 50 })
   const [selected, setSelected] = useState<number[]>([])
-
-  const list = useRequest(ProductListApi, { manual: true })
-
+  const [list, setList] = useState<ProductListRes[]>([])
+  const productList = useRequest(ProductListApi, { manual: true })
+  const [showMoreLoading, setShowMoreLoading] = useState(false)
   const onClickRow = (row: ProductListRes) => {
     setSelected(selected.includes(row.id) ? selected.filter(id => id !== row.id) : [...selected, row.id])
   }
 
+  const moreRef = useRef<HTMLDivElement>(null)
+  const [inViewport] = useInViewport(moreRef)
   const columns: STableProps['columns'] = [
     {
       title: '',
       code: 'id',
       name: 'id',
       render: (id: number, row: ProductListRes) => (
-        <Checkbox onClick={() => { onClickRow(row) }} checked={selected.includes(id)} />
+        <Checkbox style={{ marginLeft: 4 }} onClick={() => { onClickRow(row) }} checked={selected.includes(id)} />
       ),
       width: 35
     },
@@ -125,24 +127,55 @@ export default function SelectProduct (props: SelectProductProps) {
     info.close()
   }
 
-  const isAllSelect = selected.length === list.data?.total
+  const isAllSelect = (selected.length === productList.data?.total) || (selected.length === list.length)
 
   const onSelectAll = () => {
-  /*   if (selected.length && !isAllSelect && (list?.data?.total !== list?.data?.list.length)) {
+    if (isAllSelect) {
       setSelected([])
+    } else {
+      const n = [...list.map(item => item.id), ...(info.data || [])]
+      setSelected([...new Set(n)])
     }
-    setSelected(list.data?.list?.map(item => item.id) || []) */
   }
 
   useEffect(() => {
-    list.run(params)
+    if (!list?.length) return
+    if (!productList?.data?.total) {
+      setShowMoreLoading(false)
+      return
+    }
+    if (productList?.data?.total > list?.length) {
+      setTimeout(() => {
+        setShowMoreLoading(info.open)
+      }, 500)
+    } else {
+      setShowMoreLoading(false)
+    }
+  }, [list])
+
+  useEffect(() => {
+    if (!info.open) return
+    productList.runAsync(params).then(res => {
+      if (res.page.page === 1) {
+        setList(res.list)
+      } else {
+        setList([...list, ...res.list])
+      }
+    })
   }, [params])
 
   useEffect(() => {
-    if (info.open) {
-      setSelected(info.data || [])
-    }
+    if (!info.open || list.length) return
+    setList([])
+    setSelected(info.data || [])
+    setParams({ page: 1, page_size: 50 })
+    setShowMoreLoading(false)
   }, [info.open])
+
+  useEffect(() => {
+    if (!inViewport || !showMoreLoading || productList.loading) return
+    setParams(prev => ({ ...prev, page: prev.page + 1 }))
+  }, [inViewport])
 
   return (
     <SModal
@@ -156,11 +189,11 @@ export default function SelectProduct (props: SelectProductProps) {
             />
             <div>{selected.length} selected</div>
             <span>/</span>
-            <div>{list.data?.total} total</div>
+            <div>{productList.data?.total} total</div>
           </Flex>
           <Flex gap={12}>
             <Button onClick={info.close}>Cancel</Button>
-            <Button onClick={onOk} type={'primary'}>Add</Button>
+            <Button onClick={onOk} type={'primary'}>Done</Button>
           </Flex>
         </Flex>
     )}
@@ -169,19 +202,26 @@ export default function SelectProduct (props: SelectProductProps) {
       onCancel={info.close}
       open={info.open}
     >
-      <div style={{ height: 600, overflowY: 'auto', paddingBottom: 24 }}>
+      <div >
         <Filters />
-        <STable
-          loading={list.loading}
-          init={!!list.data}
-          columns={columns}
-          data={list.data?.list || []}
-          onRowClick={onClickRow}
-        />
-        <Flex justify={'center'} align={'center'} gap={12} style={{ paddingTop: 24 }}>
-          <div><SLoading size={20} /></div>
-          Loading
-        </Flex>
+        <div style={{ overflowY: 'auto', height: 550, paddingBottom: 24 }}>
+          <STable
+            loading={productList.loading ? !list.length : false}
+            init={!!productList.data}
+            columns={columns}
+            data={list || []}
+            onRowClick={onClickRow}
+          />
+          <SRender render={showMoreLoading}>
+            <Flex ref={moreRef} justify={'center'} align={'center'} gap={12} style={{ paddingTop: 24, opacity: list.length ? 1 : 0 }}>
+              <div><SLoading size={20} /></div>
+              Loading
+            </Flex>
+          </SRender>
+          <SRender style={{ display: 'flex', paddingTop: 24, justifyContent: 'center' }} render={!showMoreLoading} className={'fit-width secondary'}>
+            - No more -
+          </SRender>
+        </div>
       </div>
     </SModal>
   )

@@ -38,7 +38,7 @@ function SelectFiles (props: SelectFilesProps) {
   const headerRef = useRef<HTMLDivElement>(null)
   const moreRef = useRef<HTMLDivElement>(null)
   const [showShadow, setShowShadow] = useState(false)
-  const [params, setParams] = useState<FileListReq>({ page: 1, page_size: 20, group_id: 0 })
+  const [params, setParams] = useState<FileListReq>({ page: 1, page_size: 30, group_id: 0 })
   const fileGroupList = useRequest(FileGroupListApi, { manual: true })
   const fileList = useRequest(FileListApi, { manual: true })
   const [list, setList] = useState<FileListRes[]>([])
@@ -130,7 +130,7 @@ function SelectFiles (props: SelectFilesProps) {
     if (!info.open) return
     setList([])
     fileGroupList.run()
-    setParams({ page: 1, page_size: 20, group_id: 0 })
+    setParams({ page: 1, page_size: 50, group_id: 0 })
     setShowMoreLoading(false)
   }, [info.open])
 

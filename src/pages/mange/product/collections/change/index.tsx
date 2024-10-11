@@ -1,15 +1,13 @@
 import { useEffect, useState } from 'react'
-import { IconTag } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
-import { Button, Card, Empty, Flex, Form, Input, Radio } from 'antd'
+import { Card, Flex, Form, Input, Radio } from 'antd'
 
 import { CreateProductCollectionApi } from '@/api/product/collection'
 import Page from '@/components/page'
 import SRender from '@/components/s-render'
-import SelectProduct from '@/components/select-product'
 import Seo from '@/components/seo'
-import { useOpen } from '@/hooks/useOpen'
 import Conditions from '@/pages/mange/product/collections/change/conditions'
+import Products from '@/pages/mange/product/collections/change/products'
 import Uploader from '@/pages/mange/product/collections/change/uploader'
 import { genId } from '@/utils/random'
 
@@ -33,7 +31,6 @@ export default function Change () {
   const create = useRequest(CreateProductCollectionApi, { manual: true })
   const type: CollectionType = Form.useWatch('collection_type', form)
   const [isChange, setIsChange] = useState(false)
-  const selectInfo = useOpen<number[]>([])
 
   useEffect(() => {
     if (type === CollectionType.Auto) {
@@ -68,29 +65,14 @@ export default function Change () {
                 Existing and future products that match the conditions you set will automatically be added to this collection.
               </div>
             </Card>
+
             <SRender render={type === CollectionType.Auto}>
               <Conditions />
             </SRender>
-            <Card title={'Products'} className={'fit-width'}>
-              <Empty
-                image={
-                  <IconTag size={48} color={'#ddd'} />
-                }
-                style={{ paddingBottom: 32 }}
-                description={(
-                  <Flex vertical gap={12}>
-                    <div>
-                      There are no products in this collection.
-                    </div>
-                    <div>
-                      <Button onClick={() => { selectInfo.edit() }}>
-                        Select products
-                      </Button>
-                    </div>
-                  </Flex>
-              )}
-              />
-            </Card>
+
+            <Form.Item className={'mb0'} name={'product_ids'}>
+              <Products />
+            </Form.Item>
           </Flex>
           <Flex vertical gap={16} style={{ width: 300 }}>
             <Form.Item className={'mb0'} name={'cover_id'}>
@@ -101,7 +83,6 @@ export default function Change () {
         </Flex>
       </Form>
 
-      <SelectProduct info={selectInfo} />
     </Page>
   )
 }
