@@ -1,33 +1,20 @@
 import { useMemo } from 'react'
-import { IconChevronDown } from '@tabler/icons-react'
-import { Flex } from 'antd'
+import { Tooltip } from 'antd'
 
 import SInputNumber from '@/components/s-input-number'
 import SRender from '@/components/s-render'
 import { Variant } from '@/pages/mange/product/product/product-change/variants/state'
 import { genId } from '@/utils/random'
 
-import styles from './index.module.less'
-
 export interface ColumnInventoryProps {
   row: Variant
   locationId: number
   value: Variant['inventories']
   onChange: (value: Variant['inventories']) => void
-  expands: number[]
-  setExpands: (expands: number[]) => void
 }
 
 export default function ColumnInventory (props: ColumnInventoryProps) {
-  const { row, onChange, value, locationId, expands, setExpands } = props
-
-  const setExpandsHandle = () => {
-    if (expands.includes(row.id)) {
-      setExpands(expands.filter(id => id !== row.id))
-    } else {
-      setExpands([...expands, row.id])
-    }
-  }
+  const { row, onChange, value, locationId } = props
 
   const onChangeHandle = (v: number | null) => {
     if (!locationId) return
@@ -69,15 +56,10 @@ export default function ColumnInventory (props: ColumnInventoryProps) {
 
   return (
     <div>
-      <SRender onClick={setExpandsHandle} render={row?.children?.length}>
-        <Flex className={styles.link} align={'center'} gap={4}>
-          <div>{total}</div>
-          <IconChevronDown
-            className={styles.downIcon}
-            style={{ transform: expands?.includes(row.id) ? 'rotate(-180deg)' : 'rotate(0deg)' }}
-            size={13}
-          />
-        </Flex>
+      <SRender render={row?.children?.length}>
+        <Tooltip title={'Update for individual variants only'}>
+          <SInputNumber value={total} variant={'filled'} disabled style={{ border: 'none', cursor: 'default' }} />
+        </Tooltip>
       </SRender>
       <SRender render={!row?.children?.length}>
         <SRender render={locationId}>
@@ -86,8 +68,11 @@ export default function ColumnInventory (props: ColumnInventoryProps) {
             onChange={v => { onChangeHandle(v || null) }} uint
           />
         </SRender>
+
         <SRender render={!locationId}>
-          {total}
+          <Tooltip title={'Choose where you want to edit'}>
+            <SInputNumber value={total} variant={'filled'} disabled style={{ border: 'none', cursor: 'default' }} />
+          </Tooltip>
         </SRender>
       </SRender>
     </div>

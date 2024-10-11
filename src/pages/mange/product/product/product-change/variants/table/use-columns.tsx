@@ -180,8 +180,6 @@ export default function useColumns (params: ColumnsParams) {
       render: (inventories: Variant['inventories'], row: Variant) => {
         return (
           <ColumnInventory
-            expands={expands}
-            setExpands={setExpands}
             locationId={locationId}
             onChange={v => { onUpdate(row, 'inventories', v as any) }}
             value={inventories}
@@ -189,7 +187,7 @@ export default function useColumns (params: ColumnsParams) {
           />
         )
       },
-      width: 150,
+      width: 120,
       forceHidden: !inventoryTracking
     },
     {
