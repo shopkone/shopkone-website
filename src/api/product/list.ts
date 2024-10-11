@@ -1,7 +1,9 @@
 import { api, PageReq, PageRes } from '@/api/api'
 
 export interface ProductListReq extends PageReq {
-
+  collections?: number[]
+  tags?: string[]
+  price_range?: { max: number | null, min: number | null }
 }
 
 export interface ProductListRes {
