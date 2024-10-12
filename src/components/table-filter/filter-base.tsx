@@ -32,7 +32,7 @@ export default function FilterBase (props: FilterBaseProps) {
         type={onClear ? undefined : 'dashed'}
         size={'small'}
       >
-        <Flex gap={4} align={'center'} style={{ position: 'relative', top: -1 }}>
+        <Flex gap={4} align={'center'}>
           {label}
           <IconChevronDown className={'secondary'} size={13} style={{ position: 'relative', top: 0 }} />
         </Flex>
