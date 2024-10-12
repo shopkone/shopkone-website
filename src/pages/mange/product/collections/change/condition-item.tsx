@@ -22,7 +22,7 @@ export default function ConditionItem (props: ConditionItemProps) {
     const newValue: any = { ...value, [k]: vv }
     if (k === 'key' && v !== vv) {
       newValue.value = undefined
-      newValue.action = item?.actions[0]
+      newValue.action = item?.actions[0]?.value
     }
     props.onChange?.(cloneDeep(newValue))
   })
@@ -37,6 +37,7 @@ export default function ConditionItem (props: ConditionItemProps) {
         className={'flex1'}
         onChange={v => { onChange('key', v) }}
         listHeight={300}
+        style={{ flexShrink: 0 }}
       />
       <SSelect
         onChange={v => { onChange('action', v) }}
@@ -44,6 +45,7 @@ export default function ConditionItem (props: ConditionItemProps) {
         options={item?.actions}
         className={'flex1'}
         dropdownStyle={{ width: 150 }}
+        style={{ flexShrink: 0 }}
       />
       {item?.component({ value: v, onChange: v => { onChange('value', v) } })}
       <SRender render={onClick}>

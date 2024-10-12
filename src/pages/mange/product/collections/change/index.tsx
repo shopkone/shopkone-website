@@ -62,6 +62,9 @@ export default function Change () {
     if (values.seo) {
       values.seo.id = 0
     }
+    if (init.current?.collection_type === CollectionType.Auto && !init.current?.conditions) {
+      init.current.conditions = values.conditions
+    }
     const isChange = !isEqualHandle(init.current, values)
     setIsChange(isChange)
   }
@@ -162,7 +165,7 @@ export default function Change () {
             </SRender>
 
             <Form.Item className={'mb0'} name={'product_ids'}>
-              <Products />
+              <Products collectionType={type} />
             </Form.Item>
           </Flex>
           <Flex vertical gap={16} style={{ width: 300 }}>

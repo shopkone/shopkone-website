@@ -54,7 +54,7 @@ export default function Inventory () {
             desc: 'When you enable inventory tracking on your products, you can view and adjust their inventory counts here.',
             actions: (
               <Flex gap={8}>
-                <Button type={'primary'}>Go to products</Button>
+                <Button onClick={() => { nav('/products/products') }} type={'primary'}>Go to products</Button>
               </Flex>
             )
           }}

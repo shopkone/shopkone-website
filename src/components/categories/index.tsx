@@ -27,6 +27,7 @@ export default function Categories (props: CategoriesProps) {
   const [keyword, setKeyword] = useState('')
 
   const getItem = useMemoizedFn((key: number): CategoriesRes[] => {
+    if (!info.open) return []
     if (key === -1) {
       return data.filter(item => item.deep === 1) || []
     }
@@ -34,7 +35,7 @@ export default function Categories (props: CategoriesProps) {
   })
 
   const getHasChild = useMemoizedFn((pid: number) => {
-    if (!data.length) return false
+    if (!info.open) return false
     let count = 0
     for (let i = 0; i < data.length; i++) {
       if (data[i].pid === pid) {
@@ -45,6 +46,7 @@ export default function Categories (props: CategoriesProps) {
   })
 
   const onExpand = useMemoizedFn((key: number, deep: number) => {
+    if (!info.open) return
     const newValues = value.filter((i, index) => {
       return index < deep
     })
@@ -52,16 +54,19 @@ export default function Categories (props: CategoriesProps) {
   })
 
   const selectLabel = useMemo(() => {
+    if (!info.open) return
     return (data.find(i => i.value === cloneDeep(value).pop())?.label)
   }, [value, data])
 
   const filterTree: any = useMemo(() => {
+    if (!info.open) return []
     if (!keyword) return []
     return data.filter(i => i.label.toUpperCase().includes(keyword.toUpperCase()))
   }, [keyword])
 
   let temp: number[] = []
   const skip = (key: number) => {
+    if (!info.open) return
     const item = data.find(i => i.value === key)
     temp = [...temp, key]
     if (!item?.pid) {
@@ -94,6 +99,7 @@ export default function Categories (props: CategoriesProps) {
       open={info.open}
       onCancel={info.close}
       width={1000}
+      destroyOnClose={false}
     >
       <SLoading loading={(!data.length && !keyword)}>
         <Flex vertical style={{ height: 600 }}>
@@ -117,36 +123,36 @@ export default function Categories (props: CategoriesProps) {
           </Flex>
           <Flex style={{ display: keyword ? 'none' : undefined }} className={styles.content}>
             {
-              value.map((key, i) => {
-                const item = getItem(key)
-                if (!item?.length) return null
-                return (
-                  <div className={styles.col} key={key}>
-                    {item.map(row => {
-                      const hasChild = getHasChild(row.value)
-                      const selected = value.find(i => i === row.value)
-                      return (
-                        <Flex
-                          gap={12}
-                          justify={'space-between'}
-                          className={classNames(styles.row, selected && styles.selectRow)}
-                          align={'center'}
-                          onClick={() => {
-                            onExpand(row.value, row.deep)
-                          }}
-                          key={row.value}
-                        >
-                          <Typography.Text ellipsis={{ tooltip: true }}>{row.label}</Typography.Text>
-                          <SRender render={hasChild}>
-                            <IconChevronRight className={styles.rightIcon} size={14} />
-                          </SRender>
-                        </Flex>
-                      )
-                    })}
-                  </div>
-                )
-              })
-            }
+                value.map((key, i) => {
+                  const item = getItem(key)
+                  if (!item?.length) return null
+                  return (
+                    <div className={styles.col} key={key}>
+                      {item.map(row => {
+                        const hasChild = getHasChild(row.value)
+                        const selected = value.find(i => i === row.value)
+                        return (
+                          <Flex
+                            gap={12}
+                            justify={'space-between'}
+                            className={classNames(styles.row, selected && styles.selectRow, value?.[value?.length - 1] === row.value && styles.activeRow)}
+                            align={'center'}
+                            onClick={() => {
+                              onExpand(row.value, row.deep)
+                            }}
+                            key={row.value}
+                          >
+                            <Typography.Text ellipsis={{ tooltip: true }}>{row.label}</Typography.Text>
+                            <SRender render={hasChild}>
+                              <IconChevronRight className={styles.rightIcon} size={14} />
+                            </SRender>
+                          </Flex>
+                        )
+                      })}
+                    </div>
+                  )
+                })
+              }
           </Flex>
 
           <SRender render={keyword} className={styles.content} style={{ paddingLeft: 12 }}>
@@ -154,7 +160,7 @@ export default function Categories (props: CategoriesProps) {
               height={518} // 列表的高度，表示可视区域
               itemCount={filterTree.length} // 列表中的总项数
               itemSize={29} // 每一项的高度
-              width={955} // 列表的宽度
+              width={955}
             >
               {({ index, style }) => (
                 <Flex

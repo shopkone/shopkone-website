@@ -1,6 +1,10 @@
 import { Input } from 'antd'
 
+import { useCategories } from '@/api/base/categories'
+import Categories from '@/components/categories'
 import SInputNumber from '@/components/s-input-number'
+import SSelect from '@/components/s-select'
+import { useOpen } from '@/hooks/useOpen'
 
 type ValueType = string | number
 type onChangeType = (value?: ValueType) => void
@@ -16,6 +20,30 @@ const gt = { label: 'is greater than', value: 'gt' }
 const lt = { label: 'is less than', value: 'lt' }
 const empty = { label: 'is empty', value: 'empty' }
 const nempty = { label: 'is not empty', value: 'nempty' }
+
+const inputNumberRender = (p: ComponentProps, money?: boolean) => {
+  return <SInputNumber className={'flex1'} money={money} onChange={e => { p.onChange(e || 0) }} value={typeof p.value === 'undefined' ? undefined : Number(p.value)} />
+}
+
+const CategoryRender = (p: { onChange: (value?: number) => void, value?: number }) => {
+  const info = useOpen<number>()
+  const categories = useCategories()
+  const onSelect = (v: number) => {
+    p.onChange(v)
+    info.close()
+  }
+  const label = categories?.data?.find(i => i.value === p.value)?.label
+  return (
+    <div style={{ width: '33%' }}>
+      <SSelect
+        value={label}
+        open={false}
+        onDropdownVisibleChange={v => { v && info.edit(p.value) }}
+      />
+      <Categories info={info} onConfirm={onSelect} data={categories.data} />
+    </div>
+  )
+}
 
 export const conditions = [
   {
@@ -38,7 +66,7 @@ export const conditions = [
     label: 'Category',
     key: 'category',
     component: (p: ComponentProps) => {
-      return <Input className={'flex1'} onChange={e => { p.onChange(e.target.value) }} value={p.value} />
+      return <CategoryRender value={Number(p.value || 0)} onChange={v => { p.onChange(v) }} />
     },
     actions: [eq]
   },
@@ -61,33 +89,27 @@ export const conditions = [
   {
     label: 'Price',
     key: 'price',
-    component: (p: ComponentProps) => {
-      return <SInputNumber money className={'flex1'} onChange={e => { p.onChange(e) }} value={Number(p.value || 0)} />
-    },
+    component: (p: ComponentProps) => inputNumberRender(p, true),
     actions: [eq, neq, gt, lt]
   },
   {
     label: 'Compare-at price',
     key: 'compare_at_price',
-    component: (p: ComponentProps) => {
-      return <SInputNumber money className={'flex1'} onChange={e => { p.onChange(e) }} value={Number(p.value || 0)} />
-    },
+    component: (p: ComponentProps) => inputNumberRender(p, true),
     actions: [eq, neq, gt, lt, empty, nempty]
   },
   {
     label: 'Weight',
     key: 'weight',
     component: (p: ComponentProps) => {
-      return <SInputNumber suffix={'kg'} className={'flex1'} onChange={e => { p.onChange(e) }} value={Number(p.value)} />
+      return <SInputNumber suffix={'kg'} className={'flex1'} onChange={e => { p.onChange(e || 0) }} value={Number(p.value || 0)} />
     },
     actions: [eq, neq, gt, lt]
   },
   {
     label: 'Inventory stock',
     key: 'inventory_stock',
-    component: (p: ComponentProps) => {
-      return <Input className={'flex1'} onChange={e => { p.onChange(e.target.value) }} value={p.value} />
-    },
+    component: inputNumberRender,
     actions: [eq, gt, lt]
   },
   {
