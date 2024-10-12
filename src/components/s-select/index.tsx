@@ -8,7 +8,7 @@ export default function SSelect (props: SelectProps) {
   return (
     <Select
       onDropdownVisibleChange={visible => { !visible && setFocus(false) }}
-      onClick={e => { setFocus(true) }}
+      onClick={e => { !focus && setFocus(true) }}
       suffixIcon={
         (focus && props.showSearch)
           ? <IconSearch size={15} color={'#646a73c0'} />

@@ -106,7 +106,6 @@ export default function Products (props: ProductsProps) {
           </Button>
         </SRender>
       }
-      loading={products.loading ? !products?.data?.length : false}
       title={'Products'}
       className={'fit-width'}
     >
@@ -141,7 +140,7 @@ export default function Products (props: ProductsProps) {
             onChange: setSelect
           }}
           loading={products.loading}
-          init
+          init={!!products?.data}
           columns={columns}
           data={pageValue?.map(item => products.data?.find(row => row.id === item))?.filter(Boolean)}
           page={{

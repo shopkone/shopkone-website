@@ -187,8 +187,10 @@ export default function SelectProduct (props: SelectProductProps) {
               checked={isAllSelect}
               indeterminate={!isAllSelect && !!selected.length}
             />
-            <div>{selected.length} selected</div>
-            <span>/</span>
+            <SRender render={selected.length}>
+              <div>{selected.length} selected</div>
+              <span>/</span>
+            </SRender>
             <div>{productList.data?.total} total</div>
           </Flex>
           <Flex gap={12}>

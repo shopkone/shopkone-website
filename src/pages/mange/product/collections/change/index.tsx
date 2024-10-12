@@ -1,9 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useRequest } from 'ahooks'
 import { Card, Flex, Form, Input, Radio } from 'antd'
 
-import { CreateProductCollectionApi } from '@/api/product/collection'
+import { CreateProductCollectionApi } from '@/api/collection/create'
+import { ProductCollectionInfoApi } from '@/api/collection/info'
+import { ProductCollectionUpdateApi } from '@/api/collection/update'
 import Page from '@/components/page'
+import { sMessage } from '@/components/s-message'
 import SRender from '@/components/s-render'
 import Seo from '@/components/seo'
 import Conditions from '@/pages/mange/product/collections/change/conditions'
@@ -36,47 +40,98 @@ const INIT_VALUES = {
 export default function Change () {
   const [form] = Form.useForm()
   const create = useRequest(CreateProductCollectionApi, { manual: true })
+  const info = useRequest(ProductCollectionInfoApi, { manual: true })
+  const update = useRequest(ProductCollectionUpdateApi, { manual: true })
   const type: CollectionType = Form.useWatch('collection_type', form)
   const [isChange, setIsChange] = useState(false)
   const init = useRef<any>()
+  const { id } = useParams()
+  const nav = useNavigate()
 
   const onValuesChange = () => {
     const values = form.getFieldsValue()
     if (!init.current?.seo) {
       init.current = values
     }
+    if (id && !init.current?.title) {
+      init.current = values
+    }
+    if (init.current?.seo) {
+      init.current.seo.id = 0
+    }
+    if (values.seo) {
+      values.seo.id = 0
+    }
     const isChange = !isEqualHandle(init.current, values)
     setIsChange(isChange)
   }
 
   const onReset = () => {
-    form.resetFields()
+    form.setFieldsValue(init.current)
     setIsChange(false)
   }
 
   const onOk = async () => {
     const values = form.getFieldsValue()
     const conditions = values?.conditions?.map?.((item: any) => item?.item)
-    await create.runAsync({ ...values, conditions })
+    if (!id) {
+      const ret = await create.runAsync({ ...values, conditions })
+      init.current = null
+      nav(`/products/collections/change/${ret.id}`)
+      sMessage.success('Collection created!')
+      setIsChange(false)
+    } else {
+      await update.runAsync({ ...values, id: Number(id), conditions })
+      init.current = null
+      sMessage.success('Collection updated')
+      info.refresh()
+      setIsChange(false)
+    }
   }
 
   useEffect(() => {
     if (type === CollectionType.Auto) {
-      form.setFieldValue('conditions', [
-        { item: { id: genId(), action: 'eq', value: undefined, key: 'tag' } }
-      ])
+      if (!form.getFieldValue('conditions')?.length) {
+        form.setFieldValue('conditions', [
+          { item: { id: genId(), action: 'eq', value: undefined, key: 'tag' } }
+        ])
+      }
+      if (!form.getFieldValue('match_mode')) {
+        form.setFieldValue('match_mode', MatchModeType.All)
+      }
+      const ids = info.data?.collection_type === CollectionType.Auto ? info?.data?.product_ids : []
+      console.log({ ids })
+      form.setFieldValue('product_ids', ids || [])
+    }
+    if (type === CollectionType.Manual) {
+      console.log(123)
+      const ids = info.data?.collection_type === CollectionType.Manual ? info?.data?.product_ids : []
+      form.setFieldValue('product_ids', ids || [])
     }
   }, [type])
 
+  useEffect(() => {
+    if (!id) return
+    info.runAsync({ id: Number(id) })
+  }, [id])
+
+  useEffect(() => {
+    if (info.data) {
+      const conditions = info.data?.conditions?.map?.((item: any) => ({ item }))
+      form.setFieldsValue({ ...info.data, conditions })
+      onValuesChange()
+    }
+  }, [info.data])
+
   return (
     <Page
-      loading={create.loading}
+      loading={create.loading || info.loading}
       onOk={onOk}
       onCancel={onReset}
       isChange={isChange}
       back={'/products/collections'}
       width={950}
-      title={'Create collection'}
+      title={id ? 'Edit collection' : 'Create collection'}
     >
       <Form onValuesChange={onValuesChange} initialValues={INIT_VALUES} form={form} layout={'vertical'}>
         <Flex gap={16}>

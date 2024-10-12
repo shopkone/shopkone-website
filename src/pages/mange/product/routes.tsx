@@ -18,6 +18,7 @@ export const ProductRoutes: RouteObject[] = [
   { element: <ProductChange />, path: '/products/products/change/:id' },
   { element: <Collections />, path: '/products/collections' },
   { element: <CollectionsChange />, path: '/products/collections/change' },
+  { element: <CollectionsChange />, path: '/products/collections/change/:id' },
   { element: <Inventory />, path: '/products/inventory' },
   { element: <Inventory />, path: '/products/inventory/:id' },
   { element: <Purchase />, path: '/products/purchase_orders' },
