@@ -14,7 +14,7 @@ export interface PageProps {
   width?: number
   header?: React.ReactNode
   footer?: React.ReactNode
-  title?: string
+  title?: React.ReactNode
   back?: string
   isChange?: boolean
   bottom?: number
@@ -79,7 +79,7 @@ export default function Page (props: PageProps) {
                 </Button>
               </SRender>
               <SRender render={!!title}>
-                <Typography.Text style={{ fontSize: 20, flex: 1 }}>
+                <Typography.Text style={{ fontSize: 20, flex: 1, lineHeight: '28px' }}>
                   {title}
                 </Typography.Text>
               </SRender>

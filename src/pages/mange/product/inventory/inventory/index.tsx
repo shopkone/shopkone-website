@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import { IconChevronDown } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
 import { Button, Flex } from 'antd'
 import isEqual from 'lodash/isEqual'
@@ -8,8 +9,12 @@ import { InventoryListApi, InventoryListReq } from '@/api/inventory/list'
 import { LocationListApi } from '@/api/location/list'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
+import SRender from '@/components/s-render'
+import SSelect from '@/components/s-select'
 import STable, { STableProps } from '@/components/s-table'
 import Filters from '@/pages/mange/product/inventory/inventory/filters'
+
+import styles from './index.module.less'
 
 export default function Inventory () {
   const { id } = useParams()
@@ -46,8 +51,43 @@ export default function Inventory () {
 
   return (
     <Page
+      header={
+        <SRender render={list?.data?.list?.length}>
+          <Flex gap={8}>
+            <Button type={'text'}>Export</Button>
+            <Button type={'text'}>Import</Button>
+          </Flex>
+        </SRender>
+      }
       bottom={64}
-      title={'Inventory'}
+      title={
+        <Flex align={'center'} gap={16}>
+          Inventory
+          <Flex
+            style={{
+              position: 'relative',
+              top: 2
+            }} align={'center'}
+          >
+            <div className={styles.selectorLabel}>Location:</div>
+            <SSelect
+              onChange={v => {
+                if (!v) return
+                nav(`/products/inventory/${v}`)
+              }}
+              className={styles.selector}
+              value={params.location_id}
+              options={locations.data?.map(i => ({
+                label: i.name,
+                value: i.id
+              }))}
+              variant={'borderless'}
+              suffixIcon={<IconChevronDown color={'#444'} size={16} />}
+              dropdownStyle={{ minWidth: 400 }}
+            />
+          </Flex>
+        </Flex>
+      }
     >
       <SCard styles={{ body: { padding: '8px 0' } }}>
         <Filters />

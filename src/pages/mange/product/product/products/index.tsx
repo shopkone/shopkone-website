@@ -71,7 +71,7 @@ export default function Products () {
       width: 150
     },
     {
-      title: 'Inventory quantity',
+      title: 'Inventory',
       code: 'quantity',
       name: 'quantity',
       render: (_, row: ProductListRes) => {
