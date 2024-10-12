@@ -9,6 +9,7 @@ import { LocationListApi } from '@/api/location/list'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
 import STable from '@/components/s-table'
+import Filters from '@/pages/mange/product/inventory/inventory/filters'
 
 export default function Inventory () {
   const { id } = useParams()
@@ -16,6 +17,7 @@ export default function Inventory () {
   const locations = useRequest(async () => await LocationListApi({ active: true }))
   const nav = useNavigate()
   const list = useRequest(InventoryListApi, { manual: true })
+  const [selected, setSelected] = useState<number[]>([])
 
   useEffect(() => {
     if (!id && locations?.data?.[0]?.id) {
@@ -39,7 +41,12 @@ export default function Inventory () {
       title={'Inventory'}
     >
       <SCard styles={{ body: { padding: '8px 0' } }}>
+        <Filters />
         <STable
+          rowSelection={{
+            value: selected,
+            onChange: setSelected
+          }}
           loading={list.loading}
           init={!!id && !!locations.data && !!list.data}
           columns={

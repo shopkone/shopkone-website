@@ -34,7 +34,7 @@ export default function Filters (props: FiltersProps) {
   ]
 
   return (
-    <div style={{ marginBottom: 12, marginTop: 4, marginLeft: 24 }}>
+    <div style={{ marginBottom: 12, marginTop: 4, marginLeft: 16 }}>
       <Flex align={'center'} gap={20}>
         <div>
           <Input

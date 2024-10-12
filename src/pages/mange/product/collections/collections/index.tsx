@@ -1,12 +1,18 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { IconCopy, IconEye, IconPhoto, IconTrash } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
-import { Button, Card, Flex } from 'antd'
+import { Button, Flex, Tooltip } from 'antd'
 
-import { ProductCollectionListApi, ProductCollectionListReq } from '@/api/collection/list'
+import { ProductCollectionListApi, ProductCollectionListReq, ProductCollectionListRes } from '@/api/collection/list'
+import { FileType } from '@/api/file/add-file-record'
+import FileImage from '@/components/file-image'
 import Page from '@/components/page'
+import SCard from '@/components/s-card'
 import SRender from '@/components/s-render'
 import STable, { STableProps } from '@/components/s-table'
+import { CollectionType } from '@/pages/mange/product/collections/change'
+import Filters from '@/pages/mange/product/collections/collections/filters'
 
 export default function Collections () {
   const [params, setParams] = useState<ProductCollectionListReq>({ page: 1, page_size: 20 })
@@ -15,10 +21,67 @@ export default function Collections () {
   const [selected, setSelected] = useState<number[]>([])
 
   const columns: STableProps['columns'] = [
-    { title: 'Collection', code: 'collection', name: 'collection' },
-    { title: 'Type', code: 'type', name: 'type' },
-    { title: 'Product quantity', code: 'quantity', name: 'quantity' },
-    { title: 'Action', code: 'action', name: 'action' }
+    {
+      title: 'Collection',
+      code: 'collection',
+      name: 'collection',
+      render: (_, row: ProductCollectionListRes) => (
+        <Flex align={'center'} gap={16}>
+          <SRender render={row.cover}>
+            <FileImage size={16} width={32} height={32} src={row.cover} type={FileType.Image} />
+          </SRender>
+          <SRender render={!row.cover}>
+            <Flex align={'center'} justify={'center'} style={{ width: 34, height: 34, background: '#f5f5f5', border: '1px solid #eee', borderRadius: 8 }}>
+              <IconPhoto color={'#ddd'} />
+            </Flex>
+          </SRender>
+          <div>{row.title}</div>
+        </Flex>
+      ),
+      width: 400
+    },
+    {
+      title: 'Type',
+      code: 'collection_type',
+      name: 'collection_type',
+      render: (collection_type: CollectionType) => {
+        if (collection_type === CollectionType.Auto) return 'Auto'
+        return 'Manual'
+      },
+      width: 200
+    },
+    {
+      title: 'Product quantity',
+      code: 'product_quantity',
+      name: 'product_quantity',
+      width: 200
+    },
+    {
+      title: 'Action',
+      code: 'action',
+      name: 'action',
+      render: () => (
+        <Flex align={'center'} style={{ marginLeft: -6, cursor: 'default' }} onClick={e => { e.stopPropagation() }} gap={12}>
+          <Tooltip title={'Preview'}>
+            <Button size={'small'} type={'text'} style={{ width: 26, height: 26 }}>
+              <IconEye style={{ position: 'relative', left: -5 }} size={18} />
+            </Button>
+          </Tooltip>
+          <Tooltip title={'Duplicate'}>
+            <Button size={'small'} type={'text'} style={{ width: 26, height: 26 }}>
+              <IconCopy style={{ position: 'relative', left: -2, top: 1 }} size={14} />
+            </Button>
+          </Tooltip>
+          <Tooltip title={'Duplicate'}>
+            <Button size={'small'} type={'text'} style={{ width: 26, height: 26 }}>
+              <IconTrash style={{ position: 'relative', left: -3, top: 1 }} size={15} />
+            </Button>
+          </Tooltip>
+        </Flex>
+      ),
+      lock: true,
+      width: 200
+    }
   ]
 
   useEffect(() => {
@@ -39,7 +102,8 @@ export default function Collections () {
       }
       bottom={64} title={'Collections'}
     >
-      <Card>
+      <SCard styles={{ body: { padding: '8px 0' } }}>
+        <Filters />
         <STable
           rowSelection={{
             value: selected,
@@ -74,7 +138,7 @@ export default function Collections () {
             }
           }}
         />
-      </Card>
+      </SCard>
     </Page>
   )
 }

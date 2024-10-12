@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useRequest } from 'ahooks'
-import { Card, Flex, Form, Input, Radio } from 'antd'
+import { Flex, Form, Input, Radio } from 'antd'
 
 import { CreateProductCollectionApi } from '@/api/collection/create'
 import { ProductCollectionInfoApi } from '@/api/collection/info'
 import { ProductCollectionUpdateApi } from '@/api/collection/update'
 import Page from '@/components/page'
+import SCard from '@/components/s-card'
 import { sMessage } from '@/components/s-message'
 import SRender from '@/components/s-render'
 import Seo from '@/components/seo'
@@ -126,9 +127,11 @@ export default function Change () {
     }
   }, [info.data])
 
+  const loading = info.loading || (!!id && !info.data)
+
   return (
     <Page
-      loading={create.loading || info.loading}
+      loading={loading}
       onOk={onOk}
       onCancel={onReset}
       isChange={isChange}
@@ -139,15 +142,15 @@ export default function Change () {
       <Form onValuesChange={onValuesChange} initialValues={INIT_VALUES} form={form} layout={'vertical'}>
         <Flex gap={16}>
           <Flex vertical flex={1} gap={16}>
-            <Card className={'fit-width'}>
+            <SCard className={'fit-width'}>
               <Form.Item name={'title'} label={'Title'}>
                 <Input placeholder={'e.g. Summer collection, Under $100, Staff picks'} autoComplete={'off'} />
               </Form.Item>
               <Form.Item name={'description'} className={'mb0'} label={'Description'}>
                 <Input.TextArea autoSize={{ minRows: 12 }} />
               </Form.Item>
-            </Card>
-            <Card title={'Collection type'} className={'fit-width'}>
+            </SCard>
+            <SCard title={'Collection type'} className={'fit-width'}>
               <Form.Item className={'mb0'} name={'collection_type'}>
                 <Radio.Group options={[{ label: 'Manual', value: CollectionType.Manual }]} />
               </Form.Item>
@@ -158,7 +161,7 @@ export default function Change () {
               <div style={{ marginLeft: 26, marginTop: -4 }} className={'tips'}>
                 Existing and future products that match the conditions you set will automatically be added to this collection.
               </div>
-            </Card>
+            </SCard>
 
             <SRender render={type === CollectionType.Auto}>
               <Conditions />

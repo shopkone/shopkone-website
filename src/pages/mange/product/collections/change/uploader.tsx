@@ -119,6 +119,7 @@ export default function Uploader (props: UploaderProps) {
       <SRender render={value}>
         <div style={{ cursor: 'pointer' }} onClick={onOpen}>
           <FileImage
+            containerStyle={{ minHeight: 100 }}
             width={266}
             height={'auto'}
             loading={list.loading}

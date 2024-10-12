@@ -1,6 +1,7 @@
 import { IconPlus } from '@tabler/icons-react'
-import { Button, Card, Flex, Form, Radio } from 'antd'
+import { Button, Flex, Form, Radio } from 'antd'
 
+import SCard from '@/components/s-card'
 import ConditionItem from '@/pages/mange/product/collections/change/condition-item'
 import { MatchModeType } from '@/pages/mange/product/collections/change/index'
 import styles from '@/pages/mange/product/collections/change/index.module.less'
@@ -16,7 +17,7 @@ export default function Conditions () {
   const conditions = Form.useWatch('conditions', form)
 
   return (
-    <Card title={'Conditions'}>
+    <SCard title={'Conditions'}>
       <Flex style={{ marginBottom: 16 }} gap={20} align={'center'}>
         <div>Products must match:</div>
         <Form.Item name={'match_mode'} className={'mb0'}>
@@ -44,6 +45,6 @@ export default function Conditions () {
             )
           }
       </Form.List>
-    </Card>
+    </SCard>
   )
 }

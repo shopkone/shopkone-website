@@ -5,6 +5,10 @@ export interface ProductCollectionListReq extends PageReq {
 
 export interface ProductCollectionListRes {
   id: number
+  title: string
+  cover: string
+  collection_type: number
+  product_quantity: number
 }
 
 export const ProductCollectionListApi = async (data: ProductCollectionListReq) => {
