@@ -74,7 +74,7 @@ export default function Page (props: PageProps) {
           <Flex justify={'space-between'} gap={24} className={styles.title}>
             <Flex style={{ minWidth: 0 }} flex={1} gap={8}>
               <SRender render={!!back}>
-                <Button style={{ position: 'relative', top: 2 }} onClick={() => { nav(back || '') }} type={'text'} className={styles['back-icon']}>
+                <Button style={{ position: 'relative', top: 1 }} onClick={() => { nav(back || '') }} type={'text'} className={styles['back-icon']}>
                   <IconArrowLeft size={20} />
                 </Button>
               </SRender>
