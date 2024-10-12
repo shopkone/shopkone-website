@@ -8,7 +8,7 @@ import { InventoryListApi, InventoryListReq } from '@/api/inventory/list'
 import { LocationListApi } from '@/api/location/list'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
-import STable from '@/components/s-table'
+import STable, { STableProps } from '@/components/s-table'
 import Filters from '@/pages/mange/product/inventory/inventory/filters'
 
 export default function Inventory () {
@@ -18,6 +18,15 @@ export default function Inventory () {
   const nav = useNavigate()
   const list = useRequest(InventoryListApi, { manual: true })
   const [selected, setSelected] = useState<number[]>([])
+
+  const columns: STableProps['columns'] = [
+    { title: 'Product', code: 'product', name: 'product' },
+    { title: 'Sku', code: 'sku', name: 'sku' },
+    { title: 'Unavailable', code: 'unavailable', name: 'unavailable' },
+    { title: 'Committed', code: 'committed', name: 'committed' },
+    { title: 'Available', code: 'available', name: 'available' },
+    { title: 'On hand', code: 'on_hand', name: 'on_hand' }
+  ]
 
   useEffect(() => {
     if (!id && locations?.data?.[0]?.id) {
@@ -49,12 +58,7 @@ export default function Inventory () {
           }}
           loading={list.loading}
           init={!!id && !!locations.data && !!list.data}
-          columns={
-            [
-              { code: 'id', name: 'id' },
-              { code: 'quantity', name: 'quantity' }
-            ]
-          }
+          columns={columns}
           data={list.data?.list || []}
           empty={{
             title: 'Keep track of your inventory',

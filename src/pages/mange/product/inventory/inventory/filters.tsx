@@ -40,7 +40,7 @@ export default function Filters (props: FiltersProps) {
         <Button type={'text'} size={'small'}>Archived</Button>
       </Flex>
       <div className={'line'} style={{ margin: '8px 0' }} />
-      <Flex style={{ margin: '12px 16px' }} align={'center'} justify={'space-between'}>
+      <Flex style={{ margin: 8 }} align={'center'} justify={'space-between'}>
         <Flex align={'center'} gap={20}>
           <div>
             <Input
