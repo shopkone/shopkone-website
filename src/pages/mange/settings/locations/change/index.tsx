@@ -5,6 +5,7 @@ import { Button, Checkbox, Flex, Form, Input } from 'antd'
 import isEqual from 'lodash/isEqual'
 
 import { LocationAddApi } from '@/api/location/add'
+import { LocationExistInventoryApi } from '@/api/location/exist-inventory'
 import { LocationInfoApi } from '@/api/location/info'
 import { RemoveLocationApi } from '@/api/location/remove'
 import { UpdateLocationApi } from '@/api/location/update'
@@ -14,6 +15,8 @@ import SCard from '@/components/s-card'
 import { sMessage } from '@/components/s-message'
 import { useModal } from '@/components/s-modal'
 import SRender from '@/components/s-render'
+import { useOpen } from '@/hooks/useOpen'
+import MoveInventory from '@/pages/mange/settings/locations/change/move-inventory'
 import { useManageState } from '@/pages/mange/state'
 
 export default function Change () {
@@ -30,6 +33,8 @@ export default function Change () {
   const { id } = useParams()
   const info = useRequest(LocationInfoApi, { manual: true })
   const nav = useNavigate()
+  const openInfo = useOpen<{ name: string, id: number }>()
+  const existInventory = useRequest(LocationExistInventoryApi, { manual: true })
 
   const modal = useModal()
 
@@ -92,16 +97,22 @@ export default function Change () {
 
   const onChangeActive = async () => {
     if (info?.data?.active) {
-      modal.confirm({
-        title: `Deactivate ${info?.data?.name}?`,
-        content: 'You can reactivate this location at any time.',
-        onOk: async () => {
-          if (!info?.data?.id) return
-          await update.runAsync({ ...info.data, active: false })
-          sMessage.success('Location deactivated')
-          info.refresh()
-        }
-      })
+      if (!info?.data?.id) return
+      const { exist } = await existInventory.runAsync({ id: info?.data?.id })
+      if (exist) {
+        openInfo.edit({ id: info.data.id, name: info?.data?.name })
+      } else {
+        modal.confirm({
+          title: `Deactivate ${info?.data?.name}?`,
+          content: 'You can reactivate this location at any time.',
+          onOk: async () => {
+            if (!info?.data?.id) return
+            await update.runAsync({ ...info.data, active: false })
+            sMessage.success('Location deactivated')
+            info.refresh()
+          }
+        })
+      }
     } else {
       if (!info?.data?.id) return
       await update.runAsync({ ...info.data, active: true })
@@ -156,13 +167,13 @@ export default function Change () {
         <SRender render={renderFooter}>
           <Flex gap={12} align={'center'}>
             <SRender render={!!id && info?.data?.active ? !info?.data?.default : null}>
-              <Button loading={update.loading} onClick={onChangeActive}>Deactivate location</Button>
+              <Button loading={update.loading || existInventory.loading} onClick={onChangeActive}>Deactivate location</Button>
             </SRender>
             <SRender render={!!id && !info?.data?.active}>
               <Button loading={update.loading} onClick={onChangeActive}>Activate location</Button>
             </SRender>
             <SRender render={!!id && !info?.data?.active}>
-              <Button loading={remove.loading} danger onClick={onRemove} type={'primary'}>Delete location</Button>
+              <Button disabled={remove.loading} danger onClick={onRemove} type={'primary'}>Delete location</Button>
             </SRender>
           </Flex>
         </SRender>
@@ -201,6 +212,16 @@ export default function Change () {
           </Form.Item>
         </SCard>
       </Form>
+
+      <MoveInventory
+        info={openInfo}
+        onConfirm={async () => {
+          if (!info?.data?.id) return
+          await update.runAsync({ ...info.data, active: false })
+          sMessage.success('Location deactivated')
+          info.refresh()
+        }}
+      />
     </Page>
   )
 }
