@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { IconChevronDown, IconPhoto } from '@tabler/icons-react'
+import { IconChevronDown, IconHistory, IconPhoto } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
-import { Button, Flex } from 'antd'
+import { Button, Flex, Tooltip } from 'antd'
 import isEqual from 'lodash/isEqual'
 
 import { FileType } from '@/api/file/add-file-record'
@@ -11,6 +11,7 @@ import { LocationListApi } from '@/api/location/list'
 import FileImage from '@/components/file-image'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
+import SInputNumber from '@/components/s-input-number'
 import SRender from '@/components/s-render'
 import SSelect from '@/components/s-select'
 import STable, { STableProps } from '@/components/s-table'
@@ -55,12 +56,50 @@ export default function Inventory () {
       title: 'Sku',
       code: 'sku',
       name: 'sku',
-      render: (sku: string) => renderText(sku)
+      render: (sku: string) => renderText(sku),
+      width: 150
     },
-    { title: 'Unavailable', code: 'unavailable', name: 'unavailable' },
-    { title: 'Committed', code: 'committed', name: 'committed' },
-    { title: 'Available', code: 'quantity', name: 'quantity' },
-    { title: 'On hand', code: 'on_hand', name: 'on_hand' }
+    {
+      title: 'Unavailable',
+      code: 'unavailable',
+      name: 'unavailable',
+      width: 150
+    },
+    {
+      title: 'Committed',
+      code: 'committed',
+      name: 'committed',
+      width: 150
+    },
+    {
+      title: 'Available',
+      code: 'quantity',
+      name: 'quantity',
+      render: (quantity: number) => (
+        <SInputNumber style={{ width: 130 }} value={quantity} uint />
+      ),
+      width: 150
+    },
+    {
+      title: 'On hand',
+      code: 'on_hand',
+      name: 'on_hand',
+      width: 150
+    },
+    {
+      title: 'Action',
+      code: 'action',
+      name: 'action',
+      render: () => (
+        <Tooltip title={'Change history'}>
+          <Button size={'small'} type={'text'} style={{ width: 26, height: 26, marginLeft: -6 }}>
+            <IconHistory style={{ position: 'relative', left: -3, top: 1 }} size={16} />
+          </Button>
+        </Tooltip>
+      ),
+      width: 100,
+      lock: true
+    }
   ]
 
   useEffect(() => {
