@@ -1,7 +1,9 @@
 import { ReactNode } from 'react'
-import { IconChevronDown } from '@tabler/icons-react'
+import { IconChevronDown, IconX } from '@tabler/icons-react'
 import { useMemoizedFn } from 'ahooks'
 import { Button, Flex, Popover } from 'antd'
+
+import SRender from '@/components/s-render'
 
 import styles from './index.module.less'
 
@@ -11,16 +13,22 @@ export interface FilterBaseProps {
   children: React.ReactNode
   label: ReactNode
   onClear?: () => void
+  showLabel?: string
 }
 
 export default function FilterBase (props: FilterBaseProps) {
-  const { open, setOpen, children, label, onClear } = props
+  const { open, setOpen, children, label, onClear, showLabel } = props
+
+  const clearHandler = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    onClear?.()
+  }
 
   const content = useMemoizedFn(() => (
     <div className={styles.base}>
       {children}
       <div className={styles.clear}>
-        <Button disabled={!onClear} onClick={onClear} type={'link'} size={'small'}>Clear</Button>
+        <Button disabled={!onClear} onClick={clearHandler} type={'link'} size={'small'}>Clear</Button>
       </div>
     </div>
   ))
@@ -34,7 +42,15 @@ export default function FilterBase (props: FilterBaseProps) {
       >
         <Flex gap={4} align={'center'}>
           {label}
-          <IconChevronDown className={'secondary'} size={13} style={{ position: 'relative', top: 0 }} />
+          <SRender render={onClear}>
+            : {showLabel}
+          </SRender>
+          <SRender render={!onClear}>
+            <IconChevronDown className={'secondary'} size={13} style={{ position: 'relative', top: 0 }} />
+          </SRender>
+          <SRender render={onClear}>
+            <IconX onClick={clearHandler} className={styles.close} size={12} />
+          </SRender>
         </Flex>
       </Button>
     </Popover>

@@ -25,8 +25,9 @@ export default function FilterCheckbox (props: CheckboxGroup) {
 
   const onClear = () => {
     if (!value) return
-    setTempValue(undefined)
+    init.current = false
     setOpen(false)
+    onChange?.([])
   }
 
   const optionList = options.map(item => ({
@@ -45,7 +46,10 @@ export default function FilterCheckbox (props: CheckboxGroup) {
   }, [value])
 
   useEffect(() => {
-    if (open) return
+    if (open) {
+      init.current = true
+      return
+    }
     if (!init.current) {
       init.current = true
       return
@@ -65,7 +69,7 @@ export default function FilterCheckbox (props: CheckboxGroup) {
   }, [label])
 
   return (
-    <FilterBase onClear={label ? onClear : undefined} open={open} setOpen={setOpen} label={children}>
+    <FilterBase showLabel={label} onClear={label ? onClear : undefined} open={open} setOpen={setOpen} label={children}>
       <Checkbox.Group
         {...rest}
         className={styles.radio}

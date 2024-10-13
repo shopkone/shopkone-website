@@ -26,8 +26,9 @@ export default function FilterRadio (props: RadioGroup) {
 
   const onClear = () => {
     if (!value) return
-    setTempValue(undefined)
+    init.current = false
     setOpen(false)
+    onChange?.(undefined)
   }
 
   const optionList = options.map(item => ({
@@ -46,7 +47,10 @@ export default function FilterRadio (props: RadioGroup) {
   }, [value])
 
   useEffect(() => {
-    if (open) return
+    if (open) {
+      init.current = true
+      return
+    }
     if (!init.current) {
       init.current = true
       return
@@ -72,7 +76,7 @@ export default function FilterRadio (props: RadioGroup) {
   }, [label])
 
   return (
-    <FilterBase onClear={label ? onClear : undefined} open={open} setOpen={setOpen} label={children}>
+    <FilterBase showLabel={label} onClear={label ? onClear : undefined} open={open} setOpen={setOpen} label={children}>
       <Radio.Group
         {...rest}
         className={styles.radio}

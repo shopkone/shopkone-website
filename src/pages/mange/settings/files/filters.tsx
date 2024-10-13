@@ -7,7 +7,6 @@ import SRender from '@/components/s-render'
 import FilterCheckbox from '@/components/table-filter/filter-checkbox'
 import FilterNumberRange, { FilterNumberRangeProps } from '@/components/table-filter/filter-number-range'
 import FilterRadio from '@/components/table-filter/filter-radio'
-import FilterLabels from '@/components/table-filter/FilterLabels'
 
 import styles from './index.module.less'
 
@@ -96,7 +95,6 @@ export default function Filters (props: FiltersProps) {
           </SRender>
         </Flex>
       </Flex>
-      <FilterLabels style={{ marginTop: 12 }} labels={labels} value={value} onChange={onChange} />
     </div>
   )
 }

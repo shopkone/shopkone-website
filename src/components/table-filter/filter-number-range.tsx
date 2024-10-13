@@ -24,8 +24,9 @@ const FilterNumberRange = (props: FilterNumberRangeProps) => {
 
   const onClear = () => {
     if (!value) return
-    setTempValue(undefined)
+    init.current = false
     setOpen(false)
+    onChange?.(undefined)
   }
 
   const onChangeHandle = (v: FilterNumberRangeProps['value']) => {
@@ -42,7 +43,10 @@ const FilterNumberRange = (props: FilterNumberRangeProps) => {
   }, [value])
 
   useEffect(() => {
-    if (open) return
+    if (open) {
+      init.current = true
+      return
+    }
     if (!init.current) {
       init.current = true
       return
@@ -62,7 +66,7 @@ const FilterNumberRange = (props: FilterNumberRangeProps) => {
   }, [label])
 
   return (
-    <FilterBase open={open} setOpen={setOpen} label={children} onClear={label ? onClear : undefined}>
+    <FilterBase showLabel={label} open={open} setOpen={setOpen} label={children} onClear={label ? onClear : undefined}>
       <Form style={{ width: 250 }} layout={'vertical'}>
         <Form.Item style={{ marginBottom: 8 }} label={`${minLabel}`}>
           <SInputNumber

@@ -3,7 +3,6 @@ import { Button, Flex, Form } from 'antd'
 
 import SRender from '@/components/s-render'
 import STable from '@/components/s-table'
-import FilterLabels from '@/components/table-filter/FilterLabels'
 import { Option, Variant } from '@/pages/mange/product/product/product-change/variants/state'
 import Filters from '@/pages/mange/product/product/product-change/variants/table/filters'
 import GroupBy from '@/pages/mange/product/product/product-change/variants/table/group-by'
@@ -63,7 +62,7 @@ export default function Table (props: TableProps) {
     if (variants?.length && !groupVariants?.length) return false
     if (groupName && !groupVariants?.[0]?.children?.length) return false
     if (variants?.[0]?.name?.length > 1 && !groupName) return false
-    if (variants?.[0]?.name?.length !== options.length) return false
+    if (Number(variants?.[0]?.name?.length || 0) !== options.length) return false
     return true
   }, [groupVariants, groupName, columns, variants, ColumnSettings, locationId, options])
 
@@ -98,7 +97,6 @@ export default function Table (props: TableProps) {
           <LocationsSelect key={'location'} selected={locationId} setSelected={setLocationId} />
         </Flex>
       </Flex>
-      <FilterLabels style={{ marginBottom: 12 }} labels={labels} value={filters} onChange={setFilters} />
       <SRender render={renderTable}>
         <STable
           className={styles.table}
