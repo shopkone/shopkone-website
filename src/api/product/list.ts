@@ -14,6 +14,7 @@ export interface ProductListRes {
   status: number
   title: string
   image: string
+  inventory_tracking: boolean
   variants: Array<{
     id: number
     price: number
