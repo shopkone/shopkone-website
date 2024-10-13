@@ -1,5 +1,7 @@
-import { memo, useMemo } from 'react'
+import { memo, useEffect, useMemo, useRef } from 'react'
 import { IconChevronLeft, IconChevronRight, IconDots } from '@tabler/icons-react'
+import { useMemoizedFn } from 'ahooks'
+import { Timeout } from 'ahooks/es/useRequest/src/types'
 import { BaseTable, BaseTableProps, features, useTablePipeline } from 'ali-react-table'
 import { Button, Checkbox, Flex, Pagination, PaginationProps } from 'antd'
 import classNames from 'classnames'
@@ -58,6 +60,8 @@ function STable (props: STableProps) {
     ...rest
   } = props
 
+  const timer = useRef<Timeout>()
+
   const columns = useMemo(() => {
     if (!rowSelection?.value?.length) return cols
     return cols.map((col, index) => {
@@ -108,6 +112,26 @@ function STable (props: STableProps) {
 
   console.log('Table Update')
 
+  const isCheckboxDom = useMemoizedFn((e: any) => {
+    const className = (e?.target)?.className?.split(' ') || []
+    if (className?.[0] === 'art-table-cell' && className?.[1] === 'first') {
+      return true
+    }
+    if (className?.[0] === 'shopkone-checkbox-input') {
+      return true
+    }
+    return false
+  })
+
+  useEffect(() => {
+    return () => {
+      if (timer.current) {
+        clearTimeout(timer.current)
+        timer.current = undefined
+      }
+    }
+  }, [])
+
   if (!init) {
     return (
       <SLoading loading size={36}>
@@ -150,12 +174,18 @@ function STable (props: STableProps) {
             {...pipeline.getProps()}
             getRowProps={(row, rowIndex) => ({
               ...pipeline.getProps()?.getRowProps,
-              onClick: (e) => {
-                const className = (e?.target as any)?.className?.split(' ') || []
-                if (className?.[0] === 'art-table-cell' && className?.[1] === 'first') {
-                  return
-                }
-                if (className?.[0] === 'shopkone-checkbox-input') {
+              onMouseDown: (e) => {
+                if (isCheckboxDom(e)) return
+                timer.current = setTimeout(() => {
+                  clearTimeout(timer.current)
+                  timer.current = undefined
+                }, 200)
+              },
+              onMouseUp: (e) => {
+                if (isCheckboxDom(e)) return
+                if (!timer.current) {
+                  clearTimeout(timer.current)
+                  timer.current = undefined
                   return
                 }
                 onRowClick?.(row, rowIndex)
