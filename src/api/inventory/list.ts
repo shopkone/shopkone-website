@@ -7,6 +7,11 @@ export interface InventoryListReq extends PageReq {
 export interface InventoryListRes {
   id: number
   quantity: number
+  product_name: string
+  variant_id: number
+  name: string
+  image: string
+  sku: string
 }
 
 export const InventoryListApi = async (params: InventoryListReq) => {

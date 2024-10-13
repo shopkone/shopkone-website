@@ -1,18 +1,21 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { IconChevronDown } from '@tabler/icons-react'
+import { IconChevronDown, IconPhoto } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
 import { Button, Flex } from 'antd'
 import isEqual from 'lodash/isEqual'
 
-import { InventoryListApi, InventoryListReq } from '@/api/inventory/list'
+import { FileType } from '@/api/file/add-file-record'
+import { InventoryListApi, InventoryListReq, InventoryListRes } from '@/api/inventory/list'
 import { LocationListApi } from '@/api/location/list'
+import FileImage from '@/components/file-image'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
 import SRender from '@/components/s-render'
 import SSelect from '@/components/s-select'
 import STable, { STableProps } from '@/components/s-table'
 import Filters from '@/pages/mange/product/inventory/inventory/filters'
+import { renderText } from '@/utils/render-text'
 
 import styles from './index.module.less'
 
@@ -25,11 +28,38 @@ export default function Inventory () {
   const [selected, setSelected] = useState<number[]>([])
 
   const columns: STableProps['columns'] = [
-    { title: 'Product', code: 'product', name: 'product' },
-    { title: 'Sku', code: 'sku', name: 'sku' },
+    {
+      title: 'Product',
+      code: 'product',
+      name: 'product',
+      render: (_, row: InventoryListRes) => (
+        <Flex align={'center'} gap={16}>
+          <SRender render={row.image}>
+            <FileImage size={16} width={32} height={32} src={row.image} type={FileType.Image} />
+          </SRender>
+          <SRender render={!row.image}>
+            <Flex align={'center'} justify={'center'} style={{ width: 34, height: 34, background: '#f5f5f5', border: '1px solid #eee', borderRadius: 8 }}>
+              <IconPhoto color={'#ddd'} />
+            </Flex>
+          </SRender>
+          <div>
+            <div>{row.product_name}</div>
+            <div className={'secondary'} style={{ fontSize: 12 }}>{row.name}</div>
+          </div>
+        </Flex>
+      ),
+      width: 400,
+      lock: true
+    },
+    {
+      title: 'Sku',
+      code: 'sku',
+      name: 'sku',
+      render: (sku: string) => renderText(sku)
+    },
     { title: 'Unavailable', code: 'unavailable', name: 'unavailable' },
     { title: 'Committed', code: 'committed', name: 'committed' },
-    { title: 'Available', code: 'available', name: 'available' },
+    { title: 'Available', code: 'quantity', name: 'quantity' },
     { title: 'On hand', code: 'on_hand', name: 'on_hand' }
   ]
 
@@ -63,29 +93,31 @@ export default function Inventory () {
       title={
         <Flex align={'center'} gap={16}>
           Inventory
-          <Flex
-            style={{
-              position: 'relative',
-              top: 2
-            }} align={'center'}
-          >
-            <div className={styles.selectorLabel}>Location:</div>
-            <SSelect
-              onChange={v => {
-                if (!v) return
-                nav(`/products/inventory/${v}`)
-              }}
-              className={styles.selector}
-              value={params.location_id}
-              options={locations.data?.map(i => ({
-                label: i.name,
-                value: i.id
-              }))}
-              variant={'borderless'}
-              suffixIcon={<IconChevronDown color={'#444'} size={16} />}
-              dropdownStyle={{ minWidth: 400 }}
-            />
-          </Flex>
+          <SRender render={(locations.data?.length || 0) > 1}>
+            <Flex
+              style={{
+                position: 'relative',
+                top: 2
+              }} align={'center'}
+            >
+              <div className={styles.selectorLabel}>Location:</div>
+              <SSelect
+                onChange={v => {
+                  if (!v) return
+                  nav(`/products/inventory/${v}`)
+                }}
+                className={styles.selector}
+                value={params.location_id}
+                options={locations.data?.map(i => ({
+                  label: i.name,
+                  value: i.id
+                }))}
+                variant={'borderless'}
+                suffixIcon={<IconChevronDown color={'#444'} size={16} />}
+                dropdownStyle={{ minWidth: 400 }}
+              />
+            </Flex>
+          </SRender>
         </Flex>
       }
     >
