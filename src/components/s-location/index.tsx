@@ -1,6 +1,6 @@
 import { IconMapPin } from '@tabler/icons-react'
 import { useMemoizedFn } from 'ahooks'
-import { Flex, Tag, Typography } from 'antd'
+import { Flex, Typography } from 'antd'
 import classNames from 'classnames'
 
 import { useCountries } from '@/api/base/countries'
@@ -8,6 +8,7 @@ import { AddressType } from '@/api/common/address'
 import { LocationListRes } from '@/api/location/list'
 import SLoading from '@/components/s-loading'
 import SRender from '@/components/s-render'
+import Status from '@/components/status'
 
 import styles from './index.module.less'
 
@@ -60,19 +61,19 @@ export default function SLocation (props: SLocationProps) {
                   </Typography.Text>
                   <SRender render={!hideTag}>
                     <SRender render={item.default}>
-                      <Tag style={{ background: '#3370ff30', color: '#3370ff', borderColor: '#3370ff30', borderRadius: 8, marginLeft: 12 }}>
+                      <Status type={'info'}>
                         Default
-                      </Tag>
+                      </Status>
                     </SRender>
                     <SRender render={item.active ? !item.default : null}>
-                      <Tag style={{ background: '#32a64530', color: '#32a645', borderColor: '#32a64530', borderRadius: 8 }}>
+                      <Status type={'success'}>
                         Active
-                      </Tag>
+                      </Status>
                     </SRender>
                     <SRender render={!item.active}>
-                      <Tag style={{ background: '#646A7330', color: '#646A73', borderColor: '#646A7330', borderRadius: 8 }}>
+                      <Status>
                         Inactive
-                      </Tag>
+                      </Status>
                     </SRender>
                   </SRender>
                 </Flex>

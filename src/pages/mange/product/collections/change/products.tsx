@@ -54,7 +54,7 @@ export default function Products (props: ProductsProps) {
               <IconPhoto color={'#ddd'} />
             </Flex>
           </SRender>
-          <div>{row.title}1</div>
+          <div>{row.title}</div>
         </Flex>
       ),
       width: 250,
