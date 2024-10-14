@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import { IconTrash } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
 import { Button, Form, Tooltip } from 'antd'
@@ -38,6 +39,7 @@ export default function useColumns (params: ColumnsParams) {
   const editingRow = useRef<Variant | undefined>()
   const fileList = useRequest(fileListByIds, { manual: true })
   const [imageResult, setImageResult] = useState<FileListByIdsRes[]>([])
+  const { id } = useParams()
 
   const onUpdate = (row: Variant, key: keyof Variant, value: number | string | null | boolean) => {
     if (row.children?.length) {
@@ -97,6 +99,12 @@ export default function useColumns (params: ColumnsParams) {
       setImageResult(ii => [...ii, ...r])
     })
   }, [variants, imageOpenInfo.open])
+
+  useEffect(() => {
+    if (!inventoryTracking || !id) return
+    const v = form.getFieldValue('variants')
+    forceChange(v)
+  }, [inventoryTracking])
 
   const cols: UseColumnType[] = [
     {

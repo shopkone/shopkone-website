@@ -1,6 +1,7 @@
-import { Card, Checkbox, Form, Radio } from 'antd'
+import { Card, Form, Radio } from 'antd'
 
 import { useInventoryPolicyOptions } from '@/constant/product'
+import TrackType from '@/pages/mange/product/product/product-change/variants-settings/track-type'
 import TypeChanger from '@/pages/mange/product/product/product-change/variants-settings/type-changer'
 
 import styles from './index.module.less'
@@ -24,10 +25,9 @@ export default function VariantsSettings () {
 
         <Form.Item
           name={'inventory_tracking'}
-          valuePropName={'checked'}
           style={{ marginTop: -8 }}
         >
-          <Checkbox>Inventory tracking</Checkbox>
+          <TrackType />
         </Form.Item>
         {
           inventoryTracking
