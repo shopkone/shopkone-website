@@ -10,6 +10,7 @@ export default function GiftCard () {
     <Page title={'Gift cards'}>
       <Card>
         <STable
+          init
           columns={[]}
           data={[]}
           empty={{

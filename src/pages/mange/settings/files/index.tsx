@@ -151,7 +151,7 @@ export default function Files () {
       width: 60,
       render: (src: string) => (
         <Tooltip title={'Copy link'}>
-          <Button onClick={(e) => { e.stopPropagation(); onCopy(src) }} className={styles.btn}>
+          <Button onMouseDown={e => { e.stopPropagation() }} onClick={(e) => { e.stopPropagation(); onCopy(src) }} className={styles.btn}>
             <IconLink size={15} className={styles.icon} />
           </Button>
         </Tooltip>

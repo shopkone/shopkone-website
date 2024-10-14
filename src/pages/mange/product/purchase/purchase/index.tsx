@@ -10,6 +10,7 @@ export default function Purchase () {
     <Page title={'Purchase'}>
       <Card>
         <STable
+          init
           columns={[]}
           data={[]}
           empty={{

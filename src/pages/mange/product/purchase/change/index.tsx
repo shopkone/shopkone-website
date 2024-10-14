@@ -2,10 +2,14 @@ import { Button, Card, Empty, Flex } from 'antd'
 
 import Page from '@/components/page'
 import SSelect from '@/components/s-select'
+import SelectVariants from '@/components/select-variants'
+import { useOpen } from '@/hooks/useOpen'
 
 import styles from './index.module.less'
 
 export default function Change () {
+  const openInfo = useOpen<number[]>([])
+
   return (
     <Page
       width={950}
@@ -33,7 +37,7 @@ export default function Change () {
                 Only items with inventory tracking settings can be selected.
               </div>
               <div>
-                <Button>
+                <Button onClick={() => { openInfo.edit() }}>
                   Select products
                 </Button>
               </div>
@@ -41,6 +45,8 @@ export default function Change () {
           )}
         />
       </Card>
+
+      <SelectVariants info={openInfo} />
     </Page>
   )
 }

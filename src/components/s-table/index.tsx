@@ -65,7 +65,7 @@ function STable (props: STableProps) {
   const columns = useMemo(() => {
     if (!rowSelection?.value?.length) return cols
     return cols.map((col, index) => {
-      if (index === 1) {
+      if (index === 0) {
         return {
           ...col,
           title: (

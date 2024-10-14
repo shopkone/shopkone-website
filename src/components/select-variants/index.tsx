@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { IconAlertCircleFilled, IconPhoto } from '@tabler/icons-react'
 import { useInViewport, useRequest } from 'ahooks'
 import { Button, Checkbox, Flex } from 'antd'
@@ -16,12 +16,23 @@ import { VariantStatus } from '@/constant/product'
 import { UseOpenType } from '@/hooks/useOpen'
 import { formatPrice } from '@/utils/num'
 
-export interface SelectProductProps {
+export interface SelectVariantsProps {
   info: UseOpenType<number[]>
   onConfirm?: (value: number[]) => void
 }
 
-export default function SelectProduct (props: SelectProductProps) {
+interface ProductVariants {
+  id: number
+  title: string
+  price: string
+  image?: string
+  inventory: string
+  isParent?: boolean
+  status?: VariantStatus
+  children?: ProductVariants
+}
+
+export default function SelectVariants (props: SelectVariantsProps) {
   const { info, onConfirm } = props
   const [params, setParams] = useState<ProductListReq>({ page: 1, page_size: 50 })
   const [selected, setSelected] = useState<number[]>([])
@@ -32,6 +43,14 @@ export default function SelectProduct (props: SelectProductProps) {
     setSelected(selected.includes(row.id) ? selected.filter(id => id !== row.id) : [...selected, row.id])
   }
 
+  const [expands, setExpands] = useState<number[]>([])
+
+  const renderList = useMemo(() => {
+    return list.map(item => ({ ...item, children: item.variants }))
+  }, [list])
+
+  console.log({ renderList })
+
   const moreRef = useRef<HTMLDivElement>(null)
   const [inViewport] = useInViewport(moreRef)
   const columns: STableProps['columns'] = [
@@ -40,7 +59,12 @@ export default function SelectProduct (props: SelectProductProps) {
       code: 'id',
       name: 'id',
       render: (id: number, row: ProductListRes) => (
-        <Checkbox style={{ marginLeft: 4 }} onClick={() => { onClickRow(row) }} checked={selected.includes(id)} />
+        <div>
+          <SRender>asd</SRender>
+          <SRender render={row.variants?.length}>
+            <Checkbox style={{ marginLeft: 4 }} onClick={() => { onClickRow(row) }} checked={selected.includes(id)} />
+          </SRender>
+        </div>
       ),
       width: 35
     },
@@ -69,7 +93,7 @@ export default function SelectProduct (props: SelectProductProps) {
       code: 'price',
       name: 'price',
       render: (_, row: ProductListRes) => {
-        const allPrice = row.variants?.map(variant => variant.price)
+        const allPrice = row.variants?.map(variant => variant.price) || []
         const maxPrice = Math.max(...allPrice)
         const minPrice = Math.min(...allPrice)
         if (maxPrice === minPrice) return formatPrice(maxPrice, '$')
@@ -198,7 +222,7 @@ export default function SelectProduct (props: SelectProductProps) {
             <Button onClick={onOk} type={'primary'}>Done</Button>
           </Flex>
         </Flex>
-    )}
+      )}
       width={1000}
       title={'Select products'}
       onCancel={info.close}
@@ -208,11 +232,15 @@ export default function SelectProduct (props: SelectProductProps) {
         <Filters />
         <div style={{ overflowY: 'auto', height: 550, paddingBottom: 24 }}>
           <STable
+            expand={{
+              value: expands,
+              onChange: setExpands
+            }}
             loading={productList.loading ? !list.length : false}
             init={!!productList.data}
             columns={columns}
-            data={list || []}
-            onRowClick={onClickRow}
+            data={renderList || []}
+            // onRowClick={onClickRow}
           />
           <SRender render={showMoreLoading}>
             <Flex ref={moreRef} justify={'center'} align={'center'} gap={12} style={{ paddingTop: 24, opacity: list.length ? 1 : 0 }}>
