@@ -67,7 +67,7 @@ export default function Status (props: StatusProps) {
 
   return (
     <Flex {...rest} gap={8} align={'center'}>
-      <div style={{ width: 8, height: 8, background: color[type].bg, borderRadius: 3 }} />
+      <div style={{ width: 8, height: 8, background: color[type].color, borderRadius: 3 }} />
       <div>{children}</div>
     </Flex>
   )

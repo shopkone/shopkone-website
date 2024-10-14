@@ -1,12 +1,8 @@
-import { Button } from 'antd'
-
 import { useCategories } from '@/api/base/categories'
 import Categories from '@/components/categories'
 import SLoading from '@/components/s-loading'
-import SRender from '@/components/s-render'
+import SSelect from '@/components/s-select'
 import { useOpen } from '@/hooks/useOpen'
-
-import styles from './index.module.less'
 
 export interface SelectCategoryProps {
   value?: number
@@ -27,18 +23,11 @@ export default function SelectCategory (props: SelectCategoryProps) {
 
   return (
     <SLoading size={18} loading={!data.length}>
-      <SRender className={styles.category} render={selectLabel}>
-        {selectLabel}
-      </SRender>
-      <Button
-        onClick={() => { selectCategoriesInfo.edit(value) }}
-        className={'primary-text'}
-        style={{ marginLeft: -7 }}
-        type={'text'}
-        size={'small'}
-      >
-        Select category
-      </Button>
+      <SSelect
+        value={selectLabel}
+        open={false}
+        onDropdownVisibleChange={v => { v && selectCategoriesInfo.edit(value) }}
+      />
 
       <Categories data={data} onConfirm={onSelectCategories} info={selectCategoriesInfo} />
     </SLoading>

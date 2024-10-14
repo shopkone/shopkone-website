@@ -3,6 +3,7 @@ import { Checkbox, Form } from 'antd'
 
 import { ListByVariantIdsUnApi } from '@/api/inventory/list-by-variantids-un'
 import SLoading from '@/components/s-loading'
+import { InventoryPolicy } from '@/constant/product'
 import { Variant } from '@/pages/mange/product/product/product-change/variants/state'
 
 export interface TrackTypeProps {
@@ -29,6 +30,9 @@ export default function TrackType (props: TrackTypeProps) {
         return { ...v, inventories: item }
       })
       form.setFieldValue('variants', variants)
+      if (checked && !form.getFieldValue('inventory_policy')) {
+        form.setFieldValue('inventory_policy', InventoryPolicy.Continue)
+      }
       onChange?.(checked)
     })
   }

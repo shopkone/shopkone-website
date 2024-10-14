@@ -150,7 +150,7 @@ export default function Change () {
                 <Input.TextArea autoSize={{ minRows: 12 }} />
               </Form.Item>
             </SCard>
-            <SCard title={'Collection type'} className={'fit-width'}>
+            <SCard style={{ display: id ? 'none' : undefined }} title={'Collection type'} className={'fit-width'}>
               <Form.Item className={'mb0'} name={'collection_type'}>
                 <Radio.Group options={[{ label: 'Manual', value: CollectionType.Manual }]} />
               </Form.Item>

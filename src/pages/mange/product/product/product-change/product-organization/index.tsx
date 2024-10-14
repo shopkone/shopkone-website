@@ -3,15 +3,12 @@ import { Card, Form, Input, Select } from 'antd'
 import SSelect from '@/components/s-select'
 import SelectCategory from '@/pages/mange/product/product/product-change/product-organization/select-category'
 
-import styles from './index.module.less'
-
 export default function ProductOrganization () {
   return (
     <Card title={'Product organization'}>
       <Form.Item name={'category'} label={'Category'}>
         <SelectCategory />
       </Form.Item>
-      <div className={styles.line} />
       <Form.Item name={'spu'} label={'Spu'}>
         <Input autoComplete={'off'} />
       </Form.Item>

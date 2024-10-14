@@ -62,14 +62,16 @@ export default function Media (props: MediaProps) {
           </SRender>
           <SRender render={!uploadDragIn}>
             <Flex gap={8}>
+              <Button size={'small'}>
+                Select existing
+              </Button>
               <Button
+                type={'text'}
                 size={'small'}
+                className={'primary-text'}
                 onClick={(e) => { e.stopPropagation(); inputRef?.current?.click() }}
               >
                 Upload new
-              </Button>
-              <Button type={'text'} size={'small'} className={'primary-text'}>
-                Select existing
               </Button>
             </Flex>
             <div className={'tips'}>Accepts images or videos</div>
