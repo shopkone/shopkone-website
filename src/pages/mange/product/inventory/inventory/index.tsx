@@ -15,6 +15,8 @@ import SInputNumber from '@/components/s-input-number'
 import SRender from '@/components/s-render'
 import SSelect from '@/components/s-select'
 import STable, { STableProps } from '@/components/s-table'
+import { useOpen } from '@/hooks/useOpen'
+import ChangeHistory from '@/pages/mange/product/inventory/inventory/change-history'
 import Filters from '@/pages/mange/product/inventory/inventory/filters'
 import { renderText } from '@/utils/render-text'
 
@@ -27,6 +29,8 @@ export default function Inventory () {
   const nav = useNavigate()
   const list = useRequest(InventoryListApi, { manual: true })
   const [selected, setSelected] = useState<number[]>([])
+
+  const info = useOpen<{ name: string, id: number }>()
 
   const columns: STableProps['columns'] = [
     {
@@ -90,15 +94,21 @@ export default function Inventory () {
       title: 'Action',
       code: 'action',
       name: 'action',
-      render: () => (
+      render: (_, row: InventoryListRes) => (
         <Tooltip title={'Change history'}>
-          <Button size={'small'} type={'text'} style={{ width: 26, height: 26, marginLeft: -6 }}>
+          <Button
+            onClick={() => { info.edit({ name: row.name || row.product_name, id: row.id }) }}
+            size={'small'}
+            type={'text'}
+            style={{ width: 26, height: 26, marginLeft: -6 }}
+          >
             <IconHistory style={{ position: 'relative', left: -3, top: 1 }} size={16} />
           </Button>
         </Tooltip>
       ),
       width: 100,
-      lock: true
+      lock: true,
+      align: 'center'
     }
   ]
 
@@ -190,6 +200,8 @@ export default function Inventory () {
           }}
         />
       </SCard>
+
+      <ChangeHistory info={info} />
     </Page>
   )
 }
