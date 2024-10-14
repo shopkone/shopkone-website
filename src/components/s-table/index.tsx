@@ -65,7 +65,7 @@ function STable (props: STableProps) {
   const columns = useMemo(() => {
     if (!rowSelection?.value?.length) return cols
     return cols.map((col, index) => {
-      if (index === 0) {
+      if (index === 1) {
         return {
           ...col,
           title: (
@@ -76,7 +76,7 @@ function STable (props: STableProps) {
           )
         }
       }
-      return col
+      return { ...col, title: '' }
     })
   }, [cols])
 
@@ -88,7 +88,7 @@ function STable (props: STableProps) {
     if (rowSelection) {
       p = p.use(
         features.multiSelect({
-          checkboxColumn: { width: rowSelection?.width || 40, lock: true },
+          checkboxColumn: { width: rowSelection?.width || 30, lock: true },
           highlightRowWhenSelected: true,
           checkboxPlacement: 'start',
           value: rowSelection?.value as any,
@@ -113,7 +113,7 @@ function STable (props: STableProps) {
   console.log('Table Update')
 
   const isCheckboxDom = useMemoizedFn((e: any) => {
-    const className = (e?.target)?.className?.split(' ') || []
+    const className = (e?.target)?.className?.split?.(' ') || []
     if (className?.[0] === 'art-table-cell' && className?.[1] === 'first') {
       return true
     }
@@ -174,22 +174,26 @@ function STable (props: STableProps) {
             {...pipeline.getProps()}
             getRowProps={(row, rowIndex) => ({
               ...pipeline.getProps()?.getRowProps,
-              onMouseDown: (e) => {
-                if (isCheckboxDom(e)) return
-                timer.current = setTimeout(() => {
-                  clearTimeout(timer.current)
-                  timer.current = undefined
-                }, 200)
-              },
-              onMouseUp: (e) => {
-                if (isCheckboxDom(e)) return
-                if (!timer.current) {
-                  clearTimeout(timer.current)
-                  timer.current = undefined
-                  return
-                }
-                onRowClick?.(row, rowIndex)
-              }
+              onMouseDown: onRowClick
+                ? (e) => {
+                    if (isCheckboxDom(e)) return
+                    timer.current = setTimeout(() => {
+                      clearTimeout(timer.current)
+                      timer.current = undefined
+                    }, 200)
+                  }
+                : undefined,
+              onMouseUp: onRowClick
+                ? (e) => {
+                    if (isCheckboxDom(e)) return
+                    if (!timer.current) {
+                      clearTimeout(timer.current)
+                      timer.current = undefined
+                      return
+                    }
+                    onRowClick?.(row, rowIndex)
+                  }
+                : undefined
             })}
           />
         </SLoading>

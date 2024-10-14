@@ -39,6 +39,10 @@ export default function Products (props: ProductsProps) {
     })
   }, [value, page])
 
+  const onRemove = (id: number) => {
+    onChange?.(value?.filter(item => item !== id) || [])
+  }
+
   const columns: STableProps['columns'] = [
     {
       title: 'Product',
@@ -91,7 +95,7 @@ export default function Products (props: ProductsProps) {
       width: 50,
       render: (_, row: ProductListByIdsRes) => (
         <Button size={'small'} type={'text'} style={{ width: 26, height: 26 }}>
-          <IconTrash size={16} style={{ position: 'relative', left: -4, top: 1 }} />
+          <IconTrash onClick={() => { onRemove(row.id) }} size={16} style={{ position: 'relative', left: -4, top: 1 }} />
         </Button>
       ),
       hidden: isAutoType
