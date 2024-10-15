@@ -129,6 +129,9 @@ export default function SelectVariants (props: SelectVariantsProps) {
                 <div>{row.title}</div>
                 <SRender style={{ userSelect: 'none' }} render={row.children?.length}>
                   <Flex className={'tips'} align={'center'} gap={4}>
+                    <SRender render={row.variants?.find(i => selected.includes(i.id))}>
+                      {row.variants?.filter(i => selected.includes(i.id))?.length} selected<span />/<span />
+                    </SRender>
                     {row.children?.length} variants
                     <IconChevronDown className={styles.downIcon} size={13} style={{ transform: expands.includes(row.id) ? 'rotate(180deg)' : undefined }} />
                   </Flex>
@@ -137,7 +140,7 @@ export default function SelectVariants (props: SelectVariantsProps) {
             </Flex>
           </SRender>
           <SRender render={!row.is_parent}>
-            <Flex className={'fit-width'} style={{ marginLeft: 20, cursor: 'pointer', height: 32 }} align={'center'} gap={12}>
+            <Flex className={'fit-width'} style={{ marginLeft: 12, cursor: 'pointer', height: 32 }} align={'center'} gap={12}>
               <Checkbox checked={selected.includes(row.id)} onChange={e => { onSelectChild(row) }} style={{ marginLeft: 4 }} />
               <div>{row.title}</div>
             </Flex>
@@ -185,10 +188,10 @@ export default function SelectVariants (props: SelectVariantsProps) {
     })
     return count
   }, [list])
-  const isAllSelect = (selected.length === listCount)
+  const isAllSelect = (selected.length === listCount) || selected.length === 200
 
   const onSelectAll = () => {
-    if (isAllSelect || selected.length === 200) {
+    if (isAllSelect) {
       setSelected([])
     } else {
       const all = list.flatMap(i => i.variants?.map(j => j.id) || [])
