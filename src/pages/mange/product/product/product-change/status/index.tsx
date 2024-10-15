@@ -1,7 +1,7 @@
-import { DoubleLeft, DoubleRight, Left, Right } from '@icon-park/react'
-import { Card, DatePicker, Form } from 'antd'
+import { Card, Form } from 'antd'
 import dayjs from 'dayjs'
 
+import SDatePicker from '@/components/s-date-picker'
 import SSelect from '@/components/s-select'
 import { useVariantStatusOptions, VariantStatus } from '@/constant/product'
 
@@ -27,12 +27,7 @@ export default function Status () {
             tooltip={'After setting, the product will be published on schedule according to the set time'}
             label={'Schedule availability'}
           >
-            <DatePicker
-              inputReadOnly
-              prevIcon={<Left style={{ fontSize: 16 }} />}
-              nextIcon={<Right style={{ fontSize: 16 }} />}
-              superPrevIcon={<DoubleLeft style={{ fontSize: 16 }} />}
-              superNextIcon={<DoubleRight style={{ fontSize: 16 }} />}
+            <SDatePicker
               hideDisabledOptions
               minuteStep={30}
               allowClear={false}
@@ -40,7 +35,6 @@ export default function Status () {
               minDate={dayjs()}
               showTime={{ format: 'HH:mm' }}
               showSecond={false}
-              className={'fit-width'}
             />
           </Form.Item>
         )
