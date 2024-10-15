@@ -31,7 +31,7 @@ export const useLayoutState = create<LayoutState & LayoutAction>((set, get, stor
     set({ resetLoading: loading })
   },
   reset: () => {
-    set({ isChange: false, onCancel: () => {}, onOk: () => {}, resetLoading: false })
+    set({ isChange: false, onCancel: () => {}, onOk: () => {}, resetLoading: false, t: undefined })
   },
 
   setT: (t) => {

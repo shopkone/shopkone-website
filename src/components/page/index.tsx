@@ -35,6 +35,7 @@ export default function Page (props: PageProps) {
   const resetPage = useLayoutState(state => state.reset)
   const setResetLoading = useLayoutState(state => state.setResetLoading)
   const setT = useLayoutState(state => state.setT)
+  const removeT = useLayoutState(state => state.t)
   const { language, t } = useLoadLanguage(`/page/${type}`)
 
   const onOkHandle = async () => {
@@ -63,9 +64,15 @@ export default function Page (props: PageProps) {
   }, [resetLoading])
 
   useEffect(() => {
-    setT(t)
     document.getElementById('shopkone-main')?.scrollTo?.({ top: 0 })
   }, [])
+
+  useEffect(() => {
+    if (!language?.data?.data) return
+    setT(t)
+  }, [language?.data?.data])
+
+  /*   if (!language?.data?.data || !removeT) return <SLoading /> */
 
   return (
     <div style={{
@@ -74,7 +81,7 @@ export default function Page (props: PageProps) {
       paddingBottom: isChange !== undefined ? 60 : bottom
     }}
     >
-      <SLoading loading={loading || language.loading} foreShow={!language.loading}>
+      <SLoading loading={loading} foreShow>
         <SRender render={title || header}>
           <Flex justify={'space-between'} gap={24} className={styles.title}>
             <Flex style={{ minWidth: 0 }} flex={1} gap={8}>

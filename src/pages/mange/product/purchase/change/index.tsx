@@ -4,9 +4,11 @@ import { Button, Empty, Flex, Form, Input } from 'antd'
 import { useCarriers } from '@/api/base/carriers'
 import { useCurrencyList } from '@/api/base/currency-list'
 import { LocationListApi } from '@/api/location/list'
+import Address from '@/components/address'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
 import SDatePicker from '@/components/s-date-picker'
+import SModal from '@/components/s-modal'
 import SSelect from '@/components/s-select'
 import SelectVariants from '@/components/select-variants'
 import { useI18n } from '@/hooks/use-lang'
@@ -24,8 +26,6 @@ export default function Change () {
   const carrierItem = carriers.data?.find(item => item.id === carrier_id)
   const t = useI18n()
 
-  console.log(t('name'))
-
   const paymentTerms = [
     { value: 0, label: 'None' },
     { value: 2, label: 'Cash on delivery' },
@@ -41,28 +41,41 @@ export default function Change () {
 
   return (
     <Page
+      bottom={64}
       type={'purchase'}
       width={950}
-      title={'Create purchase order'}
+      title={t('Create purchase order')}
       back={'/products/purchase_orders'}
     >
       <Form form={form} layout={'vertical'}>
         <div className={styles.card}>
           <Flex>
             <div className={styles.item}>
-              <div className={styles.title}>Supplier</div>
+              <div className={styles.title}>{t('Supplier')}</div>
               <SSelect
                 dropdownStyle={{ minWidth: 300 }}
-                placeholder={'Select supplier'}
+                placeholder={t('Select supplier')}
                 className={styles.select}
                 variant={'borderless'}
+                dropdownRender={node => (
+                  <Flex vertical>
+                    {node}
+                    <div className={'line'} />
+                    <div style={{ marginBottom: 6, marginLeft: 8, marginTop: -4 }}>
+                      <Button size={'small'} type={'text'} className={'primary-text'}>
+                        Create new supplier
+                      </Button>
+                    </div>
+                  </Flex>
+                )}
               />
             </div>
             <div className={styles.item}>
-              <div className={styles.title}>Destination</div>
+              <div className={styles.title}>{t('Destination')}</div>
               <SSelect
+                options={locations.data?.map(item => ({ value: item.id, label: item.name }))}
                 loading={locations.loading}
-                placeholder={'Shop location'}
+                placeholder={t('Select location')}
                 className={styles.select}
                 variant={'borderless'}
                 dropdownStyle={{ minWidth: 300 }}
@@ -71,10 +84,10 @@ export default function Change () {
           </Flex>
           <div className={'line'} style={{ margin: 0 }} />
           <Flex gap={16} style={{ padding: 16, paddingBottom: 0 }} >
-            <Form.Item name={'payment_terms'} className={'flex1'} label={'Payment Terms'}>
+            <Form.Item name={'payment_terms'} className={'flex1'} label={t('Payment Terms')}>
               <SSelect options={paymentTerms} />
             </Form.Item>
-            <Form.Item name={'currency_code'} label={'Supplier currency'} className={'flex1'}>
+            <Form.Item name={'currency_code'} label={t('Supplier currency')} className={'flex1'}>
               <SSelect
                 loading={currencyList.loading}
                 listHeight={400}
@@ -86,13 +99,14 @@ export default function Change () {
           </Flex>
         </div>
 
-        <SCard style={{ marginBottom: 16 }} title={'Shipping details'}>
+        <SCard style={{ marginBottom: 16 }} title={t('Shipping details')}>
           <Flex gap={16}>
-            <Form.Item name={'estimated_delivery_date'} label={'Estimated delivery date'} className={'flex1 mb0'}>
-              <SDatePicker rootClassName={'fit-width'} />
+            <Form.Item name={'estimated_delivery_date'} label={t('Estimated delivery date')} className={'flex1 mb0'}>
+              <SDatePicker allowClear rootClassName={'fit-width'} />
             </Form.Item>
-            <Form.Item name={'carrier_id'} label={'Shipping carrier'} className={'flex1 mb0'}>
+            <Form.Item name={'carrier_id'} label={t('Shipping carrier')} className={'flex1 mb0'}>
               <SSelect
+                allowClear
                 showSearch
                 optionFilterProp={'label'}
                 loading={carriers.loading}
@@ -102,7 +116,7 @@ export default function Change () {
             <Form.Item
               rules={[{ pattern: new RegExp(carrierItem?.pattern || '', carrierItem?.pattern_options), message: 'asd' }]}
               name={'delivery_number'}
-              label={'Delivery number'}
+              label={t('Delivery number')}
               className={'flex1 mb0'}
             >
               <Input autoComplete={'off'} />
@@ -110,20 +124,20 @@ export default function Change () {
           </Flex>
         </SCard>
 
-        <SCard title={'Products'} className={'fit-width'}>
+        <SCard title={t('Products')} className={'fit-width'}>
           <Empty
             image={Empty.PRESENTED_IMAGE_SIMPLE}
             description={(
               <Flex style={{ marginTop: 20 }} vertical gap={12}>
                 <div>
-                  Only items with inventory tracking settings can be selected.
+                  {t('Only items with inventory tracking settings can be selected.')}
                 </div>
                 <div>
                   <Button onClick={() => {
                     openInfo.edit()
                   }}
                   >
-                    Select products
+                    {t('Select products')}
                   </Button>
                 </div>
               </Flex>
@@ -132,18 +146,51 @@ export default function Change () {
         </SCard>
 
         <Flex gap={16}>
-          <SCard className={'flex1'} title={'Cost summary'} style={{ marginTop: 16 }}>
-            asd
+          <SCard
+            extra={
+              <Button type={'text'} className={'primary-text'}>{t('Edit')}</Button>
+            }
+            className={'flex1'}
+            title={t('Cost summary')}
+            style={{ marginTop: 16 }}
+          >
+            <Flex gap={6} vertical>
+              <div className={styles.detailsTitle}>
+                {t('Tax fee')}
+              </div>
+              <div className={styles.detailsTitle}>
+                {t('Subtotal')}
+              </div>
+              <div className={'secondary'}>{t('0 items')}</div>
+            </Flex>
+
+            <Flex style={{ marginTop: 16 }} gap={6} vertical>
+              <div className={styles.detailsTitle}>{t('Cost adjustment')}</div>
+              <div>{t('Overseas transaction fee')}</div>
+            </Flex>
+
+            <div className={'line'} />
+
+            <div className={styles.detailsTitle}>
+              {t('Total')}
+            </div>
+
           </SCard>
 
-          <SCard className={'flex1'} title={'Remarks'} style={{ marginTop: 16 }}>
-            asd
+          <SCard className={'flex1'} title={t('Remarks')} style={{ marginTop: 16 }}>
+            <Input.TextArea autoSize={{ minRows: 8 }} />
           </SCard>
         </Flex>
 
       </Form>
 
       <SelectVariants info={openInfo} />
+
+      <SModal width={600} title={'Create Supplier'} >
+        <div style={{ padding: 16 }}>
+          <Address hasEmail hasName />
+        </div>
+      </SModal>
     </Page>
   )
 }

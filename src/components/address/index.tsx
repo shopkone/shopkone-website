@@ -18,6 +18,7 @@ export interface AddressProps {
   value?: AddressType
   onChange?: (value: AddressType) => void
   onMessage?: (msg?: string) => void
+  hasUserName?: boolean
 }
 
 const INIT_DATA = {
@@ -35,7 +36,7 @@ const INIT_DATA = {
 }
 
 export default function Address (props: AddressProps) {
-  const { hasName, hasEmail, loading, value, onChange } = props
+  const { hasName, hasEmail, loading, value, onChange, hasUserName } = props
 
   const [form] = Form.useForm()
 
@@ -120,34 +121,27 @@ export default function Address (props: AddressProps) {
   )
 
   return (
-    <SCard loading={cardLoading} title={'Address'}>
+    <SCard title={'Address'} loading={cardLoading}>
       <Form initialValues={INIT_DATA} layout={'vertical'} form={form} onValuesChange={onChangeHandler}>
-        <SRender render={!hasName}>{countryRender}</SRender>
-        <Flex gap={16}>
-          <Flex vertical flex={1}>
-            <SRender render={hasName}>
-              <Form.Item name={'legal_business_name'} label={'Legal business name'}>
-                <Input autoComplete={'off'} />
-              </Form.Item>
-            </SRender>
-            <Form.Item name={'address1'} label={c?.config?.address1}>
+        <Flex vertical flex={1}>
+          <SRender render={hasName}>
+            <Form.Item name={'legal_business_name'} label={'Legal business name'}>
               <Input autoComplete={'off'} />
             </Form.Item>
-            <Form.Item name={'city'} label={c?.config?.city}>
-              <Input autoComplete={'off'} />
-            </Form.Item>
-            <Form.Item name={'phone'} label={c?.config?.phone}>
-              <PhoneCode />
-            </Form.Item>
-            <SRender render={hasEmail}>{postalCodeRender}</SRender>
-          </Flex>
-          <Flex vertical flex={1}>
-            <SRender render={hasName}>{countryRender}</SRender>
-            <Form.Item name={'address2'} label={c?.config?.address2}>
-              <Input autoComplete={'off'} />
+          </SRender>
+          {countryRender}
+          <Form.Item name={'address1'} label={c?.config?.address1}>
+            <Input autoComplete={'off'} />
+          </Form.Item>
+          <Form.Item name={'address2'} label={c?.config?.address2}>
+            <Input autoComplete={'off'} />
+          </Form.Item>
+          <Flex gap={16}>
+            <Form.Item className={'flex1'} name={'city'} label={c?.config?.city}>
+              <Input rootClassName={'fit-width'} autoComplete={'off'} />
             </Form.Item>
             <SRender render={!!zoneOptions?.length}>
-              <Form.Item name={'zone'} label={c?.config?.zone}>
+              <Form.Item className={'flex1'} name={'zone'} label={c?.config?.zone}>
                 <SSelect
                   showSearch
                   optionFilterProp={'label'}
@@ -156,12 +150,28 @@ export default function Address (props: AddressProps) {
                 />
               </Form.Item>
             </SRender>
+          </Flex>
+          {postalCodeRender}
+          <SRender render={hasUserName}>
+            <Flex gap={16} align={'center'}>
+              <Form.Item className={'flex1'} label={c?.config?.first_name} name={'first_name'}>
+                <Input autoComplete={'off'} />
+              </Form.Item>
+              <Form.Item className={'flex1'} label={c?.config?.last_name} name={'last_name'}>
+                <Input autoComplete={'off'} />
+              </Form.Item>
+            </Flex>
+          </SRender>
+
+          <Flex align={'center'} gap={16}>
             <SRender render={hasEmail}>
-              <Form.Item name={'email'} label={'Email'}>
+              <Form.Item className={'flex1'} name={'email'} label={'Email'}>
                 <Input autoComplete={'off'} />
               </Form.Item>
             </SRender>
-            <SRender render={!hasEmail}>{postalCodeRender}</SRender>
+            <Form.Item className={'flex1'} name={'phone'} label={c?.config?.phone}>
+              <PhoneCode />
+            </Form.Item>
           </Flex>
         </Flex>
       </Form>

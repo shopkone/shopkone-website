@@ -167,6 +167,7 @@ export default function Products () {
 
   return (
     <Page
+      type={'product'}
       bottom={64}
       header={
         <SRender render={list?.data?.list?.length}>
