@@ -1,4 +1,5 @@
 import { api, PageReq, PageRes } from '@/api/api'
+import { VariantName } from '@/pages/mange/product/product/product-change/variants/state'
 
 export interface ProductListReq extends PageReq {
   collections?: number[]
@@ -20,6 +21,8 @@ export interface ProductListRes {
     price: number
     quantity: number
     sku: string
+    image: string
+    name: VariantName[]
   }>
 }
 
