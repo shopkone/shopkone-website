@@ -18,6 +18,10 @@ export default function Change () {
   const currencyList = useCurrencyList()
   const locations = useRequest(async () => await LocationListApi({ active: true }))
   const carriers = useCarriers()
+  const [form] = Form.useForm()
+
+  const carrier_id = Form.useWatch('carrier_id', form)
+  const carrierItem = carriers.data?.find(item => item.id === carrier_id)
 
   const paymentTerms = [
     { value: 0, label: 'None' },
@@ -38,7 +42,7 @@ export default function Change () {
       title={'Create purchase order'}
       back={'/products/purchase_orders'}
     >
-      <Form layout={'vertical'}>
+      <Form form={form} layout={'vertical'}>
         <div className={styles.card}>
           <Flex>
             <div className={styles.item}>
@@ -63,10 +67,10 @@ export default function Change () {
           </Flex>
           <div className={'line'} style={{ margin: 0 }} />
           <Flex gap={16} style={{ padding: 16, paddingBottom: 0 }} >
-            <Form.Item className={'flex1'} label={'Payment Terms'}>
+            <Form.Item name={'payment_terms'} className={'flex1'} label={'Payment Terms'}>
               <SSelect options={paymentTerms} />
             </Form.Item>
-            <Form.Item label={'Supplier currency'} className={'flex1'}>
+            <Form.Item name={'currency_code'} label={'Supplier currency'} className={'flex1'}>
               <SSelect
                 loading={currencyList.loading}
                 listHeight={400}
@@ -80,10 +84,10 @@ export default function Change () {
 
         <SCard style={{ marginBottom: 16 }} title={'Shipping details'}>
           <Flex gap={16}>
-            <Form.Item label={'Estimated delivery date'} className={'flex1 mb0'}>
+            <Form.Item name={'estimated_delivery_date'} label={'Estimated delivery date'} className={'flex1 mb0'}>
               <SDatePicker rootClassName={'fit-width'} />
             </Form.Item>
-            <Form.Item label={'Shipping carrier'} className={'flex1 mb0'}>
+            <Form.Item name={'carrier_id'} label={'Shipping carrier'} className={'flex1 mb0'}>
               <SSelect
                 showSearch
                 optionFilterProp={'label'}
@@ -91,7 +95,12 @@ export default function Change () {
                 options={carriers.data?.map(item => ({ value: item.id, label: item.name }))}
               />
             </Form.Item>
-            <Form.Item label={'Delivery number'} className={'flex1 mb0'}>
+            <Form.Item
+              rules={[{ pattern: new RegExp(carrierItem?.pattern || '', carrierItem?.pattern_options), message: 'asd' }]}
+              name={'delivery_number'}
+              label={'Delivery number'}
+              className={'flex1 mb0'}
+            >
               <Input autoComplete={'off'} />
             </Form.Item>
           </Flex>
@@ -100,9 +109,8 @@ export default function Change () {
         <SCard title={'Products'} className={'fit-width'}>
           <Empty
             image={Empty.PRESENTED_IMAGE_SIMPLE}
-            style={{ padding: '32px 0' }}
             description={(
-              <Flex style={{ marginTop: 16 }} vertical gap={12}>
+              <Flex style={{ marginTop: 20 }} vertical gap={12}>
                 <div>
                   Only items with inventory tracking settings can be selected.
                 </div>

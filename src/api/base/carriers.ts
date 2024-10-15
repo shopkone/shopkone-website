@@ -1,23 +1,14 @@
-/*
-// CarrierListReq 获取物流商列表
-type CarrierListReq struct {
-  g.Meta `path:"/base/carrier-list" method:"post" summary:"获取物流商列表" tags:"Base"`
-}
-type CarrierListRes struct {
-  Id   string `json:"id"`
-  Name string `json:"name"`
-  Url  string `json:"url"`
-}
-*/
-
 import { useRequest } from 'ahooks'
 
 import { api } from '@/api/api'
 
 export interface CarriersRes {
-  id: string
+  id: number
   name: string
-  url: string
+  pattern: string
+  pattern_options: string
+  display_name: string
+  supports_shipment_tracking: boolean
 }
 
 const GetCarrierList = async () => {
