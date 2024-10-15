@@ -140,7 +140,7 @@ export default function SelectVariants (props: SelectVariantsProps) {
             </Flex>
           </SRender>
           <SRender render={!row.is_parent}>
-            <Flex className={'fit-width'} style={{ marginLeft: 12, cursor: 'pointer', height: 32 }} align={'center'} gap={12}>
+            <Flex className={'fit-width'} style={{ marginLeft: 16, cursor: 'pointer', height: 32 }} align={'center'} gap={12}>
               <Checkbox checked={selected.includes(row.id)} onChange={e => { onSelectChild(row) }} style={{ marginLeft: 4 }} />
               <div>{row.title}</div>
             </Flex>
