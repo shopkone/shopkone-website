@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { useDebounce } from 'ahooks'
-import { Flex, Form, Input } from 'antd'
+import { Col, Form, Input, Row } from 'antd'
 import random from 'lodash/random'
 
 import { useCountries } from '@/api/base/countries'
@@ -123,24 +123,36 @@ export default function Address (props: AddressProps) {
   return (
     <SCard title={'Address'} loading={cardLoading}>
       <Form initialValues={INIT_DATA} layout={'vertical'} form={form} onValuesChange={onChangeHandler}>
-        <Flex vertical flex={1}>
+        <Row gutter={16}>
           <SRender render={hasName}>
-            <Form.Item name={'legal_business_name'} label={'Legal business name'}>
+            <Col span={24}>
+              <Form.Item name={'legal_business_name'} label={'Legal business name'}>
+                <Input autoComplete={'off'} />
+              </Form.Item>
+            </Col>
+          </SRender>
+
+          <Col span={24}>
+            {countryRender}
+          </Col>
+
+          <Col span={24}>
+            <Form.Item name={'address1'} label={c?.config?.address1}>
               <Input autoComplete={'off'} />
             </Form.Item>
-          </SRender>
-          {countryRender}
-          <Form.Item name={'address1'} label={c?.config?.address1}>
-            <Input autoComplete={'off'} />
-          </Form.Item>
-          <Form.Item name={'address2'} label={c?.config?.address2}>
-            <Input autoComplete={'off'} />
-          </Form.Item>
-          <Flex gap={16}>
+          </Col>
+          <Col span={24}>
+            <Form.Item name={'address2'} label={c?.config?.address2}>
+              <Input autoComplete={'off'} />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
             <Form.Item className={'flex1'} name={'city'} label={c?.config?.city}>
               <Input rootClassName={'fit-width'} autoComplete={'off'} />
             </Form.Item>
-            <SRender render={!!zoneOptions?.length}>
+          </Col>
+          <SRender render={!!zoneOptions?.length}>
+            <Col span={12}>
               <Form.Item className={'flex1'} name={'zone'} label={c?.config?.zone}>
                 <SSelect
                   showSearch
@@ -149,31 +161,34 @@ export default function Address (props: AddressProps) {
                   className={'fit-width'}
                 />
               </Form.Item>
-            </SRender>
-          </Flex>
-          {postalCodeRender}
+            </Col>
+          </SRender>
+          <Col span={12}>
+            {postalCodeRender}
+          </Col>
           <SRender render={hasUserName}>
-            <Flex gap={16} align={'center'}>
-              <Form.Item className={'flex1'} label={c?.config?.first_name} name={'first_name'}>
-                <Input autoComplete={'off'} />
-              </Form.Item>
-              <Form.Item className={'flex1'} label={c?.config?.last_name} name={'last_name'}>
-                <Input autoComplete={'off'} />
-              </Form.Item>
-            </Flex>
+            <Form.Item className={'flex1'} label={c?.config?.first_name} name={'first_name'}>
+              <Input autoComplete={'off'} />
+            </Form.Item>
+            <Form.Item className={'flex1'} label={c?.config?.last_name} name={'last_name'}>
+              <Input autoComplete={'off'} />
+            </Form.Item>
           </SRender>
 
-          <Flex align={'center'} gap={16}>
-            <SRender render={hasEmail}>
+          <SRender render={hasEmail}>
+            <Col span={12}>
               <Form.Item className={'flex1'} name={'email'} label={'Email'}>
                 <Input autoComplete={'off'} />
               </Form.Item>
-            </SRender>
+            </Col>
+          </SRender>
+
+          <Col span={12}>
             <Form.Item className={'flex1'} name={'phone'} label={c?.config?.phone}>
               <PhoneCode />
             </Form.Item>
-          </Flex>
-        </Flex>
+          </Col>
+        </Row>
       </Form>
     </SCard>
   )
