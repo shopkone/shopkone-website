@@ -1,23 +1,22 @@
+import { useState } from 'react'
 import { useRequest } from 'ahooks'
-import { Button, Empty, Flex, Form, Input } from 'antd'
+import { Button, Flex, Form, Input } from 'antd'
 
 import { useCarriers } from '@/api/base/carriers'
 import { useCurrencyList } from '@/api/base/currency-list'
 import { LocationListApi } from '@/api/location/list'
-import Address from '@/components/address'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
 import SDatePicker from '@/components/s-date-picker'
-import SModal from '@/components/s-modal'
 import SSelect from '@/components/s-select'
-import SelectVariants from '@/components/select-variants'
 import { useI18n } from '@/hooks/use-lang'
 import { useOpen } from '@/hooks/useOpen'
+import CreateSupplier from '@/pages/mange/product/purchase/change/create-supplier'
+import Products from '@/pages/mange/product/purchase/change/products'
 
 import styles from './index.module.less'
 
 export default function Change () {
-  const openInfo = useOpen<number[]>([])
   const currencyList = useCurrencyList()
   const locations = useRequest(async () => await LocationListApi({ active: true }))
   const carriers = useCarriers()
@@ -25,6 +24,9 @@ export default function Change () {
   const carrier_id = Form.useWatch('carrier_id', form)
   const carrierItem = carriers.data?.find(item => item.id === carrier_id)
   const t = useI18n()
+  const [openSelect, setOpenSelect] = useState(false)
+
+  const supplierInfo = useOpen()
 
   const paymentTerms = [
     { value: 0, label: 'None' },
@@ -42,7 +44,7 @@ export default function Change () {
   return (
     <Page
       bottom={64}
-      type={'purchase'}
+      type={'product'}
       width={950}
       title={t('Create purchase order')}
       back={'/products/purchase_orders'}
@@ -53,6 +55,8 @@ export default function Change () {
             <div className={styles.item}>
               <div className={styles.title}>{t('Supplier')}</div>
               <SSelect
+                open={openSelect}
+                onDropdownVisibleChange={setOpenSelect}
                 dropdownStyle={{ minWidth: 300 }}
                 placeholder={t('Select supplier')}
                 className={styles.select}
@@ -62,7 +66,15 @@ export default function Change () {
                     {node}
                     <div className={'line'} />
                     <div style={{ marginBottom: 6, marginLeft: 8, marginTop: -4 }}>
-                      <Button size={'small'} type={'text'} className={'primary-text'}>
+                      <Button
+                        onClick={() => {
+                          setOpenSelect(false)
+                          supplierInfo.edit()
+                        }}
+                        size={'small'}
+                        type={'text'}
+                        className={'primary-text'}
+                      >
                         Create new supplier
                       </Button>
                     </div>
@@ -124,26 +136,7 @@ export default function Change () {
           </Flex>
         </SCard>
 
-        <SCard title={t('Products')} className={'fit-width'}>
-          <Empty
-            image={Empty.PRESENTED_IMAGE_SIMPLE}
-            description={(
-              <Flex style={{ marginTop: 20 }} vertical gap={12}>
-                <div>
-                  {t('Only items with inventory tracking settings can be selected.')}
-                </div>
-                <div>
-                  <Button onClick={() => {
-                    openInfo.edit()
-                  }}
-                  >
-                    {t('Select products')}
-                  </Button>
-                </div>
-              </Flex>
-            )}
-          />
-        </SCard>
+        <Products />
 
         <Flex gap={16}>
           <SCard
@@ -178,19 +171,13 @@ export default function Change () {
           </SCard>
 
           <SCard className={'flex1'} title={t('Remarks')} style={{ marginTop: 16 }}>
-            <Input.TextArea autoSize={{ minRows: 8 }} />
+            <Input.TextArea autoSize={{ minRows: 7 }} />
           </SCard>
         </Flex>
 
       </Form>
 
-      <SelectVariants info={openInfo} />
-
-      <SModal width={600} title={'Create Supplier'} >
-        <div style={{ padding: 16 }}>
-          <Address hasEmail hasName />
-        </div>
-      </SModal>
+      <CreateSupplier info={supplierInfo} />
     </Page>
   )
 }

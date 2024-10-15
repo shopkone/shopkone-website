@@ -150,6 +150,7 @@ export default function Change () {
 
   return (
     <Page
+      type={'settings'}
       onOk={onSubmit}
       onCancel={onCancel}
       isChange={isChange}
@@ -192,7 +193,7 @@ export default function Change () {
         </SCard>
 
         <Form.Item name={'address'} className={'mb0'}>
-          <Address onMessage={(err) => { errMsg.current = err }} loading={!address?.country || info.loading} hasEmail />
+          <Address hasName onMessage={(err) => { errMsg.current = err }} loading={!address?.country || info.loading} hasEmail />
         </Form.Item>
 
         <SCard style={{ marginTop: 16 }} title={'Fulfillment details'} loading={info.loading}>

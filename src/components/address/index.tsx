@@ -12,13 +12,14 @@ import SRender from '@/components/s-render'
 import SSelect from '@/components/s-select'
 
 export interface AddressProps {
-  hasName?: boolean
+  companyNameLabel?: string
   hasEmail?: boolean
+  hasName?: boolean
   loading?: boolean
   value?: AddressType
   onChange?: (value: AddressType) => void
   onMessage?: (msg?: string) => void
-  hasUserName?: boolean
+  hiddenTitle?: boolean
 }
 
 const INIT_DATA = {
@@ -28,7 +29,7 @@ const INIT_DATA = {
   address2: '',
   city: '',
   company: '',
-  country: '',
+  country: 'CN',
   first_name: '',
   last_name: '',
   postal_code: '',
@@ -36,7 +37,7 @@ const INIT_DATA = {
 }
 
 export default function Address (props: AddressProps) {
-  const { hasName, hasEmail, loading, value, onChange, hasUserName } = props
+  const { companyNameLabel, hasEmail, loading, value, onChange, hasName, hiddenTitle } = props
 
   const [form] = Form.useForm()
 
@@ -121,12 +122,12 @@ export default function Address (props: AddressProps) {
   )
 
   return (
-    <SCard title={'Address'} loading={cardLoading}>
+    <SCard title={hiddenTitle ? undefined : 'Address'} loading={cardLoading}>
       <Form initialValues={INIT_DATA} layout={'vertical'} form={form} onValuesChange={onChangeHandler}>
         <Row gutter={16}>
-          <SRender render={hasName}>
+          <SRender render={companyNameLabel}>
             <Col span={24}>
-              <Form.Item name={'legal_business_name'} label={'Legal business name'}>
+              <Form.Item name={'legal_business_name'} label={companyNameLabel}>
                 <Input autoComplete={'off'} />
               </Form.Item>
             </Col>
@@ -163,16 +164,20 @@ export default function Address (props: AddressProps) {
               </Form.Item>
             </Col>
           </SRender>
-          <Col span={12}>
+          <Col span={(hasName && !!zoneOptions?.length) ? 24 : 12}>
             {postalCodeRender}
           </Col>
-          <SRender render={hasUserName}>
-            <Form.Item className={'flex1'} label={c?.config?.first_name} name={'first_name'}>
-              <Input autoComplete={'off'} />
-            </Form.Item>
-            <Form.Item className={'flex1'} label={c?.config?.last_name} name={'last_name'}>
-              <Input autoComplete={'off'} />
-            </Form.Item>
+          <SRender render={hasName}>
+            <Col span={12}>
+              <Form.Item className={'flex1'} label={c?.config?.first_name} name={'first_name'}>
+                <Input autoComplete={'off'} />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item className={'flex1'} label={c?.config?.last_name} name={'last_name'}>
+                <Input autoComplete={'off'} />
+              </Form.Item>
+            </Col>
           </SRender>
 
           <SRender render={hasEmail}>

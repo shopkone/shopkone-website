@@ -23,7 +23,7 @@ export interface PageProps {
   onCancel?: () => void
   loading?: boolean
   resetLoading?: boolean
-  type: 'product' | 'purchase'
+  type: 'product' | 'settings'
 }
 
 export default function Page (props: PageProps) {
@@ -35,7 +35,6 @@ export default function Page (props: PageProps) {
   const resetPage = useLayoutState(state => state.reset)
   const setResetLoading = useLayoutState(state => state.setResetLoading)
   const setT = useLayoutState(state => state.setT)
-  const removeT = useLayoutState(state => state.t)
   const { language, t } = useLoadLanguage(`/page/${type}`)
 
   const onOkHandle = async () => {

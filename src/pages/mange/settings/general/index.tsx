@@ -52,7 +52,6 @@ export default function General () {
   }
 
   const onOk = async () => {
-    console.log(errMsg.current)
     if (errMsg.current) {
       modal.info({ content: errMsg.current })
       return
@@ -69,10 +68,12 @@ export default function General () {
   useEffect(() => {
     if (!general.data) return
     form.setFieldsValue(general.data)
+    onValuesChange(undefined, form.getFieldsValue())
   }, [general.data])
 
   return (
     <Page
+      type={'settings'}
       onOk={onOk}
       onCancel={onCancel}
       isChange={isChange}
@@ -102,7 +103,7 @@ export default function General () {
             </Flex>
           </SCard>
           <Form.Item name={'address'}>
-            <Address onMessage={(err) => { errMsg.current = err }} loading={general.loading} hasName />
+            <Address onMessage={(err) => { errMsg.current = err }} loading={general.loading} companyNameLabel={'Legal business name'} />
           </Form.Item>
           <SCard loading={general.loading || timezones.loading || currencyList.loading} title={'Store defaults'}>
             <Flex vertical>
