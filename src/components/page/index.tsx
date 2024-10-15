@@ -5,6 +5,7 @@ import { Button, Flex, Typography } from 'antd'
 
 import SLoading from '@/components/s-loading'
 import SRender from '@/components/s-render'
+import { useLoadLanguage } from '@/hooks/use-lang'
 import { useLayoutState } from '@/pages/mange/layout/state'
 
 import styles from './index.module.less'
@@ -22,16 +23,19 @@ export interface PageProps {
   onCancel?: () => void
   loading?: boolean
   resetLoading?: boolean
+  type: 'product' | 'purchase'
 }
 
 export default function Page (props: PageProps) {
-  const { children, width, header, footer, title, back, isChange, bottom, onOk, onCancel, loading = false, resetLoading = false } = props
+  const { children, width, header, footer, title, back, isChange, bottom, onOk, onCancel, loading = false, resetLoading = false, type } = props
   const nav = useNavigate()
   const [confirmLoading, setConfirmLoading] = useState(false)
   const setIsChange = useLayoutState(state => state.setChange)
   const setAction = useLayoutState(state => state.setAction)
   const resetPage = useLayoutState(state => state.reset)
   const setResetLoading = useLayoutState(state => state.setResetLoading)
+  const setT = useLayoutState(state => state.setT)
+  const { language, t } = useLoadLanguage(`/page/${type}`)
 
   const onOkHandle = async () => {
     try {
@@ -59,6 +63,7 @@ export default function Page (props: PageProps) {
   }, [resetLoading])
 
   useEffect(() => {
+    setT(t)
     document.getElementById('shopkone-main')?.scrollTo?.({ top: 0 })
   }, [])
 
@@ -69,7 +74,7 @@ export default function Page (props: PageProps) {
       paddingBottom: isChange !== undefined ? 60 : bottom
     }}
     >
-      <SLoading loading={loading} foreShow>
+      <SLoading loading={loading || language.loading} foreShow={!language.loading}>
         <SRender render={title || header}>
           <Flex justify={'space-between'} gap={24} className={styles.title}>
             <Flex style={{ minWidth: 0 }} flex={1} gap={8}>

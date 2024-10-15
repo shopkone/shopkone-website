@@ -9,6 +9,7 @@ import SCard from '@/components/s-card'
 import SDatePicker from '@/components/s-date-picker'
 import SSelect from '@/components/s-select'
 import SelectVariants from '@/components/select-variants'
+import { useI18n } from '@/hooks/use-lang'
 import { useOpen } from '@/hooks/useOpen'
 
 import styles from './index.module.less'
@@ -19,9 +20,11 @@ export default function Change () {
   const locations = useRequest(async () => await LocationListApi({ active: true }))
   const carriers = useCarriers()
   const [form] = Form.useForm()
-
   const carrier_id = Form.useWatch('carrier_id', form)
   const carrierItem = carriers.data?.find(item => item.id === carrier_id)
+  const t = useI18n()
+
+  console.log(t('name'))
 
   const paymentTerms = [
     { value: 0, label: 'None' },
@@ -38,6 +41,7 @@ export default function Change () {
 
   return (
     <Page
+      type={'purchase'}
       width={950}
       title={'Create purchase order'}
       back={'/products/purchase_orders'}

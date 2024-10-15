@@ -5,6 +5,7 @@ export interface LayoutState {
   onCancel?: () => void
   onOk?: () => Promise<void> | void
   resetLoading: boolean
+  t?: (query: string) => string
 }
 
 export interface LayoutAction {
@@ -12,6 +13,7 @@ export interface LayoutAction {
   reset: () => void
   setAction: (action: { onCancel: LayoutState['onCancel'], onOk: LayoutState['onOk'] }) => void
   setResetLoading: (loading: boolean) => void
+  setT: (t: LayoutState['t']) => void
 }
 
 export const useLayoutState = create<LayoutState & LayoutAction>((set, get, store) => ({
@@ -30,5 +32,9 @@ export const useLayoutState = create<LayoutState & LayoutAction>((set, get, stor
   },
   reset: () => {
     set({ isChange: false, onCancel: () => {}, onOk: () => {}, resetLoading: false })
+  },
+
+  setT: (t) => {
+    set({ t })
   }
 }))
