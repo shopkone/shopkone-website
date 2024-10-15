@@ -16,6 +16,7 @@ import { VariantStatus } from '@/constant/product'
 import { UseOpenType } from '@/hooks/useOpen'
 import { formatPrice } from '@/utils/num'
 import { genId } from '@/utils/random'
+import { renderText } from '@/utils/render-text'
 
 import styles from './index.module.less'
 
@@ -160,7 +161,10 @@ export default function SelectVariants (props: SelectVariantsProps) {
       title: 'Inventory',
       code: 'inventory',
       name: 'inventory',
-      width: 200
+      width: 200,
+      render: (inventory: number) => (
+        renderText(`${inventory} on sale`)
+      )
     },
     {
       title: 'Status',

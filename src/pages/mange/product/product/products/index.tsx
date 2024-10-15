@@ -83,22 +83,23 @@ export default function Products () {
               Inventory not tracked
             </SRender>
             <SRender render={row.inventory_tracking}>
-              <Flex>
-                <div>{row.variants?.reduce((sum, variant) => sum + variant.quantity, 0)} on sale</div>
-                <SRender render={row.variants?.length !== 1}>
-                  <span
-                    style={{
-                      padding: '0 6px',
-                      transform: 'scale(1.5)'
-                    }}
-                  >·
-                  </span>
-                  {row.variants?.length} variants
-                </SRender>
-              </Flex>
-              <Flex style={{ color: '#b36b00', display: everyInStock ? 'none' : 'flex' }} align={'center'} gap={4}>
-                <IconAlertCircleFilled size={15} strokeWidth={2} />
-                <Flex><SRender render={!everyInStock && someInStock}>Partial - </SRender>Out of stock</Flex>
+              <Flex wrap={'wrap'} style={{ columnGap: 8, rowGap: 2 }}>
+                <Flex>
+                  <div>{row.variants?.reduce((sum, variant) => sum + variant.quantity, 0)} on sale</div>
+                  <SRender render={row.variants?.length !== 1}>
+                    <span style={{ padding: '0 6px', transform: 'scale(1.5)' }}>·</span>
+                    {row.variants?.length} variants
+                  </SRender>
+                </Flex>
+                <Flex
+                  style={{
+                    color: '#b36b00',
+                    display: everyInStock ? 'none' : 'flex'
+                  }} align={'center'} gap={4}
+                >
+                  <IconAlertCircleFilled size={15} strokeWidth={2} />
+                  <Flex><SRender render={!everyInStock && someInStock}>Partial - </SRender>Out of stock</Flex>
+                </Flex>
               </Flex>
             </SRender>
           </div>

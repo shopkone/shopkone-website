@@ -42,6 +42,7 @@ export default function General () {
   const modal = useModal()
 
   const onValuesChange = (_: any, allValues: any) => {
+    if (!allValues?.address?.phone || !general.data) return
     const isSame = isEqual(allValues, general.data)
     setIsChange(!isSame)
   }

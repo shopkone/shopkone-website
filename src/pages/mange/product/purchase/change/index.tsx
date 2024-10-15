@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRequest } from 'ahooks'
 import { Button, Flex, Form, Input } from 'antd'
 
@@ -40,6 +40,11 @@ export default function Change () {
     { value: 8, label: 'Net 45' },
     { value: 8, label: 'Net 60' }
   ]
+
+  useEffect(() => {
+    if (!locations.data || form.getFieldValue('destination_id')) return
+    form.setFieldsValue({ destination_id: locations.data[0].id })
+  }, [locations.data])
 
   return (
     <Page
@@ -84,14 +89,16 @@ export default function Change () {
             </div>
             <div className={styles.item}>
               <div className={styles.title}>{t('Destination')}</div>
-              <SSelect
-                options={locations.data?.map(item => ({ value: item.id, label: item.name }))}
-                loading={locations.loading}
-                placeholder={t('Select location')}
-                className={styles.select}
-                variant={'borderless'}
-                dropdownStyle={{ minWidth: 300 }}
-              />
+              <Form.Item style={{ margin: 0, padding: 0 }} name={'destination_id'}>
+                <SSelect
+                  options={locations.data?.map(item => ({ value: item.id, label: item.name }))}
+                  loading={locations.loading}
+                  placeholder={t('Select location')}
+                  className={styles.select}
+                  variant={'borderless'}
+                  dropdownStyle={{ minWidth: 300 }}
+                />
+              </Form.Item>
             </div>
           </Flex>
           <div className={'line'} style={{ margin: 0 }} />
@@ -136,7 +143,9 @@ export default function Change () {
           </Flex>
         </SCard>
 
-        <Products />
+        <Form.Item name={'variant_ids'}>
+          <Products />
+        </Form.Item>
 
         <Flex gap={16}>
           <SCard
