@@ -109,7 +109,8 @@ export default function Files () {
             <div>{row.suffix}</div>
           </div>
         </Flex>
-      )
+      ),
+      lock: true
     },
     {
       title: 'Date added',

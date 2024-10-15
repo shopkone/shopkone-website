@@ -40,6 +40,7 @@ export default function ReplaceCover (props: ReplaceCoverProps) {
     >
       <Tooltip title={'Replace cover'}>
         <Button
+          onMouseDown={e => { e.stopPropagation() }}
           className={styles.actionsIcon}
           type={'text'}
           size={'small'}

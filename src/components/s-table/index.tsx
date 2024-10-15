@@ -38,6 +38,7 @@ export interface STableProps<T=any> extends Omit<BaseTableProps, omit> {
   page?: PaginationProps
   actions?: React.ReactNode
   onRowClick?: (row: T, rowIndex: number) => void
+  fixPosition?: number
 }
 
 function STable (props: STableProps) {
@@ -71,10 +72,12 @@ function STable (props: STableProps) {
           title: (
             <Flex align={'center'} justify={'space-between'} className={styles.header}>
               <span style={{ position: 'relative', top: 1 }}>{rowSelection?.value?.length} selected</span>
-              {actions}
             </Flex>
           )
         }
+      }
+      if (index === cols.length - 1) {
+        return { ...col, title: <div className={styles.action}>{actions}</div> }
       }
       return { ...col, title: '' }
     })

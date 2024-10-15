@@ -40,6 +40,7 @@ export default function ReplaceVideo (props: ReplaceVideoProps) {
     >
       <Tooltip title={'Replace'}>
         <Button
+          onMouseDown={e => { e.stopPropagation() }}
           className={styles.actionsIcon}
           type={'text'}
           size={'small'}

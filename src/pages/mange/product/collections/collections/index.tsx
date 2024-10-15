@@ -38,7 +38,8 @@ export default function Collections () {
           <div>{row.title}</div>
         </Flex>
       ),
-      width: 400
+      width: 400,
+      lock: true
     },
     {
       title: 'Type',

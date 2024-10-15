@@ -41,6 +41,7 @@ export default function ReplaceImage (props: ReplaceImageProps) {
     >
       <Tooltip title={'Replace'}>
         <Button
+          onMouseDown={e => { e.stopPropagation() }}
           className={styles.actionsIcon}
           type={'text'}
           size={'small'}
