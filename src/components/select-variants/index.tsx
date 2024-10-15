@@ -86,6 +86,17 @@ export default function SelectVariants (props: SelectVariantsProps) {
     setSelected(selected.includes(row.id) ? selected.filter(i => i !== row.id) : [...selected, row.id])
   }
 
+  const onRowClick = (row: ProductVariants) => {
+    console.log(123)
+    if (row.children?.length) {
+      setExpands(expands.includes(row.id) ? expands.filter(i => i !== row.id) : [...expands, row.id])
+    } else if (row.variants) {
+      onSelectParent(row)
+    } else {
+      onSelectChild(row)
+    }
+  }
+
   const moreRef = useRef<HTMLDivElement>(null)
   const [inViewport] = useInViewport(moreRef)
   const columns: STableProps['columns'] = [
@@ -94,9 +105,9 @@ export default function SelectVariants (props: SelectVariantsProps) {
       code: 'product',
       name: 'product',
       render: (_, row: ProductVariants) => (
-        <div className={'fit-width'} style={{ userSelect: 'none' }}>
+        <div className={'fit-width'}>
           <SRender render={row.is_parent}>
-            <Flex onClick={!row.children?.length ? () => { onSelectParent(row) } : undefined} style={{ marginLeft: !row.children?.length ? -8 : 0, cursor: 'pointer' }} align={'center'}>
+            <Flex onMouseDown={e => { e.stopPropagation() }} onClick={!row.children?.length ? () => { onSelectParent(row) } : undefined} style={{ marginLeft: !row.children?.length ? -8 : 0, cursor: 'pointer' }} align={'center'}>
               <Flex onClick={e => { e.stopPropagation() }} className={styles.checkbox}>
                 <Checkbox
                   indeterminate={!row.variants?.every(i => selected.includes(i.id)) && row.variants?.some(i => selected.includes(i.id))}
@@ -126,7 +137,7 @@ export default function SelectVariants (props: SelectVariantsProps) {
             </Flex>
           </SRender>
           <SRender render={!row.is_parent}>
-            <Flex onClick={() => { onSelectChild(row) }} className={'fit-width'} style={{ marginLeft: 16, cursor: 'pointer' }} align={'center'} gap={12}>
+            <Flex className={'fit-width'} style={{ marginLeft: 20, cursor: 'pointer', height: 32 }} align={'center'} gap={12}>
               <Checkbox checked={selected.includes(row.id)} onChange={e => { onSelectChild(row) }} style={{ marginLeft: 4 }} />
               <div>{row.title}</div>
             </Flex>
@@ -177,10 +188,11 @@ export default function SelectVariants (props: SelectVariantsProps) {
   const isAllSelect = (selected.length === listCount)
 
   const onSelectAll = () => {
-    if (isAllSelect) {
+    if (isAllSelect || selected.length === 200) {
       setSelected([])
     } else {
-      setSelected(list.flatMap(i => i.variants?.map(j => j.id) || []))
+      const all = list.flatMap(i => i.variants?.map(j => j.id) || [])
+      setSelected(all.filter((i, index) => index < 200))
     }
   }
 
@@ -227,18 +239,19 @@ export default function SelectVariants (props: SelectVariantsProps) {
     <SModal
       footer={(
         <Flex align={'center'} justify={'space-between'}>
-          <Flex gap={12}>
+          <Flex align={'center'} gap={12}>
             <Checkbox
               style={{ marginLeft: 4 }}
               onChange={onSelectAll}
               checked={isAllSelect}
               indeterminate={!isAllSelect && !!selected.length}
             />
-            <SRender render={selected.length}>
-              <div>{selected.length} selected</div>
+            <Flex align={'center'} gap={4}>
+              <div>{selected.length}</div>
               <span>/</span>
-            </SRender>
-            <div>{listCount} total</div>
+              <div>200</div>
+              <span style={{ marginLeft: 8 }} className={'secondary'}>(Selected / Max)</span>
+            </Flex>
           </Flex>
           <Flex gap={12}>
             <Button onClick={info.close}>Cancel</Button>
@@ -255,6 +268,7 @@ export default function SelectVariants (props: SelectVariantsProps) {
         <Filters />
         <div style={{ overflowY: 'auto', height: 550, paddingBottom: 24 }}>
           <STable
+            useVirtual
             expand={{
               value: expands,
               onChange: setExpands
@@ -263,6 +277,7 @@ export default function SelectVariants (props: SelectVariantsProps) {
             init={!!productList.data}
             columns={columns}
             data={renderList || []}
+            onRowClick={onRowClick}
           />
           <SRender render={showMoreLoading}>
             <Flex ref={moreRef} justify={'center'} align={'center'} gap={12} style={{ paddingTop: 24, opacity: list.length ? 1 : 0 }}>
