@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { IconChevronDown, IconPhoto } from '@tabler/icons-react'
+import { IconPhoto } from '@tabler/icons-react'
 import { useInViewport, useRequest } from 'ahooks'
 import { Button, Checkbox, Flex } from 'antd'
 
@@ -7,6 +7,7 @@ import { FileType } from '@/api/file/add-file-record'
 import { ProductListApi, ProductListReq, ProductListRes } from '@/api/product/list'
 import FileImage from '@/components/file-image'
 import SLoading from '@/components/s-loading'
+import { sMessage } from '@/components/s-message'
 import SModal from '@/components/s-modal'
 import SRender from '@/components/s-render'
 import STable, { STableProps } from '@/components/s-table'
@@ -45,8 +46,6 @@ export default function SelectVariants (props: SelectVariantsProps) {
   const productList = useRequest(ProductListApi, { manual: true })
   const [showMoreLoading, setShowMoreLoading] = useState(false)
 
-  const [expands, setExpands] = useState<number[]>([])
-
   const getPriceRange = (prices?: Array<number | undefined>): string => {
     const list = (prices?.filter(i => typeof i === 'number') || []) as number[]
     if (!list?.length) return '$0'
@@ -75,22 +74,27 @@ export default function SelectVariants (props: SelectVariantsProps) {
   }, [list])
 
   const onSelectParent = (row: ProductVariants) => {
-    const isSelectAll = row.variants?.every(i => selected.includes(i.id))
+    const isSelectAll = row.variants?.every(i => selected.includes(i.id)) || (selected.length === 200)
+    let list: number[] = []
     if (isSelectAll) {
-      setSelected(selected.filter(i => !row.variants?.map(j => j.id).includes(i)))
+      list = selected.filter(i => !row.variants?.map(j => j.id).includes(i))
     } else {
-      setSelected([...selected, ...row.variants?.map(i => i.id) || []])
+      list = [...selected, ...row.variants?.map(i => i.id) || []]
     }
+    setSelected(list.filter((i, index) => index < 200))
   }
 
   const onSelectChild = (row: ProductVariants) => {
-    setSelected(selected.includes(row.id) ? selected.filter(i => i !== row.id) : [...selected, row.id])
+    const list = selected.includes(row.id) ? selected.filter(i => i !== row.id) : [...selected, row.id]
+    if (list.length > 200) {
+      sMessage.warning('Maximum selection limit reached')
+      return
+    }
+    setSelected(list)
   }
 
   const onRowClick = (row: ProductVariants) => {
-    if (row.children?.length) {
-      setExpands(expands.includes(row.id) ? expands.filter(i => i !== row.id) : [...expands, row.id])
-    } else if (row.variants) {
+    if (row.variants) {
       onSelectParent(row)
     } else {
       onSelectChild(row)
@@ -107,8 +111,8 @@ export default function SelectVariants (props: SelectVariantsProps) {
       render: (_, row: ProductVariants) => (
         <div className={'fit-width'}>
           <SRender render={row.is_parent}>
-            <Flex onMouseDown={e => { e.stopPropagation() }} onClick={!row.children?.length ? () => { onSelectParent(row) } : undefined} style={{ marginLeft: !row.children?.length ? -8 : 0, cursor: 'pointer' }} align={'center'}>
-              <Flex onClick={e => { e.stopPropagation() }} className={styles.checkbox}>
+            <Flex onClick={!row.children?.length ? () => { onSelectParent(row) } : undefined} style={{ marginLeft: !row.children?.length ? -8 : 0, cursor: 'pointer' }} align={'center'}>
+              <Flex className={styles.checkbox}>
                 <Checkbox
                   indeterminate={!row.variants?.every(i => selected.includes(i.id)) && row.variants?.some(i => selected.includes(i.id))}
                   onChange={() => { onSelectParent(row) }}
@@ -118,10 +122,10 @@ export default function SelectVariants (props: SelectVariantsProps) {
               </Flex>
 
               <SRender render={row.image}>
-                <FileImage size={16} width={32} height={32} src={row.image || ''} type={FileType.Image} />
+                <FileImage size={36} width={36} height={42} src={row.image || ''} type={FileType.Image} />
               </SRender>
               <SRender render={!row.image}>
-                <Flex align={'center'} justify={'center'} style={{ width: 34, height: 34, background: '#f5f5f5', border: '1px solid #eee', borderRadius: 8 }}>
+                <Flex align={'center'} justify={'center'} style={{ width: 38, height: 38, background: '#f5f5f5', border: '1px solid #eee', borderRadius: 8 }}>
                   <IconPhoto color={'#ddd'} />
                 </Flex>
               </SRender>
@@ -133,14 +137,13 @@ export default function SelectVariants (props: SelectVariantsProps) {
                       {row.variants?.filter(i => selected.includes(i.id))?.length} selected<span />/<span />
                     </SRender>
                     {row.children?.length} variants
-                    <IconChevronDown className={styles.downIcon} size={13} style={{ transform: expands.includes(row.id) ? 'rotate(180deg)' : undefined }} />
                   </Flex>
                 </SRender>
               </div>
             </Flex>
           </SRender>
           <SRender render={!row.is_parent}>
-            <Flex className={'fit-width'} style={{ marginLeft: 16, cursor: 'pointer', height: 32 }} align={'center'} gap={12}>
+            <Flex className={'fit-width'} style={{ marginLeft: 16, cursor: 'pointer', height: 24 }} align={'center'} gap={12}>
               <Checkbox checked={selected.includes(row.id)} onChange={e => { onSelectChild(row) }} style={{ marginLeft: 4 }} />
               <div>{row.title}</div>
             </Flex>
@@ -184,24 +187,6 @@ export default function SelectVariants (props: SelectVariantsProps) {
     info.close()
   }
 
-  const listCount = useMemo(() => {
-    let count = 0
-    list.forEach(i => {
-      count += (i.variants?.length || 0)
-    })
-    return count
-  }, [list])
-  const isAllSelect = (selected.length === listCount) || selected.length === 200
-
-  const onSelectAll = () => {
-    if (isAllSelect) {
-      setSelected([])
-    } else {
-      const all = list.flatMap(i => i.variants?.map(j => j.id) || [])
-      setSelected(all.filter((i, index) => index < 200))
-    }
-  }
-
   useEffect(() => {
     if (!list?.length) return
     if (!productList?.data?.total) {
@@ -229,7 +214,7 @@ export default function SelectVariants (props: SelectVariantsProps) {
   }, [params])
 
   useEffect(() => {
-    if (!info.open || list.length) return
+    if (!info.open) return
     setList([])
     setSelected(info.data || [])
     setParams({ page: 1, page_size: 50 })
@@ -246,17 +231,10 @@ export default function SelectVariants (props: SelectVariantsProps) {
       footer={(
         <Flex align={'center'} justify={'space-between'}>
           <Flex align={'center'} gap={12}>
-            <Checkbox
-              style={{ marginLeft: 4 }}
-              onChange={onSelectAll}
-              checked={isAllSelect}
-              indeterminate={!isAllSelect && !!selected.length}
-            />
-            <Flex align={'center'} gap={4}>
-              <div>{selected.length}</div>
+            <Flex align={'center'} gap={8}>
+              <div>{selected.length} selected</div>
               <span>/</span>
-              <div>200</div>
-              <span style={{ marginLeft: 8 }} className={'secondary'}>(Selected / Max)</span>
+              <div>200 max</div>
             </Flex>
           </Flex>
           <Flex gap={12}>
@@ -276,8 +254,8 @@ export default function SelectVariants (props: SelectVariantsProps) {
           <STable
             useVirtual
             expand={{
-              value: expands,
-              onChange: setExpands
+              value: renderList?.map(i => i.id),
+              onChange: () => {}
             }}
             loading={productList.loading ? !list.length : false}
             init={!!productList.data}

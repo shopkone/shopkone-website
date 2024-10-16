@@ -137,7 +137,7 @@ export default function Products (props: ProductsProps) {
           size={'small'}
           className={'primary-text'}
           onClick={() => {
-            openInfo.edit(value?.map(item => item.variant_id))
+            openInfo.edit(value?.map(item => item.variant_id) || [])
           }}
         >
           {t('Select products')}
@@ -157,7 +157,7 @@ export default function Products (props: ProductsProps) {
               </div>
               <Flex align={'center'} justify={'center'}>
                 <Button onClick={() => {
-                  openInfo.edit(value?.map(item => item.variant_id))
+                  openInfo.edit(value?.map(item => item.variant_id) || [])
                 }}
                 >
                   {t('Select products')}

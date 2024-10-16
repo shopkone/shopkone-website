@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { IconMaximize, IconMinimize, IconPencil } from '@tabler/icons-react'
-import { Button, Flex, Form, Tooltip } from 'antd'
+import { Flex, Form, Tooltip } from 'antd'
 import cloneDeep from 'lodash/cloneDeep'
 
+import IconButton from '@/components/icon-button'
 import SCard from '@/components/s-card'
 import SRender from '@/components/s-render'
 import { VariantType } from '@/constant/product'
@@ -150,41 +151,38 @@ export default function Variants (props: VariantsProps) {
           <Flex gap={12}>
             <SRender render={variantType === VariantType.Multiple && !!variants?.length}>
               <Tooltip title={'Edit options'}>
-                <Button
-                  style={{ height: 25, width: 25 }}
+                <IconButton
                   onClick={() => { openInfo.edit(form.getFieldValue('variants')) }}
                   type={'text'}
-                  size={'small'}
+                  size={25}
                   className={'primary-text'}
                 >
-                  <IconPencil style={{ position: 'relative', left: -1, top: 1 }} size={16} />
-                </Button>
+                  <IconPencil size={16} />
+                </IconButton>
               </Tooltip>
             </SRender>
             <SRender render={variants?.length} style={{ width: 24, height: 24 }} />
             <SRender render={variants?.length}>
               <SRender render={!isFull}>
                 <Tooltip title={'Maximize'}>
-                  <Button
-                    style={{ height: 25, width: 25 }}
+                  <IconButton
                     onClick={() => { setIsFull(!isFull) }}
                     type={'text'}
-                    size={'small'}
+                    size={25}
                   >
-                    <IconMaximize style={{ position: 'relative', left: -2, top: 2 }} size={16} />
-                  </Button>
+                    <IconMaximize size={15} />
+                  </IconButton>
                 </Tooltip>
               </SRender>
               <SRender render={isFull}>
                 <Tooltip title={'Minimize'}>
-                  <Button
-                    style={{ height: 25, width: 25 }}
+                  <IconButton
                     onClick={() => { setIsFull(!isFull) }}
                     type={'text'}
-                    size={'small'}
+                    size={25}
                   >
-                    <IconMinimize style={{ position: 'relative', left: -2, top: 1 }} size={16} />
-                  </Button>
+                    <IconMinimize size={15} />
+                  </IconButton>
                 </Tooltip>
               </SRender>
             </SRender>

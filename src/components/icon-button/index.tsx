@@ -1,4 +1,4 @@
-import { Button, ButtonProps } from 'antd'
+import { Button, ButtonProps, Flex } from 'antd'
 
 export interface IconButtonProps extends Omit<ButtonProps, 'size'> {
   size: number
@@ -9,13 +9,14 @@ export default function IconButton (props: IconButtonProps) {
   return (
     <Button
       {...rest}
+      size={'small'}
       style={{
         padding: 0,
         width: size,
         height: size
       }}
     >
-      {children}
+      <Flex align={'center'} justify={'center'}>{children}</Flex>
     </Button>
   )
 }

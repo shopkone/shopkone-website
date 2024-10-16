@@ -7,6 +7,7 @@ import isEqual from 'lodash/isEqual'
 
 import { GetColumnsApi } from '@/api/user/user-get-columns'
 import { ColumnItem, SetColumnsApi, UserColumnType } from '@/api/user/user-set-columns'
+import IconButton from '@/components/icon-button'
 import SRender from '@/components/s-render'
 import { STableProps } from '@/components/s-table'
 import Sortable from '@/components/sortable'
@@ -142,13 +143,9 @@ export const useColumn = (local: UseColumnType[], type: UserColumnType) => {
         </Sortable>
       }
     >
-      <Button
-        style={{ height: 25, width: 25 }}
-        type={'text'}
-        size={'small'}
-      >
-        <IconMenu2 style={{ position: 'relative', left: -4 }} size={16} />
-      </Button>
+      <IconButton type={'text'} size={25}>
+        <IconMenu2 size={15} />
+      </IconButton>
     </Popover>
   ), [renderCols])
 

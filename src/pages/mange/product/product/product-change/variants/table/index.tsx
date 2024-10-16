@@ -77,7 +77,7 @@ export default function Table (props: TableProps) {
   return (
     <div style={{ position: 'relative' }}>
       {ImageUploader}
-      <div style={{ position: 'absolute', top: -32, ...settingsStyle }}>
+      <div style={{ position: 'absolute', top: -33, ...settingsStyle }}>
         {ColumnSettings}
       </div>
       <Flex wrap={'wrap'} style={{ marginBottom: 12 }} align={'center'} gap={12}>
