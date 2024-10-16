@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { useDebounce } from 'ahooks'
-import { Col, Form, Input, Row } from 'antd'
+import { Col, Form, FormInstance, Input, Row } from 'antd'
 import random from 'lodash/random'
 
 import { useCountries } from '@/api/base/countries'
@@ -12,14 +12,15 @@ import SRender from '@/components/s-render'
 import SSelect from '@/components/s-select'
 
 export interface AddressProps {
+  requiredName?: boolean
   companyNameLabel?: string
   hasEmail?: boolean
   hasName?: boolean
   loading?: boolean
   value?: AddressType
   onChange?: (value: AddressType) => void
-  onMessage?: (msg?: string) => void
   hiddenTitle?: boolean
+  getFormInstance?: (v: FormInstance) => void
 }
 
 const INIT_DATA = {
@@ -37,7 +38,7 @@ const INIT_DATA = {
 }
 
 export default function Address (props: AddressProps) {
-  const { companyNameLabel, hasEmail, loading, value, onChange, hasName, hiddenTitle } = props
+  const { companyNameLabel, hasEmail, loading, value, onChange, hasName, hiddenTitle, getFormInstance } = props
 
   const [form] = Form.useForm()
 
@@ -52,10 +53,6 @@ export default function Address (props: AddressProps) {
   }, [countries.data])
 
   const onChangeHandler = () => {
-    setTimeout(() => {
-      const errMsg = form.getFieldsError()?.find(item => item.errors?.length)?.errors?.[0]
-      props?.onMessage?.(errMsg)
-    })
     onChange?.({ ...(initValues.current || {}), ...form.getFieldsValue() })
   }
 
@@ -87,6 +84,10 @@ export default function Address (props: AddressProps) {
       onChangeHandler()
     }
   }, [country, phoneCodes.data])
+
+  useEffect(() => {
+    getFormInstance?.(form)
+  }, [form])
 
   const countryRender = (
     <Form.Item name={'country'} label={c?.config?.country}>
@@ -127,7 +128,7 @@ export default function Address (props: AddressProps) {
         <Row gutter={16}>
           <SRender render={companyNameLabel}>
             <Col span={24}>
-              <Form.Item name={'legal_business_name'} label={companyNameLabel}>
+              <Form.Item rules={[{ required: props.requiredName }]} name={'legal_business_name'} label={companyNameLabel}>
                 <Input autoComplete={'off'} />
               </Form.Item>
             </Col>

@@ -14,7 +14,7 @@ import STable, { STableProps } from '@/components/s-table'
 import SelectVariants from '@/components/select-variants'
 import { useI18n } from '@/hooks/use-lang'
 import { useOpen } from '@/hooks/useOpen'
-import { roundPrice } from '@/utils/num'
+import { formatPrice, roundPrice } from '@/utils/num'
 import { genId } from '@/utils/random'
 
 export interface ProductsProps {
@@ -48,16 +48,23 @@ export default function Products (props: ProductsProps) {
     })
   }, [pageValue, data]) || []
 
+  const onRemove = (item: VariantsByIdsRes) => {
+    onChange?.(value?.filter(i => i.id !== item.id) || [])
+  }
+
   const onChangeValue = (i: PurchaseItem, key: keyof PurchaseItem, value: any) => {
     const index = list.findIndex(item => item.id === i.id)
     const item = list[index]
     let total = item.total
     if (key === 'cost') {
       // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-      total = (value || 0) + ((value || 0) * item.tax_rate / 100)
+      total = ((value || 0) + ((value || 0) * item.tax_rate / 100)) * item.purchasing
     }
     if (key === 'tax_rate') {
-      total = item.cost + (item.cost * (value || 0) / 100)
+      total = (item.cost + (item.cost * (value || 0) / 100)) * item.purchasing
+    }
+    if (key === 'purchasing') {
+      total = (item.cost + (item.cost * (item.tax_rate || 0) / 100)) * value
     }
     list[index] = { ...i, [key]: value, total: roundPrice(total) }
     onChange?.(list || [])
@@ -100,7 +107,7 @@ export default function Products (props: ProductsProps) {
       code: 'purchasing',
       name: 'purchasing',
       render: (purchasing: number, row: PurchaseItem) => (
-        <SInputNumber min={1} uint value={purchasing} onChange={(v) => { onChangeValue(row, 'purchasing', v) }} />
+        <SInputNumber max={999999} min={1} uint value={purchasing} onChange={(v) => { onChangeValue(row, 'purchasing', v) }} />
       ),
       width: 120
     },
@@ -118,7 +125,7 @@ export default function Products (props: ProductsProps) {
       code: 'tax_rate',
       name: 'tax_rate',
       render: (tax_rate: number, row: PurchaseItem) => (
-        <SInputNumber precision={2} required min={0} value={tax_rate} suffix={'%'} onChange={(v) => { onChangeValue(row, 'tax_rate', v) }} />
+        <SInputNumber max={9999} precision={2} required min={0} value={tax_rate} suffix={'%'} onChange={(v) => { onChangeValue(row, 'tax_rate', v) }} />
       ),
       width: 100
     },
@@ -126,22 +133,24 @@ export default function Products (props: ProductsProps) {
       title: t('Total'),
       code: 'total',
       name: 'total',
-      width: 90,
+      width: 100,
       render: (total: number) => (
-        <div>${total}</div>
+        `$${formatPrice(total)}`
       )
     },
     {
       title: '',
       code: 'action',
       name: 'action',
-      render: () => (
-        <IconButton type={'text'} size={24}>
-          <IconTrash size={15} />
-        </IconButton>
+      render: (_, row: VariantsByIdsRes) => (
+        <Flex align={'center'} justify={'center'}>
+          <IconButton type={'text'} size={24}>
+            <IconTrash onClick={() => { onRemove(row) }} size={15} />
+          </IconButton>
+        </Flex>
       ),
       width: 50,
-      align: 'right',
+      align: 'center',
       lock: true
     }
   ]
@@ -155,16 +164,18 @@ export default function Products (props: ProductsProps) {
   return (
     <SCard
       extra={
-        <Button
-          type={'text'}
-          size={'small'}
-          className={'primary-text'}
-          onClick={() => {
-            openInfo.edit(value?.map(item => item.variant_id) || [])
-          }}
-        >
-          {t('Select products')}
-        </Button>
+        <SRender render={value?.length}>
+          <Button
+            type={'text'}
+            size={'small'}
+            className={'primary-text'}
+            onClick={() => {
+              openInfo.edit(value?.map(item => item.variant_id) || [])
+            }}
+          >
+            {t('Select products')}
+          </Button>
+        </SRender>
       }
       loading={loading}
       title={t('Products')}

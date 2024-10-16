@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useDebounce, useRequest } from 'ahooks'
-import { Button, Checkbox, Flex, Form, Input } from 'antd'
+import { Button, Checkbox, Flex, Form, FormInstance, Input } from 'antd'
 import isEqual from 'lodash/isEqual'
 
 import { LocationAddApi } from '@/api/location/add'
@@ -29,13 +29,12 @@ export default function Change () {
   const remove = useRequest(RemoveLocationApi, { manual: true })
   const [isChange, setIsChange] = useState(false)
   const init = useRef<any>()
-  const errMsg = useRef<string>()
   const { id } = useParams()
   const info = useRequest(LocationInfoApi, { manual: true })
   const nav = useNavigate()
   const openInfo = useOpen<{ name: string, id: number }>()
   const existInventory = useRequest(LocationExistInventoryApi, { manual: true })
-
+  const addressForm = useRef<FormInstance>()
   const modal = useModal()
 
   const renderFooter = useDebounce(!!id && info?.data, { wait: 100 })
@@ -72,11 +71,8 @@ export default function Change () {
   }
 
   const onSubmit = async () => {
+    await addressForm.current?.validateFields()
     await form.validateFields()
-    if (errMsg.current) {
-      modal.info({ content: errMsg.current })
-      return
-    }
     if (id) {
       await update.runAsync({ ...info.data, ...form.getFieldsValue() })
       await info.refreshAsync()
@@ -193,7 +189,7 @@ export default function Change () {
         </SCard>
 
         <Form.Item name={'address'} className={'mb0'}>
-          <Address hasName onMessage={(err) => { errMsg.current = err }} loading={!address?.country || info.loading} hasEmail />
+          <Address getFormInstance={form => { addressForm.current = form }} hasName loading={!address?.country || info.loading} hasEmail />
         </Form.Item>
 
         <SCard style={{ marginTop: 16 }} title={'Fulfillment details'} loading={info.loading}>

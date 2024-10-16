@@ -5,6 +5,7 @@ import { Button, Flex, Form, Input } from 'antd'
 import { useCarriers } from '@/api/base/carriers'
 import { useCurrencyList } from '@/api/base/currency-list'
 import { LocationListApi } from '@/api/location/list'
+import { SupplierListApi } from '@/api/product/supplier-list'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
 import SDatePicker from '@/components/s-date-picker'
@@ -19,6 +20,7 @@ import styles from './index.module.less'
 export default function Change () {
   const currencyList = useCurrencyList()
   const locations = useRequest(async () => await LocationListApi({ active: true }))
+  const supplierList = useRequest(SupplierListApi)
   const carriers = useCarriers()
   const [form] = Form.useForm()
   const carrier_id = Form.useWatch('carrier_id', form)
@@ -60,6 +62,8 @@ export default function Change () {
             <div className={styles.item}>
               <div className={styles.title}>{t('Supplier')}</div>
               <SSelect
+                loading={supplierList.loading}
+                options={supplierList.data?.map(item => ({ value: item.id, label: item.address?.legal_business_name }))}
                 open={openSelect}
                 onDropdownVisibleChange={setOpenSelect}
                 dropdownStyle={{ minWidth: 300 }}
