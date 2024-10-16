@@ -106,10 +106,8 @@ export default function Group (props: GroupProps) {
         </div>
         <div className={styles.sideBottom}>
           <Button onClick={() => { open.edit() }} block>
-            <Flex gap={4} justify={'center'} align={'center'}>
-              <IconPlus style={{ position: 'relative', top: -3 }} size={14} />
-              <div style={{ position: 'relative', top: -2 }}>Add group</div>
-            </Flex>
+            <IconPlus size={14} />
+            Add group
           </Button>
         </div>
       </SCard>

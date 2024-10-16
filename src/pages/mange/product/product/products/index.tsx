@@ -8,6 +8,7 @@ import dayjs from 'dayjs'
 import { FileType } from '@/api/file/add-file-record'
 import { ProductListApi, ProductListReq, ProductListRes } from '@/api/product/list'
 import FileImage from '@/components/file-image'
+import IconButton from '@/components/icon-button'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
 import SRender from '@/components/s-render'
@@ -145,14 +146,14 @@ export default function Products () {
       render: () => (
         <Flex justify={'center'} align={'center'} style={{ marginLeft: -6, cursor: 'default' }} onClick={e => { e.stopPropagation() }} gap={12}>
           <Tooltip title={'Preview'}>
-            <Button size={'small'} type={'text'} style={{ width: 26, height: 26 }}>
-              <IconEye style={{ position: 'relative', left: -5 }} size={18} />
-            </Button>
+            <IconButton size={26} type={'text'}>
+              <IconEye size={18} />
+            </IconButton>
           </Tooltip>
           <Tooltip title={'Duplicate'}>
-            <Button size={'small'} type={'text'} style={{ width: 26, height: 26 }}>
-              <IconCopy style={{ position: 'relative', left: -2, top: 1 }} size={14} />
-            </Button>
+            <IconButton size={26} type={'text'}>
+              <IconCopy size={14} />
+            </IconButton>
           </Tooltip>
         </Flex>
       ),

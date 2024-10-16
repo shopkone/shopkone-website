@@ -15,7 +15,7 @@ export default function IconButton (props: IconButtonProps) {
         height: size
       }}
     >
-      <div style={{ transform: 'translateX(3px)' }}>{children}</div>
+      {children}
     </Button>
   )
 }
