@@ -14,6 +14,7 @@ import STable, { STableProps } from '@/components/s-table'
 import SelectVariants from '@/components/select-variants'
 import { useI18n } from '@/hooks/use-lang'
 import { useOpen } from '@/hooks/useOpen'
+import { roundPrice } from '@/utils/num'
 import { genId } from '@/utils/random'
 
 export interface ProductsProps {
@@ -39,7 +40,16 @@ export default function Products (props: ProductsProps) {
 
   const onChangeValue = (i: PurchaseItem, key: keyof PurchaseItem, value: any) => {
     const index = list.findIndex(item => item.id === i.id)
-    list[index] = { ...i, [key]: value }
+    const item = list[index]
+    let total = item.total
+    if (key === 'cost') {
+      // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+      total = (value || 0) + ((value || 0) * item.tax_rate / 100)
+    }
+    if (key === 'tax_rate') {
+      total = item.cost + (item.cost * (value || 0) / 100)
+    }
+    list[index] = { ...i, [key]: value, total: roundPrice(total) }
     onChange?.(list || [])
   }
 
@@ -80,7 +90,7 @@ export default function Products (props: ProductsProps) {
       code: 'purchasing',
       name: 'purchasing',
       render: (purchasing: number, row: PurchaseItem) => (
-        <SInputNumber uint value={purchasing} onChange={(v) => { onChangeValue(row, 'purchasing', v) }} />
+        <SInputNumber min={1} uint value={purchasing} onChange={(v) => { onChangeValue(row, 'purchasing', v) }} />
       ),
       width: 120
     },
@@ -89,7 +99,7 @@ export default function Products (props: ProductsProps) {
       code: 'cost',
       name: 'cost',
       render: (cost: number, row: PurchaseItem) => (
-        <SInputNumber money value={cost} onChange={(v) => { onChangeValue(row, 'cost', v) }} />
+        <SInputNumber required money value={cost} onChange={(v) => { onChangeValue(row, 'cost', v) }} />
       ),
       width: 120
     },
@@ -98,7 +108,7 @@ export default function Products (props: ProductsProps) {
       code: 'tax_rate',
       name: 'tax_rate',
       render: (tax_rate: number, row: PurchaseItem) => (
-        <SInputNumber value={tax_rate} suffix={'%'} onChange={(v) => { onChangeValue(row, 'tax_rate', v) }} />
+        <SInputNumber precision={2} required min={0} value={tax_rate} suffix={'%'} onChange={(v) => { onChangeValue(row, 'tax_rate', v) }} />
       ),
       width: 100
     },
@@ -106,7 +116,10 @@ export default function Products (props: ProductsProps) {
       title: t('Total'),
       code: 'total',
       name: 'total',
-      width: 60
+      width: 90,
+      render: (total: number) => (
+        <div>${total}</div>
+      )
     },
     {
       title: '',

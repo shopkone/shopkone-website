@@ -15,6 +15,7 @@ export interface SInputNumberProps extends Omit<InputProps, 'onChange' | 'value'
   money?: boolean
   uint?: boolean// 是否正整数
   precision?: number // 小数精度
+  required?: boolean
 }
 
 function SInputNumber (props: SInputNumberProps) {
@@ -26,8 +27,11 @@ function SInputNumber (props: SInputNumberProps) {
     uint,
     money,
     precision = money ? 2 : 10,
+    required,
     ...rest
   } = props
+
+  const [focus, setFocus] = useState(false)
 
   const [num, setNum] = useState<string>()
 
@@ -60,8 +64,17 @@ function SInputNumber (props: SInputNumberProps) {
     setNum(typeof value === 'number' ? value.toString() : undefined)
   }, [value])
 
+  useEffect(() => {
+    if (focus) return
+    if (min > (value || 0) || (required && value === undefined)) {
+      onChange?.(min)
+    }
+  }, [focus])
+
   return (
     <Input
+      onFocus={(min || required) ? () => { setFocus(true) } : undefined}
+      onBlur={(min || required) ? () => { setFocus(false) } : undefined}
       value={num}
       style={{ width: '100%' }}
       autoComplete={'off'}
