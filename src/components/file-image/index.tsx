@@ -49,7 +49,7 @@ export default function FileImage (props: FileImageProps) {
   }
 
   return (
-    <div style={{ height: (height || width) }}>
+    <div style={{ height: (height || width), flexShrink: 0 }}>
       <Flex align={'center'} justify={'center'} style={{ width, height: height || width, display: loading ? undefined : 'none' }}>
         <SLoading loading size={size} />
       </Flex>

@@ -63,7 +63,7 @@ export default function SelectVariants (props: SelectVariantsProps) {
     return list.map(item => {
       const children = (item.variants?.map(variant => ({
         id: variant.id,
-        price: `${variant.price || 0}`,
+        price: `$${variant.price || 0}`,
         inventory: `${variant.quantity || 0}`,
         image: variant.image,
         title: variant?.name?.map(i => i.value)?.join(' - ')
@@ -104,6 +104,7 @@ export default function SelectVariants (props: SelectVariantsProps) {
       onSelectChild(row)
     }
   }
+  // onClick={() => { setExpanded(expanded.includes(row.id) ? expanded.filter(i => i !== row.id) : [...expanded, row.id]) }}
 
   const moreRef = useRef<HTMLDivElement>(null)
   const [inViewport] = useInViewport(moreRef)
@@ -115,8 +116,8 @@ export default function SelectVariants (props: SelectVariantsProps) {
       render: (_, row: ProductVariants) => (
         <div className={'fit-width'}>
           <SRender render={row.is_parent}>
-            <Flex onClick={!row.children?.length ? () => { onSelectParent(row) } : undefined} style={{ marginLeft: !row.children?.length ? -8 : 0, cursor: 'pointer' }} align={'center'}>
-              <Flex className={styles.checkbox}>
+            <Flex style={{ marginLeft: !row.children?.length ? -8 : 0, cursor: 'pointer' }} align={'center'}>
+              <Flex onClick={!row.children?.length ? () => { onSelectParent(row) } : undefined} className={styles.checkbox}>
                 <Checkbox
                   indeterminate={!row.variants?.every(i => selected.includes(i.id)) && row.variants?.some(i => selected.includes(i.id))}
                   onChange={() => { onSelectParent(row) }}
@@ -125,43 +126,45 @@ export default function SelectVariants (props: SelectVariantsProps) {
                 />
               </Flex>
 
-              <SRender render={row.image}>
-                <FileImage size={36} width={36} height={42} src={row.image || ''} type={FileType.Image} />
-              </SRender>
-              <SRender render={!row.image}>
-                <Flex align={'center'} justify={'center'} style={{ width: 38, height: 38, background: '#f5f5f5', border: '1px solid #eee', borderRadius: 8 }}>
-                  <IconPhoto color={'#ddd'} />
-                </Flex>
-              </SRender>
-              <div
-                onClick={() => { setExpanded(expanded.includes(row.id) ? expanded.filter(i => i !== row.id) : [...expanded, row.id]) }}
+              <Flex
                 className={styles.down}
                 onMouseDown={e => { e.stopPropagation() }}
-                style={{ marginLeft: 12 }}
+                onClick={() => { setExpanded(expanded.includes(row.id) ? expanded.filter(i => i !== row.id) : [...expanded, row.id]) }}
+                align={'center'}
               >
-                <div>{row.title}</div>
-                <SRender style={{ userSelect: 'none' }} render={row.children?.length}>
-                  <Flex className={'tips'} align={'center'} gap={4}>
-                    {/*     <SRender render={row.variants?.find(i => selected.includes(i.id))}>
-                      {row.variants?.filter(i => selected.includes(i.id))?.length} selected<span />/<span />
-                    </SRender> */}
-                    <div className={styles.downIcon}>{row.children?.length} variants</div>
-                    <IconChevronDown
-                      className={styles.downIcon}
-                      style={{
-                        transform: expanded.includes(row.id) ? 'rotate(180deg)' : 'rotate(0deg)',
-                        position: 'relative',
-                        top: -1
-                      }}
-                      size={14}
-                    />
+                <SRender render={row.image}>
+                  <FileImage size={36} width={36} height={36} src={row.image || ''} type={FileType.Image} />
+                </SRender>
+                <SRender render={!row.image}>
+                  <Flex align={'center'} justify={'center'} style={{ width: 38, height: 38, background: '#f5f5f5', border: '1px solid #eee', borderRadius: 8 }}>
+                    <IconPhoto color={'#ddd'} />
                   </Flex>
                 </SRender>
-              </div>
+                <div style={{ marginLeft: 12 }}>
+                  <div>{row.title}</div>
+                  <SRender style={{ userSelect: 'none' }} render={row.children?.length}>
+                    <Flex className={'tips'} align={'center'} gap={4}>
+                      {/*     <SRender render={row.variants?.find(i => selected.includes(i.id))}>
+                      {row.variants?.filter(i => selected.includes(i.id))?.length} selected<span />/<span />
+                    </SRender> */}
+                      <div className={styles.downIcon}>{row.children?.length} variants</div>
+                      <IconChevronDown
+                        className={styles.downIcon}
+                        style={{
+                          transform: expanded.includes(row.id) ? 'rotate(180deg)' : 'rotate(0deg)',
+                          position: 'relative',
+                          top: -1
+                        }}
+                        size={14}
+                      />
+                    </Flex>
+                  </SRender>
+                </div>
+              </Flex>
             </Flex>
           </SRender>
           <SRender render={!row.is_parent}>
-            <Flex className={'fit-width'} style={{ marginLeft: 16, cursor: 'pointer', height: 24 }} align={'center'} gap={12}>
+            <Flex className={'fit-width'} style={{ marginLeft: 20, cursor: 'pointer', height: 24 }} align={'center'} gap={12}>
               <Checkbox checked={selected.includes(row.id)} onChange={e => { onSelectChild(row) }} style={{ marginLeft: 4 }} />
               <div>{row.title}</div>
             </Flex>
