@@ -1,19 +1,21 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useRequest } from 'ahooks'
 import { FormInstance } from 'antd'
 
 import { AddressType } from '@/api/common/address'
 import { CreateSupplierApi } from '@/api/product/create-supplier'
 import Address from '@/components/address'
+import { sMessage } from '@/components/s-message'
 import SModal from '@/components/s-modal'
 import { UseOpenType } from '@/hooks/useOpen'
 
 export interface CreateSupplierProps {
   info: UseOpenType<unknown>
+  onOk: (id: number) => Promise<void>
 }
 
 export default function CreateSupplier (props: CreateSupplierProps) {
-  const { info } = props
+  const { info, onOk } = props
   const [value, onChange] = useState<AddressType>()
   const create = useRequest(CreateSupplierApi, { manual: true })
 
@@ -22,11 +24,27 @@ export default function CreateSupplier (props: CreateSupplierProps) {
   const onConfirm = async () => {
     await form?.current?.validateFields()
     if (!value) return
-    await create.runAsync({ address: value })
+    const ret = await create.runAsync({ address: value })
+    info.close()
+    onOk(ret.id)
+    sMessage.success('Supplier created!')
   }
 
+  useEffect(() => {
+    if (!info.open) return
+    onChange(undefined)
+  }, [info.open])
+
   return (
-    <SModal onOk={onConfirm} onCancel={info.close} open={info.open} width={600} title={'Create Supplier'} >
+    <SModal
+
+      confirmLoading={create.loading}
+      onOk={onConfirm}
+      onCancel={info.close}
+      open={info.open}
+      width={600}
+      title={'Create Supplier'}
+    >
       <div style={{ padding: 16 }}>
         <Address
           getFormInstance={(f) => { form.current = f }}
@@ -37,7 +55,6 @@ export default function CreateSupplier (props: CreateSupplierProps) {
           hiddenTitle
           hasEmail
           companyNameLabel={'Supplier name'}
-          onMessage={msg => { console.log(msg) }}
         />
       </div>
     </SModal>

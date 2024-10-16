@@ -83,7 +83,7 @@ export default function SelectVariants (props: SelectVariantsProps) {
       list = [...selected, ...row.variants?.map(i => i.id) || []]
     }
     if (list.length >= 200) {
-      sMessage.warning('Maximum selection limit reached')
+      sMessage.warning('Select up to 200 variants/products. The first 200 are pre-selected.')
     }
     setSelected(list.filter((i, index) => index < 200))
   }
@@ -91,7 +91,7 @@ export default function SelectVariants (props: SelectVariantsProps) {
   const onSelectChild = (row: ProductVariants) => {
     const list = selected.includes(row.id) ? selected.filter(i => i !== row.id) : [...selected, row.id]
     if (list.length > 200) {
-      sMessage.warning('Maximum selection limit reached')
+      sMessage.warning('You can only select up to 200 products/variants.')
       return
     }
     setSelected(list)

@@ -1,55 +1,80 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useRequest } from 'ahooks'
 import { Button, Flex, Form, Input } from 'antd'
+import { Dayjs } from 'dayjs'
 
 import { useCarriers } from '@/api/base/carriers'
 import { useCurrencyList } from '@/api/base/currency-list'
 import { LocationListApi } from '@/api/location/list'
-import { SupplierListApi } from '@/api/product/supplier-list'
+import { PurchaseCreateApi } from '@/api/purchse/create'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
 import SDatePicker from '@/components/s-date-picker'
+import { sMessage } from '@/components/s-message'
 import SSelect from '@/components/s-select'
 import { useI18n } from '@/hooks/use-lang'
-import { useOpen } from '@/hooks/useOpen'
-import CreateSupplier from '@/pages/mange/product/purchase/change/create-supplier'
 import Products from '@/pages/mange/product/purchase/change/products'
+import Supplier from '@/pages/mange/product/purchase/change/supplier'
 
 import styles from './index.module.less'
 
 export default function Change () {
   const currencyList = useCurrencyList()
   const locations = useRequest(async () => await LocationListApi({ active: true }))
-  const supplierList = useRequest(SupplierListApi)
   const carriers = useCarriers()
   const [form] = Form.useForm()
-  const carrier_id = Form.useWatch('carrier_id', form)
-  const carrierItem = carriers.data?.find(item => item.id === carrier_id)
   const t = useI18n()
-  const [openSelect, setOpenSelect] = useState(false)
-
-  const supplierInfo = useOpen()
+  const create = useRequest(PurchaseCreateApi, { manual: true })
 
   const paymentTerms = [
     { value: 0, label: 'None' },
-    { value: 2, label: 'Cash on delivery' },
-    { value: 3, label: 'Cash on receipt' },
-    { value: 4, label: 'Payment on receipt' },
-    { value: 5, label: 'Payment in advance' },
-    { value: 6, label: 'Net 7' },
-    { value: 7, label: 'Net 15' },
+    { value: 1, label: 'Cash on delivery' },
+    { value: 2, label: 'Cash on receipt' },
+    { value: 3, label: 'Payment on receipt' },
+    { value: 4, label: 'Payment in advance' },
+    { value: 5, label: 'Net 7' },
+    { value: 6, label: 'Net 15' },
     { value: 7, label: 'Net 30' },
     { value: 8, label: 'Net 45' },
-    { value: 8, label: 'Net 60' }
+    { value: 9, label: 'Net 60' }
   ]
+
+  const onOk = async () => {
+    await form.validateFields()
+    const { estimated_delivery_date, ...rest } = form.getFieldsValue()
+    const values = {
+      ...rest,
+      estimated_delivery_date: estimated_delivery_date ? (estimated_delivery_date as Dayjs).unix() : undefined
+    }
+    if (!values?.purchase_items) {
+      sMessage.warning('Please select items')
+      return
+    }
+    if (!values.supplier_id) {
+      sMessage.warning('Please select supplier')
+      return
+    }
+    await create.runAsync(values)
+  }
 
   useEffect(() => {
     if (!locations.data || form.getFieldValue('destination_id')) return
     form.setFieldsValue({ destination_id: locations.data[0].id })
   }, [locations.data])
 
+  useEffect(() => {
+    if (!currencyList.data?.length) return
+    form.setFieldsValue({ currency_code: currencyList.data[0].code })
+  }, [currencyList.data])
+
+  useEffect(() => {
+    form.setFieldValue('payment_terms', 0)
+  }, [])
+
   return (
     <Page
+      onOk={onOk}
+      isChange={true}
       bottom={64}
       type={'product'}
       width={950}
@@ -61,35 +86,9 @@ export default function Change () {
           <Flex>
             <div className={styles.item}>
               <div className={styles.title}>{t('Supplier')}</div>
-              <SSelect
-                loading={supplierList.loading}
-                options={supplierList.data?.map(item => ({ value: item.id, label: item.address?.legal_business_name }))}
-                open={openSelect}
-                onDropdownVisibleChange={setOpenSelect}
-                dropdownStyle={{ minWidth: 300 }}
-                placeholder={t('Select supplier')}
-                className={styles.select}
-                variant={'borderless'}
-                dropdownRender={node => (
-                  <Flex vertical>
-                    {node}
-                    <div className={'line'} />
-                    <div style={{ marginBottom: 6, marginLeft: 8, marginTop: -4 }}>
-                      <Button
-                        onClick={() => {
-                          setOpenSelect(false)
-                          supplierInfo.edit()
-                        }}
-                        size={'small'}
-                        type={'text'}
-                        className={'primary-text'}
-                      >
-                        Create new supplier
-                      </Button>
-                    </div>
-                  </Flex>
-                )}
-              />
+              <Form.Item style={{ margin: 0 }} name={'supplier_id'}>
+                <Supplier />
+              </Form.Item>
             </div>
             <div className={styles.item}>
               <div className={styles.title}>{t('Destination')}</div>
@@ -137,7 +136,6 @@ export default function Change () {
               />
             </Form.Item>
             <Form.Item
-              rules={[{ pattern: new RegExp(carrierItem?.pattern || '', carrierItem?.pattern_options), message: 'asd' }]}
               name={'delivery_number'}
               label={t('Delivery number')}
               className={'flex1 mb0'}
@@ -184,12 +182,13 @@ export default function Change () {
           </SCard>
 
           <SCard className={'flex1'} title={t('Remarks')} style={{ marginTop: 16 }}>
-            <Input.TextArea autoSize={{ minRows: 7 }} />
+            <Form.Item className={'mb0'} name={'remarks'}>
+              <Input.TextArea autoSize={{ minRows: 7 }} />
+            </Form.Item>
           </SCard>
         </Flex>
       </Form>
 
-      <CreateSupplier info={supplierInfo} />
     </Page>
   )
 }
