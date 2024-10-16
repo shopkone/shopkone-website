@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { IconLink } from '@tabler/icons-react'
+import { IconCopy } from '@tabler/icons-react'
 import { useDebounceFn, useMemoizedFn, useRequest } from 'ahooks'
 import { Button, Card, Flex, Tooltip, Typography } from 'antd'
 import dayjs from 'dayjs'
@@ -10,6 +10,7 @@ import { FilesDeleteApi } from '@/api/file/file-delete'
 import { FileGroupListApi } from '@/api/file/file-group-list'
 import { FileListApi, FileListReq, FileListRes } from '@/api/file/file-list'
 import FileImage from '@/components/file-image'
+import IconButton from '@/components/icon-button'
 import Page from '@/components/page'
 import { sMessage } from '@/components/s-message'
 import { useModal } from '@/components/s-modal'
@@ -152,9 +153,9 @@ export default function Files () {
       width: 60,
       render: (src: string) => (
         <Tooltip title={'Copy link'}>
-          <Button onMouseDown={e => { e.stopPropagation() }} onClick={(e) => { e.stopPropagation(); onCopy(src) }} className={styles.btn}>
-            <IconLink size={15} className={styles.icon} />
-          </Button>
+          <IconButton type={'text'} onMouseDown={e => { e.stopPropagation() }} onClick={(e) => { e.stopPropagation(); onCopy(src) }} size={26}>
+            <IconCopy size={14} />
+          </IconButton>
         </Tooltip>
       )
     }
@@ -209,6 +210,7 @@ export default function Files () {
 
   return (
     <Page
+      type={'settings'}
       bottom={64}
       header={
         <SRender render={!!list?.data?.list?.length}>

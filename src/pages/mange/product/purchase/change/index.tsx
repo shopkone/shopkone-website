@@ -143,7 +143,7 @@ export default function Change () {
           </Flex>
         </SCard>
 
-        <Form.Item name={'variant_ids'}>
+        <Form.Item name={'purchase_items'}>
           <Products />
         </Form.Item>
 

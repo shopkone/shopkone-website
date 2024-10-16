@@ -11,7 +11,7 @@ type VariantListByIdsRes struct {
 }
 */
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useRequest } from 'ahooks'
 
 import { api } from '@/api/api'
@@ -35,16 +35,12 @@ export const useVariantsByIds = () => {
   const [variants, setVariants] = useState<VariantsByIdsRes[]>([])
   const get = useRequest(variantsByIds, { manual: true })
 
-  useEffect(() => {
-    if (!get.data) return
-    setVariants([...get.data, ...variants])
-  }, [get.data])
-
-  const run = (params: VariantsByIdsReq) => {
+  const run = async (params: VariantsByIdsReq) => {
     const { ids } = params
     const needGetIds = ids.filter(id => !variants.find(v => v.id === id))
     if (!needGetIds.length) return
-    get.run({ ids: needGetIds })
+    const ret = await get.runAsync({ ids: needGetIds })
+    setVariants([...ret, ...variants])
   }
 
   return { run, data: variants, loading: get.loading }

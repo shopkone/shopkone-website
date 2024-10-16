@@ -88,7 +88,6 @@ export default function SelectVariants (props: SelectVariantsProps) {
   }
 
   const onRowClick = (row: ProductVariants) => {
-    console.log(123)
     if (row.children?.length) {
       setExpands(expands.includes(row.id) ? expands.filter(i => i !== row.id) : [...expands, row.id])
     } else if (row.variants) {

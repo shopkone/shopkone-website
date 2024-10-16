@@ -39,7 +39,7 @@ export default function ChangeHistory (props: ChangeHistoryProps) {
       footer={false}
       onCancel={info.close}
       width={1000}
-      title={`${info?.data?.name} change history`}
+      title={`${info?.data?.name} history`}
       open={info.open}
     >
       <div style={{ height: 600 }}>

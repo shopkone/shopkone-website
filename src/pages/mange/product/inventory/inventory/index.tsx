@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { IconChevronDown, IconHistory, IconPhoto } from '@tabler/icons-react'
+import { IconChevronDown, IconPhoto } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
-import { Button, Flex, Tooltip } from 'antd'
+import { Button, Flex } from 'antd'
 import isEqual from 'lodash/isEqual'
 
 import { FileType } from '@/api/file/add-file-record'
@@ -89,26 +89,6 @@ export default function Inventory () {
       code: 'on_hand',
       name: 'on_hand',
       width: 150
-    },
-    {
-      title: 'Action',
-      code: 'action',
-      name: 'action',
-      render: (_, row: InventoryListRes) => (
-        <Tooltip title={'Change history'}>
-          <Button
-            onClick={() => { info.edit({ name: row.name || row.product_name, id: row.id }) }}
-            size={'small'}
-            type={'text'}
-            style={{ width: 26, height: 26, marginLeft: -6 }}
-          >
-            <IconHistory style={{ position: 'relative', left: -3, top: 1 }} size={16} />
-          </Button>
-        </Tooltip>
-      ),
-      width: 100,
-      lock: true,
-      align: 'center'
     }
   ]
 
@@ -130,6 +110,7 @@ export default function Inventory () {
 
   return (
     <Page
+      type={'product'}
       header={
         <SRender render={list?.data?.list?.length}>
           <Flex gap={8}>
@@ -173,6 +154,9 @@ export default function Inventory () {
       <SCard styles={{ body: { padding: '8px 0' } }}>
         <Filters />
         <STable
+          onRowClick={(row: InventoryListRes) => {
+            info.edit({ name: row.name || row.product_name, id: row.id })
+          }}
           rowSelection={{
             value: selected,
             onChange: setSelected
