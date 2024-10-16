@@ -23,11 +23,10 @@ export interface FileImageProps {
   className?: string
   size?: number
   error?: boolean
-  forceNoLoading?: boolean
 }
 
 export default function FileImage (props: FileImageProps) {
-  const { src, alt, width = 40, height = 40, type, loading = false, padding, style, className, size = 24, error, forceNoLoading, containerStyle } = props
+  const { src, alt, width = 40, height = 40, type, loading = false, padding, style, className, size = 24, error, containerStyle } = props
 
   const temp = useMemo(() => {
     if (type === FileType.Image) {

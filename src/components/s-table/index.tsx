@@ -3,9 +3,10 @@ import { IconChevronLeft, IconChevronRight, IconDots } from '@tabler/icons-react
 import { useMemoizedFn } from 'ahooks'
 import { Timeout } from 'ahooks/es/useRequest/src/types'
 import { BaseTable, BaseTableProps, features, useTablePipeline } from 'ali-react-table'
-import { Button, Checkbox, Flex, Pagination, PaginationProps } from 'antd'
+import { Checkbox, Flex, Pagination, PaginationProps } from 'antd'
 import classNames from 'classnames'
 
+import IconButton from '@/components/icon-button'
 import SLoading from '@/components/s-loading'
 import SRender from '@/components/s-render'
 import Empty, { EmptyProps } from '@/components/s-table/empty'
@@ -211,20 +212,24 @@ function STable (props: STableProps) {
             prevIcon={<IconChevronLeft color={'#1f2329'} size={15} />}
             nextIcon={<IconChevronRight color={'#1f2329'} size={15} />}
             jumpNextIcon={
-              <Button
-                type={'text'}
-                size={'small'}
-              >
-                <IconDots color={'#1f2329'} style={{ position: 'relative', left: -4, top: 1 }} size={14} />
-              </Button>
+              <div style={{ position: 'relative', top: 3, left: 2, width: 24 }}>
+                <IconButton
+                  type={'text'}
+                  size={24}
+                >
+                  <IconDots color={'#1f2329'} size={13} />
+                </IconButton>
+              </div>
             }
             jumpPrevIcon={
-              <Button
-                type={'text'}
-                size={'small'}
-              >
-                <IconDots color={'#1f2329'} style={{ position: 'relative', left: -4, top: 1 }} size={14} />
-              </Button>
+              <div style={{ position: 'relative', top: 3, left: 2, width: 24 }}>
+                <IconButton
+                  type={'text'}
+                  size={24}
+                >
+                  <IconDots color={'#1f2329'} size={13} />
+                </IconButton>
+              </div>
             }
             showSizeChanger
             pageSizeOptions={['20', '50', '100']}

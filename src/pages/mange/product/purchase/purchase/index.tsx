@@ -7,7 +7,7 @@ import STable from '@/components/s-table'
 export default function Purchase () {
   const nav = useNavigate()
   return (
-    <Page type={'purchase'} title={'Purchase'}>
+    <Page type={'product'} title={'Purchase'}>
       <Card>
         <STable
           init

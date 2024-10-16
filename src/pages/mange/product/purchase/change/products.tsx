@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { IconPhoto, IconTrash } from '@tabler/icons-react'
 import { Button, Empty, Flex, Input } from 'antd'
 
@@ -28,15 +28,25 @@ export default function Products (props: ProductsProps) {
 
   const t = useI18n()
   const openInfo = useOpen<number[]>([])
+  const [page, setPage] = useState({ current: 1, pageSize: 20 })
+
+  const pageValue = useMemo(() => {
+    if (!value) return []
+    return value.filter((item, index) => {
+      const start = (page.current - 1) * page.pageSize
+      const end = start + page.pageSize
+      return index >= start && index < end
+    })
+  }, [value, page])
 
   const list = useMemo(() => {
-    return value?.map(item => {
+    return pageValue?.map(item => {
       const find = data.find(i => i.id === item.variant_id)
       if (!find) return item
       const { id, ...rest } = find
       return { ...item, ...rest }
     })
-  }, [value, data]) || []
+  }, [pageValue, data]) || []
 
   const onChangeValue = (i: PurchaseItem, key: keyof PurchaseItem, value: any) => {
     const index = list.findIndex(item => item.id === i.id)
@@ -137,10 +147,10 @@ export default function Products (props: ProductsProps) {
   ]
 
   useEffect(() => {
-    if (!value?.length) return
-    const variantIds = value?.map(item => item.variant_id)
+    if (!pageValue?.length) return
+    const variantIds = pageValue?.map(item => item.variant_id)
     run({ ids: variantIds })
-  }, [value])
+  }, [pageValue])
 
   return (
     <SCard
@@ -182,7 +192,21 @@ export default function Products (props: ProductsProps) {
       </SRender>
 
       <SRender render={!!value?.length}>
-        <STable useVirtual={(value?.length || 0) > 20} columns={columns} data={list} init={!!list?.length} />
+        <STable
+          borderless
+          className={'table-border'}
+          page={{
+            pageSize: page.pageSize,
+            current: page.current,
+            total: value?.length || 0,
+            onChange: (current, pageSize) => {
+              setPage({ current, pageSize })
+            }
+          }}
+          columns={columns}
+          data={list}
+          init={!!list?.length}
+        />
       </SRender>
 
       <SelectVariants

@@ -183,7 +183,6 @@ export default function Change () {
             <Input.TextArea autoSize={{ minRows: 7 }} />
           </SCard>
         </Flex>
-
       </Form>
 
       <CreateSupplier info={supplierInfo} />
