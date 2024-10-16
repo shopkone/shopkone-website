@@ -3,7 +3,18 @@
   margin: 0 16px;
 }
 
+:global .art-loading-content-wrapper {
+  filter: blur(0) !important;
+  pointer-events: none;
+}
 
+.loadingWrap {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  opacity: 1;
+  background-color: #ffffffc0;
+}
 
 .empty {
   padding: 40px 32px;

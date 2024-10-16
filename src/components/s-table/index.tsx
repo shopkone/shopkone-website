@@ -164,42 +164,45 @@ function STable (props: STableProps) {
       style={{ width, ...style }}
     >
       <div style={{ position: 'relative' }}>
-        <SLoading foreShow loading={loading} size={36}>
-          <BaseTable
-            components={{
-              EmptyContent: () => <div />
-            }}
-            isStickyHeader
-            hasHeader
-            stickyTop={stickyTop}
-            useVirtual={{ horizontal: false }}
-            {...rest}
-            {...pipeline.getProps()}
-            getRowProps={(row, rowIndex) => ({
-              ...pipeline.getProps()?.getRowProps,
-              onMouseDown: onRowClick
-                ? (e) => {
-                    if (isCheckboxDom(e)) return
-                    timer.current = setTimeout(() => {
-                      clearTimeout(timer.current)
-                      timer.current = undefined
-                    }, 200)
+        <SRender render={props.loading}>
+          <div className={styles.loadingWrap} />
+        </SRender>
+        <BaseTable
+          components={{
+            EmptyContent: () => null,
+            LoadingIcon: () => <SLoading />
+          }}
+          isStickyHeader
+          hasHeader
+          stickyTop={stickyTop}
+          useVirtual={{ horizontal: false }}
+          {...rest}
+          {...pipeline.getProps()}
+          getRowProps={(row, rowIndex) => ({
+            ...pipeline.getProps()?.getRowProps,
+            onMouseDown: onRowClick
+              ? (e) => {
+                  if (isCheckboxDom(e)) return
+                  timer.current = setTimeout(() => {
+                    clearTimeout(timer.current)
+                    timer.current = undefined
+                  }, 200)
+                }
+              : undefined,
+            onMouseUp: onRowClick
+              ? (e) => {
+                  if (isCheckboxDom(e)) return
+                  if (!timer.current) {
+                    clearTimeout(timer.current)
+                    timer.current = undefined
+                    return
                   }
-                : undefined,
-              onMouseUp: onRowClick
-                ? (e) => {
-                    if (isCheckboxDom(e)) return
-                    if (!timer.current) {
-                      clearTimeout(timer.current)
-                      timer.current = undefined
-                      return
-                    }
-                    onRowClick?.(row, rowIndex)
-                  }
-                : undefined
-            })}
-          />
-        </SLoading>
+                  onRowClick?.(row, rowIndex)
+                }
+              : undefined
+          })}
+          isLoading={props.loading}
+        />
       </div>
       <SRender render={page ? Number(page.total) > 20 : null}>
         <Flex style={{ marginRight: 16 }} justify={'flex-end'}>
