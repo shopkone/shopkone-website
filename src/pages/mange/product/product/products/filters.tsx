@@ -3,6 +3,7 @@ import { IconArrowsSort, IconFilter, IconMenu2, IconSearch } from '@tabler/icons
 import { Button, Flex, Input } from 'antd'
 
 import { FileType } from '@/api/file/add-file-record'
+import IconButton from '@/components/icon-button'
 import FilterCheckbox from '@/components/table-filter/filter-checkbox'
 import FilterNumberRange, { FilterNumberRangeProps } from '@/components/table-filter/filter-number-range'
 import FilterRadio from '@/components/table-filter/filter-radio'
@@ -138,15 +139,15 @@ export default function Filters (props: FiltersProps) {
         </Flex>
 
         <Flex className={styles.actions} gap={12}>
-          <Button size={'small'} style={{ width: 26, height: 26 }}>
+          <IconButton size={26}>
             <IconFilter strokeWidth={2.5} size={14} />
-          </Button>
-          <Button size={'small'} style={{ width: 26, height: 26 }}>
+          </IconButton>
+          <IconButton size={26}>
             <IconMenu2 strokeWidth={2.5} size={14} />
-          </Button>
-          <Button size={'small'} style={{ width: 26, height: 26 }}>
+          </IconButton>
+          <IconButton size={26}>
             <IconArrowsSort strokeWidth={2.1} size={14} />
-          </Button>
+          </IconButton>
         </Flex>
       </Flex>
 

@@ -208,26 +208,12 @@ export default function Products () {
             actions: (
               <Flex gap={12}>
                 <Button>
-                  <Flex
-                    gap={6} align={'center'} style={{
-                      position: 'relative',
-                      top: -2
-                    }}
-                  >
-                    <IconDownload size={15} />
-                    <div>Import</div>
-                  </Flex>
+                  <IconDownload className={'fpt1'} size={15} />
+                  <div>Import</div>
                 </Button>
                 <Button>
-                  <Flex
-                    gap={6} align={'center'} style={{
-                      position: 'relative',
-                      top: -2
-                    }}
-                  >
-                    <IconDownload size={15} />
-                    <div>Import by Shopify</div>
-                  </Flex>
+                  <IconDownload className={'fpt1'} size={15} />
+                  <div>Import by Shopify</div>
                 </Button>
                 <Button
                   onClick={() => {
@@ -235,15 +221,8 @@ export default function Products () {
                   }}
                   type={'primary'}
                 >
-                  <Flex
-                    gap={4} align={'center'} style={{
-                      position: 'relative',
-                      top: -2
-                    }}
-                  >
-                    <IconPlus size={14} />
-                    <div>Add products</div>
-                  </Flex>
+                  <IconPlus className={'fpt1'} size={15} />
+                  <div>Add products</div>
                 </Button>
               </Flex>
             )
