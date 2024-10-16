@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { IconPhoto } from '@tabler/icons-react'
+import { IconChevronDown, IconPhoto } from '@tabler/icons-react'
 import { useInViewport, useRequest } from 'ahooks'
 import { Button, Checkbox, Flex } from 'antd'
 
@@ -45,6 +45,7 @@ export default function SelectVariants (props: SelectVariantsProps) {
   const [list, setList] = useState<ProductListRes[]>([])
   const productList = useRequest(ProductListApi, { manual: true })
   const [showMoreLoading, setShowMoreLoading] = useState(false)
+  const [expanded, setExpanded] = useState<number[]>([])
 
   const getPriceRange = (prices?: Array<number | undefined>): string => {
     const list = (prices?.filter(i => typeof i === 'number') || []) as number[]
@@ -80,6 +81,9 @@ export default function SelectVariants (props: SelectVariantsProps) {
       list = selected.filter(i => !row.variants?.map(j => j.id).includes(i))
     } else {
       list = [...selected, ...row.variants?.map(i => i.id) || []]
+    }
+    if (list.length >= 200) {
+      sMessage.warning('Maximum selection limit reached')
     }
     setSelected(list.filter((i, index) => index < 200))
   }
@@ -129,14 +133,28 @@ export default function SelectVariants (props: SelectVariantsProps) {
                   <IconPhoto color={'#ddd'} />
                 </Flex>
               </SRender>
-              <div style={{ marginLeft: 12 }}>
+              <div
+                onClick={() => { setExpanded(expanded.includes(row.id) ? expanded.filter(i => i !== row.id) : [...expanded, row.id]) }}
+                className={styles.down}
+                onMouseDown={e => { e.stopPropagation() }}
+                style={{ marginLeft: 12 }}
+              >
                 <div>{row.title}</div>
                 <SRender style={{ userSelect: 'none' }} render={row.children?.length}>
                   <Flex className={'tips'} align={'center'} gap={4}>
-                    <SRender render={row.variants?.find(i => selected.includes(i.id))}>
+                    {/*     <SRender render={row.variants?.find(i => selected.includes(i.id))}>
                       {row.variants?.filter(i => selected.includes(i.id))?.length} selected<span />/<span />
-                    </SRender>
-                    {row.children?.length} variants
+                    </SRender> */}
+                    <div className={styles.downIcon}>{row.children?.length} variants</div>
+                    <IconChevronDown
+                      className={styles.downIcon}
+                      style={{
+                        transform: expanded.includes(row.id) ? 'rotate(180deg)' : 'rotate(0deg)',
+                        position: 'relative',
+                        top: -1
+                      }}
+                      size={14}
+                    />
                   </Flex>
                 </SRender>
               </div>
@@ -222,6 +240,11 @@ export default function SelectVariants (props: SelectVariantsProps) {
   }, [info.open])
 
   useEffect(() => {
+    if (!renderList?.length || !info.open) return
+    setExpanded(renderList.map(i => i.id))
+  }, [renderList])
+
+  useEffect(() => {
     if (!inViewport || !showMoreLoading || productList.loading) return
     setParams(prev => ({ ...prev, page: prev.page + 1 }))
   }, [inViewport])
@@ -254,7 +277,7 @@ export default function SelectVariants (props: SelectVariantsProps) {
           <STable
             useVirtual
             expand={{
-              value: renderList?.map(i => i.id),
+              value: expanded,
               onChange: () => {}
             }}
             loading={productList.loading ? !list.length : false}
