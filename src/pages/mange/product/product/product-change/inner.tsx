@@ -140,6 +140,7 @@ export default function ProductChangeInner (props: ProductChangeInnerProps) {
 
   return (
     <Page
+      type={'product'}
       resetLoading={resetLoading}
       loading={info.loading || resetLoading || !loaded || resetLoading}
       onOk={onOK}

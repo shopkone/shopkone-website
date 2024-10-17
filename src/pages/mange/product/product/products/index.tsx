@@ -84,7 +84,7 @@ export default function Products () {
               Inventory not tracked
             </SRender>
             <SRender render={row.inventory_tracking}>
-              <Flex wrap={'wrap'} style={{ columnGap: 8, rowGap: 2 }}>
+              <Flex wrap={'wrap'} style={{ columnGap: 8, rowGap: 2, whiteSpace: 'nowrap' }}>
                 <Flex>
                   <div>{row.variants?.reduce((sum, variant) => sum + variant.quantity, 0)} on sale</div>
                   <SRender render={row.variants?.length !== 1}>

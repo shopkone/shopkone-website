@@ -42,10 +42,10 @@ export default function Change () {
 
   const onOk = async () => {
     await form.validateFields()
-    const { estimated_delivery_date, ...rest } = form.getFieldsValue()
+    const { estimated_arrival, ...rest } = form.getFieldsValue()
     const values = {
       ...rest,
-      estimated_delivery_date: estimated_delivery_date ? (estimated_delivery_date as Dayjs).unix() : undefined
+      estimated_arrival: estimated_arrival ? (estimated_arrival as Dayjs).unix() : undefined
     }
     if (!values?.purchase_items) {
       sMessage.warning('Please select items')
@@ -124,7 +124,7 @@ export default function Change () {
 
         <SCard style={{ marginBottom: 16 }} title={t('Shipping details')}>
           <Flex gap={16}>
-            <Form.Item name={'estimated_delivery_date'} label={t('Estimated delivery date')} className={'flex1 mb0'}>
+            <Form.Item name={'estimated_arrival'} label={t('Estimated Arrival')} className={'flex1 mb0'}>
               <SDatePicker allowClear rootClassName={'fit-width'} />
             </Form.Item>
             <Form.Item name={'carrier_id'} label={t('Shipping carrier')} className={'flex1 mb0'}>
@@ -157,7 +157,7 @@ export default function Change () {
 
           <SCard className={'flex1'} title={t('Remarks')} style={{ marginTop: 16 }}>
             <Form.Item className={'mb0'} name={'remarks'}>
-              <Input.TextArea autoSize={{ minRows: 7 }} />
+              <Input.TextArea autoSize={{ minRows: 4 }} />
             </Form.Item>
           </SCard>
         </Flex>

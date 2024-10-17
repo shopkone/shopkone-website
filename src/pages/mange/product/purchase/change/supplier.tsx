@@ -26,7 +26,7 @@ export default function Supplier (props: SupplierProps) {
 
   return (
     <Flex style={{ overflow: 'hidden', maxWidth: 433 }} align={'center'}>
-      <div style={{ minWidth: 0 }}>
+      <div style={{ minWidth: 0, flex: value ? undefined : 1 }}>
         <SSelect
           value={value}
           onChange={onChange}
