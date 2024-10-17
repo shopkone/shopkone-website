@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { IconChevronDown } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
 import { Button, Flex, Form, Input, Popover } from 'antd'
@@ -9,12 +9,15 @@ import { useCarriers } from '@/api/base/carriers'
 import { useCurrencyList } from '@/api/base/currency-list'
 import { LocationListApi } from '@/api/location/list'
 import { PurchaseCreateApi } from '@/api/purchase/create'
-import { PurchaseInfoApi } from '@/api/purchase/info'
+import { PurchaseInfoApi, PurchaseStatus } from '@/api/purchase/info'
+import { PurchaseMarkToOrderedApi } from '@/api/purchase/markToOrdered'
+import { PurchaseRemoveApi } from '@/api/purchase/remove'
 import { PurchaseUpdateApi } from '@/api/purchase/update'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
 import SDatePicker from '@/components/s-date-picker'
 import { sMessage } from '@/components/s-message'
+import SRender from '@/components/s-render'
 import SSelect from '@/components/s-select'
 import { getPaymentTerms } from '@/constant/purchase'
 import { useI18n } from '@/hooks/use-lang'
@@ -39,9 +42,12 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
   const create = useRequest(PurchaseCreateApi, { manual: true })
   const update = useRequest(PurchaseUpdateApi, { manual: true })
   const info = useRequest(PurchaseInfoApi, { manual: true })
+  const markToOrdered = useRequest(PurchaseMarkToOrderedApi, { manual: true })
+  const remove = useRequest(PurchaseRemoveApi, { manual: true })
   const { id } = useParams()
   const init = useRef<any>()
   const [isChange, setIsChange] = useState(false)
+  const nav = useNavigate()
 
   const paymentTerms = getPaymentTerms(t)
 
@@ -53,7 +59,7 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
       estimated_arrival: estimated_arrival ? (estimated_arrival as Dayjs).unix() : undefined
     }
     if (!values?.purchase_items) {
-      sMessage.warning('Please select items')
+      sMessage.warning('Please select products')
       return
     }
     if (!values.supplier_id) {
@@ -86,6 +92,14 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
   const onReset = () => {
     form.setFieldsValue(init.current)
     setIsChange(false)
+  }
+
+  const markToOrderedHandle = async () => {
+    if (!id) return
+    await markToOrdered.runAsync({ id: Number(id) })
+    onFresh(Number(id))
+    sMessage.success('Purchase order marked to ordered!')
+    nav(`/products/purchase_orders/info/${id}`)
   }
 
   useEffect(() => {
@@ -121,16 +135,37 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
 
   return (
     <Page
+      footer={
+        <SRender render={info?.data?.destination_id}>
+          <Flex flex={1} align={'center'}>
+            <Button type={'primary'} danger>Delete</Button>
+          </Flex>
+        </SRender>
+      }
       header={
-        <Flex gap={12} align={'center'}>
-          <Popover>
-            <Button type={'text'}>
-              {t('更多操作')}
-              <IconChevronDown size={14} />
+        <SRender render={info.data?.status === PurchaseStatus.Draft}>
+          <Flex gap={12} align={'center'}>
+            <Popover
+              trigger={'click'}
+              content={
+                <Flex vertical>
+                  <Button style={{ textAlign: 'left', fontWeight: 500 }} type={'text'} block>导出DPF</Button>
+                </Flex>
+              }
+              arrow={false}
+              placement={'bottom'}
+              overlayInnerStyle={{ minWidth: 'fit-content' }}
+            >
+              <Button type={'text'}>
+                {t('更多操作')}
+                <IconChevronDown size={14} />
+              </Button>
+            </Popover>
+            <Button onClick={markToOrderedHandle} loading={markToOrdered.loading} type={'primary'}>
+              {t('标记为已订购')}
             </Button>
-          </Popover>
-          <Button type={'primary'}>{t('标记为已订购')}</Button>
-        </Flex>
+          </Flex>
+        </SRender>
       }
       onCancel={onReset}
       loading={locations.loading || carriers.loading || currencyList.loading || info.loading}

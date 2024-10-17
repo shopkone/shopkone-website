@@ -25,7 +25,7 @@ export default function Supplier (props: SupplierProps) {
   const supplierInfo = useOpen()
 
   return (
-    <Flex style={{ overflow: 'hidden', maxWidth: 433 }} align={'center'}>
+    <Flex style={{ maxWidth: 433 }} align={'center'}>
       <div style={{ minWidth: 0, flex: value ? undefined : 1 }}>
         <SSelect
           value={value}

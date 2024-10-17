@@ -117,7 +117,9 @@ export default function Purchase () {
               </Flex>
             )
           }}
-          onRowClick={row => { nav(`/products/purchase_orders/change/${row.id}`) }}
+          onRowClick={row => {
+            nav(`/products/purchase_orders${row.status === 2 ? '/info' : '/change'}/${row.id}`)
+          }}
           page={{
             current: params.page,
             pageSize: params.page_size,
