@@ -18,6 +18,7 @@ export default function Purchase () {
   const list = useRequest(PurchaseListApi, { manual: true })
   const locations = useRequest(async () => await LocationListApi({ active: true }))
   const supplierList = useRequest(SupplierListApi)
+  const [selected, setSelected] = useState<number[]>([])
 
   const columns: STableProps['columns'] = [
     {
@@ -25,7 +26,8 @@ export default function Purchase () {
       code: 'order_number',
       name: 'order_number',
       render: (order_number: string) => <div>{order_number}</div>,
-      width: 180
+      width: 180,
+      lock: true
     },
     {
       title: 'Supplier',
@@ -71,7 +73,7 @@ export default function Purchase () {
       code: 'estimated_arrival',
       name: 'estimated_arrival',
       render: (expected_arrival: number) => {
-        return <div>{expected_arrival ? dayjs(expected_arrival).format('YYYY-MM-DD') : renderText()}</div>
+        return <div>{expected_arrival ? dayjs(expected_arrival * 1000).format('YYYY-MM-DD') : renderText()}</div>
       },
       width: 150
     }
@@ -98,6 +100,7 @@ export default function Purchase () {
           columns={columns}
           loading={list.loading}
           data={list.data?.list || []}
+          rowSelection={{ value: selected, onChange: setSelected, width: 32 }}
           empty={{
             title: 'Manage your purchase orders',
             desc: 'Track and receive inventory ordered from suppliers.',
