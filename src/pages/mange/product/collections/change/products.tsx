@@ -133,9 +133,11 @@ export default function Products (props: ProductsProps) {
                 System will add products automatically based on the conditions you set.
               </SRender>
               <SRender style={{ marginTop: 12 }} render={!isAutoType}>
-                <Button onClick={() => { selectInfo.edit(value || []) }}>
-                  Select products
-                </Button>
+                <Flex justify={'center'}>
+                  <Button onClick={() => { selectInfo.edit(value || []) }}>
+                    Select products
+                  </Button>
+                </Flex>
               </SRender>
             </Flex>
           )}

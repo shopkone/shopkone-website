@@ -7,6 +7,8 @@ export interface PurchaseInfoReq {
 
 export interface PurchaseInfoRes extends PurchaseCreateReq {
   id: number
+  status: number
+  order_number: string
 }
 
 export const PurchaseInfoApi = async (params: PurchaseInfoReq) => {

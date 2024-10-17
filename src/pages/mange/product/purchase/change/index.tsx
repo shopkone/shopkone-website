@@ -1,5 +1,5 @@
-import { useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { useEffect, useRef, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useRequest } from 'ahooks'
 import { Flex, Form, Input } from 'antd'
 import dayjs, { Dayjs } from 'dayjs'
@@ -18,10 +18,12 @@ import { useI18n } from '@/hooks/use-lang'
 import CostSummary from '@/pages/mange/product/purchase/change/cost-summary'
 import Products from '@/pages/mange/product/purchase/change/products'
 import Supplier from '@/pages/mange/product/purchase/change/supplier'
+import { isEqualHandle } from '@/utils/is-equal-handle'
 
 import styles from './index.module.less'
 
 export default function Change () {
+  const nav = useNavigate()
   const currencyList = useCurrencyList()
   const locations = useRequest(async () => await LocationListApi({ active: true }))
   const carriers = useCarriers()
@@ -30,6 +32,8 @@ export default function Change () {
   const create = useRequest(PurchaseCreateApi, { manual: true })
   const info = useRequest(PurchaseInfoApi, { manual: true })
   const { id } = useParams()
+  const init = useRef<any>()
+  const [isChange, setIsChange] = useState(false)
 
   const paymentTerms = [
     { value: 0, label: 'None' },
@@ -59,19 +63,36 @@ export default function Change () {
       sMessage.warning('Please select supplier')
       return
     }
-    await create.runAsync(values)
+    const ret = await create.runAsync(values)
+    nav(`/products/purchase_orders/change/${ret.id}`)
+  }
+
+  const onValuesChange = () => {
+    const values = form.getFieldsValue()
+    if (!init.current?.destination_id || !init.current?.currency_code) {
+      init.current = values
+    }
+    const isSame = isEqualHandle(values, init.current)
+    setIsChange(!isSame)
+  }
+
+  const onReset = () => {
+    form.setFieldsValue(init.current)
+    setIsChange(false)
   }
 
   useEffect(() => {
     if (id) return
-    if (!locations.data || form.getFieldValue('destination_id')) return
+    if (!locations.data || form.getFieldValue('destination_id') || (id && !info.data?.id)) return
     form.setFieldsValue({ destination_id: locations.data[0].id })
+    onValuesChange()
   }, [locations.data])
 
   useEffect(() => {
     if (id) return
     if (!currencyList.data?.length) return
     form.setFieldsValue({ currency_code: currencyList.data[0].code })
+    onValuesChange()
   }, [currencyList.data])
 
   useEffect(() => {
@@ -87,21 +108,23 @@ export default function Change () {
         ...rest,
         estimated_arrival: estimated_arrival ? dayjs(estimated_arrival * 1000) : undefined
       })
+      onValuesChange()
     })
   }, [id])
 
   return (
     <Page
+      onCancel={onReset}
       loading={locations.loading || carriers.loading || currencyList.loading || info.loading}
       onOk={onOk}
-      isChange={true}
+      isChange={isChange}
       bottom={64}
       type={'product'}
       width={950}
-      title={t('Create purchase order')}
+      title={id ? (info?.data?.order_number || '-') : t('Create purchase order')}
       back={'/products/purchase_orders'}
     >
-      <Form form={form} layout={'vertical'}>
+      <Form onValuesChange={onValuesChange} form={form} layout={'vertical'}>
         <div className={styles.card}>
           <Flex>
             <div className={styles.item}>
@@ -115,7 +138,6 @@ export default function Change () {
               <Form.Item style={{ margin: 0, padding: 0 }} name={'destination_id'}>
                 <SSelect
                   options={locations.data?.map(item => ({ value: item.id, label: item.name }))}
-                  loading={locations.loading}
                   placeholder={t('Select location')}
                   className={styles.select}
                   variant={'borderless'}
@@ -131,7 +153,6 @@ export default function Change () {
             </Form.Item>
             <Form.Item name={'currency_code'} label={t('Supplier currency')} className={'flex1'}>
               <SSelect
-                loading={currencyList.loading}
                 listHeight={400}
                 showSearch
                 optionFilterProp={'label'}
@@ -151,7 +172,6 @@ export default function Change () {
                 allowClear
                 showSearch
                 optionFilterProp={'label'}
-                loading={carriers.loading}
                 options={carriers.data?.map(item => ({ value: item.id, label: item.name }))}
               />
             </Form.Item>

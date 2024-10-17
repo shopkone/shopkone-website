@@ -10,6 +10,8 @@ import { PurchaseListApi, PurchaseListReq } from '@/api/purchase/list'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
 import STable, { STableProps } from '@/components/s-table'
+import Filters from '@/pages/mange/product/purchase/purchase/filters'
+import { formatPrice } from '@/utils/num'
 import { renderText } from '@/utils/render-text'
 
 export default function Purchase () {
@@ -22,11 +24,11 @@ export default function Purchase () {
 
   const columns: STableProps['columns'] = [
     {
-      title: 'Purchase order number',
+      title: 'Purchase order',
       code: 'order_number',
       name: 'order_number',
       render: (order_number: string) => <div>{order_number}</div>,
-      width: 180,
+      width: 120,
       lock: true
     },
     {
@@ -65,7 +67,7 @@ export default function Purchase () {
       title: 'Total',
       code: 'total',
       name: 'total',
-      render: (total: number) => <div>{total}</div>,
+      render: (total: number) => <div>{formatPrice(total, '$')}</div>,
       width: 120
     },
     {
@@ -95,12 +97,13 @@ export default function Purchase () {
       title={'Purchase'}
     >
       <SCard styles={{ body: { padding: '8px 0' } }}>
+        <Filters />
         <STable
           init={!!list.data && !!locations.data && !!supplierList.data}
           columns={columns}
           loading={list.loading}
           data={list.data?.list || []}
-          rowSelection={{ value: selected, onChange: setSelected, width: 32 }}
+          rowSelection={{ value: selected, onChange: setSelected }}
           empty={{
             title: 'Manage your purchase orders',
             desc: 'Track and receive inventory ordered from suppliers.',
