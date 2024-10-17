@@ -24,6 +24,7 @@ import { useI18n } from '@/hooks/use-lang'
 import CostSummary from '@/pages/mange/product/purchase/change/cost-summary'
 import Destination from '@/pages/mange/product/purchase/change/destination'
 import Products from '@/pages/mange/product/purchase/change/products'
+import Progress from '@/pages/mange/product/purchase/change/progress'
 import Supplier from '@/pages/mange/product/purchase/change/supplier'
 import { isEqualHandle } from '@/utils/is-equal-handle'
 import { renderText } from '@/utils/render-text'
@@ -109,7 +110,14 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
   }
 
   const title = useMemo(() => {
-    if (isEditingMode) return t(`Edit purchase order (${info?.data?.order_number})`)
+    if (isEditingMode) {
+      return (
+        <Flex gap={8} align={'center'}>
+          <div>{t('Edit purchase order')}</div>
+          <div style={{ fontSize: 13, fontWeight: 500 }}>{info?.data?.order_number}</div>
+        </Flex>
+      )
+    }
     return id ? (info?.data?.order_number || '-') : t('Create purchase order')
   }, [isEditingMode, info.data])
 
@@ -234,6 +242,28 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
                 />
               </FormRender>
             </Form.Item>
+            <SRender render={isInfo}>
+              <Flex gap={20} flex={2} vertical>
+                <Progress />
+                <Flex gap={16} justify={'flex-end'}>
+                  <Flex gap={4} align={'center'}>
+                    <div style={{ background: '#2e7d32' }} className={styles.progressBlock} />
+                    已收货
+                  </Flex>
+                  <Flex gap={4} align={'center'}>
+                    <div style={{ background: '#d32f2f' }} className={styles.progressBlock} />
+                    已拒收
+                  </Flex>
+                  <Flex gap={4} align={'center'}>
+                    <div style={{ background: '#c6c6c6' }} className={styles.progressBlock} />
+                    未收货
+                  </Flex>
+                  <Flex gap={4} align={'center'}>
+                    总额
+                  </Flex>
+                </Flex>
+              </Flex>
+            </SRender>
           </Flex>
         </div>
 

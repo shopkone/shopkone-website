@@ -14,6 +14,7 @@ import STable, { STableProps } from '@/components/s-table'
 import SelectVariants from '@/components/select-variants'
 import { useI18n } from '@/hooks/use-lang'
 import { useOpen } from '@/hooks/useOpen'
+import Progress from '@/pages/mange/product/purchase/change/progress'
 import { formatPrice, roundPrice } from '@/utils/num'
 import { genId } from '@/utils/random'
 import { renderText } from '@/utils/render-text'
@@ -121,7 +122,7 @@ export default function Products (props: ProductsProps) {
             <SInputNumber max={999999} min={1} uint value={purchasing} onChange={(v) => { onChangeValue(row, 'purchasing', v) }} />
           </SRender>
           <SRender render={infoMode}>
-            {purchasing}
+            <Progress />
           </SRender>
         </div>
       ),
