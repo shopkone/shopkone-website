@@ -6,7 +6,7 @@ import dayjs from 'dayjs'
 
 import { LocationListApi } from '@/api/location/list'
 import { SupplierListApi } from '@/api/product/supplier-list'
-import { PurchaseListApi, PurchaseListReq } from '@/api/purchse/list'
+import { PurchaseListApi, PurchaseListReq } from '@/api/purchase/list'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
 import STable, { STableProps } from '@/components/s-table'
@@ -112,6 +112,7 @@ export default function Purchase () {
               </Flex>
             )
           }}
+          onRowClick={row => { nav(`/products/purchase_orders/change/${row.id}`) }}
           page={{
             current: params.page,
             pageSize: params.page_size,

@@ -1,12 +1,14 @@
 import { useEffect } from 'react'
+import { useParams } from 'react-router-dom'
 import { useRequest } from 'ahooks'
 import { Flex, Form, Input } from 'antd'
-import { Dayjs } from 'dayjs'
+import dayjs, { Dayjs } from 'dayjs'
 
 import { useCarriers } from '@/api/base/carriers'
 import { useCurrencyList } from '@/api/base/currency-list'
 import { LocationListApi } from '@/api/location/list'
-import { PurchaseCreateApi } from '@/api/purchse/create'
+import { PurchaseCreateApi } from '@/api/purchase/create'
+import { PurchaseInfoApi } from '@/api/purchase/info'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
 import SDatePicker from '@/components/s-date-picker'
@@ -26,6 +28,8 @@ export default function Change () {
   const [form] = Form.useForm()
   const t = useI18n()
   const create = useRequest(PurchaseCreateApi, { manual: true })
+  const info = useRequest(PurchaseInfoApi, { manual: true })
+  const { id } = useParams()
 
   const paymentTerms = [
     { value: 0, label: 'None' },
@@ -59,21 +63,36 @@ export default function Change () {
   }
 
   useEffect(() => {
+    if (id) return
     if (!locations.data || form.getFieldValue('destination_id')) return
     form.setFieldsValue({ destination_id: locations.data[0].id })
   }, [locations.data])
 
   useEffect(() => {
+    if (id) return
     if (!currencyList.data?.length) return
     form.setFieldsValue({ currency_code: currencyList.data[0].code })
   }, [currencyList.data])
 
   useEffect(() => {
+    if (id) return
     form.setFieldValue('payment_terms', 0)
   }, [])
 
+  useEffect(() => {
+    if (!id) return
+    info.runAsync({ id: Number(id) }).then(res => {
+      const { estimated_arrival, ...rest } = res
+      form.setFieldsValue({
+        ...rest,
+        estimated_arrival: estimated_arrival ? dayjs(estimated_arrival * 1000) : undefined
+      })
+    })
+  }, [id])
+
   return (
     <Page
+      loading={locations.loading || carriers.loading || currencyList.loading || info.loading}
       onOk={onOk}
       isChange={true}
       bottom={64}
