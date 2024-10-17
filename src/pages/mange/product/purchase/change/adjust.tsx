@@ -111,7 +111,7 @@ export default function Adjust (props: AdjustProps) {
           data={value}
           init
         />
-        <SRender render={value?.length !== 8}>
+        <SRender render={value?.length !== 8 && value?.length}>
           <Button onClick={onAddItem} style={{ marginTop: 12, marginLeft: -8 }} size={'small'} type={'link'}>
             <IconCirclePlus size={15} style={{ position: 'relative', top: -1 }} />
             {t('Add adjust')}

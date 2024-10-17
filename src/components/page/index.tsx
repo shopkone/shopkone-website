@@ -71,7 +71,7 @@ export default function Page (props: PageProps) {
     setT(t)
   }, [language?.data?.data])
 
-  /*   if (!language?.data?.data || !removeT) return <SLoading /> */
+  if (!language?.data?.data) return <SLoading />
 
   return (
     <div style={{
@@ -90,7 +90,7 @@ export default function Page (props: PageProps) {
                 </Button>
               </SRender>
               <SRender render={!!title}>
-                <Typography.Text style={{ fontSize: 20, flex: 1, lineHeight: '28px' }}>
+                <Typography.Text style={{ fontSize: 20, flex: 1, lineHeight: '28px', position: 'relative', top: 1 }}>
                   {title}
                 </Typography.Text>
               </SRender>

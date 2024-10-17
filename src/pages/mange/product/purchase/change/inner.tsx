@@ -9,6 +9,7 @@ import { useCurrencyList } from '@/api/base/currency-list'
 import { LocationListApi } from '@/api/location/list'
 import { PurchaseCreateApi } from '@/api/purchase/create'
 import { PurchaseInfoApi } from '@/api/purchase/info'
+import { PurchaseUpdateApi } from '@/api/purchase/update'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
 import SDatePicker from '@/components/s-date-picker'
@@ -35,6 +36,7 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
   const [form] = Form.useForm()
   const t = useI18n()
   const create = useRequest(PurchaseCreateApi, { manual: true })
+  const update = useRequest(PurchaseUpdateApi, { manual: true })
   const info = useRequest(PurchaseInfoApi, { manual: true })
   const { id } = useParams()
   const init = useRef<any>()
@@ -57,9 +59,18 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
       sMessage.warning('Please select supplier')
       return
     }
-    const ret = await create.runAsync(values)
-    onFresh(ret.id)
-    sMessage.success('Purchase order draft created!')
+    if (id) {
+      await update.runAsync({
+        id: Number(id),
+        ...values
+      })
+      onFresh(Number(id))
+      sMessage.success('Purchase order updated!')
+    } else {
+      const ret = await create.runAsync(values)
+      onFresh(ret.id)
+      sMessage.success('Purchase order draft created!')
+    }
   }
 
   const onValuesChange = () => {
