@@ -215,13 +215,13 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
             <div className={styles.item}>
               <div className={styles.title}>{t('Supplier')}</div>
               <Form.Item style={{ margin: 0 }} name={'supplier_id'}>
-                <Supplier infoMode={isInfo} />
+                <Supplier infoMode={isInfo || !(info?.data?.status === PurchaseStatus.Draft)} />
               </Form.Item>
             </div>
             <div className={styles.item}>
               <div className={styles.title}>{t('Destination')}</div>
               <Form.Item style={{ margin: 0, padding: 0 }} name={'destination_id'}>
-                <Destination infoMode={isInfo} onValuesChange={onValuesChange} />
+                <Destination infoMode={isInfo || !(info?.data?.status === PurchaseStatus.Draft)} onValuesChange={onValuesChange} />
               </Form.Item>
             </div>
           </Flex>
