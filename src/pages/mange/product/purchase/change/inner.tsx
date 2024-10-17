@@ -153,7 +153,7 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
   return (
     <Page
       footer={
-        <SRender render={info?.data?.destination_id ? !isInfo : null}>
+        <SRender render={info?.data?.destination_id ? (!isInfo && !isEditingMode) : null}>
           <Flex flex={1} align={'center'}>
             <Button type={'primary'} danger>Delete</Button>
           </Flex>
