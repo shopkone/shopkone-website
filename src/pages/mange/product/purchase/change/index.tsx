@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useRequest } from 'ahooks'
-import { Button, Flex, Form, Input } from 'antd'
+import { Flex, Form, Input } from 'antd'
 import { Dayjs } from 'dayjs'
 
 import { useCarriers } from '@/api/base/carriers'
@@ -13,6 +13,7 @@ import SDatePicker from '@/components/s-date-picker'
 import { sMessage } from '@/components/s-message'
 import SSelect from '@/components/s-select'
 import { useI18n } from '@/hooks/use-lang'
+import CostSummary from '@/pages/mange/product/purchase/change/cost-summary'
 import Products from '@/pages/mange/product/purchase/change/products'
 import Supplier from '@/pages/mange/product/purchase/change/supplier'
 
@@ -150,36 +151,9 @@ export default function Change () {
         </Form.Item>
 
         <Flex gap={16}>
-          <SCard
-            extra={
-              <Button type={'text'} className={'primary-text'}>{t('Edit')}</Button>
-            }
-            className={'flex1'}
-            title={t('Cost summary')}
-            style={{ marginTop: 16 }}
-          >
-            <Flex gap={6} vertical>
-              <div className={styles.detailsTitle}>
-                {t('Tax fee')}
-              </div>
-              <div className={styles.detailsTitle}>
-                {t('Subtotal')}
-              </div>
-              <div className={'secondary'}>{t('0 items')}</div>
-            </Flex>
-
-            <Flex style={{ marginTop: 16 }} gap={6} vertical>
-              <div className={styles.detailsTitle}>{t('Cost adjustment')}</div>
-              <div>{t('Overseas transaction fee')}</div>
-            </Flex>
-
-            <div className={'line'} />
-
-            <div className={styles.detailsTitle}>
-              {t('Total')}
-            </div>
-
-          </SCard>
+          <Form.Item className={'mb0 flex1'} name={'adjust'}>
+            <CostSummary />
+          </Form.Item>
 
           <SCard className={'flex1'} title={t('Remarks')} style={{ marginTop: 16 }}>
             <Form.Item className={'mb0'} name={'remarks'}>
