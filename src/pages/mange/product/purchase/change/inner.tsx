@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { IconChevronDown } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
@@ -83,6 +83,9 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
     }
   }
 
+  // 编辑模式（已订购并且处于编辑的模式）
+  const isEditingMode = !isInfo && (info.data?.status !== PurchaseStatus.Draft)
+
   const onValuesChange = () => {
     const values = form.getFieldsValue()
     if (!init.current?.destination_id || !init.current?.currency_code || (id && !info.data?.id)) {
@@ -104,6 +107,16 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
     sMessage.success('Purchase order marked to ordered!')
     nav(`/products/purchase_orders/info/${id}`)
   }
+
+  const title = useMemo(() => {
+    if (isEditingMode) return t(`Edit purchase order (${info?.data?.order_number})`)
+    return id ? (info?.data?.order_number || '-') : t('Create purchase order')
+  }, [isEditingMode, info.data])
+
+  const backUrl = useMemo(() => {
+    if (isEditingMode) return `/products/purchase_orders/info/${id}`
+    return '/products/purchase_orders'
+  }, [isEditingMode, info.data])
 
   useEffect(() => {
     if (id) return
@@ -139,12 +152,20 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
         </SRender>
       }
       header={
-        <SRender render={info.data?.status === PurchaseStatus.Draft}>
+        <SRender render={info.data?.status ? !isEditingMode : null}>
           <Flex gap={12} align={'center'}>
+            <SRender render={![1, 5].includes(info?.data?.status || 0)}>
+              <Button onClick={() => { nav(`/products/purchase_orders/change/${id}`) }} type={'text'}>
+                {t('编辑')}
+              </Button>
+            </SRender>
             <Popover
               trigger={'click'}
               content={
                 <Flex vertical>
+                  <SRender render={![1, 5].includes(info?.data?.status || 0)}>
+                    <Button style={{ textAlign: 'left', fontWeight: 500 }} type={'text'} block>关闭采购订单</Button>
+                  </SRender>
                   <Button style={{ textAlign: 'left', fontWeight: 500 }} type={'text'} block>导出DPF</Button>
                 </Flex>
               }
@@ -157,9 +178,16 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
                 <IconChevronDown size={14} />
               </Button>
             </Popover>
-            <Button onClick={markToOrderedHandle} loading={markToOrdered.loading} type={'primary'}>
-              {t('标记为已订购')}
-            </Button>
+            <SRender render={info.data?.status === PurchaseStatus.Draft}>
+              <Button onClick={markToOrderedHandle} loading={markToOrdered.loading} type={'primary'}>
+                {t('标记为已订购')}
+              </Button>
+            </SRender>
+            <SRender render={![1, 5].includes(info?.data?.status || 0)}>
+              <Button type={'primary'}>
+                {t('接收库存')}
+              </Button>
+            </SRender>
           </Flex>
         </SRender>
       }
@@ -170,8 +198,8 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
       bottom={64}
       type={'product'}
       width={950}
-      title={id ? (info?.data?.order_number || '-') : t('Create purchase order')}
-      back={'/products/purchase_orders'}
+      title={title}
+      back={backUrl}
     >
       <Form onValuesChange={onValuesChange} form={form} layout={'vertical'}>
         <div className={styles.card}>
