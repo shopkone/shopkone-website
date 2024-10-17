@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { ReactNode, useMemo } from 'react'
 import { Button, Flex, Form } from 'antd'
 
 import { PurchaseItem } from '@/api/purchase/base'
@@ -14,10 +14,11 @@ import { formatPrice, roundPrice } from '@/utils/num'
 export interface CostSummaryProps {
   value?: AdjustItem[]
   onChange?: (value: AdjustItem[]) => void
+  infoMode: ReactNode
 }
 
 export default function CostSummary (props: CostSummaryProps) {
-  const { value, onChange } = props
+  const { value, onChange, infoMode } = props
   const form = Form.useFormInstance()
   const items: PurchaseItem[] = Form.useWatch('purchase_items', form)
   const t = useI18n()
@@ -50,9 +51,13 @@ export default function CostSummary (props: CostSummaryProps) {
   return (
     <SCard
       extra={
-        <Button onClick={() => { info.edit(value) }} type={'link'} size={'small'}>
-          {t('Edit')}
-        </Button>
+        infoMode
+          ? ''
+          : (
+            <Button onClick={() => { info.edit(value) }} type={'link'} size={'small'}>
+              {t('Edit')}
+            </Button>
+            )
       }
       title={t('Cost summary')}
       style={{ marginTop: 16 }}

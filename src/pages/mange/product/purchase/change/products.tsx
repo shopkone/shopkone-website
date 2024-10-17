@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { ReactNode, useEffect, useMemo, useState } from 'react'
 import { IconPhoto, IconTrash } from '@tabler/icons-react'
 import { Button, Empty, Flex, Input } from 'antd'
 
@@ -16,14 +16,16 @@ import { useI18n } from '@/hooks/use-lang'
 import { useOpen } from '@/hooks/useOpen'
 import { formatPrice, roundPrice } from '@/utils/num'
 import { genId } from '@/utils/random'
+import { renderText } from '@/utils/render-text'
 
 export interface ProductsProps {
   onChange?: (value: PurchaseItem[]) => void
   value?: PurchaseItem[]
+  infoMode: ReactNode
 }
 
 export default function Products (props: ProductsProps) {
-  const { value, onChange } = props
+  const { value, onChange, infoMode } = props
   const { run, loading, data } = useVariantsByIds()
 
   const t = useI18n()
@@ -98,25 +100,46 @@ export default function Products (props: ProductsProps) {
       code: 'sku',
       name: 'sku',
       render: (sku: string, row: PurchaseItem) => (
-        <Input value={sku} onChange={e => { onChangeValue(row, 'sku', e.target.value) }} />
+        <div>
+          <SRender render={!infoMode}>
+            <Input value={sku} onChange={e => { onChangeValue(row, 'sku', e.target.value) }} />
+          </SRender>
+          <SRender render={infoMode}>
+            {renderText(sku)}
+          </SRender>
+        </div>
       ),
       width: 150
     },
     {
-      title: t('Purchasing'),
+      title: infoMode ? t('Received') : t('Purchasing'),
       code: 'purchasing',
       name: 'purchasing',
       render: (purchasing: number, row: PurchaseItem) => (
-        <SInputNumber max={999999} min={1} uint value={purchasing} onChange={(v) => { onChangeValue(row, 'purchasing', v) }} />
+        <div>
+          <SRender render={!infoMode}>
+            <SInputNumber max={999999} min={1} uint value={purchasing} onChange={(v) => { onChangeValue(row, 'purchasing', v) }} />
+          </SRender>
+          <SRender render={infoMode}>
+            {purchasing}
+          </SRender>
+        </div>
       ),
-      width: 120
+      width: infoMode ? 180 : 120
     },
     {
       title: t('Cost'),
       code: 'cost',
       name: 'cost',
       render: (cost: number, row: PurchaseItem) => (
-        <SInputNumber required money value={cost} onChange={(v) => { onChangeValue(row, 'cost', v) }} />
+        <div>
+          <SRender render={!infoMode}>
+            <SInputNumber required money value={cost} onChange={(v) => { onChangeValue(row, 'cost', v) }} />
+          </SRender>
+          <SRender render={infoMode}>
+            ${formatPrice(cost || 0)}
+          </SRender>
+        </div>
       ),
       width: 120
     },
@@ -125,7 +148,14 @@ export default function Products (props: ProductsProps) {
       code: 'tax_rate',
       name: 'tax_rate',
       render: (tax_rate: number, row: PurchaseItem) => (
-        <SInputNumber max={9999} precision={2} required min={0} value={tax_rate} suffix={'%'} onChange={(v) => { onChangeValue(row, 'tax_rate', v) }} />
+        <div>
+          <SRender render={!infoMode}>
+            <SInputNumber max={9999} precision={2} required min={0} value={tax_rate} suffix={'%'} onChange={(v) => { onChangeValue(row, 'tax_rate', v) }} />
+          </SRender>
+          <SRender render={infoMode}>
+            {formatPrice(tax_rate || 0)}%
+          </SRender>
+        </div>
       ),
       width: 100
     },
@@ -135,7 +165,7 @@ export default function Products (props: ProductsProps) {
       name: 'total',
       width: 100,
       render: (total: number) => (
-        `$${formatPrice(total)}`
+        `$${formatPrice(total || 0)}`
       )
     },
     {
@@ -151,7 +181,8 @@ export default function Products (props: ProductsProps) {
       ),
       width: 50,
       align: 'center',
-      lock: true
+      lock: true,
+      hidden: !!infoMode
     }
   ]
 
@@ -164,7 +195,7 @@ export default function Products (props: ProductsProps) {
   return (
     <SCard
       extra={
-        <SRender render={value?.length}>
+        <SRender render={value?.length ? !infoMode : null}>
           <Button
             type={'link'}
             size={'small'}

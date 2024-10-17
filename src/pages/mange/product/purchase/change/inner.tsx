@@ -7,12 +7,12 @@ import dayjs, { Dayjs } from 'dayjs'
 
 import { useCarriers } from '@/api/base/carriers'
 import { useCurrencyList } from '@/api/base/currency-list'
-import { LocationListApi } from '@/api/location/list'
 import { PurchaseCreateApi } from '@/api/purchase/create'
 import { PurchaseInfoApi, PurchaseStatus } from '@/api/purchase/info'
 import { PurchaseMarkToOrderedApi } from '@/api/purchase/markToOrdered'
 import { PurchaseRemoveApi } from '@/api/purchase/remove'
 import { PurchaseUpdateApi } from '@/api/purchase/update'
+import FormRender from '@/components/form-render'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
 import SDatePicker from '@/components/s-date-picker'
@@ -22,9 +22,11 @@ import SSelect from '@/components/s-select'
 import { getPaymentTerms } from '@/constant/purchase'
 import { useI18n } from '@/hooks/use-lang'
 import CostSummary from '@/pages/mange/product/purchase/change/cost-summary'
+import Destination from '@/pages/mange/product/purchase/change/destination'
 import Products from '@/pages/mange/product/purchase/change/products'
 import Supplier from '@/pages/mange/product/purchase/change/supplier'
 import { isEqualHandle } from '@/utils/is-equal-handle'
+import { renderText } from '@/utils/render-text'
 
 import styles from './index.module.less'
 
@@ -35,7 +37,6 @@ export interface PurchaseChangeInnerProps {
 export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
   const { onFresh } = props
   const currencyList = useCurrencyList()
-  const locations = useRequest(async () => await LocationListApi({ active: true }))
   const carriers = useCarriers()
   const [form] = Form.useForm()
   const t = useI18n()
@@ -50,6 +51,8 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
   const nav = useNavigate()
 
   const paymentTerms = getPaymentTerms(t)
+
+  const isInfo = id && window.location.href.includes('info')
 
   const onOk = async () => {
     await form.validateFields()
@@ -104,13 +107,6 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
 
   useEffect(() => {
     if (id) return
-    if (!locations.data || form.getFieldValue('destination_id')) return
-    form.setFieldsValue({ destination_id: locations.data[0].id })
-    onValuesChange()
-  }, [locations.data])
-
-  useEffect(() => {
-    if (id) return
     if (!currencyList.data?.length) return
     form.setFieldsValue({ currency_code: currencyList.data[0].code })
     onValuesChange()
@@ -136,7 +132,7 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
   return (
     <Page
       footer={
-        <SRender render={info?.data?.destination_id}>
+        <SRender render={info?.data?.destination_id ? !isInfo : null}>
           <Flex flex={1} align={'center'}>
             <Button type={'primary'} danger>Delete</Button>
           </Flex>
@@ -168,9 +164,9 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
         </SRender>
       }
       onCancel={onReset}
-      loading={locations.loading || carriers.loading || currencyList.loading || info.loading}
+      loading={carriers.loading || currencyList.loading || info.loading}
       onOk={onOk}
-      isChange={isChange}
+      isChange={isInfo ? undefined : isChange}
       bottom={64}
       type={'product'}
       width={950}
@@ -183,34 +179,32 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
             <div className={styles.item}>
               <div className={styles.title}>{t('Supplier')}</div>
               <Form.Item style={{ margin: 0 }} name={'supplier_id'}>
-                <Supplier />
+                <Supplier infoMode={isInfo} />
               </Form.Item>
             </div>
             <div className={styles.item}>
               <div className={styles.title}>{t('Destination')}</div>
               <Form.Item style={{ margin: 0, padding: 0 }} name={'destination_id'}>
-                <SSelect
-                  options={locations.data?.map(item => ({ value: item.id, label: item.name }))}
-                  placeholder={t('Select location')}
-                  className={styles.select}
-                  variant={'borderless'}
-                  dropdownStyle={{ minWidth: 300 }}
-                />
+                <Destination infoMode={isInfo} onValuesChange={onValuesChange} />
               </Form.Item>
             </div>
           </Flex>
           <div className={'line'} style={{ margin: 0 }} />
           <Flex gap={16} style={{ padding: 16, paddingBottom: 0 }} >
             <Form.Item name={'payment_terms'} className={'flex1'} label={t('Payment Terms')}>
-              <SSelect options={paymentTerms} />
+              <FormRender infoMode={isInfo} render={(value?: number) => (paymentTerms)[value || 0]?.label}>
+                <SSelect options={paymentTerms} />
+              </FormRender>
             </Form.Item>
             <Form.Item name={'currency_code'} label={t('Supplier currency')} className={'flex1'}>
-              <SSelect
-                listHeight={400}
-                showSearch
-                optionFilterProp={'label'}
-                options={currencyList.data?.map(item => ({ value: item.code, label: item.title }))}
-              />
+              <FormRender infoMode={isInfo} render={(code?: string) => currencyList?.data?.find(item => item.code === code)?.title}>
+                <SSelect
+                  listHeight={400}
+                  showSearch
+                  optionFilterProp={'label'}
+                  options={currencyList.data?.map(item => ({ value: item.code, label: item.title }))}
+                />
+              </FormRender>
             </Form.Item>
           </Flex>
         </div>
@@ -218,38 +212,46 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
         <SCard style={{ marginBottom: 16 }} title={t('Shipping details')}>
           <Flex gap={16}>
             <Form.Item name={'estimated_arrival'} label={t('Estimated Arrival')} className={'flex1 mb0'}>
-              <SDatePicker allowClear rootClassName={'fit-width'} />
+              <FormRender render={(value?: number) => (value ? dayjs(value * 1000).format('YYYY-MM-DD') : renderText())} infoMode={isInfo}>
+                <SDatePicker allowClear rootClassName={'fit-width'} />
+              </FormRender>
             </Form.Item>
             <Form.Item name={'carrier_id'} label={t('Shipping carrier')} className={'flex1 mb0'}>
-              <SSelect
-                allowClear
-                showSearch
-                optionFilterProp={'label'}
-                options={carriers.data?.map(item => ({ value: item.id, label: item.name }))}
-              />
+              <FormRender infoMode={isInfo} render={(value?: number) => (carriers.data?.find(item => item.id === value)?.name)}>
+                <SSelect
+                  allowClear
+                  showSearch
+                  optionFilterProp={'label'}
+                  options={carriers.data?.map(item => ({ value: item.id, label: item.name }))}
+                />
+              </FormRender>
             </Form.Item>
             <Form.Item
               name={'delivery_number'}
               label={t('Delivery number')}
               className={'flex1 mb0'}
             >
-              <Input autoComplete={'off'} />
+              <FormRender infoMode={isInfo} render={v => v}>
+                <Input autoComplete={'off'} />
+              </FormRender>
             </Form.Item>
           </Flex>
         </SCard>
 
         <Form.Item name={'purchase_items'}>
-          <Products />
+          <Products infoMode={isInfo} />
         </Form.Item>
 
         <Flex gap={16}>
           <Form.Item className={'mb0 flex1'} name={'adjust'}>
-            <CostSummary />
+            <CostSummary infoMode={isInfo} />
           </Form.Item>
 
           <SCard className={'flex1'} title={t('Remarks')} style={{ marginTop: 16 }}>
             <Form.Item className={'mb0'} name={'remarks'}>
-              <Input.TextArea autoSize={{ minRows: 4 }} />
+              <FormRender render={v => v} infoMode={isInfo}>
+                <Input.TextArea autoSize={{ minRows: 4 }} />
+              </FormRender>
             </Form.Item>
           </SCard>
         </Flex>

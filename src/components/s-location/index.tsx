@@ -17,10 +17,11 @@ export interface SLocationProps {
   extra?: (item: LocationListRes) => React.ReactNode
   value?: LocationListRes[]
   hideTag?: boolean
+  hideLogo?: boolean
 }
 
 export default function SLocation (props: SLocationProps) {
-  const { onClick, extra, value, hideTag } = props
+  const { onClick, extra, value, hideTag, hideLogo } = props
   const countries = useCountries()
 
   const formatInfo = useMemoizedFn((address?: AddressType) => {
@@ -51,9 +52,11 @@ export default function SLocation (props: SLocationProps) {
               align={'center'}
               className={classNames([styles.item, { [styles['click-item']]: onClick }])}
             >
-              <Flex align={'center'} justify={'center'} className={styles.mapPin}>
-                <IconMapPin size={20} />
-              </Flex>
+              <SRender render={!hideLogo}>
+                <Flex align={'center'} justify={'center'} className={styles.mapPin}>
+                  <IconMapPin size={20} />
+                </Flex>
+              </SRender>
               <div className={'flex1'}>
                 <Flex align={'center'} gap={8} className={styles.title}>
                   <Typography.Text ellipsis={{ tooltip: true }} style={{ maxWidth: 500 }}>

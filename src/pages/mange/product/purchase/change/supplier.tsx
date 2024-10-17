@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { ReactNode, useState } from 'react'
 import { useRequest } from 'ahooks'
-import { Button, Flex } from 'antd'
+import { Button, Flex, Typography } from 'antd'
 
 import { SupplierListApi } from '@/api/product/supplier-list'
 import SRender from '@/components/s-render'
@@ -9,14 +9,16 @@ import { useI18n } from '@/hooks/use-lang'
 import { useOpen } from '@/hooks/useOpen'
 import CreateSupplier from '@/pages/mange/product/purchase/change/create-supplier'
 import styles from '@/pages/mange/product/purchase/change/index.module.less'
+import { renderText } from '@/utils/render-text'
 
 export interface SupplierProps {
   value?: number
   onChange?: (id: number) => void
+  infoMode: ReactNode
 }
 
 export default function Supplier (props: SupplierProps) {
-  const { value, onChange } = props
+  const { value, onChange, infoMode } = props
   const t = useI18n()
 
   const supplierList = useRequest(SupplierListApi)
@@ -25,8 +27,8 @@ export default function Supplier (props: SupplierProps) {
   const supplierInfo = useOpen()
 
   return (
-    <Flex style={{ maxWidth: 433 }} align={'center'}>
-      <div style={{ minWidth: 0, flex: value ? undefined : 1 }}>
+    <Flex style={{ maxWidth: 433 }} align={'flex-end'}>
+      <SRender render={!infoMode} style={{ minWidth: 0, flex: value ? undefined : 1 }}>
         <SSelect
           value={value}
           onChange={onChange}
@@ -57,10 +59,16 @@ export default function Supplier (props: SupplierProps) {
             </Flex>
           )}
         />
-      </div>
+      </SRender>
+
+      <SRender render={infoMode}>
+        <Typography.Text>
+          {renderText(supplierList?.data?.find(i => i.id === value)?.address?.legal_business_name)}
+        </Typography.Text>
+      </SRender>
 
       <SRender render={value}>
-        <Flex style={{ flexShrink: 0 }} flex={1} justify={'flex-end'}>
+        <Flex style={{ flexShrink: 0, position: 'relative', top: infoMode ? 3 : -3 }} flex={1} justify={'flex-end'}>
           <Button type={'link'} size={'small'}>
             {t('Supplier Details')}
           </Button>
