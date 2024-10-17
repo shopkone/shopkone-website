@@ -8,6 +8,8 @@ import SModal from '@/components/s-modal'
 import SRender from '@/components/s-render'
 import SSelect from '@/components/s-select'
 import STable, { STableProps } from '@/components/s-table'
+import { getAdjustTypeOptions } from '@/constant/purchase'
+import { useI18n } from '@/hooks/use-lang'
 import { UseOpenType } from '@/hooks/useOpen'
 import { genId } from '@/utils/random'
 
@@ -28,21 +30,13 @@ export interface AdjustProps {
 export default function Adjust (props: AdjustProps) {
   const { info, onConfirm } = props
   const [value, setValue] = useState<AdjustItem[]>([])
+  const t = useI18n()
 
   const onAddItem = () => {
     setValue([...value, { id: genId(), price: 0 }])
   }
 
-  const AdjustTypeOptions = [
-    { label: 'Customs duties', value: 1 }, // 税
-    { label: 'Discount', value: 2 }, // 折扣
-    { label: 'Foreign transaction fee', value: 3 }, // 国外交易费
-    { label: 'Freight fee', value: 4 }, // 运费
-    { label: 'Insurance', value: 5 }, // 保险
-    { label: 'Rush fee', value: 6 }, // 保险
-    { label: 'Surcharge', value: 7 }, // 加急费
-    { label: 'Others', value: 8 } // 其他
-  ]
+  const AdjustTypeOptions = getAdjustTypeOptions(t)
 
   const onConfirmHandle = () => {
     console.log(value.filter(item => item.type))
@@ -52,14 +46,14 @@ export default function Adjust (props: AdjustProps) {
 
   const columns: STableProps['columns'] = [
     {
-      title: 'Adjust',
+      title: t('Adjust'),
       code: 'type',
       name: 'type',
       render: (type: number, row: AdjustItem) => (
         <SSelect
           onChange={(v) => { setValue(value.map(i => i.id === row.id ? { ...i, type: v } : i)) }}
           value={type}
-          placeholder={'Choose type'}
+          placeholder={t('Choose type')}
           options={AdjustTypeOptions}
           style={{ width: 250 }}
         />
@@ -67,7 +61,7 @@ export default function Adjust (props: AdjustProps) {
       width: 250
     },
     {
-      title: 'Price',
+      title: t('Price'),
       code: 'price',
       name: 'price',
       render: (price: number, row: AdjustItem) => (
@@ -108,7 +102,7 @@ export default function Adjust (props: AdjustProps) {
   }, [info.open])
 
   return (
-    <SModal onOk={onConfirmHandle} width={600} title={'Modify cost summary'} open={info.open} onCancel={info.close}>
+    <SModal onOk={onConfirmHandle} width={600} title={t('Modify cost summary')} open={info.open} onCancel={info.close}>
       <div style={{ padding: 12 }}>
         <STable
           className={'table-white-header table-border'}
@@ -120,7 +114,7 @@ export default function Adjust (props: AdjustProps) {
         <SRender render={value?.length !== 8}>
           <Button onClick={onAddItem} style={{ marginTop: 12, marginLeft: -8 }} size={'small'} type={'link'}>
             <IconCirclePlus size={15} style={{ position: 'relative', top: -1 }} />
-            Add adjust
+            {t('Add adjust')}
           </Button>
         </SRender>
       </div>

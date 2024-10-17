@@ -42,17 +42,16 @@ export default function Supplier (props: SupplierProps) {
             <Flex vertical>
               {node}
               <div className={'line'} />
-              <div style={{ marginBottom: 6, marginLeft: 8, marginTop: -4 }}>
+              <div style={{ marginBottom: 6, marginTop: -4 }}>
                 <Button
                   onClick={() => {
                     setOpenSelect(false)
                     supplierInfo.edit()
                   }}
                   size={'small'}
-                  type={'text'}
-                  className={'primary-text'}
+                  type={'link'}
                 >
-                  Create new supplier
+                  {t('Create new supplier')}
                 </Button>
               </div>
             </Flex>
@@ -62,8 +61,8 @@ export default function Supplier (props: SupplierProps) {
 
       <SRender render={value}>
         <Flex style={{ flexShrink: 0 }} flex={1} justify={'flex-end'}>
-          <Button type={'text'} className={'primary-text'} size={'small'}>
-            Supplier Details
+          <Button type={'link'} size={'small'}>
+            {t('Supplier Details')}
           </Button>
         </Flex>
       </SRender>

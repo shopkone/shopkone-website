@@ -4,7 +4,7 @@ import { Button, Empty, Flex, Input } from 'antd'
 
 import { FileType } from '@/api/file/add-file-record'
 import { useVariantsByIds, VariantsByIdsRes } from '@/api/product/variants-by-ids'
-import { PurchaseItem } from '@/api/purchase/create'
+import { PurchaseItem } from '@/api/purchase/base'
 import FileImage from '@/components/file-image'
 import IconButton from '@/components/icon-button'
 import SCard from '@/components/s-card'
@@ -166,9 +166,8 @@ export default function Products (props: ProductsProps) {
       extra={
         <SRender render={value?.length}>
           <Button
-            type={'text'}
+            type={'link'}
             size={'small'}
-            className={'primary-text'}
             onClick={() => {
               openInfo.edit(value?.map(item => item.variant_id) || [])
             }}

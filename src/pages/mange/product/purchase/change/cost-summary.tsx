@@ -1,9 +1,10 @@
 import { useMemo } from 'react'
 import { Button, Flex, Form } from 'antd'
 
-import { PurchaseItem } from '@/api/purchase/create'
+import { PurchaseItem } from '@/api/purchase/base'
 import SCard from '@/components/s-card'
 import SRender from '@/components/s-render'
+import { getAdjustTypeOptions } from '@/constant/purchase'
 import { useI18n } from '@/hooks/use-lang'
 import { useOpen } from '@/hooks/useOpen'
 import Adjust, { AdjustItem } from '@/pages/mange/product/purchase/change/adjust'
@@ -44,18 +45,7 @@ export default function CostSummary (props: CostSummaryProps) {
     }, 0)
   }, [summary]))
 
-  console.log(total)
-
-  const AdjustTypeOptions = [
-    { label: 'Customs duties', value: 1 }, // 税
-    { label: 'Discount', value: 2 }, // 折扣
-    { label: 'Foreign transaction fee', value: 3 }, // 国外交易费
-    { label: 'Freight fee', value: 4 }, // 运费
-    { label: 'Insurance', value: 5 }, // 保险
-    { label: 'Rush fee', value: 6 }, // 保险
-    { label: 'Surcharge', value: 7 }, // 加急费
-    { label: 'Others', value: 8 } // 其他
-  ]
+  const AdjustTypeOptions = getAdjustTypeOptions(t)
 
   return (
     <SCard

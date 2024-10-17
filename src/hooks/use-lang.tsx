@@ -7,16 +7,16 @@ import { useLayoutState } from '@/pages/mange/layout/state'
 
 export const useLoadLanguage = (module: string) => {
   const { i18n, t } = useTranslation()
-  const language = useLanguageApi('zh-CN', module)
+  const language = useLanguageApi('zh-TW', module)
 
   useEffect(() => {
     if (!language.data?.data) return
-    i18n.addResources('zh-CN', module, language.data?.data)
+    i18n.addResources('zh-TW', module, language.data?.data)
   }, [language.data?.data])
 
   useEffect(() => {
     if (!module || (module === '/page/undefined')) return
-    language.run('zh-CN', module)
+    language.run('zh-TW', module)
   }, [module])
 
   return { language, t: (query: string) => t(query, { ns: module }) }
@@ -33,7 +33,7 @@ const i18n = i18next
   .use(initReactI18next)
   .init({
     fallbackLng: 'en',
-    lng: 'zh-CN',
+    lng: 'zh-TW',
     interpolation: { escapeValue: false }
   })
 

@@ -10,6 +10,7 @@ import { PurchaseListApi, PurchaseListReq } from '@/api/purchase/list'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
 import STable, { STableProps } from '@/components/s-table'
+import { useI18n } from '@/hooks/use-lang'
 import Filters from '@/pages/mange/product/purchase/purchase/filters'
 import { formatPrice } from '@/utils/num'
 import { renderText } from '@/utils/render-text'
@@ -21,6 +22,7 @@ export default function Purchase () {
   const locations = useRequest(async () => await LocationListApi({ active: true }))
   const supplierList = useRequest(SupplierListApi)
   const [selected, setSelected] = useState<number[]>([])
+  const t = useI18n()
 
   const columns: STableProps['columns'] = [
     {
@@ -90,7 +92,7 @@ export default function Purchase () {
       bottom={64}
       header={
         <Button onClick={() => { nav('change') }} type={'primary'}>
-          Create purchase order
+          {t('Create purchase order')}
         </Button>
       }
       type={'product'}

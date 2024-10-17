@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { useRequest } from 'ahooks'
 import { Flex, Form, Input } from 'antd'
 import dayjs, { Dayjs } from 'dayjs'
@@ -14,6 +14,7 @@ import SCard from '@/components/s-card'
 import SDatePicker from '@/components/s-date-picker'
 import { sMessage } from '@/components/s-message'
 import SSelect from '@/components/s-select'
+import { getPaymentTerms } from '@/constant/purchase'
 import { useI18n } from '@/hooks/use-lang'
 import CostSummary from '@/pages/mange/product/purchase/change/cost-summary'
 import Products from '@/pages/mange/product/purchase/change/products'
@@ -28,7 +29,6 @@ export interface PurchaseChangeInnerProps {
 
 export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
   const { onFresh } = props
-  const nav = useNavigate()
   const currencyList = useCurrencyList()
   const locations = useRequest(async () => await LocationListApi({ active: true }))
   const carriers = useCarriers()
@@ -40,18 +40,7 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
   const init = useRef<any>()
   const [isChange, setIsChange] = useState(false)
 
-  const paymentTerms = [
-    { value: 0, label: 'None' },
-    { value: 1, label: 'Cash on delivery' },
-    { value: 2, label: 'Cash on receipt' },
-    { value: 3, label: 'Payment on receipt' },
-    { value: 4, label: 'Payment in advance' },
-    { value: 5, label: 'Net 7' },
-    { value: 6, label: 'Net 15' },
-    { value: 7, label: 'Net 30' },
-    { value: 8, label: 'Net 45' },
-    { value: 9, label: 'Net 60' }
-  ]
+  const paymentTerms = getPaymentTerms(t)
 
   const onOk = async () => {
     await form.validateFields()
