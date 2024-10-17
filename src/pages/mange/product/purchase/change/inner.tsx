@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
+import { IconChevronDown } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
-import { Flex, Form, Input } from 'antd'
+import { Button, Flex, Form, Input, Popover } from 'antd'
 import dayjs, { Dayjs } from 'dayjs'
 
 import { useCarriers } from '@/api/base/carriers'
@@ -120,6 +121,17 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
 
   return (
     <Page
+      header={
+        <Flex gap={12} align={'center'}>
+          <Popover>
+            <Button type={'text'}>
+              {t('更多操作')}
+              <IconChevronDown size={14} />
+            </Button>
+          </Popover>
+          <Button type={'primary'}>{t('标记为已订购')}</Button>
+        </Flex>
+      }
       onCancel={onReset}
       loading={locations.loading || carriers.loading || currencyList.loading || info.loading}
       onOk={onOk}

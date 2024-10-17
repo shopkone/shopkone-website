@@ -202,7 +202,7 @@ export default function Products () {
           }}
           loading={list.loading}
           rowSelection={{ onChange: setSelected, value: selected }}
-          init={!!list.data?.page?.page}
+          init={!!list.data}
           empty={{
             title: 'Add your products',
             desc: 'Start by stocking your store with products your customers will love',

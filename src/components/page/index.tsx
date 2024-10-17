@@ -71,7 +71,7 @@ export default function Page (props: PageProps) {
     setT(t)
   }, [language?.data?.data])
 
-  if (!language?.data?.data) return <SLoading />
+  // if (!language?.data?.data) return <SLoading />
 
   return (
     <div style={{
