@@ -201,7 +201,7 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
               </Button>
             </SRender>
             <SRender render={!isNonEditableStatus}>
-              <Button type={'primary'}>
+              <Button onClick={() => { nav(`/products/purchase_orders/receive/${id}`) }} type={'primary'}>
                 {t('接收库存')}
               </Button>
             </SRender>

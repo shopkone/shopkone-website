@@ -1,4 +1,5 @@
 import { api } from '@/api/api'
+import { PurchaseItem } from '@/api/purchase/base'
 import { PurchaseCreateReq } from '@/api/purchase/create'
 
 export enum PurchaseStatus {
@@ -13,10 +14,12 @@ export interface PurchaseInfoReq {
   id: number
 }
 
-export interface PurchaseInfoRes extends PurchaseCreateReq {
+export interface PurchaseInfoRes extends Omit<PurchaseCreateReq, 'items'> {
   id: number
   status: PurchaseStatus
   order_number: string
+  purchase_items: PurchaseItem[]
+  items: undefined
 }
 
 export const PurchaseInfoApi = async (params: PurchaseInfoReq) => {
