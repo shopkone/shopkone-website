@@ -213,7 +213,7 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
       loading={carriers.loading || currencyList.loading || info.loading || (!!id && !info?.data?.status)}
       onOk={onOk}
       isChange={isReadMode ? undefined : isChange}
-      bottom={64}
+      bottom={120}
       type={'product'}
       width={950}
       title={title}

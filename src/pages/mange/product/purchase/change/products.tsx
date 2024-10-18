@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useMemo, useState } from 'react'
 import { IconPhoto, IconTrash } from '@tabler/icons-react'
-import { Button, Empty, Flex, Input } from 'antd'
+import { Button, Empty, Flex, Input, Typography } from 'antd'
 
 import { FileType } from '@/api/file/add-file-record'
 import { useVariantsByIds, VariantsByIdsRes } from '@/api/product/variants-by-ids'
@@ -101,14 +101,14 @@ export default function Products (props: ProductsProps) {
       code: 'sku',
       name: 'sku',
       render: (sku: string, row: PurchaseItem) => (
-        <div>
+        <Typography.Text>
           <SRender render={!infoMode}>
             <Input value={sku} onChange={e => { onChangeValue(row, 'sku', e.target.value) }} />
           </SRender>
           <SRender render={infoMode}>
             {renderText(sku)}
           </SRender>
-        </div>
+        </Typography.Text>
       ),
       width: 150
     },

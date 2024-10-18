@@ -6,4 +6,6 @@ export interface PurchaseItem {
   tax_rate: number
   sku?: string
   total: number
+  rejected?: number
+  received?: number
 }

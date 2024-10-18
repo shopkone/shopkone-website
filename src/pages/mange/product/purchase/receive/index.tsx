@@ -1,35 +1,33 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { IconPhoto } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
-import { Button, Flex } from 'antd'
+import { Button, Flex, Typography } from 'antd'
 
 import { FileType } from '@/api/file/add-file-record'
 import { useVariantsByIds, VariantsByIdsRes } from '@/api/product/variants-by-ids'
+import { PurchaseItem } from '@/api/purchase/base'
 import { PurchaseInfoApi } from '@/api/purchase/info'
 import FileImage from '@/components/file-image'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
+import SInputNumber from '@/components/s-input-number'
 import SRender from '@/components/s-render'
 import STable, { STableProps } from '@/components/s-table'
 import { useI18n } from '@/hooks/use-lang'
+import Progress from '@/pages/mange/product/purchase/change/progress'
+import { renderText } from '@/utils/render-text'
 
 export default function Receive () {
   const t = useI18n()
   const { id } = useParams()
   const info = useRequest(PurchaseInfoApi, { manual: true })
-  const { run, loading, data } = useVariantsByIds()
+  const { run, data } = useVariantsByIds()
+  const [list, setList] = useState<PurchaseItem[]>([])
 
-  const list = useMemo(() => {
-    return info?.data?.purchase_items?.map(item => {
-      const find = data.find(i => i.id === item.variant_id)
-      if (!find) return item
-      const { id, ...rest } = find
-      return { ...item, ...rest }
-    })
-  }, [info.data, data]) || []
-
-  console.log(list)
+  const onUpdate = (row: PurchaseItem, key: keyof PurchaseItem, v: any) => {
+    setList(list.map(item => item.id === row.id ? { ...item, [key]: v } : item))
+  }
 
   const columns: STableProps['columns'] = [
     {
@@ -54,17 +52,69 @@ export default function Receive () {
       ),
       width: 250
     },
-
-    { title: t('供应商SKU') },
-    { title: t('收货') },
-    { title: t('拒绝') },
-    { title: t('收货数量') }
+    {
+      title: t('Supplier SKU'),
+      code: 'sku',
+      name: 'sku',
+      render: (sku: string, row: PurchaseItem) => (
+        <Typography.Text>{renderText(sku)}</Typography.Text>
+      ),
+      width: 150
+    },
+    {
+      title: t('收货'),
+      code: 'received',
+      width: 150,
+      name: 'received',
+      render: (received: number, row: PurchaseItem) => (
+        <Flex gap={4} align={'center'}>
+          <SInputNumber required value={received} onChange={v => { onUpdate(row, 'received', v) }} uint />
+          <Button style={{ marginRight: 12 }} type={'link'} size={'small'}>All</Button>
+        </Flex>
+      )
+    },
+    {
+      title: t('拒绝'),
+      render: (rejected: number, row: PurchaseItem) => (
+        <Flex gap={4} align={'center'}>
+          <SInputNumber required value={rejected} onChange={v => { onUpdate(row, 'rejected', v) }} uint />
+          <Button style={{ marginRight: 12 }} type={'link'} size={'small'}>All</Button>
+        </Flex>
+      ),
+      width: 150,
+      name: 'rejected',
+      code: 'rejected'
+    },
+    {
+      title: t('收货数量'),
+      width: 150,
+      name: 'id',
+      code: 'id',
+      render: (_, row: PurchaseItem) => (
+        <Flex vertical gap={4}>
+          <Progress purchasing={row.purchasing} received={row.received} rejected={row.rejected} />
+          <Flex style={{ fontSize: 12 }}>
+            {row.received || 0} / {row.purchasing}
+          </Flex>
+        </Flex>
+      )
+    }
   ]
 
   useEffect(() => {
     if (!id) return
     info.runAsync({ id: Number(id) })
   }, [id])
+
+  useEffect(() => {
+    const items = info?.data?.purchase_items?.map(item => {
+      const find = data.find(i => i.id === item.variant_id)
+      if (!find) return item
+      const { id, ...rest } = find
+      return { ...item, ...rest }
+    })
+    setList(items || [])
+  }, [info.data, data])
 
   useEffect(() => {
     if (!info.data?.purchase_items) return
