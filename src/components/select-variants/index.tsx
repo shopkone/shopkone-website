@@ -24,6 +24,7 @@ import styles from './index.module.less'
 export interface SelectVariantsProps {
   info: UseOpenType<number[]>
   onConfirm?: (value: number[]) => void
+  disabled?: number[]
 }
 
 interface ProductVariants {
@@ -39,13 +40,21 @@ interface ProductVariants {
 }
 
 export default function SelectVariants (props: SelectVariantsProps) {
-  const { info, onConfirm } = props
+  const { info, onConfirm, disabled } = props
   const [params, setParams] = useState<ProductListReq>({ page: 1, page_size: 50 })
   const [selected, setSelected] = useState<number[]>([])
   const [list, setList] = useState<ProductListRes[]>([])
   const productList = useRequest(ProductListApi, { manual: true })
   const [showMoreLoading, setShowMoreLoading] = useState(false)
   const [expanded, setExpanded] = useState<number[]>([])
+
+  const getIsDisabled = (row: ProductVariants) => {
+    if (disabled?.length === 200) return true
+    if (row.is_parent) {
+      return row?.variants?.every(variant => disabled?.includes(variant.id))
+    }
+    return disabled?.includes(row.id)
+  }
 
   const getPriceRange = (prices?: Array<number | undefined>): string => {
     const list = (prices?.filter(i => typeof i === 'number') || []) as number[]
@@ -75,6 +84,7 @@ export default function SelectVariants (props: SelectVariantsProps) {
   }, [list])
 
   const onSelectParent = (row: ProductVariants) => {
+    if (getIsDisabled(row)) return
     const isSelectAll = row.variants?.every(i => selected.includes(i.id)) || (selected.length === 200)
     let list: number[] = []
     if (isSelectAll) {
@@ -82,6 +92,7 @@ export default function SelectVariants (props: SelectVariantsProps) {
     } else {
       list = [...selected, ...row.variants?.map(i => i.id) || []]
     }
+    list = [...new Set([...list, ...(disabled || [])])]
     if (list.length >= 200) {
       sMessage.warning('Select up to 200 variants/products. The first 200 are pre-selected.')
     }
@@ -98,9 +109,11 @@ export default function SelectVariants (props: SelectVariantsProps) {
   }
 
   const onRowClick = (row: ProductVariants) => {
+    if (disabled?.length === 200) return
     if (row.variants) {
       onSelectParent(row)
     } else {
+      if (disabled?.includes(row.id)) return
       onSelectChild(row)
     }
   }
@@ -119,6 +132,7 @@ export default function SelectVariants (props: SelectVariantsProps) {
             <Flex style={{ marginLeft: !row.children?.length ? -8 : 0, cursor: 'pointer' }} align={'center'}>
               <Flex onClick={!row.children?.length ? () => { onSelectParent(row) } : undefined} className={styles.checkbox}>
                 <Checkbox
+                  disabled={getIsDisabled(row)}
                   indeterminate={!row.variants?.every(i => selected.includes(i.id)) && row.variants?.some(i => selected.includes(i.id))}
                   onChange={() => { onSelectParent(row) }}
                   checked={row.variants?.every(i => selected.includes(i.id))}
@@ -165,7 +179,12 @@ export default function SelectVariants (props: SelectVariantsProps) {
           </SRender>
           <SRender render={!row.is_parent}>
             <Flex className={'fit-width'} style={{ marginLeft: 20, cursor: 'pointer', height: 24 }} align={'center'} gap={12}>
-              <Checkbox checked={selected.includes(row.id)} onChange={e => { onSelectChild(row) }} style={{ marginLeft: 4 }} />
+              <Checkbox
+                disabled={getIsDisabled(row)}
+                checked={selected.includes(row.id)}
+                onChange={e => { onSelectChild(row) }}
+                style={{ marginLeft: 4 }}
+              />
               <div>{row.title}</div>
             </Flex>
           </SRender>
@@ -278,6 +297,7 @@ export default function SelectVariants (props: SelectVariantsProps) {
         <Filters />
         <div style={{ overflowY: 'auto', height: 550, paddingBottom: 24 }}>
           <STable
+            rowClassName={(row) => getIsDisabled(row) ? styles.disabled : ''}
             useVirtual
             expand={{
               value: expanded,

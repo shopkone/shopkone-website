@@ -44,7 +44,9 @@ export default function Receive () {
       rejected: sum(...list.map(i => i.rejected || 0))
     }
   }, [list])
-  const totalRemain = reduce(total.purchasing, total.received, total.rejected)
+  const canActionAll = list.some(i => {
+    return reduce(i.purchasing, i.received, i.rejected) > 0
+  })
 
   const onUpdate = (row: PurchaseItem, key: keyof PurchaseItem, v: any) => {
     // @ts-expect-error
@@ -254,7 +256,7 @@ export default function Receive () {
       <div style={{ minHeight: 400 }}>
         <SCard
           extra={
-            <SRender render={totalRemain > 0}>
+            <SRender render={canActionAll}>
               <Flex gap={4}>
                 <Button type={'link'} size={'small'} onClick={onAcceptAll}>接收全部</Button>
                 <Button type={'link'} size={'small'} onClick={onRejectAll}>拒绝全部</Button>

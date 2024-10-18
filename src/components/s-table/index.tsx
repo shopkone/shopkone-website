@@ -40,6 +40,7 @@ export interface STableProps<T=any> extends Omit<BaseTableProps, omit> {
   actions?: React.ReactNode
   onRowClick?: (row: T, rowIndex: number) => void
   fixPosition?: number
+  rowClassName?: (row: any) => string
 }
 
 function STable (props: STableProps) {
@@ -59,6 +60,7 @@ function STable (props: STableProps) {
     page,
     actions,
     onRowClick,
+    rowClassName,
     ...rest
   } = props
 
@@ -200,7 +202,8 @@ function STable (props: STableProps) {
                   }
                   onRowClick?.(row, rowIndex)
                 }
-              : undefined
+              : undefined,
+            className: rowClassName?.(row)
           })}
           isLoading={props.loading}
         />

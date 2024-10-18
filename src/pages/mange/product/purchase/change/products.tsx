@@ -289,6 +289,7 @@ export default function Products (props: ProductsProps) {
           onChange?.([...newList, ...oldList])
         }}
         info={openInfo}
+        disabled={value?.filter(i => i.rejected || i.received)?.map(item => item.variant_id)}
       />
 
     </SCard>
