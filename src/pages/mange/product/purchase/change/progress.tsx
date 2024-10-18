@@ -17,12 +17,12 @@ export default function Progress (props: ProgressProps) {
   return (
     <div className={styles.progressWrapper}>
       <SRender render={received}>
-        <Tooltip mouseEnterDelay={0} title={`已收货 (${received}/${purchasing})`}>
+        <Tooltip mouseEnterDelay={0} title={`已收货 (${received})`}>
           <div className={styles.progress} style={{ background: '#2e7d32', flex: received }} />
         </Tooltip>
       </SRender>
       <SRender render={rejected}>
-        <Tooltip mouseEnterDelay={0} title={`已拒收 (${rejected}/${purchasing})`}>
+        <Tooltip mouseEnterDelay={0} title={`已拒收 (${rejected})`}>
           <div
             className={styles.progress}
             style={{
