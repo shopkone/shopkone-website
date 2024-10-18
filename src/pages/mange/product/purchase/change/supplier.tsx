@@ -70,7 +70,7 @@ export default function Supplier (props: SupplierProps) {
       <SRender render={value}>
         <Flex style={{ flexShrink: 0, position: 'relative', top: infoMode ? 3 : -3 }} flex={1} justify={'flex-end'}>
           <Button type={'link'} size={'small'}>
-            {t('Supplier Details')}
+            {t('供应商详细信息')}
           </Button>
         </Flex>
       </SRender>

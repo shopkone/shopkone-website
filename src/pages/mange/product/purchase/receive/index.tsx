@@ -89,7 +89,7 @@ export default function Receive () {
 
   const columns: STableProps['columns'] = [
     {
-      title: t('Products'),
+      title: t('商品'),
       code: 'id',
       name: 'id',
       render: (_, row: VariantsByIdsRes) => (
@@ -111,7 +111,7 @@ export default function Receive () {
       width: 250
     },
     {
-      title: t('Supplier SKU'),
+      title: t('供应商SKU'),
       code: 'sku',
       name: 'sku',
       render: (sku: string, row: PurchaseItem) => (
@@ -140,7 +140,7 @@ export default function Receive () {
             type={'link'}
             size={'small'}
           >
-            All
+            全部
           </Button>
         </Flex>
       )
@@ -163,7 +163,7 @@ export default function Receive () {
             type={'link'}
             size={'small'}
           >
-            All
+            全部
           </Button>
         </Flex>
       ),
@@ -246,7 +246,7 @@ export default function Receive () {
       width={950}
       title={
         <Flex gap={8} align={'center'}>
-          <div>{t('Receive items')}</div>
+          <div>{t('接收库存')}</div>
           <div style={{ fontSize: 13, fontWeight: 500 }}>{info?.data?.order_number}</div>
         </Flex>
       }

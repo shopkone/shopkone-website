@@ -100,7 +100,7 @@ export default function Products (props: ProductsProps) {
       width: 250
     },
     {
-      title: t('Supplier SKU'),
+      title: t('供应商SKU'),
       code: 'sku',
       name: 'sku',
       render: (sku: string, row: PurchaseItem) => (

@@ -35,7 +35,7 @@ export default function Progress (props: ProgressProps) {
         </Tooltip>
       </SRender>
       <SRender render={remaining}>
-        <Tooltip mouseEnterDelay={0} title={`未收货 (${purchasing})`}>
+        <Tooltip mouseEnterDelay={0} title={`未处理 (${purchasing})`}>
           <div className={styles.progress} style={{ background: '#c6c6c6', flex: remaining }} />
         </Tooltip>
       </SRender>

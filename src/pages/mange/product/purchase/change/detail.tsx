@@ -26,7 +26,7 @@ export default function Detail (props: DetailProps) {
       </Flex>
       <Flex gap={4} align={'center'}>
         <div style={{ background: '#c6c6c6' }} className={styles.progressBlock} />
-        未收货
+        未处理
         <span>({reduce(purchasing, received, rejected) > 0 ? reduce(purchasing, received, rejected) : 0})</span>
       </Flex>
       <Flex gap={4} align={'center'}>

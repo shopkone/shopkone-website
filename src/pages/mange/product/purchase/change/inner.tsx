@@ -67,11 +67,11 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
       estimated_arrival: estimated_arrival ? (estimated_arrival as Dayjs).unix() : undefined
     }
     if (!values?.purchase_items) {
-      sMessage.warning('Please select products')
+      sMessage.warning(t('请选择商品'))
       return
     }
     if (!values.supplier_id) {
-      sMessage.warning('Please select supplier')
+      sMessage.warning(t("'请选择供应商'"))
       return
     }
     if (id) {
@@ -80,11 +80,11 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
         ...values
       })
       onFresh(Number(id))
-      sMessage.success('Purchase order updated!')
+      sMessage.success(t('采购单已更新'))
     } else {
       const ret = await create.runAsync(values)
       onFresh(ret.id)
-      sMessage.success('Purchase order draft created!')
+      sMessage.success(t('采购单已创建'))
     }
   }
 
@@ -225,7 +225,7 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
         <div className={styles.card}>
           <Flex>
             <div className={styles.item}>
-              <div className={styles.title}>{t('Supplier')}</div>
+              <div className={styles.title}>{t('供应商')}</div>
               <Form.Item style={{ margin: 0 }} name={'supplier_id'}>
                 <Supplier infoMode={id ? isReadMode || !isDraftStatus : null} />
               </Form.Item>
@@ -278,7 +278,7 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
                 <SDatePicker allowClear rootClassName={'fit-width'} />
               </FormRender>
             </Form.Item>
-            <Form.Item name={'carrier_id'} label={t('Shipping carrier')} className={'flex1 mb0'}>
+            <Form.Item name={'carrier_id'} label={t('物流提供商')} className={'flex1 mb0'}>
               <FormRender infoMode={isReadMode} render={(value?: number) => (carriers.data?.find(item => item.id === value)?.name)}>
                 <SSelect
                   allowClear
@@ -290,7 +290,7 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
             </Form.Item>
             <Form.Item
               name={'delivery_number'}
-              label={t('Delivery number')}
+              label={t('物流单号')}
               className={'flex1 mb0'}
             >
               <FormRender infoMode={isReadMode} render={v => v}>
