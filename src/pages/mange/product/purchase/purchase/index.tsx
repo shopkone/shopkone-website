@@ -118,7 +118,7 @@ export default function Purchase () {
             )
           }}
           onRowClick={row => {
-            nav(`/products/purchase_orders${row.status === 2 ? '/info' : '/change'}/${row.id}`)
+            nav(`/products/purchase_orders${[2, 3, 4, 5].includes(row.status) ? '/info' : '/change'}/${row.id}`)
           }}
           page={{
             current: params.page,
