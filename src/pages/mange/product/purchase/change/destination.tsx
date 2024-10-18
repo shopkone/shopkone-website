@@ -44,7 +44,7 @@ export default function Destination (props: DestinationProps) {
         value={value}
         onChange={onChange}
         options={locations.data?.map(item => ({ value: item.id, label: item.name }))}
-        placeholder={t('Select location')}
+        placeholder={t('选择地点')}
         className={styles.select}
         variant={'borderless'}
         dropdownStyle={{ minWidth: 300 }}

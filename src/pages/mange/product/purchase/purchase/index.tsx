@@ -92,7 +92,7 @@ export default function Purchase () {
       bottom={64}
       header={
         <Button onClick={() => { nav('change') }} type={'primary'}>
-          {t('Create purchase order')}
+          {t('创建采购单')}
         </Button>
       }
       type={'product'}
@@ -112,7 +112,7 @@ export default function Purchase () {
             actions: (
               <Flex gap={8}>
                 <Button onClick={() => { nav('change') }} type={'primary'}>
-                  Create purchase order
+                  创建采购单
                 </Button>
               </Flex>
             )

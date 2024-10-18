@@ -71,7 +71,7 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
       return
     }
     if (!values.supplier_id) {
-      sMessage.warning(t("'请选择供应商'"))
+      sMessage.warning(t('请选择供应商'))
       return
     }
     if (id) {
@@ -128,7 +128,7 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
         </Flex>
       )
     }
-    return id ? (info?.data?.order_number || '-') : t('Create purchase order')
+    return id ? (info?.data?.order_number || '-') : t('创建采购单')
   }, [isEditingMode, info.data])
 
   const backUrl = useMemo(() => {
@@ -231,7 +231,7 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
               </Form.Item>
             </div>
             <div className={styles.item}>
-              <div className={styles.title}>{t('Destination')}</div>
+              <div className={styles.title}>{t('目的地')}</div>
               <Form.Item style={{ margin: 0, padding: 0 }} name={'destination_id'}>
                 <Destination infoMode={id ? isReadMode || !(isDraftStatus) : null} onValuesChange={onValuesChange} />
               </Form.Item>
@@ -274,7 +274,7 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
         <SCard style={{ marginBottom: 16 }} title={t('运输详细信息')}>
           <Flex gap={16}>
             <Form.Item name={'estimated_arrival'} label={t('预计配送日期')} className={'flex1 mb0'}>
-              <FormRender render={(value?: number) => (value ? dayjs(value * 1000).format('YYYY-MM-DD') : renderText())} infoMode={isReadMode}>
+              <FormRender render={(value?: number) => (value ? dayjs(value).format('YYYY-MM-DD') : renderText())} infoMode={isReadMode}>
                 <SDatePicker allowClear rootClassName={'fit-width'} />
               </FormRender>
             </Form.Item>
@@ -309,7 +309,7 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
             <CostSummary infoMode={isReadMode} />
           </Form.Item>
 
-          <SCard className={'flex1'} title={t('Remarks')} style={{ marginTop: 16 }}>
+          <SCard className={'flex1'} title={t('备注')} style={{ marginTop: 16 }}>
             <Form.Item className={'mb0'} name={'remarks'}>
               <FormRender render={v => v} infoMode={isReadMode}>
                 <Input.TextArea autoSize={{ minRows: 4 }} />

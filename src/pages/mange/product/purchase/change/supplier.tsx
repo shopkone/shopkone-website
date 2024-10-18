@@ -37,7 +37,7 @@ export default function Supplier (props: SupplierProps) {
           open={openSelect}
           onDropdownVisibleChange={setOpenSelect}
           dropdownStyle={{ minWidth: 300 }}
-          placeholder={t('Select supplier')}
+          placeholder={t('选择供应商')}
           className={styles.select}
           variant={'borderless'}
           dropdownRender={node => (

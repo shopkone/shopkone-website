@@ -4,7 +4,7 @@ import Page from '@/components/page'
 
 export default function Change () {
   return (
-    <Page back={'/settings/staff'} width={950} title={'Add staff'} isChange={false}>
+    <Page type={'settings'} back={'/settings/staff'} width={950} title={'Add staff'} isChange={false}>
       <Form layout={'vertical'}>
         <Flex gap={16}>
           <Flex vertical gap={16} flex={1}>

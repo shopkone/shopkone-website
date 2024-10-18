@@ -73,6 +73,8 @@ export default function Products (props: ProductsProps) {
       total = (item.cost + (item.cost * (item.tax_rate || 0) / 100)) * value
     }
     list[index] = { ...i, [key]: value, total: roundPrice(total) }
+    // TODO: 变更时会消失
+    // TODO: 选择变体出现了相同ID
     onChange?.(list || [])
   }
 
