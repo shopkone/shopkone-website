@@ -24,6 +24,7 @@ import { getPaymentTerms } from '@/constant/purchase'
 import { useI18n } from '@/hooks/use-lang'
 import CostSummary from '@/pages/mange/product/purchase/change/cost-summary'
 import Destination from '@/pages/mange/product/purchase/change/destination'
+import Detail from '@/pages/mange/product/purchase/change/detail'
 import Products from '@/pages/mange/product/purchase/change/products'
 import Progress from '@/pages/mange/product/purchase/change/progress'
 import Supplier from '@/pages/mange/product/purchase/change/supplier'
@@ -255,24 +256,16 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
             </Form.Item>
             <SRender render={isReadMode}>
               <Flex gap={20} flex={2} vertical>
-                <Progress />
-                <Flex gap={16} justify={'flex-end'}>
-                  <Flex gap={4} align={'center'}>
-                    <div style={{ background: '#2e7d32' }} className={styles.progressBlock} />
-                    已收货
-                  </Flex>
-                  <Flex gap={4} align={'center'}>
-                    <div style={{ background: '#d32f2f' }} className={styles.progressBlock} />
-                    已拒收
-                  </Flex>
-                  <Flex gap={4} align={'center'}>
-                    <div style={{ background: '#c6c6c6' }} className={styles.progressBlock} />
-                    未收货
-                  </Flex>
-                  <Flex gap={4} align={'center'}>
-                    总额
-                  </Flex>
-                </Flex>
+                <Progress
+                  rejected={info?.data?.rejected || 0}
+                  received={info?.data?.received || 0}
+                  purchasing={info?.data?.purchasing || 0}
+                />
+                <Detail
+                  rejected={info?.data?.rejected || 0}
+                  received={info?.data?.received || 0}
+                  purchasing={info?.data?.purchasing || 0}
+                />
               </Flex>
             </SRender>
           </Flex>

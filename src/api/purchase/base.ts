@@ -8,4 +8,6 @@ export interface PurchaseItem {
   total: number
   rejected?: number
   received?: number
+  rejected_count?: number
+  received_count?: number
 }

@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useMemo, useState } from 'react'
-import { IconPhoto, IconTrash } from '@tabler/icons-react'
-import { Button, Empty, Flex, Input, Typography } from 'antd'
+import { IconChevronDown, IconPhoto, IconTrash } from '@tabler/icons-react'
+import { Button, Empty, Flex, Input, Popover, Typography } from 'antd'
 
 import { FileType } from '@/api/file/add-file-record'
 import { useVariantsByIds, VariantsByIdsRes } from '@/api/product/variants-by-ids'
@@ -14,7 +14,10 @@ import STable, { STableProps } from '@/components/s-table'
 import SelectVariants from '@/components/select-variants'
 import { useI18n } from '@/hooks/use-lang'
 import { useOpen } from '@/hooks/useOpen'
+import Detail from '@/pages/mange/product/purchase/change/detail'
 import Progress from '@/pages/mange/product/purchase/change/progress'
+import styles from '@/pages/mange/product/purchase/receive/index.module.less'
+import { sum } from '@/utils'
 import { formatPrice, roundPrice } from '@/utils/num'
 import { genId } from '@/utils/random'
 import { renderText } from '@/utils/render-text'
@@ -122,7 +125,32 @@ export default function Products (props: ProductsProps) {
             <SInputNumber max={999999} min={1} uint value={purchasing} onChange={(v) => { onChangeValue(row, 'purchasing', v) }} />
           </SRender>
           <SRender render={infoMode}>
-            <Progress />
+            <Flex vertical gap={8} style={{ marginTop: 4 }}>
+              <Progress
+                received={sum(row.received, row.received_count)}
+                rejected={sum(row.rejected, row.rejected_count)}
+                purchasing={purchasing}
+              />
+              <Popover
+                arrow={false}
+                placement={'bottomLeft'}
+                trigger={'click'}
+                content={
+                  <Detail
+                    received={sum(row.received, row.received_count)}
+                    purchasing={row.purchasing}
+                    rejected={sum(row.rejected, row.rejected_count)}
+                    vertical
+                  />
+                }
+                overlayInnerStyle={{ padding: '16px 8px' }}
+              >
+                <Flex align={'center'} className={styles.more}>
+                  {sum(row.rejected_count, row.received, row.rejected, row.received_count)} / {row.purchasing}
+                  <IconChevronDown style={{ marginLeft: 4, marginTop: -1 }} size={13} />
+                </Flex>
+              </Popover>
+            </Flex>
           </SRender>
         </div>
       ),

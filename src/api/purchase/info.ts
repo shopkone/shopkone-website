@@ -20,6 +20,9 @@ export interface PurchaseInfoRes extends Omit<PurchaseCreateReq, 'items'> {
   order_number: string
   purchase_items: PurchaseItem[]
   items: undefined
+  rejected: number
+  received: number
+  purchasing: number
 }
 
 export const PurchaseInfoApi = async (params: PurchaseInfoReq) => {

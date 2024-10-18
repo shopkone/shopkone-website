@@ -1,3 +1,6 @@
+import { Tooltip } from 'antd'
+
+import SRender from '@/components/s-render'
 import styles from '@/pages/mange/product/purchase/change/index.module.less'
 
 export interface ProgressProps {
@@ -11,13 +14,31 @@ export default function Progress (props: ProgressProps) {
 
   const remaining = purchasing - received - rejected
 
-  console.log(purchasing)
-
   return (
     <div className={styles.progressWrapper}>
-      <div className={styles.progress} style={{ background: '#2e7d32', flex: received }} />
-      <div className={styles.progress} style={{ background: '#d32f2f', flex: rejected, marginLeft: 1, marginRight: 1 }} />
-      <div className={styles.progress} style={{ background: '#c6c6c6', flex: remaining > 0 ? remaining : 0 }} />
+      <SRender render={received}>
+        <Tooltip mouseEnterDelay={0} title={`已收货 (${received}/${purchasing})`}>
+          <div className={styles.progress} style={{ background: '#2e7d32', flex: received }} />
+        </Tooltip>
+      </SRender>
+      <SRender render={rejected}>
+        <Tooltip mouseEnterDelay={0} title={`已拒收 (${rejected}/${purchasing})`}>
+          <div
+            className={styles.progress}
+            style={{
+              background: '#d32f2f',
+              flex: rejected,
+              marginLeft: Number(!!rejected),
+              marginRight: Number(!!rejected)
+            }}
+          />
+        </Tooltip>
+      </SRender>
+      <SRender render={remaining}>
+        <Tooltip mouseEnterDelay={0} title={`未收货 (${purchasing})`}>
+          <div className={styles.progress} style={{ background: '#c6c6c6', flex: remaining }} />
+        </Tooltip>
+      </SRender>
     </div>
   )
 }
