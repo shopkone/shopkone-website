@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import SLoading from '@/components/s-loading'
 import PurchaseChangeInner from '@/pages/mange/product/purchase/change/inner'
 
 export default function PurchaseChange () {
@@ -17,7 +16,7 @@ export default function PurchaseChange () {
     })
   }
 
-  if (loading) return <SLoading />
+  if (loading) return null
 
   return (
     <PurchaseChangeInner onFresh={onFresh} />

@@ -208,7 +208,6 @@ export default function Products (props: ProductsProps) {
           </Button>
         </SRender>
       }
-      loading={loading}
       title={t('Products')}
       className={'fit-width'}
     >
@@ -246,8 +245,8 @@ export default function Products (props: ProductsProps) {
             }
           }}
           columns={columns}
-          data={list}
-          init={!!list?.length}
+          data={list?.filter(i => (i as any).image !== undefined) || []}
+          init={!!list?.filter(i => (i as any).image !== undefined)?.length}
         />
       </SRender>
 

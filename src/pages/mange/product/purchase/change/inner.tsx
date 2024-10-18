@@ -161,6 +161,7 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
 
   return (
     <Page
+      forceShow={!id || info.data?.status}
       footer={
         <SRender render={info?.data?.destination_id ? (!isReadMode && !isEditingMode) : null}>
           <Flex flex={1} align={'center'}>
@@ -209,7 +210,7 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
         </SRender>
       }
       onCancel={onReset}
-      loading={carriers.loading || currencyList.loading || info.loading}
+      loading={carriers.loading || currencyList.loading || info.loading || (!!id && !info?.data?.status)}
       onOk={onOk}
       isChange={isReadMode ? undefined : isChange}
       bottom={64}

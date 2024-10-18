@@ -73,6 +73,7 @@ export default function Receive () {
 
   return (
     <Page
+      loading={info.loading || (!!id && !info?.data?.status)}
       back={`/products/purchase_orders/info/${id}`}
       width={950}
       title={
@@ -86,7 +87,6 @@ export default function Receive () {
     >
       <div style={{ minHeight: 400 }}>
         <SCard
-          loading={!list?.every(i => (i as any)?.image !== undefined) || info.loading}
           extra={
             <Flex gap={4}>
               <Button type={'link'} size={'small'}>接收全部</Button>
@@ -98,7 +98,7 @@ export default function Receive () {
           <STable
             className={'table-border'}
             borderless
-            init
+            init={list?.every(i => (i as any)?.image !== undefined)}
             columns={columns}
             data={list || []}
           />
