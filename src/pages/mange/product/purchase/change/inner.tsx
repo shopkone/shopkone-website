@@ -239,12 +239,12 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
           </Flex>
           <div className={'line'} style={{ margin: 0 }} />
           <Flex gap={16} style={{ padding: 16, paddingBottom: 0 }} >
-            <Form.Item name={'payment_terms'} className={'flex1'} label={t('Payment Terms')}>
+            <Form.Item name={'payment_terms'} className={'flex1'} label={t('支付条款')}>
               <FormRender infoMode={isReadMode} render={(value?: number) => (paymentTerms)[value || 0]?.label}>
                 <SSelect options={paymentTerms} />
               </FormRender>
             </Form.Item>
-            <Form.Item name={'currency_code'} label={t('Supplier currency')} className={'flex1'}>
+            <Form.Item name={'currency_code'} label={t('供应商货币')} className={'flex1'}>
               <FormRender infoMode={isReadMode} render={(code?: string) => currencyList?.data?.find(item => item.code === code)?.title}>
                 <SSelect
                   listHeight={400}
@@ -271,9 +271,9 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
           </Flex>
         </div>
 
-        <SCard style={{ marginBottom: 16 }} title={t('Shipping details')}>
+        <SCard style={{ marginBottom: 16 }} title={t('运输详细信息')}>
           <Flex gap={16}>
-            <Form.Item name={'estimated_arrival'} label={t('Estimated Arrival')} className={'flex1 mb0'}>
+            <Form.Item name={'estimated_arrival'} label={t('预计配送日期')} className={'flex1 mb0'}>
               <FormRender render={(value?: number) => (value ? dayjs(value * 1000).format('YYYY-MM-DD') : renderText())} infoMode={isReadMode}>
                 <SDatePicker allowClear rootClassName={'fit-width'} />
               </FormRender>

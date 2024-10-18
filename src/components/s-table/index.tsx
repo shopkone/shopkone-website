@@ -187,7 +187,7 @@ function STable (props: STableProps) {
                   timer.current = setTimeout(() => {
                     clearTimeout(timer.current)
                     timer.current = undefined
-                  }, 200)
+                  }, 300)
                 }
               : undefined,
             onMouseUp: onRowClick
