@@ -94,7 +94,7 @@ export default function SelectVariants (props: SelectVariantsProps) {
     }
     list = [...new Set([...list, ...(disabled || [])])]
     if (list.length >= 200) {
-      sMessage.warning('Select up to 200 variants/products. The first 200 are pre-selected.')
+      sMessage.warning(('最多可选中200个款式，已选满200个'))
     }
     setSelected(list.filter((i, index) => index < 200))
   }
@@ -133,9 +133,9 @@ export default function SelectVariants (props: SelectVariantsProps) {
               <Flex onClick={!row.children?.length ? () => { onSelectParent(row) } : undefined} className={styles.checkbox}>
                 <Checkbox
                   disabled={getIsDisabled(row)}
-                  indeterminate={!row.variants?.every(i => selected.includes(i.id)) && row.variants?.some(i => selected.includes(i.id))}
+                  indeterminate={!(row.variants?.every(i => selected.includes(i.id)) || selected?.length === 200) && row.variants?.some(i => selected.includes(i.id))}
                   onChange={() => { onSelectParent(row) }}
-                  checked={row.variants?.every(i => selected.includes(i.id))}
+                  checked={row.variants?.every(i => selected.includes(i.id)) || selected?.length === 200}
                   style={{ marginLeft: 4 }}
                 />
               </Flex>

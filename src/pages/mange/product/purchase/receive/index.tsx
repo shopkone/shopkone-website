@@ -61,6 +61,7 @@ export default function Receive () {
       return { ...item, received_count: remain, rejected_count: 0 }
     })
     setList(items || [])
+    sMessage.success(t('已自动分配'))
   }
 
   const onRejectAll = () => {
@@ -70,6 +71,7 @@ export default function Receive () {
       return { ...item, rejected_count: remain, received_count: 0 }
     })
     setList(items || [])
+    sMessage.success(t('已自动分配'))
   }
 
   const onReset = () => {
