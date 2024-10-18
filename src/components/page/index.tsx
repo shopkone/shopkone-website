@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { IconArrowLeft } from '@tabler/icons-react'
 import { Button, Flex, Typography } from 'antd'
@@ -24,10 +24,11 @@ export interface PageProps {
   loading?: boolean
   resetLoading?: boolean
   type: 'product' | 'settings'
+  okText?: ReactNode
 }
 
 export default function Page (props: PageProps) {
-  const { children, width, header, footer, title, back, isChange, bottom, onOk, onCancel, loading = false, resetLoading = false, type } = props
+  const { children, width, header, footer, title, back, isChange, bottom, onOk, onCancel, loading = false, resetLoading = false, type, okText } = props
   const nav = useNavigate()
   const [confirmLoading, setConfirmLoading] = useState(false)
   const setIsChange = useLayoutState(state => state.setChange)
@@ -35,6 +36,7 @@ export default function Page (props: PageProps) {
   const resetPage = useLayoutState(state => state.reset)
   const setResetLoading = useLayoutState(state => state.setResetLoading)
   const setT = useLayoutState(state => state.setT)
+  const setOkText = useLayoutState(state => state.setOkText)
   const { language, t } = useLoadLanguage(`/page/${type}`)
 
   const onOkHandle = async () => {
@@ -65,6 +67,12 @@ export default function Page (props: PageProps) {
   useEffect(() => {
     document.getElementById('shopkone-main')?.scrollTo?.({ top: 0 })
   }, [])
+
+  useEffect(() => {
+    if (okText) {
+      setOkText(okText)
+    }
+  }, [okText])
 
   useEffect(() => {
     if (!language?.data?.data) return
@@ -104,7 +112,7 @@ export default function Page (props: PageProps) {
         <Flex gap={12} align={'center'} className={styles.footer}>
           {footer}
           <SRender render={isChange !== undefined}>
-            <Button onClick={onOkHandle} loading={confirmLoading} disabled={!isChange} type={'primary'}>Save</Button>
+            <Button onClick={onOkHandle} loading={confirmLoading} disabled={!isChange} type={'primary'}>{okText || 'Save'}</Button>
           </SRender>
         </Flex>
       </SLoading>

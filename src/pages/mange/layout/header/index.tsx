@@ -66,7 +66,7 @@ export default function Header () {
             </Flex>
             <Flex align={'center'} gap={12}>
               <Button loading={page.resetLoading} onClick={page.onCancel}>Discard</Button>
-              <Button onClick={onOkHandler} type={'primary'} loading={confirmLoading}>Save</Button>
+              <Button onClick={onOkHandler} type={'primary'} loading={confirmLoading}>{page.okText || 'Save'}</Button>
             </Flex>
           </Flex>
         </Flex>

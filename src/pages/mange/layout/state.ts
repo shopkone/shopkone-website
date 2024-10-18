@@ -1,3 +1,4 @@
+import { ReactNode } from 'react'
 import { create } from 'zustand/react'
 
 export interface LayoutState {
@@ -6,6 +7,7 @@ export interface LayoutState {
   onOk?: () => Promise<void> | void
   resetLoading: boolean
   t?: (query: string) => string
+  okText?: ReactNode
 }
 
 export interface LayoutAction {
@@ -14,6 +16,7 @@ export interface LayoutAction {
   setAction: (action: { onCancel: LayoutState['onCancel'], onOk: LayoutState['onOk'] }) => void
   setResetLoading: (loading: boolean) => void
   setT: (t: LayoutState['t']) => void
+  setOkText: (text: ReactNode) => void
 }
 
 export const useLayoutState = create<LayoutState & LayoutAction>((set, get, store) => ({
@@ -36,5 +39,9 @@ export const useLayoutState = create<LayoutState & LayoutAction>((set, get, stor
 
   setT: (t) => {
     set({ t })
+  },
+
+  setOkText: (text) => {
+    set({ okText: text })
   }
 }))

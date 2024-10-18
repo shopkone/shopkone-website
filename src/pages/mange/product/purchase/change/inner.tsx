@@ -17,6 +17,7 @@ import Page from '@/components/page'
 import SCard from '@/components/s-card'
 import SDatePicker from '@/components/s-date-picker'
 import { sMessage } from '@/components/s-message'
+import { useModal } from '@/components/s-modal'
 import SRender from '@/components/s-render'
 import SSelect from '@/components/s-select'
 import { getPaymentTerms } from '@/constant/purchase'
@@ -50,10 +51,12 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
   const init = useRef<any>()
   const [isChange, setIsChange] = useState(false)
   const nav = useNavigate()
-
+  const modal = useModal()
   const paymentTerms = getPaymentTerms(t)
 
-  const isInfo = id && window.location.href.includes('info')
+  const isReadMode = id && window.location.href.includes('info')
+  const isDraftStatus = info?.data?.status === PurchaseStatus.Draft
+  const isNonEditableStatus = [1, 5].includes(info?.data?.status || 0)
 
   const onOk = async () => {
     await form.validateFields()
@@ -85,7 +88,7 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
   }
 
   // 编辑模式（已订购并且处于编辑的模式）
-  const isEditingMode = !isInfo && (info.data?.status !== PurchaseStatus.Draft)
+  const isEditingMode = id && !isReadMode && !isDraftStatus
 
   const onValuesChange = () => {
     const values = form.getFieldsValue()
@@ -103,10 +106,16 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
 
   const markToOrderedHandle = async () => {
     if (!id) return
-    await markToOrdered.runAsync({ id: Number(id) })
-    onFresh(Number(id))
-    sMessage.success('Purchase order marked to ordered!')
-    nav(`/products/purchase_orders/info/${id}`)
+    modal.confirm({
+      title: 'Mark as ordered?',
+      content: 'After marking as ordered you will be able to receive incoming inventory from your supplier. This purchase order can\'t be turned into a draft again.',
+      onOk: async () => {
+        await markToOrdered.runAsync({ id: Number(id) })
+        onFresh(Number(id))
+        sMessage.success('Purchase order marked to ordered!')
+        nav(`/products/purchase_orders/info/${id}`)
+      }
+    })
   }
 
   const title = useMemo(() => {
@@ -153,7 +162,7 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
   return (
     <Page
       footer={
-        <SRender render={info?.data?.destination_id ? (!isInfo && !isEditingMode) : null}>
+        <SRender render={info?.data?.destination_id ? (!isReadMode && !isEditingMode) : null}>
           <Flex flex={1} align={'center'}>
             <Button type={'primary'} danger>Delete</Button>
           </Flex>
@@ -162,7 +171,7 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
       header={
         <SRender render={info.data?.status ? !isEditingMode : null}>
           <Flex gap={12} align={'center'}>
-            <SRender render={![1, 5].includes(info?.data?.status || 0)}>
+            <SRender render={!isNonEditableStatus}>
               <Button onClick={() => { nav(`/products/purchase_orders/change/${id}`) }} type={'text'}>
                 {t('编辑')}
               </Button>
@@ -171,7 +180,7 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
               trigger={'click'}
               content={
                 <Flex vertical>
-                  <SRender render={![1, 5].includes(info?.data?.status || 0)}>
+                  <SRender render={!isNonEditableStatus}>
                     <Button style={{ textAlign: 'left', fontWeight: 500 }} type={'text'} block>关闭采购订单</Button>
                   </SRender>
                   <Button style={{ textAlign: 'left', fontWeight: 500 }} type={'text'} block>导出DPF</Button>
@@ -186,12 +195,12 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
                 <IconChevronDown size={14} />
               </Button>
             </Popover>
-            <SRender render={info.data?.status === PurchaseStatus.Draft}>
-              <Button onClick={markToOrderedHandle} loading={markToOrdered.loading} type={'primary'}>
+            <SRender render={isDraftStatus}>
+              <Button onClick={markToOrderedHandle} type={'primary'}>
                 {t('标记为已订购')}
               </Button>
             </SRender>
-            <SRender render={![1, 5].includes(info?.data?.status || 0)}>
+            <SRender render={!isNonEditableStatus}>
               <Button type={'primary'}>
                 {t('接收库存')}
               </Button>
@@ -202,12 +211,13 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
       onCancel={onReset}
       loading={carriers.loading || currencyList.loading || info.loading}
       onOk={onOk}
-      isChange={isInfo ? undefined : isChange}
+      isChange={isReadMode ? undefined : isChange}
       bottom={64}
       type={'product'}
       width={950}
       title={title}
       back={backUrl}
+      okText={!id ? 'Save as draft' : ''}
     >
       <Form onValuesChange={onValuesChange} form={form} layout={'vertical'}>
         <div className={styles.card}>
@@ -215,25 +225,25 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
             <div className={styles.item}>
               <div className={styles.title}>{t('Supplier')}</div>
               <Form.Item style={{ margin: 0 }} name={'supplier_id'}>
-                <Supplier infoMode={isInfo || !(info?.data?.status === PurchaseStatus.Draft)} />
+                <Supplier infoMode={id ? isReadMode || !isDraftStatus : null} />
               </Form.Item>
             </div>
             <div className={styles.item}>
               <div className={styles.title}>{t('Destination')}</div>
               <Form.Item style={{ margin: 0, padding: 0 }} name={'destination_id'}>
-                <Destination infoMode={isInfo || !(info?.data?.status === PurchaseStatus.Draft)} onValuesChange={onValuesChange} />
+                <Destination infoMode={id ? isReadMode || !(isDraftStatus) : null} onValuesChange={onValuesChange} />
               </Form.Item>
             </div>
           </Flex>
           <div className={'line'} style={{ margin: 0 }} />
           <Flex gap={16} style={{ padding: 16, paddingBottom: 0 }} >
             <Form.Item name={'payment_terms'} className={'flex1'} label={t('Payment Terms')}>
-              <FormRender infoMode={isInfo} render={(value?: number) => (paymentTerms)[value || 0]?.label}>
+              <FormRender infoMode={isReadMode} render={(value?: number) => (paymentTerms)[value || 0]?.label}>
                 <SSelect options={paymentTerms} />
               </FormRender>
             </Form.Item>
             <Form.Item name={'currency_code'} label={t('Supplier currency')} className={'flex1'}>
-              <FormRender infoMode={isInfo} render={(code?: string) => currencyList?.data?.find(item => item.code === code)?.title}>
+              <FormRender infoMode={isReadMode} render={(code?: string) => currencyList?.data?.find(item => item.code === code)?.title}>
                 <SSelect
                   listHeight={400}
                   showSearch
@@ -242,7 +252,7 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
                 />
               </FormRender>
             </Form.Item>
-            <SRender render={isInfo}>
+            <SRender render={isReadMode}>
               <Flex gap={20} flex={2} vertical>
                 <Progress />
                 <Flex gap={16} justify={'flex-end'}>
@@ -270,12 +280,12 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
         <SCard style={{ marginBottom: 16 }} title={t('Shipping details')}>
           <Flex gap={16}>
             <Form.Item name={'estimated_arrival'} label={t('Estimated Arrival')} className={'flex1 mb0'}>
-              <FormRender render={(value?: number) => (value ? dayjs(value * 1000).format('YYYY-MM-DD') : renderText())} infoMode={isInfo}>
+              <FormRender render={(value?: number) => (value ? dayjs(value * 1000).format('YYYY-MM-DD') : renderText())} infoMode={isReadMode}>
                 <SDatePicker allowClear rootClassName={'fit-width'} />
               </FormRender>
             </Form.Item>
             <Form.Item name={'carrier_id'} label={t('Shipping carrier')} className={'flex1 mb0'}>
-              <FormRender infoMode={isInfo} render={(value?: number) => (carriers.data?.find(item => item.id === value)?.name)}>
+              <FormRender infoMode={isReadMode} render={(value?: number) => (carriers.data?.find(item => item.id === value)?.name)}>
                 <SSelect
                   allowClear
                   showSearch
@@ -289,7 +299,7 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
               label={t('Delivery number')}
               className={'flex1 mb0'}
             >
-              <FormRender infoMode={isInfo} render={v => v}>
+              <FormRender infoMode={isReadMode} render={v => v}>
                 <Input autoComplete={'off'} />
               </FormRender>
             </Form.Item>
@@ -297,17 +307,17 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
         </SCard>
 
         <Form.Item name={'purchase_items'}>
-          <Products infoMode={isInfo} />
+          <Products infoMode={isReadMode} />
         </Form.Item>
 
         <Flex gap={16}>
           <Form.Item className={'mb0 flex1'} name={'adjust'}>
-            <CostSummary infoMode={isInfo} />
+            <CostSummary infoMode={isReadMode} />
           </Form.Item>
 
           <SCard className={'flex1'} title={t('Remarks')} style={{ marginTop: 16 }}>
             <Form.Item className={'mb0'} name={'remarks'}>
-              <FormRender render={v => v} infoMode={isInfo}>
+              <FormRender render={v => v} infoMode={isReadMode}>
                 <Input.TextArea autoSize={{ minRows: 4 }} />
               </FormRender>
             </Form.Item>

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { IconInfoCircleFilled } from '@tabler/icons-react'
-import { App, Modal, ModalFuncProps, ModalProps, Typography } from 'antd'
+import { App, Flex, Modal, ModalFuncProps, ModalProps, Typography } from 'antd'
 
 export const useModal = () => {
   const modal = useRef<{
@@ -20,13 +20,23 @@ export const useModal = () => {
     if (icon) {
       return icon
     }
-    return <IconInfoCircleFilled style={{ marginRight: 8, marginTop: -2 }} size={24} color={'#1456f0'} />
+    return (
+      <Flex align={'center'} className={'shopkone-modal-confirm-icon'}>
+        <IconInfoCircleFilled size={20} color={'#1456f0'} />
+      </Flex>
+    )
   }
 
   useEffect(() => {
     modal.current.confirm = (props: ModalFuncProps = {}) => {
       const { title = 'Tips' } = props
-      m.confirm({ centered: true, title, icon: renderIcon(props), width: 450, ...props })
+      m.confirm({
+        centered: true,
+        title,
+        icon: renderIcon(props),
+        width: 500,
+        ...props
+      })
     }
     modal.current.info = (props: ModalFuncProps = {}) => {
       const { title = 'Tips' } = props
