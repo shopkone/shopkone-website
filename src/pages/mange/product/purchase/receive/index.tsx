@@ -126,9 +126,9 @@ export default function Receive () {
         <Flex gap={4} align={'center'}>
           <SInputNumber required value={received_count || 0} onChange={v => { onUpdate(row, 'received_count', v) }} uint />
           <Button
-            disabled={reduce(row.purchasing, row.received, row.received) <= 0}
+            disabled={reduce(row.purchasing, row.received, row.rejected) <= 0}
             onClick={() => {
-              const remain = row.purchasing - (row.received || 0) - (row.rejected || 0)
+              const remain = reduce(row.purchasing, row.received, row.rejected)
               if (remain >= 0) {
                 onUpdate(row, 'received_count', remain)
                 onUpdate(row, 'rejected_count', 0)
@@ -149,9 +149,9 @@ export default function Receive () {
         <Flex gap={4} align={'center'}>
           <SInputNumber required value={rejected_count || 0} onChange={v => { onUpdate(row, 'rejected_count', v) }} uint />
           <Button
-            disabled={reduce(row.purchasing, row.received, row.received) <= 0}
+            disabled={reduce(row.purchasing, row.received, row.rejected) <= 0}
             onClick={() => {
-              const remain = row.purchasing - (row.received || 0) - (row.rejected || 0)
+              const remain = reduce(row.purchasing, row.received, row.rejected)
               if (remain >= 0) {
                 onUpdate(row, 'rejected_count', remain)
                 onUpdate(row, 'received_count', 0)

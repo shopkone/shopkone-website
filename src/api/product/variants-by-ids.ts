@@ -25,6 +25,8 @@ export interface VariantsByIdsRes {
   image: string
   name: string
   product_title: string
+  rejected?: number
+  received?: number
 }
 
 const variantsByIds = async (data: VariantsByIdsReq) => {

@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useMemo, useState } from 'react'
 import { IconChevronDown, IconPhoto, IconTrash } from '@tabler/icons-react'
-import { Button, Empty, Flex, Input, Popover, Typography } from 'antd'
+import { Button, Empty, Flex, Input, Popover, Tooltip, Typography } from 'antd'
 
 import { FileType } from '@/api/file/add-file-record'
 import { useVariantsByIds, VariantsByIdsRes } from '@/api/product/variants-by-ids'
@@ -203,9 +203,11 @@ export default function Products (props: ProductsProps) {
       name: 'action',
       render: (_, row: VariantsByIdsRes) => (
         <Flex align={'center'} justify={'center'}>
-          <IconButton type={'text'} size={24}>
-            <IconTrash onClick={() => { onRemove(row) }} size={15} />
-          </IconButton>
+          <Tooltip title={(!!row.rejected || !!row.received) ? '无法删除已经接收/拒绝的商品' : 'Remove'}>
+            <IconButton disabled={!!row.rejected || !!row.received} type={'text'} size={24}>
+              <IconTrash onClick={() => { onRemove(row) }} size={15} />
+            </IconButton>
+          </Tooltip>
         </Flex>
       ),
       width: 50,
