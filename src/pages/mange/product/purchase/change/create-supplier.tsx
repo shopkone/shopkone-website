@@ -4,13 +4,15 @@ import { FormInstance } from 'antd'
 
 import { AddressType } from '@/api/common/address'
 import { CreateSupplierApi } from '@/api/product/create-supplier'
+import { SupplierListRes } from '@/api/product/supplier-list'
+import { SupplierUpdateApi } from '@/api/product/supplier-update'
 import Address from '@/components/address'
 import { sMessage } from '@/components/s-message'
 import SModal from '@/components/s-modal'
 import { UseOpenType } from '@/hooks/useOpen'
 
 export interface CreateSupplierProps {
-  info: UseOpenType<unknown>
+  info: UseOpenType<SupplierListRes>
   onOk: (id: number) => Promise<void>
 }
 
@@ -18,32 +20,38 @@ export default function CreateSupplier (props: CreateSupplierProps) {
   const { info, onOk } = props
   const [value, onChange] = useState<AddressType>()
   const create = useRequest(CreateSupplierApi, { manual: true })
+  const update = useRequest(SupplierUpdateApi, { manual: true })
 
   const form = useRef<FormInstance>()
 
   const onConfirm = async () => {
     await form?.current?.validateFields()
     if (!value) return
-    const ret = await create.runAsync({ address: value })
+    if (!info.data?.id) {
+      const ret = await create.runAsync({ address: value })
+      sMessage.success('供应商创建成功')
+      onOk(ret.id)
+    } else {
+      await update.runAsync({ address: value, id: info?.data?.id })
+      onOk(info?.data?.id)
+      sMessage.success('供应商信息更新成功')
+    }
     info.close()
-    onOk(ret.id)
-    sMessage.success('Supplier created!')
   }
 
   useEffect(() => {
     if (!info.open) return
-    onChange(undefined)
+    onChange(info.data?.address)
   }, [info.open])
 
   return (
     <SModal
-
-      confirmLoading={create.loading}
+      confirmLoading={create.loading || update.loading}
       onOk={onConfirm}
       onCancel={info.close}
       open={info.open}
       width={600}
-      title={'Create Supplier'}
+      title={info?.data?.id ? '编辑供应商信息' : '创建供应商'}
     >
       <div style={{ padding: 16 }}>
         <Address

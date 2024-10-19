@@ -1,14 +1,16 @@
 import { ReactNode, useState } from 'react'
 import { useRequest } from 'ahooks'
-import { Button, Flex, Typography } from 'antd'
+import { Button, Flex, Popover, Typography } from 'antd'
 
-import { SupplierListApi } from '@/api/product/supplier-list'
+import { useCountries } from '@/api/base/countries'
+import { SupplierListApi, SupplierListRes } from '@/api/product/supplier-list'
 import SRender from '@/components/s-render'
 import SSelect from '@/components/s-select'
 import { useI18n } from '@/hooks/use-lang'
 import { useOpen } from '@/hooks/useOpen'
 import CreateSupplier from '@/pages/mange/product/purchase/change/create-supplier'
 import styles from '@/pages/mange/product/purchase/change/index.module.less'
+import { formatInfo } from '@/utils/format'
 import { renderText } from '@/utils/render-text'
 
 export interface SupplierProps {
@@ -23,8 +25,9 @@ export default function Supplier (props: SupplierProps) {
 
   const supplierList = useRequest(SupplierListApi)
   const [openSelect, setOpenSelect] = useState(false)
-
-  const supplierInfo = useOpen()
+  const countries = useCountries()
+  const supplierInfo = useOpen<SupplierListRes>()
+  const [open, setOpen] = useState(false)
 
   return (
     <Flex style={{ maxWidth: 433 }} align={'flex-end'}>
@@ -32,7 +35,7 @@ export default function Supplier (props: SupplierProps) {
         <SSelect
           value={value}
           onChange={onChange}
-          loading={supplierList.loading}
+          loading={supplierList.loading || countries.loading}
           options={supplierList.data?.map(item => ({ value: item.id, label: item.address?.legal_business_name }))}
           open={openSelect}
           onDropdownVisibleChange={setOpenSelect}
@@ -69,9 +72,44 @@ export default function Supplier (props: SupplierProps) {
 
       <SRender render={value}>
         <Flex style={{ flexShrink: 0, position: 'relative', top: infoMode ? 3 : -3 }} flex={1} justify={'flex-end'}>
-          <Button type={'link'} size={'small'}>
-            {t('供应商详细信息')}
-          </Button>
+          <Popover
+            arrow={false}
+            placement={'bottom'}
+            open={open}
+            onOpenChange={setOpen}
+            trigger={'click'}
+            content={
+              <div style={{ maxWidth: 300 }}>
+                <div style={{
+                  fontWeight: 600,
+                  fontSize: 14,
+                  marginBottom: 8
+                }}
+                >
+                  {renderText(supplierList?.data?.find(i => i.id === value)?.address?.legal_business_name)}
+                </div>
+                {formatInfo(countries, supplierList?.data?.find(i => i.id === value)?.address)}
+                <Button
+                  onClick={() => {
+                    setOpen(false)
+                    supplierInfo.edit(supplierList?.data?.find(i => i.id === value))
+                  }}
+                  style={{
+                    marginLeft: -8,
+                    marginTop: 8
+                  }}
+                  type={'link'}
+                  size={'small'}
+                >
+                  {t('编辑供应商信息')}
+                </Button>
+              </div>
+            }
+          >
+            <Button type={'link'} size={'small'}>
+              {t('供应商详细信息')}
+            </Button>
+          </Popover>
         </Flex>
       </SRender>
 

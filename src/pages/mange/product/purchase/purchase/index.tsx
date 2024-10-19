@@ -1,18 +1,22 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { IconChevronDown } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
-import { Button, Flex, Typography } from 'antd'
+import { Button, Flex, Popover, Typography } from 'antd'
 import dayjs from 'dayjs'
 
 import { LocationListApi } from '@/api/location/list'
 import { SupplierListApi } from '@/api/product/supplier-list'
-import { PurchaseListApi, PurchaseListReq } from '@/api/purchase/list'
+import { PurchaseListApi, PurchaseListReq, PurchaseListRes } from '@/api/purchase/list'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
 import STable, { STableProps } from '@/components/s-table'
 import { getPurchaseStatus } from '@/constant/purchase'
 import { useI18n } from '@/hooks/use-lang'
+import Detail from '@/pages/mange/product/purchase/change/detail'
+import Progress from '@/pages/mange/product/purchase/change/progress'
 import Filters from '@/pages/mange/product/purchase/purchase/filters'
+import styles from '@/pages/mange/product/purchase/receive/index.module.less'
 import { formatPrice } from '@/utils/num'
 import { renderText } from '@/utils/render-text'
 
@@ -62,25 +66,40 @@ export default function Purchase () {
       width: 120
     },
     {
-      title: '采购数',
-      code: 'purchasing',
-      name: 'purchasing',
-      render: (purchasing: number) => <div>{purchasing} 件</div>,
-      width: 80
-    },
-    {
-      title: '已入库',
-      code: 'received',
-      name: 'received',
-      render: (received: number) => <div>{received} 件</div>,
-      width: 80
-    },
-    {
-      title: '已拒收',
-      code: 'rejected',
-      name: 'rejected',
-      render: (rejected: number) => <div>{rejected} 件</div>,
-      width: 80
+      title: '收货数量',
+      code: 'id',
+      name: 'id',
+      render: (_, row: PurchaseListRes) => {
+        return (
+          <Flex onMouseDown={e => { e.stopPropagation() }} vertical gap={8} style={{ marginTop: 4, paddingRight: 12, cursor: 'default' }}>
+            <Progress
+              purchasing={row.purchasing}
+              received={row.received}
+              rejected={row.rejected}
+            />
+            <Popover
+              arrow={false}
+              placement={'bottomLeft'}
+              trigger={'click'}
+              content={
+                <Detail
+                  received={row.received}
+                  purchasing={row.purchasing}
+                  rejected={row.rejected}
+                  vertical
+                />
+              }
+              overlayInnerStyle={{ padding: '16px 8px' }}
+            >
+              <Flex align={'center'} className={styles.more}>
+                {row.received + row.rejected} / {row.purchasing}
+                <IconChevronDown style={{ marginLeft: 4, marginTop: -1 }} size={13} />
+              </Flex>
+            </Popover>
+          </Flex>
+        )
+      },
+      width: 150
     },
     {
       title: 'Total',
