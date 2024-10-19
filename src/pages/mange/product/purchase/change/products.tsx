@@ -34,7 +34,7 @@ export interface ProductsProps {
 
 export default function Products (props: ProductsProps) {
   const { value, onChange, infoMode, status } = props
-  const { run, loading, data } = useVariantsByIds()
+  const { run, data } = useVariantsByIds()
   const { id } = useParams()
 
   const t = useI18n()

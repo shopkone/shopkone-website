@@ -43,6 +43,7 @@ export default function Sider () {
         { label: 'Collections', key: 'collections' },
         { label: 'Inventory', key: 'inventory' },
         { label: 'Purchase orders', key: 'purchase_orders' },
+        { label: '转移', key: 'transfers' },
         { label: 'Gift cards', key: 'gift_cards' }
       ],
       icon: <IconTag size={16} />
