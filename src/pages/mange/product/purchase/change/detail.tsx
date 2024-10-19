@@ -16,7 +16,7 @@ export default function Detail (props: DetailProps) {
     <Flex vertical={vertical} gap={16} justify={'flex-end'}>
       <Flex gap={4} align={'center'}>
         <div style={{ background: '#2e7d32' }} className={styles.progressBlock} />
-        已收货
+        已入库
         <span>({received})</span>
       </Flex>
       <Flex gap={4} align={'center'}>

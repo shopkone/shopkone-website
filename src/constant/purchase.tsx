@@ -1,3 +1,6 @@
+import { PurchaseStatus } from '@/api/purchase/info'
+import Status from '@/components/status'
+
 export const getPaymentTerms = (t: any) => {
   return [
     { value: 0, label: t('无') },
@@ -23,3 +26,20 @@ export const getAdjustTypeOptions = (t: any) => [
   { label: t('附加费'), value: 7 },
   { label: t('其他'), value: 8 }
 ]
+
+export const getPurchaseStatus = (t: any, status?: PurchaseStatus, borderless?: boolean) => {
+  console.log({ status })
+  switch (status) {
+    case PurchaseStatus.Closed:
+      return <Status borderless={borderless} type={'error'}>{t('已关闭')}</Status>
+    case PurchaseStatus.Draft:
+      return <Status borderless={borderless} type={'default'}>{t('草稿')}</Status>
+    case PurchaseStatus.Ordered:
+      return <Status borderless={borderless} type={'info'}>{t('已订购')}</Status>
+    case PurchaseStatus.PartialReceived:
+      return <Status borderless={borderless} type={'warning'}>{t('部分处理')}</Status>
+    case PurchaseStatus.Received:
+      return <Status borderless={borderless} type={'success'}>{t('已完成')}</Status>
+  }
+  return ''
+}

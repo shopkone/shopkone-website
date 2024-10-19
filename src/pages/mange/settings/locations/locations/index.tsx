@@ -15,6 +15,7 @@ export default function Locations () {
 
   return (
     <Page
+      type={'settings'}
       bottom={64}
       header={
         <SRender render={list.data?.length}>

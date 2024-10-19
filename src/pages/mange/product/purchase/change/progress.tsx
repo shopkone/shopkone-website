@@ -17,7 +17,7 @@ export default function Progress (props: ProgressProps) {
   return (
     <div className={styles.progressWrapper}>
       <SRender render={received}>
-        <Tooltip mouseEnterDelay={0} title={`已收货 (${received})`}>
+        <Tooltip mouseEnterDelay={0} title={`已入库 (${received})`}>
           <div className={styles.progress} style={{ background: '#2e7d32', flex: received }} />
         </Tooltip>
       </SRender>

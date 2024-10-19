@@ -1,4 +1,5 @@
 import { ReactNode, useEffect, useMemo, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import { IconChevronDown, IconPhoto, IconTrash } from '@tabler/icons-react'
 import { Button, Empty, Flex, Input, Popover, Tooltip, Typography } from 'antd'
 import cloneDeep from 'lodash/cloneDeep'
@@ -6,6 +7,7 @@ import cloneDeep from 'lodash/cloneDeep'
 import { FileType } from '@/api/file/add-file-record'
 import { useVariantsByIds, VariantsByIdsRes } from '@/api/product/variants-by-ids'
 import { PurchaseItem } from '@/api/purchase/base'
+import { PurchaseStatus } from '@/api/purchase/info'
 import FileImage from '@/components/file-image'
 import IconButton from '@/components/icon-button'
 import SCard from '@/components/s-card'
@@ -27,15 +29,18 @@ export interface ProductsProps {
   onChange?: (value: PurchaseItem[]) => void
   value?: PurchaseItem[]
   infoMode: ReactNode
+  status?: PurchaseStatus
 }
 
 export default function Products (props: ProductsProps) {
-  const { value, onChange, infoMode } = props
+  const { value, onChange, infoMode, status } = props
   const { run, loading, data } = useVariantsByIds()
+  const { id } = useParams()
 
   const t = useI18n()
   const openInfo = useOpen<number[]>([])
   const [page, setPage] = useState({ current: 1, pageSize: 20 })
+  const nav = useNavigate()
 
   const renderValue = useMemo(() => {
     if (!value) return []
@@ -64,21 +69,26 @@ export default function Products (props: ProductsProps) {
     if (!item) return
     // @ts-expect-error
     item[key] = v
+    const productCount = !status || status === PurchaseStatus.Draft ? (item?.purchasing || 0) : i.received
     let total = item?.total
     if (key === 'cost') {
-      total = ((Number(v) || 0) + ((v || 0) * (item?.tax_rate || 0) / 100)) * (item?.purchasing || 0)
+      total = ((Number(v) || 0) + ((v || 0) * (item?.tax_rate || 0) / 100)) * (productCount || 0)
     }
     if (key === 'tax_rate') {
-      total = ((item?.cost || 0) + ((item?.cost || 0) * (v || 0) / 100)) * (item?.purchasing || 0)
+      total = ((item?.cost || 0) + ((item?.cost || 0) * (v || 0) / 100)) * (productCount || 0)
     }
     if (key === 'purchasing') {
-      total = ((item?.cost || 0) + ((item?.cost || 0) * (item?.tax_rate || 0) / 100)) * v
+      total = ((item?.cost || 0) + ((item?.cost || 0) * (item?.tax_rate || 0) / 100)) * (!status || status === PurchaseStatus.Draft ? v : (i.received || 0))
     }
     item = { ...item, total: roundPrice(total || 0) }
     const newValues = value?.map(valueItem => {
       return item?.id === valueItem.id ? item : valueItem
     })
     onChange?.(newValues || [])
+  }
+
+  const toReceive = () => {
+    nav(`/products/purchase_orders/receive/${id}`)
   }
 
   const columns: STableProps['columns'] = [
@@ -125,7 +135,7 @@ export default function Products (props: ProductsProps) {
       code: 'purchasing',
       name: 'purchasing',
       render: (purchasing: number, row: PurchaseItem) => (
-        <div>
+        <div onMouseDown={e => { e.stopPropagation() }} className={'fit-width'} style={{ cursor: 'default' }}>
           <SRender render={!infoMode}>
             <SInputNumber max={999999} min={1} uint value={purchasing} onChange={(v) => { onChangeValue(row, 'purchasing', v) }} />
           </SRender>
@@ -162,7 +172,7 @@ export default function Products (props: ProductsProps) {
       width: infoMode ? 180 : 120
     },
     {
-      title: t('费用'),
+      title: t('成本'),
       code: 'cost',
       name: 'cost',
       render: (cost: number, row: PurchaseItem) => (
@@ -208,7 +218,7 @@ export default function Products (props: ProductsProps) {
       name: 'action',
       render: (_, row: VariantsByIdsRes) => (
         <Flex align={'center'} justify={'center'}>
-          <Tooltip title={(!!row.rejected || !!row.received) ? '无法删除已经接收/拒绝的商品' : 'Remove'}>
+          <Tooltip title={(!!row.rejected || !!row.received) ? t('无法删除已经接收/拒绝的商品') : t('删除')}>
             <IconButton disabled={!!row.rejected || !!row.received} type={'text'} size={24}>
               <IconTrash onClick={() => { onRemove(row) }} size={15} />
             </IconButton>
@@ -281,6 +291,7 @@ export default function Products (props: ProductsProps) {
               setPage({ current, pageSize })
             }
           }}
+          onRowClick={(infoMode && status && status !== PurchaseStatus.Closed) ? toReceive : undefined}
           columns={columns}
           data={renderList?.filter(i => (i as any).image !== undefined) || []}
           init={!!renderList?.filter(i => (i as any).image !== undefined)?.length}

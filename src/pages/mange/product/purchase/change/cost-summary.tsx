@@ -33,7 +33,7 @@ export default function CostSummary (props: CostSummaryProps) {
       taxFee += ((it.cost * it.purchasing * it.tax_rate * 0.01) || 0)
     })
     return { total: roundPrice(total), taxFee: roundPrice(taxFee) }
-  }, [items])
+  }, [items, value])
 
   const total = roundPrice(useMemo(() => {
     if (!value?.length) return summary.total || 0
@@ -59,7 +59,7 @@ export default function CostSummary (props: CostSummaryProps) {
             </Button>
             )
       }
-      title={t('费用汇总')}
+      title={t('成本汇总')}
       style={{ marginTop: 16 }}
     >
       <Flex gap={6} vertical>
@@ -80,7 +80,7 @@ export default function CostSummary (props: CostSummaryProps) {
 
       <SRender render={value?.length}>
         <Flex style={{ marginTop: 16 }} gap={6} vertical>
-          <div className={styles.detailsTitle}>{t('费用调整')}</div>
+          <div className={styles.detailsTitle}>{t('成本调整')}</div>
           {
             value?.map(i => (
               <Flex key={i.id} align={'center'} justify={'space-between'}>

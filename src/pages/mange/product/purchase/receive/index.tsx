@@ -21,7 +21,6 @@ import { useI18n } from '@/hooks/use-lang'
 import Detail from '@/pages/mange/product/purchase/change/detail'
 import Progress from '@/pages/mange/product/purchase/change/progress'
 import { reduce, sum } from '@/utils'
-import { isEqualHandle } from '@/utils/is-equal-handle'
 import { renderText } from '@/utils/render-text'
 
 import styles from './index.module.less'
@@ -120,7 +119,7 @@ export default function Receive () {
       width: 150
     },
     {
-      title: t('收货'),
+      title: t('入库'),
       code: 'received_count',
       width: 150,
       name: 'received_count',
@@ -172,7 +171,7 @@ export default function Receive () {
       code: 'rejected_count'
     },
     {
-      title: t('收货数量'),
+      title: t('入库数量'),
       width: 150,
       name: 'id',
       code: 'id',
@@ -232,8 +231,7 @@ export default function Receive () {
     if (!init.current?.length || init.current?.some((item: any) => item.image === undefined)) {
       init.current = cloneDeep(list)
     }
-    const isSame = isEqualHandle(list, init.current)
-    setIsChange(!isSame)
+    setIsChange(list?.some(i => i.received_count || i.rejected_count))
   }, [list])
 
   return (

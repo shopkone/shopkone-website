@@ -10,6 +10,7 @@ import { PurchaseListApi, PurchaseListReq } from '@/api/purchase/list'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
 import STable, { STableProps } from '@/components/s-table'
+import { getPurchaseStatus } from '@/constant/purchase'
 import { useI18n } from '@/hooks/use-lang'
 import Filters from '@/pages/mange/product/purchase/purchase/filters'
 import { formatPrice } from '@/utils/num'
@@ -55,15 +56,31 @@ export default function Purchase () {
       title: 'Status',
       code: 'status',
       name: 'status',
-      render: (status: number) => <div>{status}</div>,
+      render: (status: number) => {
+        return (<div style={{ display: 'inline-block' }}>{getPurchaseStatus(t, status, true)}</div>)
+      },
       width: 120
     },
     {
-      title: 'Received',
-      code: 'received_quantity',
-      name: 'received_quantity',
-      render: (received_quantity: number) => <div>{received_quantity}</div>,
-      width: 120
+      title: '采购数',
+      code: 'purchasing',
+      name: 'purchasing',
+      render: (purchasing: number) => <div>{purchasing} 件</div>,
+      width: 80
+    },
+    {
+      title: '已入库',
+      code: 'received',
+      name: 'received',
+      render: (received: number) => <div>{received} 件</div>,
+      width: 80
+    },
+    {
+      title: '已拒收',
+      code: 'rejected',
+      name: 'rejected',
+      render: (rejected: number) => <div>{rejected} 件</div>,
+      width: 80
     },
     {
       title: 'Total',

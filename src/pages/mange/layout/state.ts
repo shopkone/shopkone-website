@@ -15,7 +15,7 @@ export interface LayoutAction {
   reset: () => void
   setAction: (action: { onCancel: LayoutState['onCancel'], onOk: LayoutState['onOk'] }) => void
   setResetLoading: (loading: boolean) => void
-  setT: (t: LayoutState['t'], context?: any) => void
+  setT: (t: LayoutState['t']) => void
   setOkText: (text: ReactNode) => void
 }
 

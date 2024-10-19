@@ -7,6 +7,7 @@ import dayjs, { Dayjs } from 'dayjs'
 
 import { useCarriers } from '@/api/base/carriers'
 import { useCurrencyList } from '@/api/base/currency-list'
+import { PurchaseCloseApi } from '@/api/purchase/close'
 import { PurchaseCreateApi } from '@/api/purchase/create'
 import { PurchaseInfoApi, PurchaseStatus } from '@/api/purchase/info'
 import { PurchaseMarkToOrderedApi } from '@/api/purchase/markToOrdered'
@@ -20,7 +21,7 @@ import { sMessage } from '@/components/s-message'
 import { useModal } from '@/components/s-modal'
 import SRender from '@/components/s-render'
 import SSelect from '@/components/s-select'
-import { getPaymentTerms } from '@/constant/purchase'
+import { getPaymentTerms, getPurchaseStatus } from '@/constant/purchase'
 import { useI18n } from '@/hooks/use-lang'
 import CostSummary from '@/pages/mange/product/purchase/change/cost-summary'
 import Destination from '@/pages/mange/product/purchase/change/destination'
@@ -48,6 +49,7 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
   const info = useRequest(PurchaseInfoApi, { manual: true })
   const markToOrdered = useRequest(PurchaseMarkToOrderedApi, { manual: true })
   const remove = useRequest(PurchaseRemoveApi, { manual: true })
+  const close = useRequest(PurchaseCloseApi, { manual: true })
   const { id } = useParams()
   const init = useRef<any>()
   const [isChange, setIsChange] = useState(false)
@@ -58,6 +60,8 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
   const isReadMode = id && window.location.href.includes('info')
   const isDraftStatus = info?.data?.status === PurchaseStatus.Draft
   const isNonEditableStatus = [1, 5].includes(info?.data?.status || 0)
+  const isClosedStatus = info?.data?.status === PurchaseStatus.Closed
+  const [open, setOpen] = useState(false)
 
   const onOk = async () => {
     await form.validateFields()
@@ -81,6 +85,7 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
       })
       onFresh(Number(id))
       sMessage.success(t('采购单已更新'))
+      nav(`/products/purchase_orders/info/${id}`)
     } else {
       const ret = await create.runAsync(values)
       onFresh(ret.id)
@@ -105,6 +110,28 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
     setIsChange(false)
   }
 
+  const onClose = async () => {
+    await close.runAsync({ id: Number(id), close: info?.data?.status !== PurchaseStatus.Closed })
+    info.refresh()
+    sMessage.success(t(`采购单已${!isClosedStatus ? t('关闭') : t('开启')}`))
+    setOpen(false)
+  }
+
+  const onRemove = () => {
+    modal.confirm({
+      title: t('删除采购订单？'),
+      content: t('刪除此采购订单后无法撤销'),
+      okButtonProps: { danger: true },
+      okText: t('删除'),
+      onOk: async () => {
+        await remove.runAsync({ id: Number(id) })
+        onFresh(Number(id))
+        sMessage.success(t('删除成功'))
+        nav('/products/purchase_orders')
+      }
+    })
+  }
+
   const markToOrderedHandle = async () => {
     if (!id) return
     modal.confirm({
@@ -123,7 +150,7 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
     if (isEditingMode) {
       return (
         <Flex gap={8} align={'center'}>
-          <div>{t('Edit purchase order')}</div>
+          <div>{t('编辑采购单')}</div>
           <div style={{ fontSize: 13, fontWeight: 500 }}>{info?.data?.order_number}</div>
         </Flex>
       )
@@ -162,11 +189,10 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
 
   return (
     <Page
-      forceShow={!id || info.data?.status}
       footer={
         <SRender render={info?.data?.destination_id ? (!isReadMode && !isEditingMode) : null}>
           <Flex flex={1} align={'center'}>
-            <Button type={'primary'} danger>Delete</Button>
+            <Button type={'primary'} danger onClick={onRemove}>{t('删除')}</Button>
           </Flex>
         </SRender>
       }
@@ -182,12 +208,18 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
               trigger={'click'}
               content={
                 <Flex vertical>
-                  <SRender render={!isNonEditableStatus}>
-                    <Button style={{ textAlign: 'left', fontWeight: 500 }} type={'text'} block>关闭采购订单</Button>
+                  <SRender render={!isNonEditableStatus || isClosedStatus}>
+                    <Button loading={close.loading} onClick={onClose} style={{ textAlign: 'left', fontWeight: 500 }} type={'text'} block>
+                      {
+                        info?.data?.status === PurchaseStatus.Closed ? t('开启采购订单') : t('关闭采购订单')
+                      }
+                    </Button>
                   </SRender>
-                  <Button style={{ textAlign: 'left', fontWeight: 500 }} type={'text'} block>导出DPF</Button>
+                  <Button style={{ textAlign: 'left', fontWeight: 500 }} type={'text'} block>{t('导出DPF')}</Button>
                 </Flex>
               }
+              open={open}
+              onOpenChange={setOpen}
               arrow={false}
               placement={'bottom'}
               overlayInnerStyle={{ minWidth: 'fit-content' }}
@@ -217,7 +249,12 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
       bottom={120}
       type={'product'}
       width={950}
-      title={title}
+      title={
+        <Flex align={'center'} gap={8}>
+          {title}
+          {getPurchaseStatus(t, info?.data?.status)}
+        </Flex>
+      }
       back={backUrl}
       okText={!id ? t('保存为草稿') : t('保存')}
     >
@@ -301,7 +338,7 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
         </SCard>
 
         <Form.Item name={'purchase_items'}>
-          <Products infoMode={isReadMode} />
+          <Products status={info?.data?.status} infoMode={isReadMode} />
         </Form.Item>
 
         <Flex gap={16}>
