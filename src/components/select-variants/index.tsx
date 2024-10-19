@@ -93,9 +93,6 @@ export default function SelectVariants (props: SelectVariantsProps) {
       list = [...selected, ...row.variants?.map(i => i.id) || []]
     }
     list = [...new Set([...list, ...(disabled || [])])]
-    if (list.length >= 200) {
-      sMessage.warning(('最多可选中200个款式，已选满200个'))
-    }
     setSelected(list.filter((i, index) => index < 200))
   }
 
@@ -117,7 +114,6 @@ export default function SelectVariants (props: SelectVariantsProps) {
       onSelectChild(row)
     }
   }
-  // onClick={() => { setExpanded(expanded.includes(row.id) ? expanded.filter(i => i !== row.id) : [...expanded, row.id]) }}
 
   const moreRef = useRef<HTMLDivElement>(null)
   const [inViewport] = useInViewport(moreRef)
@@ -133,9 +129,9 @@ export default function SelectVariants (props: SelectVariantsProps) {
               <Flex onClick={!row.children?.length ? () => { onSelectParent(row) } : undefined} className={styles.checkbox}>
                 <Checkbox
                   disabled={getIsDisabled(row)}
-                  indeterminate={!(row.variants?.every(i => selected.includes(i.id)) || selected?.length === 200) && row.variants?.some(i => selected.includes(i.id))}
+                  indeterminate={!(row.variants?.every(i => selected.includes(i.id)) || (selected?.filter(i => row?.variants?.find(ii => ii.id === i))?.length === 200)) && row.variants?.some(i => selected.includes(i.id))}
                   onChange={() => { onSelectParent(row) }}
-                  checked={row.variants?.every(i => selected.includes(i.id)) || selected?.length === 200}
+                  checked={row.variants?.every(i => selected.includes(i.id)) || (selected?.filter(i => row?.variants?.find(ii => ii.id === i))?.length === 200)}
                   style={{ marginLeft: 4 }}
                 />
               </Flex>

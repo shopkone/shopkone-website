@@ -1,6 +1,7 @@
 import { ReactNode, useEffect, useMemo, useState } from 'react'
 import { IconChevronDown, IconPhoto, IconTrash } from '@tabler/icons-react'
 import { Button, Empty, Flex, Input, Popover, Tooltip, Typography } from 'antd'
+import cloneDeep from 'lodash/cloneDeep'
 
 import { FileType } from '@/api/file/add-file-record'
 import { useVariantsByIds, VariantsByIdsRes } from '@/api/product/variants-by-ids'
@@ -36,7 +37,7 @@ export default function Products (props: ProductsProps) {
   const openInfo = useOpen<number[]>([])
   const [page, setPage] = useState({ current: 1, pageSize: 20 })
 
-  const pageValue = useMemo(() => {
+  const renderValue = useMemo(() => {
     if (!value) return []
     return value.filter((item, index) => {
       const start = (page.current - 1) * page.pageSize
@@ -45,37 +46,39 @@ export default function Products (props: ProductsProps) {
     })
   }, [value, page])
 
-  const list = useMemo(() => {
-    return pageValue?.map(item => {
+  const renderList = useMemo(() => {
+    return renderValue?.map(item => {
       const find = data.find(i => i.id === item.variant_id)
       if (!find) return item
       const { id, ...rest } = find
       return { ...item, ...rest }
     })
-  }, [pageValue, data]) || []
+  }, [renderValue, data]) || []
 
   const onRemove = (item: VariantsByIdsRes) => {
     onChange?.(value?.filter(i => i.id !== item.id) || [])
   }
 
-  const onChangeValue = (i: PurchaseItem, key: keyof PurchaseItem, value: any) => {
-    const index = list.findIndex(item => item.id === i.id)
-    const item = list[index]
-    let total = item.total
+  const onChangeValue = (i: PurchaseItem, key: keyof PurchaseItem, v: any) => {
+    let item = cloneDeep(value?.find(item => i.id === item.id))
+    if (!item) return
+    // @ts-expect-error
+    item[key] = v
+    let total = item?.total
     if (key === 'cost') {
-      // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-      total = ((value || 0) + ((value || 0) * item.tax_rate / 100)) * item.purchasing
+      total = ((Number(v) || 0) + ((v || 0) * (item?.tax_rate || 0) / 100)) * (item?.purchasing || 0)
     }
     if (key === 'tax_rate') {
-      total = (item.cost + (item.cost * (value || 0) / 100)) * item.purchasing
+      total = ((item?.cost || 0) + ((item?.cost || 0) * (v || 0) / 100)) * (item?.purchasing || 0)
     }
     if (key === 'purchasing') {
-      total = (item.cost + (item.cost * (item.tax_rate || 0) / 100)) * value
+      total = ((item?.cost || 0) + ((item?.cost || 0) * (item?.tax_rate || 0) / 100)) * v
     }
-    list[index] = { ...i, [key]: value, total: roundPrice(total) }
-    // TODO: 变更时会消失
-    // TODO: 选择变体出现了相同ID
-    onChange?.(list || [])
+    item = { ...item, total: roundPrice(total || 0) }
+    const newValues = value?.map(valueItem => {
+      return item?.id === valueItem.id ? item : valueItem
+    })
+    onChange?.(newValues || [])
   }
 
   const columns: STableProps['columns'] = [
@@ -219,11 +222,13 @@ export default function Products (props: ProductsProps) {
     }
   ]
 
+  console.log('TEST')
+
   useEffect(() => {
-    if (!pageValue?.length) return
-    const variantIds = pageValue?.map(item => item.variant_id)
+    if (!renderValue?.length) return
+    const variantIds = renderValue?.map(item => item.variant_id)
     run({ ids: variantIds })
-  }, [pageValue])
+  }, [renderValue])
 
   return (
     <SCard
@@ -277,8 +282,8 @@ export default function Products (props: ProductsProps) {
             }
           }}
           columns={columns}
-          data={list?.filter(i => (i as any).image !== undefined) || []}
-          init={!!list?.filter(i => (i as any).image !== undefined)?.length}
+          data={renderList?.filter(i => (i as any).image !== undefined) || []}
+          init={!!renderList?.filter(i => (i as any).image !== undefined)?.length}
         />
       </SRender>
 
