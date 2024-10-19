@@ -108,12 +108,12 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
   const markToOrderedHandle = async () => {
     if (!id) return
     modal.confirm({
-      title: 'Mark as ordered?',
-      content: 'After marking as ordered you will be able to receive incoming inventory from your supplier. This purchase order can\'t be turned into a draft again.',
+      title: t('是否标记为已订购？'),
+      content: t('标记为已订购后，您将能够从供应商处接收进货。此采购订单无法再次变更为草稿状态'),
       onOk: async () => {
         await markToOrdered.runAsync({ id: Number(id) })
         onFresh(Number(id))
-        sMessage.success('Purchase order marked to ordered!')
+        sMessage.success(t('标记成功'))
         nav(`/products/purchase_orders/info/${id}`)
       }
     })
@@ -219,7 +219,7 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
       width={950}
       title={title}
       back={backUrl}
-      okText={!id ? 'Save as draft' : ''}
+      okText={!id ? t('保存为草稿') : ''}
     >
       <Form onValuesChange={onValuesChange} form={form} layout={'vertical'}>
         <div className={styles.card}>

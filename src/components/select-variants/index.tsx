@@ -14,6 +14,7 @@ import STable, { STableProps } from '@/components/s-table'
 import Filters from '@/components/select-product/filters'
 import Status from '@/components/status'
 import { VariantStatus } from '@/constant/product'
+import { useI18n } from '@/hooks/use-lang'
 import { UseOpenType } from '@/hooks/useOpen'
 import { formatPrice } from '@/utils/num'
 import { genId } from '@/utils/random'
@@ -47,6 +48,7 @@ export default function SelectVariants (props: SelectVariantsProps) {
   const productList = useRequest(ProductListApi, { manual: true })
   const [showMoreLoading, setShowMoreLoading] = useState(false)
   const [expanded, setExpanded] = useState<number[]>([])
+  const t = useI18n()
 
   const getIsDisabled = (row: ProductVariants) => {
     if (disabled?.length === 200) return true
@@ -119,7 +121,7 @@ export default function SelectVariants (props: SelectVariantsProps) {
   const [inViewport] = useInViewport(moreRef)
   const columns: STableProps['columns'] = [
     {
-      title: 'Product',
+      title: t('商品'),
       code: 'product',
       name: 'product',
       render: (_, row: ProductVariants) => (
@@ -190,30 +192,30 @@ export default function SelectVariants (props: SelectVariantsProps) {
       lock: true
     },
     {
-      title: 'Price',
+      title: t('价格'),
       code: 'price',
       name: 'price',
       width: 150
     },
     {
-      title: 'Inventory',
+      title: t('库存'),
       code: 'inventory',
       name: 'inventory',
       width: 200,
       render: (inventory: number) => (
-        renderText(`${inventory} on sale`)
+        renderText(t('x在售', { inventory }))
       )
     },
     {
-      title: 'Status',
+      title: t('状态'),
       code: 'status',
       name: 'status',
       width: 120,
       render: (status: VariantStatus) => {
         if (status === VariantStatus.Published) {
-          return <Status borderless type={'success'}>Active</Status>
+          return <Status borderless type={'success'}>{t('启用')}</Status>
         }
-        return <Status borderless type={'default'}>Draft</Status>
+        return <Status borderless type={'warning'}>{t('草稿')}</Status>
       }
     }
   ]
@@ -285,7 +287,7 @@ export default function SelectVariants (props: SelectVariantsProps) {
         </Flex>
       )}
       width={1000}
-      title={'Select products'}
+      title={'选择商品'}
       onCancel={info.close}
       open={info.open}
     >

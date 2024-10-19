@@ -83,7 +83,7 @@ export default function Products (props: ProductsProps) {
 
   const columns: STableProps['columns'] = [
     {
-      title: t('Products'),
+      title: t('商品'),
       code: 'id',
       name: 'id',
       render: (_, row: VariantsByIdsRes) => (
@@ -121,7 +121,7 @@ export default function Products (props: ProductsProps) {
       width: 150
     },
     {
-      title: infoMode ? t('Received') : t('Purchasing'),
+      title: infoMode ? t('接收') : t('采购量'),
       code: 'purchasing',
       name: 'purchasing',
       render: (purchasing: number, row: PurchaseItem) => (
@@ -162,7 +162,7 @@ export default function Products (props: ProductsProps) {
       width: infoMode ? 180 : 120
     },
     {
-      title: t('Cost'),
+      title: t('费用'),
       code: 'cost',
       name: 'cost',
       render: (cost: number, row: PurchaseItem) => (
@@ -178,7 +178,7 @@ export default function Products (props: ProductsProps) {
       width: 120
     },
     {
-      title: t('Tax rate'),
+      title: t('税率'),
       code: 'tax_rate',
       name: 'tax_rate',
       render: (tax_rate: number, row: PurchaseItem) => (
@@ -194,7 +194,7 @@ export default function Products (props: ProductsProps) {
       width: 100
     },
     {
-      title: t('Total'),
+      title: t('合计'),
       code: 'total',
       name: 'total',
       width: 100,
@@ -241,11 +241,11 @@ export default function Products (props: ProductsProps) {
               openInfo.edit(value?.map(item => item.variant_id) || [])
             }}
           >
-            {t('Select products')}
+            {t('选择商品')}
           </Button>
         </SRender>
       }
-      title={t('Products')}
+      title={t('商品')}
       className={'fit-width'}
     >
       <SRender render={!value?.length}>
@@ -254,14 +254,14 @@ export default function Products (props: ProductsProps) {
           description={(
             <Flex style={{ marginTop: 20 }} vertical gap={12}>
               <div>
-                {t('Only items with inventory tracking settings can be selected.')}
+                {t('仅可选择已启用库存跟踪设置的商品')}
               </div>
               <Flex align={'center'} justify={'center'}>
                 <Button onClick={() => {
                   openInfo.edit(value?.map(item => item.variant_id) || [])
                 }}
                 >
-                  {t('Select products')}
+                  {t('选择商品')}
                 </Button>
               </Flex>
             </Flex>

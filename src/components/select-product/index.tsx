@@ -200,7 +200,7 @@ export default function SelectProduct (props: SelectProductProps) {
         </Flex>
     )}
       width={1000}
-      title={'Select products'}
+      title={'选择商品'}
       onCancel={info.close}
       open={info.open}
     >

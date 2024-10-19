@@ -59,28 +59,28 @@ export default function CostSummary (props: CostSummaryProps) {
             </Button>
             )
       }
-      title={t('Cost summary')}
+      title={t('费用汇总')}
       style={{ marginTop: 16 }}
     >
       <Flex gap={6} vertical>
         <div className={styles.detailsTitle}>
           <Flex justify={'space-between'} align={'center'}>
-            {t('Tax fee')}
+            {t('税费')}
             <div>{formatPrice(summary.taxFee, '$')}</div>
           </Flex>
         </div>
         <div className={styles.detailsTitle}>
           <Flex justify={'space-between'} align={'center'}>
-            {t('Subtotal')}
+            {t('小计')}
             <div>{formatPrice(summary.total, '$')}</div>
           </Flex>
         </div>
-        <div className={'secondary'}>{t(`${items?.length || 0} items`)}</div>
+        <div className={'secondary'}>{t('商品数', { count: items?.length || 0 })}</div>
       </Flex>
 
       <SRender render={value?.length}>
         <Flex style={{ marginTop: 16 }} gap={6} vertical>
-          <div className={styles.detailsTitle}>{t('Cost adjustment')}</div>
+          <div className={styles.detailsTitle}>{t('费用调整')}</div>
           {
             value?.map(i => (
               <Flex key={i.id} align={'center'} justify={'space-between'}>
@@ -95,7 +95,7 @@ export default function CostSummary (props: CostSummaryProps) {
       <div className={'line'} />
 
       <Flex align={'center'} justify={'space-between'} className={styles.detailsTitle}>
-        {t('Total')}
+        {t('合计')}
         <div>{formatPrice(total, '$')}</div>
       </Flex>
 

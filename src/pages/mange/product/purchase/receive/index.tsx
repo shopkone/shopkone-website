@@ -265,7 +265,7 @@ export default function Receive () {
               </Flex>
             </SRender>
           }
-          title={'Products'}
+          title={'商品'}
         >
           <SRender render={list.length >= 2 && (total.received || total.rejected)} style={{ padding: '8px 0 16px 4px' }}>
             <Flex>
