@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import { IconPhoto, IconTrash } from '@tabler/icons-react'
 import { Button, Empty, Flex } from 'antd'
 
@@ -20,14 +21,16 @@ import { renderText } from '@/utils/render-text'
 export interface ProductsProps {
   value?: TransferItem[]
   onChange?: (value: TransferItem[]) => void
+  onLoading: (loading: boolean) => void
 }
 
 export default function Products (props: ProductsProps) {
-  const { value, onChange } = props
+  const { value, onChange, onLoading } = props
   const { run, loading, data } = useVariantsByIds()
   const t = useI18n()
   const openInfo = useOpen<number[]>([])
   const [page, setPage] = useState({ current: 1, pageSize: 20 })
+  const { id } = useParams()
 
   const renderValue = useMemo(() => {
     if (!value) return []
@@ -118,6 +121,11 @@ export default function Products (props: ProductsProps) {
     const variantIds = value?.map(item => item.variant_id)
     run({ ids: variantIds })
   }, [value])
+
+  useEffect(() => {
+    if (!id) return
+    onLoading(!data.length)
+  }, [data, id])
 
   return (
     <SCard

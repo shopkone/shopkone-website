@@ -25,10 +25,11 @@ export interface PageProps {
   resetLoading?: boolean
   type: 'product' | 'settings'
   okText?: ReactNode
+  loadingHiddenBg?: boolean
 }
 
 export default function Page (props: PageProps) {
-  const { children, width, header, footer, title, back, isChange, bottom, onOk, onCancel, loading = false, resetLoading = false, type, okText } = props
+  const { loadingHiddenBg, children, width, header, footer, title, back, isChange, bottom, onOk, onCancel, loading = false, resetLoading = false, type, okText } = props
   const nav = useNavigate()
   const [confirmLoading, setConfirmLoading] = useState(false)
   const setIsChange = useLayoutState(state => state.setChange)
@@ -82,13 +83,14 @@ export default function Page (props: PageProps) {
   // if (!language?.data?.data) return <SLoading />
 
   return (
-    <div style={{
-      maxWidth: width,
-      margin: '0 auto',
-      paddingBottom: isChange !== undefined ? 60 : bottom
-    }}
+    <div
+      style={{
+        maxWidth: width,
+        margin: '0 auto',
+        paddingBottom: isChange !== undefined ? 60 : bottom
+      }}
     >
-      <SLoading loading={loading} foreShow>
+      <SLoading loading={loading} foreShow={!loadingHiddenBg}>
         <SRender render={title || header}>
           <Flex justify={'space-between'} gap={24} className={styles.title}>
             <Flex style={{ minWidth: 0 }} flex={1} gap={8}>

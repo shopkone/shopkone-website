@@ -30,6 +30,7 @@ export default function Create () {
   const init = useRef<any>()
   const [isChange, setIsChange] = useState(false)
   const { id } = useParams()
+  const [loading, setLoading] = useState(false)
 
   const originId = Form.useWatch('origin_id', form)
   const destinationId = Form.useWatch('destination_id', form)
@@ -92,11 +93,12 @@ export default function Create () {
 
   return (
     <Page
+      loadingHiddenBg
       onOk={onOk}
       onCancel={onCancel}
       isChange={isChange}
       bottom={64}
-      loading={locations.loading || carriers.loading}
+      loading={locations.loading || carriers.loading || loading}
       back={'/products/transfers'}
       width={950}
       title={id ? info?.data?.transfer_number || '--' : '创建转移'}
@@ -133,7 +135,7 @@ export default function Create () {
         </div>
 
         <Form.Item className={'mb0'} name={'items'}>
-          <Products />
+          <Products onLoading={setLoading} />
         </Form.Item>
 
         <SCard title={'配送信息'} style={{ marginTop: 16 }}>
