@@ -39,8 +39,8 @@ export default function Receive () {
   const total = useMemo(() => {
     return {
       purchasing: sum(...list.map(i => i.purchasing)),
-      received: sum(...list.map(i => i.received || 0)),
-      rejected: sum(...list.map(i => i.rejected || 0))
+      received: sum(sum(...list.map(i => i.received || 0)), sum(...list.map(i => i.received_count || 0))),
+      rejected: sum(sum(...list.map(i => i.rejected || 0)), sum(...list.map(i => i.rejected_count || 0)))
     }
   }, [list])
   const canActionAll = list.some(i => {

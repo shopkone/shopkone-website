@@ -232,8 +232,6 @@ export default function Products (props: ProductsProps) {
     }
   ]
 
-  console.log('TEST')
-
   useEffect(() => {
     if (!renderValue?.length) return
     const variantIds = renderValue?.map(item => item.variant_id)

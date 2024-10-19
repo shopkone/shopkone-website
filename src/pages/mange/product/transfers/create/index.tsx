@@ -43,7 +43,9 @@ export default function Create () {
           </Flex>
         </div>
 
-        <Products />
+        <Form.Item className={'mb0'} name={'variants'}>
+          <Products />
+        </Form.Item>
 
         <SCard title={'配送信息'} style={{ marginTop: 16 }}>
           <div style={{ maxWidth: 420 }}>
