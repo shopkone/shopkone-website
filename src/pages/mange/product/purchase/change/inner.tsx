@@ -219,7 +219,7 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
       width={950}
       title={title}
       back={backUrl}
-      okText={!id ? t('保存为草稿') : ''}
+      okText={!id ? t('保存为草稿') : t('保存')}
     >
       <Form onValuesChange={onValuesChange} form={form} layout={'vertical'}>
         <div className={styles.card}>
