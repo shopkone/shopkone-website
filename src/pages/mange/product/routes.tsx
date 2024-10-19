@@ -33,5 +33,6 @@ export const ProductRoutes: RouteObject[] = [
   { element: <GiftCardChange />, path: '/products/gift_cards/change' },
   { element: <GiftCardProductChange />, path: '/products/gift_cards/product_change' },
   { element: <TransferList />, path: '/products/transfers' },
-  { element: <TransferCreate />, path: '/products/transfers/create' }
+  { element: <TransferCreate />, path: '/products/transfers/create' },
+  { element: <TransferCreate />, path: '/products/transfers/info/:id' }
 ]

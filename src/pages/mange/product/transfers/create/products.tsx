@@ -157,7 +157,6 @@ export default function Products (props: ProductsProps) {
 
       <SRender render={value?.length}>
         <STable
-          loading={loading}
           borderless
           className={'table-border'}
           page={{
@@ -170,7 +169,8 @@ export default function Products (props: ProductsProps) {
           }}
           columns={columns}
           data={renderList}
-          init={value?.length ? !!renderList?.length : true}
+          loading={!data?.length}
+          init={!!data?.length}
         />
       </SRender>
 
@@ -183,7 +183,6 @@ export default function Products (props: ProductsProps) {
           onChange?.([...newList, ...oldList])
         }}
         info={openInfo}
-        disabled={[]}
       />
     </SCard>
   )
