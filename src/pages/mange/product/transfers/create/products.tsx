@@ -47,7 +47,14 @@ export default function Products (props: ProductsProps) {
     })
   }, [renderValue, data]) || []
 
-  const onChangeHandle = (value: TransferItem[]) => {
+  const onChangeHandle = (id: number, v?: number) => {
+    const item = renderValue?.find(item => item.id === id)
+    if (!item) return
+    onChange?.(value?.map(i => i.id === id ? { ...item, quantity: v || 0 } : i) || [])
+  }
+
+  const onRemoveItem = (id: number) => {
+    onChange?.(value?.filter(i => i.id !== id) || [])
   }
 
   const columns: STableProps['columns'] = [
@@ -85,8 +92,8 @@ export default function Products (props: ProductsProps) {
       title: t('库存数量'),
       code: 'quantity',
       name: 'quantity',
-      render: (quantity: number) => (
-        <SInputNumber min={1} />
+      render: (quantity: number, row: TransferItem) => (
+        <SInputNumber value={quantity} onChange={(v) => { onChangeHandle(row.id, v) }} min={1} />
       ),
       width: 120
     },
@@ -97,7 +104,7 @@ export default function Products (props: ProductsProps) {
       render: (_, row: TransferItem) => (
         <Flex align={'center'} justify={'center'}>
           <IconButton type={'text'} size={24}>
-            <IconTrash size={15} />
+            <IconTrash onClick={() => { onRemoveItem(row.id) }} size={15} />
           </IconButton>
         </Flex>
       ),
@@ -107,10 +114,10 @@ export default function Products (props: ProductsProps) {
   ]
 
   useEffect(() => {
-    if (!renderValue?.length) return
-    const variantIds = renderValue?.map(item => item.variant_id)
+    if (!value?.length) return
+    const variantIds = value?.map(item => item.variant_id)
     run({ ids: variantIds })
-  }, [renderValue])
+  }, [value])
 
   return (
     <SCard

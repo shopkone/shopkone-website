@@ -233,10 +233,10 @@ export default function Products (props: ProductsProps) {
   ]
 
   useEffect(() => {
-    if (!renderValue?.length) return
-    const variantIds = renderValue?.map(item => item.variant_id)
+    if (!value?.length) return
+    const variantIds = value?.map(item => item.variant_id)
     run({ ids: variantIds })
-  }, [renderValue])
+  }, [value])
 
   return (
     <SCard
