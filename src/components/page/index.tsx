@@ -87,7 +87,9 @@ export default function Page (props: PageProps) {
       style={{
         maxWidth: width,
         margin: '0 auto',
-        paddingBottom: isChange !== undefined ? 60 : bottom
+        paddingBottom: isChange !== undefined ? 60 : bottom,
+        maxHeight: loading && loadingHiddenBg ? 500 : undefined,
+        overflow: loading && loadingHiddenBg ? 'hidden' : undefined
       }}
     >
       <SLoading loading={loading} foreShow={!loadingHiddenBg}>

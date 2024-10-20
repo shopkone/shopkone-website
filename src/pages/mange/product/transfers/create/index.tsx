@@ -9,10 +9,13 @@ import { LocationListApi } from '@/api/location/list'
 import { TransferCreateApi } from '@/api/transfers/create'
 import { TransferInfoApi } from '@/api/transfers/info'
 import { TransferMarkApi } from '@/api/transfers/mark'
+import { TransferRemoveApi } from '@/api/transfers/remove'
+import { TransferUpdateApi } from '@/api/transfers/update'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
 import SDatePicker from '@/components/s-date-picker'
 import { sMessage } from '@/components/s-message'
+import { useModal } from '@/components/s-modal'
 import SRender from '@/components/s-render'
 import SSelect from '@/components/s-select'
 import { getTransferStatus, TransferStatus } from '@/constant/transfers'
@@ -31,6 +34,8 @@ export default function Create () {
   const create = useRequest(TransferCreateApi, { manual: true })
   const info = useRequest(TransferInfoApi, { manual: true })
   const mark = useRequest(TransferMarkApi, { manual: true })
+  const remove = useRequest(TransferRemoveApi, { manual: true })
+  const update = useRequest(TransferUpdateApi, { manual: true })
   const init = useRef<any>()
   const [isChange, setIsChange] = useState(false)
   const { id } = useParams()
@@ -41,14 +46,18 @@ export default function Create () {
 
   const isDraftStatus = info?.data?.status === TransferStatus.Draft
   const isCanReceived = [2, 3, 4].includes(info?.data?.status || 0)
+  const modal = useModal()
 
   const infoMode = useMemo(() => {
     return !!id && info?.data?.items?.some(i => i.rejected || i.received)
   }, [info?.data?.items])
 
-  const onValuesChange = () => {
+  const onValuesChange = (force?: boolean) => {
     const values = form.getFieldsValue()
     if (!init.current) {
+      init.current = values
+    }
+    if (force === true) {
       init.current = values
     }
     const isSame = isEqualHandle(values, init.current)
@@ -72,6 +81,21 @@ export default function Create () {
   const toReceivedPage = () => {
     if (!id) return
     nav(`/products/transfers/received/${id}`)
+  }
+
+  const onRemove = async () => {
+    if (!id) return
+    modal.confirm({
+      title: '确定删除此库存转移单吗？',
+      content: '此单删除后不能找回，请慎重操作',
+      okText: '删除',
+      okButtonProps: { danger: true },
+      onOk: async () => {
+        await remove.runAsync({ id: Number(id) })
+        nav('/products/transfers')
+        sMessage.success('删除成功')
+      }
+    })
   }
 
   const onOk = async () => {
@@ -98,16 +122,26 @@ export default function Create () {
       return
     }
     const params = { ...values, estimated_arrival: values.estimated_arrival ? (values.estimated_arrival as Dayjs).unix() : undefined }
-    await create.runAsync(params)
+    if (id) {
+      await update.runAsync({ id: Number(id), ...params })
+      info.refresh()
+      sMessage.success('转移单已更新')
+      setIsChange(false)
+    } else {
+      const ret = await create.runAsync(params)
+      nav(`/products/transfers/info/${ret.id}`)
+      sMessage.success('转移单已创建')
+      setIsChange(false)
+    }
   }
 
   useEffect(() => {
     if (!id) {
-      onValuesChange()
+      onValuesChange(true)
     } else if (info.data) {
       const estimated_arrival = info.data.estimated_arrival ? dayjs(info.data.estimated_arrival * 1000) : undefined
       form.setFieldsValue({ ...info.data, estimated_arrival })
-      onValuesChange()
+      onValuesChange(true)
     }
   }, [info.data])
 
@@ -123,7 +157,7 @@ export default function Create () {
       onCancel={onCancel}
       isChange={isChange}
       bottom={64}
-      loading={locations.loading || carriers.loading || loading}
+      loading={locations.loading || carriers.loading || loading || info.loading}
       back={'/products/transfers'}
       width={950}
       title={(
@@ -134,7 +168,7 @@ export default function Create () {
       )}
       header={
         <div>
-          <SRender render={isDraftStatus}>
+          <SRender render={isDraftStatus ? !isChange : null}>
             <Button type={'primary'} onClick={markToOrdered} loading={mark.loading}>标记为待收货</Button>
           </SRender>
           <SRender render={isCanReceived}>
@@ -143,9 +177,9 @@ export default function Create () {
         </div>
       }
       footer={
-        <SRender render={!infoMode}>
+        <SRender render={!infoMode && id}>
           <Flex flex={1} justify={'flex-start'}>
-            <Button type={'primary'} danger>删除</Button>
+            <Button type={'primary'} danger onClick={onRemove}>删除</Button>
           </Flex>
         </SRender>
       }
@@ -192,7 +226,7 @@ export default function Create () {
                 <SDatePicker allowClear />
               </Form.Item>
             </div>
-            <Form.Item label={'物流提供商'}>
+            <Form.Item name={'carrier_id'} label={'物流提供商'}>
               <SSelect
                 allowClear
                 showSearch
