@@ -38,7 +38,8 @@ const INIT_DATA = {
     url_handle: '',
     follow: true
   },
-  collections: undefined
+  collections: undefined,
+  enabled_location_ids: []
 }
 export interface ProductChangeInnerProps {
   onFresh: (id: number) => void
@@ -119,9 +120,18 @@ export default function ProductChangeInner (props: ProductChangeInnerProps) {
     if (!info.data && id) return
     if (info.data) {
       const { scheduled_at, ...rest } = info.data
+      const enabled_location_ids: number[] = []
+      rest?.variants?.forEach(i => {
+        i.inventories?.forEach(ii => {
+          if (ii.location_id) {
+            enabled_location_ids.push(ii.location_id)
+          }
+        })
+      })
       const values = {
         ...rest,
-        scheduled_at: scheduled_at ? dayjs.unix(scheduled_at) : undefined
+        scheduled_at: scheduled_at ? dayjs.unix(scheduled_at) : undefined,
+        enabled_location_ids: [...new Set(enabled_location_ids)]
       }
       form.setFieldsValue(values)
       init.current = values

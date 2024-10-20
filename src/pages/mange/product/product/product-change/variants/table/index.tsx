@@ -81,7 +81,7 @@ export default function Table (props: TableProps) {
         {ColumnSettings}
       </div>
       <Flex wrap={'wrap'} style={{ marginBottom: 12 }} align={'center'} gap={12}>
-        <Flex style={{ width: '100%' }} gap={32} align={'center'} justify={'space-between'}>
+        <Flex style={{ width: '100%' }} gap={48} align={'center'}>
           <GroupBy
             key={'groupBy'}
             groupName={groupName}
@@ -91,11 +91,11 @@ export default function Table (props: TableProps) {
             variants={variants}
             options={options}
           />
+          <Form.Item className={'mb0'} name={'enabled_location_ids'}>
+            <LocationsSelect key={'location'} selected={locationId} setSelected={setLocationId} />
+          </Form.Item>
         </Flex>
-        <Flex align={'center'} justify={'space-between'} flex={1}>
-          <Filters labels={labels} setLabels={setLabels} key={'filters'} value={filters} onChange={setFilters} options={options} />
-          <LocationsSelect key={'location'} selected={locationId} setSelected={setLocationId} />
-        </Flex>
+        <Filters labels={labels} setLabels={setLabels} key={'filters'} value={filters} onChange={setFilters} options={options} />
       </Flex>
       <SRender render={renderTable}>
         <STable
