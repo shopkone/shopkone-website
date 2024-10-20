@@ -143,8 +143,8 @@ export default function Products (props: ProductsProps) {
       name: 'id',
       render: (_, row: TransferItem) => (
         <Flex align={'center'} justify={'center'}>
-          <IconButton type={'text'} size={24}>
-            <IconTrash onClick={() => { onRemoveItem(row.id) }} size={15} />
+          <IconButton onClick={() => { onRemoveItem(row.id) }} type={'text'} size={24}>
+            <IconTrash size={15} />
           </IconButton>
         </Flex>
       ),

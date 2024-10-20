@@ -20,7 +20,9 @@ import SRender from '@/components/s-render'
 import SSelect from '@/components/s-select'
 import { getTransferStatus, TransferStatus } from '@/constant/transfers'
 import { useI18n } from '@/hooks/use-lang'
+import Detail from '@/pages/mange/product/purchase/change/detail'
 import styles from '@/pages/mange/product/purchase/change/index.module.less'
+import Progress from '@/pages/mange/product/purchase/change/progress'
 import LocationItem from '@/pages/mange/product/transfers/create/location-item'
 import Products from '@/pages/mange/product/transfers/create/products'
 import { isEqualHandle } from '@/utils/is-equal-handle'
@@ -135,6 +137,14 @@ export default function Create () {
     }
   }
 
+  const total = useMemo(() => {
+    return {
+      quantity: info?.data?.items?.reduce((sum, item) => sum + item.quantity, 0) || 0,
+      rejected: info?.data?.items?.reduce((sum, item) => sum + (item.rejected || 0), 0) || 0,
+      received: info?.data?.items?.reduce((sum, item) => sum + (item.received || 0), 0) || 0
+    }
+  }, [info?.data?.items])
+
   useEffect(() => {
     if (!id) {
       onValuesChange(true)
@@ -213,6 +223,14 @@ export default function Create () {
               </Form.Item>
             </div>
           </Flex>
+
+          <SRender style={{ padding: 16, borderTop: '1px solid #dededf' }} render={(total.received || total.rejected)}>
+            <div>
+              <Progress purchasing={total.quantity} received={total.received} rejected={total.rejected} />
+              <div style={{ marginBottom: 16 }} />
+              <Detail purchasing={total.quantity} received={total.received} rejected={total.rejected} />
+            </div>
+          </SRender>
         </div>
 
         <Form.Item className={'mb0'} name={'items'}>

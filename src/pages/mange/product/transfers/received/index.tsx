@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { IconChevronDown, IconPhoto } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
@@ -75,6 +75,14 @@ export default function TransferReceived () {
   }
 
   const isChange = list.some(i => i.received_count || i.rejected_count)
+
+  const total = useMemo(() => {
+    return {
+      purchasing: sum(...list.map(i => i.quantity)),
+      received: sum(sum(...list.map(i => i.received || 0)), sum(...list.map(i => i.received_count || 0))),
+      rejected: sum(sum(...list.map(i => i.rejected || 0)), sum(...list.map(i => i.rejected_count || 0)))
+    }
+  }, [list])
 
   const columns: STableProps['columns'] = [
     {
@@ -244,6 +252,15 @@ export default function TransferReceived () {
           </SRender>
         }
       >
+        <SRender render={list.length >= 2 && (total.received || total.rejected)} style={{ padding: '8px 0 16px 4px' }}>
+          <Flex>
+            <div>
+              <Progress purchasing={total.purchasing} received={total.received} rejected={total.rejected} />
+              <div style={{ marginBottom: 8 }} />
+              <Detail purchasing={total.purchasing} received={total.received} rejected={total.rejected} />
+            </div>
+          </Flex>
+        </SRender>
         <STable
           className={'table-border'}
           borderless
