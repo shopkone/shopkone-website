@@ -219,7 +219,7 @@ export default function TransferReceived () {
   return (
     <Page
       loadingHiddenBg
-      loading={info.loading}
+      loading={info.loading || data.length === 0}
       onOk={onOk}
       onCancel={onCancel}
       isChange={isChange}

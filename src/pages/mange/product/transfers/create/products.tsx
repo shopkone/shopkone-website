@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { IconPhoto, IconTrash } from '@tabler/icons-react'
-import { Button, Empty, Flex } from 'antd'
+import { IconChevronDown, IconPhoto, IconTrash } from '@tabler/icons-react'
+import { Button, Empty, Flex, Popover } from 'antd'
 
 import { FileType } from '@/api/file/add-file-record'
 import { useVariantsByIds, VariantsByIdsRes } from '@/api/product/variants-by-ids'
@@ -15,16 +15,22 @@ import STable, { STableProps } from '@/components/s-table'
 import SelectVariants from '@/components/select-variants'
 import { useI18n } from '@/hooks/use-lang'
 import { useOpen } from '@/hooks/useOpen'
+import Detail from '@/pages/mange/product/purchase/change/detail'
+import Progress from '@/pages/mange/product/purchase/change/progress'
+import styles from '@/pages/mange/product/purchase/receive/index.module.less'
+import { sum } from '@/utils'
 import { genId } from '@/utils/random'
 import { renderText } from '@/utils/render-text'
 
 export interface ProductsProps {
   value?: TransferItem[]
   onChange?: (value: TransferItem[]) => void
+  onLoading: (loading: boolean) => void
+  infoMode?: boolean
 }
 
 export default function Products (props: ProductsProps) {
-  const { value, onChange } = props
+  const { value, onChange, onLoading, infoMode } = props
   const { run, loading, data } = useVariantsByIds()
   const t = useI18n()
   const openInfo = useOpen<number[]>([])
@@ -91,13 +97,45 @@ export default function Products (props: ProductsProps) {
       width: 200
     },
     {
-      title: t('库存数量'),
+      title: infoMode ? t('总额') : t('库存数量'),
       code: 'quantity',
       name: 'quantity',
       render: (quantity: number, row: TransferItem) => (
-        <SInputNumber value={quantity} onChange={(v) => { onChangeHandle(row.id, v) }} min={1} />
+        <div onMouseDown={e => { e.stopPropagation() }} className={'fit-width'} style={{ cursor: 'default' }}>
+          <SRender render={!infoMode}>
+            <SInputNumber value={quantity} onChange={(v) => { onChangeHandle(row.id, v) }} min={1} />
+          </SRender>
+          <SRender render={infoMode}>
+            <Flex vertical gap={8} style={{ marginTop: 4 }}>
+              <Progress
+                received={sum(row.received, row.received_count)}
+                rejected={sum(row.rejected, row.rejected_count)}
+                purchasing={quantity}
+              />
+              <Popover
+                arrow={false}
+                placement={'bottomLeft'}
+                trigger={'click'}
+                content={
+                  <Detail
+                    received={sum(row.received, row.received_count)}
+                    purchasing={row.quantity}
+                    rejected={sum(row.rejected, row.rejected_count)}
+                    vertical
+                  />
+                }
+                overlayInnerStyle={{ padding: '16px 8px' }}
+              >
+                <Flex align={'center'} className={styles.more}>
+                  {sum(row.rejected_count, row.received, row.rejected, row.received_count)} / {row.quantity}
+                  <IconChevronDown style={{ marginLeft: 4, marginTop: -1 }} size={13} />
+                </Flex>
+              </Popover>
+            </Flex>
+          </SRender>
+        </div>
       ),
-      width: 120
+      width: infoMode ? 180 : 120
     },
     {
       title: '',
@@ -111,21 +149,28 @@ export default function Products (props: ProductsProps) {
         </Flex>
       ),
       width: 60,
-      lock: true
+      lock: true,
+      hidden: infoMode
     }
   ]
 
   useEffect(() => {
     if (!value?.length) return
     const variantIds = value?.map(item => item.variant_id)
+    console.log({ value })
     run({ ids: variantIds })
   }, [value])
+
+  useEffect(() => {
+    if (!id) return
+    onLoading(!data?.length)
+  }, [data, id])
 
   return (
     <SCard
       title={t('商品')}
       extra={
-        <SRender render={value?.length}>
+        <SRender render={value?.length ? !infoMode : null}>
           <Button
             type={'link'}
             size={'small'}

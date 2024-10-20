@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useRequest } from 'ahooks'
 import { Button, Flex, Form, Input } from 'antd'
@@ -34,12 +34,17 @@ export default function Create () {
   const init = useRef<any>()
   const [isChange, setIsChange] = useState(false)
   const { id } = useParams()
+  const [loading, setLoading] = useState(false)
 
   const originId = Form.useWatch('origin_id', form)
   const destinationId = Form.useWatch('destination_id', form)
 
   const isDraftStatus = info?.data?.status === TransferStatus.Draft
   const isCanReceived = [2, 3, 4].includes(info?.data?.status || 0)
+
+  const infoMode = useMemo(() => {
+    return !!id && info?.data?.items?.some(i => i.rejected || i.received)
+  }, [info?.data?.items])
 
   const onValuesChange = () => {
     const values = form.getFieldsValue()
@@ -118,7 +123,7 @@ export default function Create () {
       onCancel={onCancel}
       isChange={isChange}
       bottom={64}
-      loading={locations.loading || carriers.loading || info.loading}
+      loading={locations.loading || carriers.loading || loading}
       back={'/products/transfers'}
       width={950}
       title={(
@@ -137,6 +142,13 @@ export default function Create () {
           </SRender>
         </div>
       }
+      footer={
+        <SRender render={!infoMode}>
+          <Flex flex={1} justify={'flex-start'}>
+            <Button type={'primary'} danger>删除</Button>
+          </Flex>
+        </SRender>
+      }
       type={'product'}
     >
       <Form onValuesChange={onValuesChange} layout={'vertical'} form={form}>
@@ -149,7 +161,7 @@ export default function Create () {
                   disabledId={destinationId}
                   placeHolder={t('选择发货地')}
                   locations={locations?.data}
-                  infoMode={false}
+                  infoMode={infoMode}
                   onValuesChange={() => {}}
                 />
               </Form.Item>
@@ -161,7 +173,7 @@ export default function Create () {
                   disabledId={originId}
                   placeHolder={t('选择目的地')}
                   locations={locations?.data}
-                  infoMode={false}
+                  infoMode={infoMode}
                   onValuesChange={() => {}}
                 />
               </Form.Item>
@@ -170,7 +182,7 @@ export default function Create () {
         </div>
 
         <Form.Item className={'mb0'} name={'items'}>
-          <Products />
+          <Products infoMode={infoMode} onLoading={setLoading} />
         </Form.Item>
 
         <SCard title={'配送信息'} style={{ marginTop: 16 }}>
