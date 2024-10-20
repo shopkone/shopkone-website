@@ -28,7 +28,6 @@ export const getAdjustTypeOptions = (t: any) => [
 ]
 
 export const getPurchaseStatus = (t: any, status?: PurchaseStatus, borderless?: boolean) => {
-  console.log({ status })
   switch (status) {
     case PurchaseStatus.Closed:
       return <Status borderless={borderless} type={'error'}>{t('已关闭')}</Status>

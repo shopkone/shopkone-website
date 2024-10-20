@@ -4,6 +4,10 @@ export interface TransferItem {
   id: number
   quantity: number
   variant_id: number
+  received?: number
+  rejected?: number
+  received_count?: number
+  rejected_count?: number
 }
 
 export interface TransferCreateReq {

@@ -21,11 +21,10 @@ import { renderText } from '@/utils/render-text'
 export interface ProductsProps {
   value?: TransferItem[]
   onChange?: (value: TransferItem[]) => void
-  onLoading: (loading: boolean) => void
 }
 
 export default function Products (props: ProductsProps) {
-  const { value, onChange, onLoading } = props
+  const { value, onChange } = props
   const { run, loading, data } = useVariantsByIds()
   const t = useI18n()
   const openInfo = useOpen<number[]>([])
@@ -122,11 +121,6 @@ export default function Products (props: ProductsProps) {
     run({ ids: variantIds })
   }, [value])
 
-  useEffect(() => {
-    if (!id) return
-    onLoading(!data.length)
-  }, [data, id])
-
   return (
     <SCard
       title={t('商品')}
@@ -177,8 +171,8 @@ export default function Products (props: ProductsProps) {
           }}
           columns={columns}
           data={renderList}
-          loading={!data?.length}
-          init={!!data?.length}
+          loading={loading}
+          init
         />
       </SRender>
 

@@ -10,6 +10,8 @@ import Page from '@/components/page'
 import SCard from '@/components/s-card'
 import SRender from '@/components/s-render'
 import STable, { STableProps } from '@/components/s-table'
+import { getTransferStatus, TransferStatus } from '@/constant/transfers'
+import { useI18n } from '@/hooks/use-lang'
 import Filters from '@/pages/mange/product/transfers/list/filters'
 import { renderText } from '@/utils/render-text'
 
@@ -18,6 +20,7 @@ export default function TransferList () {
   const list = useRequest(TransferListApi, { manual: true })
   const [params, setParams] = useState<TransferListReq>({ page: 1, page_size: 20 })
   const nav = useNavigate()
+  const t = useI18n()
 
   const onRowClick = (record: TransferListRes) => {
     nav(`info/${record.id}`)
@@ -62,8 +65,10 @@ export default function TransferList () {
       code: 'status',
       name: 'status',
       width: 100,
-      render: (status: number, row: TransferListRes) => {
-        return status
+      render: (status: TransferStatus) => {
+        return (
+          <div style={{ display: 'inline-block' }}>{getTransferStatus(t, status, true)}</div>
+        )
       }
     },
     {

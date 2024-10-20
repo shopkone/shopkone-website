@@ -14,6 +14,7 @@ const GiftCardChange = lazy(async () => await import('./gift-card/change'))
 const GiftCardProductChange = lazy(async () => await import('./gift-card/product-change'))
 const TransferList = lazy(async () => await import('./transfers/list'))
 const TransferCreate = lazy(async () => await import('./transfers/create'))
+const TransferReceived = lazy(async () => await import('./transfers/received'))
 
 export const ProductRoutes: RouteObject[] = [
   { element: <Products />, path: '/products/products' },
@@ -34,5 +35,6 @@ export const ProductRoutes: RouteObject[] = [
   { element: <GiftCardProductChange />, path: '/products/gift_cards/product_change' },
   { element: <TransferList />, path: '/products/transfers' },
   { element: <TransferCreate />, path: '/products/transfers/create' },
-  { element: <TransferCreate />, path: '/products/transfers/info/:id' }
+  { element: <TransferCreate />, path: '/products/transfers/info/:id' },
+  { element: <TransferReceived />, path: '/products/transfers/received/:id' }
 ]

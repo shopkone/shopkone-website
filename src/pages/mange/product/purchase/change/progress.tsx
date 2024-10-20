@@ -10,9 +10,10 @@ export interface ProgressProps {
 }
 
 export default function Progress (props: ProgressProps) {
-  const { rejected = 0, received = 0, purchasing = 1 } = props
+  const { rejected = 0, received = 0, purchasing = 0 } = props
 
-  const remaining = purchasing - received - rejected
+  let remaining = purchasing - received - rejected
+  remaining = remaining > 0 ? remaining : 0
 
   return (
     <div className={styles.progressWrapper}>

@@ -1,5 +1,6 @@
 import { api } from '@/api/api'
 import { TransferCreateReq } from '@/api/transfers/create'
+import { TransferStatus } from '@/constant/transfers'
 
 export interface TransferInfoReq {
   id: number
@@ -7,7 +8,7 @@ export interface TransferInfoReq {
 
 export interface TransferInfoRes extends TransferCreateReq {
   id: number
-  status: string
+  status: TransferStatus
   transfer_number: string
 }
 

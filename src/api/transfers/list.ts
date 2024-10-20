@@ -1,4 +1,5 @@
 import { api, PageReq, PageRes } from '@/api/api'
+import { TransferStatus } from '@/constant/transfers'
 
 export interface TransferListReq extends PageReq {
 }
@@ -8,7 +9,7 @@ export interface TransferListRes {
   origin_id: number
   destination_id: number
   estimated_arrival: number
-  status: number
+  status: TransferStatus
   received: number
   rejected: number
   quantity: number

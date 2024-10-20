@@ -1,18 +1,21 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useRequest } from 'ahooks'
-import { Flex, Form, Input } from 'antd'
+import { Button, Flex, Form, Input } from 'antd'
 import dayjs, { Dayjs } from 'dayjs'
 
 import { useCarriers } from '@/api/base/carriers'
 import { LocationListApi } from '@/api/location/list'
 import { TransferCreateApi } from '@/api/transfers/create'
 import { TransferInfoApi } from '@/api/transfers/info'
+import { TransferMarkApi } from '@/api/transfers/mark'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
 import SDatePicker from '@/components/s-date-picker'
 import { sMessage } from '@/components/s-message'
+import SRender from '@/components/s-render'
 import SSelect from '@/components/s-select'
+import { getTransferStatus, TransferStatus } from '@/constant/transfers'
 import { useI18n } from '@/hooks/use-lang'
 import styles from '@/pages/mange/product/purchase/change/index.module.less'
 import LocationItem from '@/pages/mange/product/transfers/create/location-item'
@@ -27,13 +30,16 @@ export default function Create () {
   const [form] = Form.useForm()
   const create = useRequest(TransferCreateApi, { manual: true })
   const info = useRequest(TransferInfoApi, { manual: true })
+  const mark = useRequest(TransferMarkApi, { manual: true })
   const init = useRef<any>()
   const [isChange, setIsChange] = useState(false)
   const { id } = useParams()
-  const [loading, setLoading] = useState(false)
 
   const originId = Form.useWatch('origin_id', form)
   const destinationId = Form.useWatch('destination_id', form)
+
+  const isDraftStatus = info?.data?.status === TransferStatus.Draft
+  const isCanReceived = [2, 3, 4].includes(info?.data?.status || 0)
 
   const onValuesChange = () => {
     const values = form.getFieldsValue()
@@ -47,6 +53,20 @@ export default function Create () {
   const onCancel = () => {
     form.setFieldsValue(init.current)
     setIsChange(false)
+  }
+
+  // 标记为已收货
+  const markToOrdered = async () => {
+    if (!id) return
+    await mark.runAsync({ id: Number(id) })
+    sMessage.success('标记成功')
+    info.refresh()
+  }
+
+  // 前往收货页面
+  const toReceivedPage = () => {
+    if (!id) return
+    nav(`/products/transfers/received/${id}`)
   }
 
   const onOk = async () => {
@@ -98,10 +118,25 @@ export default function Create () {
       onCancel={onCancel}
       isChange={isChange}
       bottom={64}
-      loading={locations.loading || carriers.loading || loading}
+      loading={locations.loading || carriers.loading || info.loading}
       back={'/products/transfers'}
       width={950}
-      title={id ? info?.data?.transfer_number || '--' : '创建转移'}
+      title={(
+        <Flex align={'center'} gap={8}>
+          <div>{id ? info?.data?.transfer_number || '--' : '创建转移'}</div>
+          <div>{getTransferStatus(t, info?.data?.status, false)}</div>
+        </Flex>
+      )}
+      header={
+        <div>
+          <SRender render={isDraftStatus}>
+            <Button type={'primary'} onClick={markToOrdered} loading={mark.loading}>标记为待收货</Button>
+          </SRender>
+          <SRender render={isCanReceived}>
+            <Button type={'primary'} onClick={toReceivedPage} loading={mark.loading}>收货</Button>
+          </SRender>
+        </div>
+      }
       type={'product'}
     >
       <Form onValuesChange={onValuesChange} layout={'vertical'} form={form}>
@@ -135,7 +170,7 @@ export default function Create () {
         </div>
 
         <Form.Item className={'mb0'} name={'items'}>
-          <Products onLoading={setLoading} />
+          <Products />
         </Form.Item>
 
         <SCard title={'配送信息'} style={{ marginTop: 16 }}>
