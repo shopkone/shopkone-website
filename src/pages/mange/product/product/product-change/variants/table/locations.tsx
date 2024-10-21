@@ -1,7 +1,7 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useParams } from 'react-router-dom'
 import { useRequest } from 'ahooks'
-import { Button, Flex } from 'antd'
+import { Button, Flex, Form } from 'antd'
 
 import { LocationListApi } from '@/api/location/list'
 import SLoading from '@/components/s-loading'
@@ -21,6 +21,9 @@ export default function LocationsSelect (props: LocationsSelectProps) {
   const locations = useRequest(async () => await LocationListApi({ active: true }))
   const { id } = useParams()
   const options = locations.data?.map(item => ({ label: item.name, value: item.id }))?.filter(i => value?.includes(i.value))
+  const form = Form.useFormInstance()
+  const isTrack = Form.useWatch('inventory_tracking', form)
+  const initRef = useRef(0)
 
   const openInfo = useOpen<number[]>()
 
@@ -35,6 +38,27 @@ export default function LocationsSelect (props: LocationsSelectProps) {
       onChange?.(locations?.data?.map(item => item.id) || [])
     }
   }, [id, locations.data])
+
+  useEffect(() => {
+    if (value?.length) return
+    if (initRef.current !== 2) {
+      initRef.current = initRef.current + 1
+      return
+    }
+    if (isTrack) {
+      console.log(123)
+      onChange?.(locations?.data?.map(item => item.id) || [])
+    } else {
+      console.log(456)
+      onChange?.(locations?.data?.map(item => item.id) || [])
+    }
+  }, [isTrack])
+
+  useEffect(() => {
+    if (value?.length === 1) {
+      setSelected(value?.[0])
+    }
+  }, [value])
 
   if (locations.loading) return <div><SLoading black size={14} /></div>
 

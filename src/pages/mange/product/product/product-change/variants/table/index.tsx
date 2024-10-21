@@ -80,7 +80,7 @@ export default function Table (props: TableProps) {
       <div style={{ position: 'absolute', top: -33, ...settingsStyle }}>
         {ColumnSettings}
       </div>
-      <Flex wrap={'wrap'} style={{ marginBottom: 12 }} align={'center'} gap={12}>
+      <Flex wrap={'wrap'} align={'center'} gap={12}>
         <Flex style={{ width: '100%' }} gap={48} align={'center'}>
           <GroupBy
             key={'groupBy'}
@@ -91,7 +91,7 @@ export default function Table (props: TableProps) {
             variants={variants}
             options={options}
           />
-          <Form.Item className={'mb0'} name={'enabled_location_ids'}>
+          <Form.Item noStyle className={'mb0'} name={'enabled_location_ids'}>
             <LocationsSelect key={'location'} selected={locationId} setSelected={setLocationId} />
           </Form.Item>
         </Flex>

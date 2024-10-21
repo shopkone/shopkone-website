@@ -103,7 +103,7 @@ export default function useColumns (params: ColumnsParams) {
   useEffect(() => {
     if (!inventoryTracking || !id) return
     const v = form.getFieldValue('variants')
-    forceChange(v)
+    // forceChange(v)
   }, [inventoryTracking])
 
   const cols: UseColumnType[] = [

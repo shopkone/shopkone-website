@@ -18,7 +18,7 @@ export default function Filters (props: FiltersProps) {
   if (!options.length) return <div />
 
   return (
-    <Flex align={'center'} gap={8}>
+    <Flex style={{ marginBottom: 12 }} align={'center'} gap={8}>
       Filters
       {
           options.map(option => (

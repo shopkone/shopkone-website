@@ -19,7 +19,7 @@ export default function ProductChange () {
   }
 
   return (
-    <Page isChange back={'/products/gift_cards'} width={950} title={'Create gift card product'}>
+    <Page type={'product'} isChange back={'/products/gift_cards'} width={950} title={'Create gift card product'}>
       <Form initialValues={initValues} form={form} className={'fit-width'} layout={'vertical'}>
         <Flex className={'fit-width'} gap={16}>
           <Flex vertical flex={1} gap={16}>
