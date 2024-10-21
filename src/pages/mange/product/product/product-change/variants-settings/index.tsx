@@ -1,6 +1,7 @@
 import { Card, Form, Radio } from 'antd'
 
 import { useInventoryPolicyOptions } from '@/constant/product'
+import { useI18n } from '@/hooks/use-lang'
 import TrackType from '@/pages/mange/product/product/product-change/variants-settings/track-type'
 import TypeChanger from '@/pages/mange/product/product/product-change/variants-settings/type-changer'
 
@@ -11,12 +12,13 @@ export default function VariantsSettings () {
 
   const form = Form.useFormInstance()
   const inventoryTracking = Form.useWatch('inventory_tracking', form)
+  const t = useI18n()
 
   return (
     <Card
       className={styles.container}
       style={{ height: inventoryTracking ? 230 : 135 }}
-      title={'Variants Settings'}
+      title={t('变体设置')}
     >
       <div>
         <Form.Item name={'variant_type'}>
