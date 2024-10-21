@@ -15,6 +15,7 @@ import SCard from '@/components/s-card'
 import { sMessage } from '@/components/s-message'
 import { useModal } from '@/components/s-modal'
 import SRender from '@/components/s-render'
+import { useI18n } from '@/hooks/use-lang'
 import { useOpen } from '@/hooks/useOpen'
 import MoveInventory from '@/pages/mange/settings/locations/change/move-inventory'
 import { useManageState } from '@/pages/mange/state'
@@ -33,9 +34,11 @@ export default function Change () {
   const info = useRequest(LocationInfoApi, { manual: true })
   const nav = useNavigate()
   const openInfo = useOpen<{ name: string, id: number }>()
+
   const existInventory = useRequest(LocationExistInventoryApi, { manual: true })
   const addressForm = useRef<FormInstance>()
   const modal = useModal()
+  const t = useI18n()
 
   const renderFooter = useDebounce(!!id && info?.data, { wait: 100 })
 
@@ -76,11 +79,11 @@ export default function Change () {
     if (id) {
       await update.runAsync({ ...info.data, ...form.getFieldsValue() })
       await info.refreshAsync()
-      sMessage.success('Location updated')
+      sMessage.success(t('位置已更新'))
       setIsChange(false)
     } else {
       const ret = await add.runAsync(form.getFieldsValue())
-      sMessage.success('Location added')
+      sMessage.success(t('位置已添加'))
       nav(`${ret.id}`)
       setIsChange(false)
     }
@@ -99,12 +102,12 @@ export default function Change () {
         openInfo.edit({ id: info.data.id, name: info?.data?.name })
       } else {
         modal.confirm({
-          title: `Deactivate ${info?.data?.name}?`,
-          content: 'You can reactivate this location at any time.',
+          title: `${t('停用')} ${info?.data?.name}?`,
+          content: t('您可以随时重新激活此位置。'),
           onOk: async () => {
             if (!info?.data?.id) return
             await update.runAsync({ ...info.data, active: false })
-            sMessage.success('Location deactivated')
+            sMessage.success(t('位置已停用'))
             info.refresh()
           }
         })
@@ -112,23 +115,23 @@ export default function Change () {
     } else {
       if (!info?.data?.id) return
       await update.runAsync({ ...info.data, active: true })
-      sMessage.success('Location activated')
+      sMessage.success(t('位置已激活'))
       info.refresh()
     }
   }
 
   const onRemove = async () => {
     modal.confirm({
-      title: `Delete ${info?.data?.name}?`,
-      content: `Are you sure you want to delete the location ${info?.data?.name}? This can’t be undone.`,
+      title: `${t('删除')} ${info?.data?.name}?`,
+      content: `${t('您确定要删除位置')} ${info?.data?.name}? ${t('这无法撤销。')}`,
       onOk: async () => {
         if (!info?.data?.id) return
         await remove.runAsync({ id: info.data.id })
-        sMessage.success('Location deleted')
+        sMessage.success(t('位置已删除'))
         nav('/settings/locations')
       },
       okButtonProps: { danger: true },
-      okText: 'Delete'
+      okText: t('删除')
     })
   }
 
@@ -152,11 +155,11 @@ export default function Change () {
       isChange={isChange}
       back={'/settings/locations'}
       width={700}
-      title={id ? info?.data?.name || '-' : 'Add location'}
+      title={id ? info?.data?.name || '-' : t('添加位置')}
       header={
         <SRender render={id}>
           <Button onClick={() => { nav(`/products/inventory/${id}`) }} type={'text'}>
-            View inventory
+            {t('查看库存')}
           </Button>
         </SRender>
       }
@@ -164,13 +167,13 @@ export default function Change () {
         <SRender render={renderFooter}>
           <Flex gap={12} align={'center'}>
             <SRender render={!!id && info?.data?.active ? !info?.data?.default : null}>
-              <Button loading={update.loading || existInventory.loading} onClick={onChangeActive}>Deactivate location</Button>
+              <Button loading={update.loading || existInventory.loading} onClick={onChangeActive}>{t('停用位置')}</Button>
             </SRender>
             <SRender render={!!id && !info?.data?.active}>
-              <Button loading={update.loading} onClick={onChangeActive}>Activate location</Button>
+              <Button loading={update.loading} onClick={onChangeActive}>{t('激活位置')}</Button>
             </SRender>
             <SRender render={!!id && !info?.data?.active}>
-              <Button disabled={remove.loading} danger onClick={onRemove} type={'primary'}>Delete location</Button>
+              <Button disabled={remove.loading} danger onClick={onRemove} type={'primary'}>{t('删除位置')}</Button>
             </SRender>
           </Flex>
         </SRender>
@@ -179,11 +182,11 @@ export default function Change () {
       <Form initialValues={{ name: '', fulfillment_details: false }} onValuesChange={onValuesChange} layout={'vertical'} form={form}>
         <SCard
           loading={info.loading}
-          tips={'Give this location a short name to make it easy to identify. You will see this name in areas like orders and products.'}
+          tips={t('为此位置指定一个简短名称，以便于识别。您将在订单和产品等区域看到此名称。')}
           style={{ marginBottom: 16 }}
-          title={'Name'}
+          title={t('名称')}
         >
-          <Form.Item rules={[{ required: true, message: 'Name is required' }]} name={'name'} className={'mb0'}>
+          <Form.Item rules={[{ required: true, message: t('名称是必填项') }]} name={'name'} className={'mb0'}>
             <Input autoComplete={'off'} />
           </Form.Item>
         </SCard>
@@ -192,19 +195,19 @@ export default function Change () {
           <Address getFormInstance={form => { addressForm.current = form }} hasName loading={!address?.country || info.loading} hasEmail />
         </Form.Item>
 
-        <SCard style={{ marginTop: 16 }} title={'Fulfillment details'} loading={info.loading}>
+        <SCard style={{ marginTop: 16 }} title={t('履行详情')} loading={info.loading}>
           <Form.Item
             className={'mb0'}
             extra={
               <div style={{ marginLeft: 24, marginTop: -4, opacity: info?.data?.default ? 0.3 : 1 }}>
-                Inventory at this location is available for sale online.
+                {t('此位置的库存可在线销售。')}
               </div>
             }
             name={'fulfillment_details'}
             valuePropName={'checked'}
           >
             <Checkbox disabled={info?.data?.default}>
-              Fulfill online orders from this location
+              {t('从此位置履行在线订单')}
             </Checkbox>
           </Form.Item>
         </SCard>
@@ -215,7 +218,7 @@ export default function Change () {
         onConfirm={async () => {
           if (!info?.data?.id) return
           await update.runAsync({ ...info.data, active: false })
-          sMessage.success('Location deactivated')
+          sMessage.success(t('位置已停用'))
           info.refresh()
         }}
       />

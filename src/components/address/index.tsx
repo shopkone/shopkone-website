@@ -10,6 +10,7 @@ import PhoneCode from '@/components/address/phone-code'
 import SCard from '@/components/s-card'
 import SRender from '@/components/s-render'
 import SSelect from '@/components/s-select'
+import { useI18n } from '@/hooks/use-lang'
 
 export interface AddressProps {
   requiredName?: boolean
@@ -39,6 +40,7 @@ const INIT_DATA = {
 
 export default function Address (props: AddressProps) {
   const { companyNameLabel, hasEmail, loading, value, onChange, hasName, hiddenTitle, getFormInstance } = props
+  const t = useI18n()
 
   const [form] = Form.useForm()
 
@@ -113,17 +115,17 @@ export default function Address (props: AddressProps) {
     <Form.Item
       rules={[{
         pattern: new RegExp(c?.postal_code_config?.regex || ''),
-        message: `${c?.config?.postal_code || 'Postal code'}  isn't valid.Example:` + PostalCodeMsg
+        message: `${c?.config?.postal_code || t('邮政编码')}  不合法。例如：` + PostalCodeMsg
       }]}
       name={'postal_code'}
-      label={c?.config?.postal_code || 'Postal code'}
+      label={c?.config?.postal_code || t('邮政编码')}
     >
       <Input autoComplete={'off'} />
     </Form.Item>
   )
 
   return (
-    <SCard title={hiddenTitle ? undefined : 'Address'} loading={cardLoading}>
+    <SCard title={hiddenTitle ? undefined : t('地址')} loading={cardLoading}>
       <Form initialValues={INIT_DATA} layout={'vertical'} form={form} onValuesChange={onChangeHandler}>
         <Row gutter={16}>
           <SRender render={companyNameLabel}>
@@ -183,7 +185,7 @@ export default function Address (props: AddressProps) {
 
           <SRender render={hasEmail}>
             <Col span={12}>
-              <Form.Item className={'flex1'} name={'email'} label={'Email'}>
+              <Form.Item className={'flex1'} name={'email'} label={t('电子邮件')}>
                 <Input autoComplete={'off'} />
               </Form.Item>
             </Col>

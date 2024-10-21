@@ -4,6 +4,7 @@ import classNames from 'classnames'
 
 import SLoading from '@/components/s-loading'
 import SRender from '@/components/s-render'
+import { useI18n } from '@/hooks/use-lang'
 import { useGlobalTask } from '@/pages/mange/task/state'
 import UploadRender from '@/pages/mange/task/upload/upload-render'
 import { useTaskUpload } from '@/pages/mange/task/upload/use-task-upload'
@@ -17,11 +18,12 @@ export default function Task () {
   const loadingCount = loadingFileCount
   const errorFileCount = globalTask.files.filter(file => file.status === 'error').length
   const errorCount = errorFileCount
+  const t = useI18n()
 
   const options = [
-    { label: <Badge color={'#3370ff'} size={'small'} count={loadingCount}>Files</Badge>, key: 'upload' },
-    { label: 'Import', key: 'import' },
-    { label: 'Export', key: 'export' }
+    { label: <Badge color={'#3370ff'} size={'small'} count={loadingCount}>{t('文件')}</Badge>, key: 'upload' },
+    { label: t('导入'), key: 'import' },
+    { label: t('导出'), key: 'export' }
   ]
 
   if (!globalTask.isOpen) return null
@@ -69,14 +71,14 @@ export default function Task () {
             <div>
               <SRender render={loadingCount}>
                 <span>
-                  {loadingCount} tasks are in progress.
+                  {loadingCount} {t('个任务正在进行中。')}
                 </span>
               </SRender>
               <SRender render={!loadingCount && !errorCount}>
-                <span>All tasks have been completed.</span>
+                <span>{t('所有任务已完成。')}</span>
               </SRender>
               <SRender render={errorCount ? !loadingCount : null}>
-                <span>{errorCount} tasks failed.</span>
+                <span>{errorCount} {t('个任务失败。')}</span>
               </SRender>
             </div>
           </Flex>

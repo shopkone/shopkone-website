@@ -10,6 +10,7 @@ import Page from '@/components/page'
 import SCard from '@/components/s-card'
 import SLoading from '@/components/s-loading'
 import SRender from '@/components/s-render'
+import { useI18n } from '@/hooks/use-lang'
 import { useShippingState } from '@/pages/mange/settings/shipping/state'
 
 import styles from './index.module.less'
@@ -20,11 +21,12 @@ export default function Shipping () {
   const nav = useNavigate()
   const shippingState = useShippingState()
   const countries = useCountries()
+  const t = useI18n()
 
   const tabs: TabsProps['items'] = [
-    { label: 'Courier service', key: '' },
-    { label: 'Local delivery', key: 'local-delivery' },
-    { label: 'Pickup in store', key: 'pickup-in-store' }
+    { label: t('快递服务'), key: '' },
+    { label: t('本地配送'), key: 'local-delivery' },
+    { label: t('店内自取'), key: 'pickup-in-store' }
   ]
 
   const onTabClick: TabsProps['onTabClick'] = key => {
@@ -37,7 +39,7 @@ export default function Shipping () {
   }, [locationList.data])
 
   return (
-    <Page title={locationList.data?.length ? '' : 'Shipping'} bottom={64} width={700}>
+    <Page title={locationList.data?.length ? '' : t('运输')} bottom={64} width={700}>
       <SRender render={!locationList.data?.length && !countries.loading}>
         <SCard loading={locationList.loading}>
           <Empty
@@ -48,13 +50,13 @@ export default function Shipping () {
             }
             description={(
               <div className={'secondary'}>
-                No available locations at the moment. Please go to the location list Add location or enable locations to set up "Local delivery" and activate the service.
+                {t('目前没有可用的地点。请前往地点列表添加地点或启用地点，以设置“本地配送”并激活该服务。')}
               </div>
             )}
             style={{ paddingBottom: 24, marginTop: -32 }}
           >
             <Button onClick={() => { nav('/settings/locations') }} type={'primary'}>
-              To location
+              {t('前往地点')}
             </Button>
           </Empty>
         </SCard>
@@ -64,12 +66,11 @@ export default function Shipping () {
         <Flex className={styles.tabs}>
           {
             tabs.map(tab => (
-              <Button type={'text'} key={tab.key}>
+              <Button type={'text'} key={tab.key} onClick={() => { onTabClick(tab.key) }}>
                 {tab.label}
               </Button>
             ))
           }
-          {/*           <Tabs onTabClick={onTabClick} activeKey={location?.pathname?.split('/')?.[3]} items={tabs} /> */}
         </Flex>
 
         <Suspense fallback={<SLoading minHeight={400} />}>

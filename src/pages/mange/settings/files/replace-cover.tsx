@@ -7,6 +7,7 @@ import { UploadFileType } from '@/api/file/UploadFileType'
 import { sMessage } from '@/components/s-message'
 import Upload from '@/components/upload'
 import { useUpload } from '@/components/upload/use-upload'
+import { useI18n } from '@/hooks/use-lang'
 import styles from '@/pages/mange/settings/files/index.module.less'
 
 export interface ReplaceCoverProps {
@@ -18,6 +19,7 @@ export default function ReplaceCover (props: ReplaceCoverProps) {
   const { id, onLoading } = props
   const updateFile = useRequest(FileUpdateApi, { manual: true })
   const { upload } = useUpload()
+  const t = useI18n()
 
   const onUpload = async (files: UploadFileType[]) => {
     if (files?.[0]?.status !== 'wait') return
@@ -25,7 +27,7 @@ export default function ReplaceCover (props: ReplaceCoverProps) {
       onLoading(true)
       const res = await upload(files[0])
       await updateFile.runAsync({ id, cover: res.path })
-      sMessage.success('Replace success')
+      sMessage.success(t('替换成功'))
     } finally {
       onLoading(false)
     }
@@ -38,7 +40,7 @@ export default function ReplaceCover (props: ReplaceCoverProps) {
       maxSize={1024 * 1024 * 10}
       onChange={onUpload}
     >
-      <Tooltip title={'Replace cover'}>
+      <Tooltip title={t('替换封面')}>
         <Button
           onMouseDown={e => { e.stopPropagation() }}
           className={styles.actionsIcon}

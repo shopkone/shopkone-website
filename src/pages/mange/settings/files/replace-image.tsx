@@ -7,6 +7,7 @@ import { UploadFileType } from '@/api/file/UploadFileType'
 import { sMessage } from '@/components/s-message'
 import Upload from '@/components/upload'
 import { useUpload } from '@/components/upload/use-upload'
+import { useI18n } from '@/hooks/use-lang'
 import styles from '@/pages/mange/settings/files/index.module.less'
 
 export interface ReplaceImageProps {
@@ -18,6 +19,7 @@ export default function ReplaceImage (props: ReplaceImageProps) {
   const { id, onLoading } = props
   const updateFile = useRequest(FileUpdateApi, { manual: true })
   const { upload } = useUpload()
+  const t = useI18n()
 
   const onUpload = async (files: UploadFileType[]) => {
     if (files?.[0]?.status !== 'wait') return
@@ -26,7 +28,7 @@ export default function ReplaceImage (props: ReplaceImageProps) {
       onLoading(true)
       const res = await upload({ ...files[0], status: 'uploading' })
       await updateFile.runAsync({ id, src: res.path })
-      sMessage.success('Replace success')
+      sMessage.success(t('替换成功'))
     } finally {
       onLoading(false)
     }
@@ -39,7 +41,7 @@ export default function ReplaceImage (props: ReplaceImageProps) {
       maxSize={1024 * 1024 * 10}
       onChange={onUpload}
     >
-      <Tooltip title={'Replace'}>
+      <Tooltip title={t('替换')}>
         <Button
           onMouseDown={e => { e.stopPropagation() }}
           className={styles.actionsIcon}

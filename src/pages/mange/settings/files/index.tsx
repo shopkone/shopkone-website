@@ -17,6 +17,7 @@ import { useModal } from '@/components/s-modal'
 import SRender from '@/components/s-render'
 import STable, { STableProps } from '@/components/s-table'
 import Upload from '@/components/upload'
+import { useI18n } from '@/hooks/use-lang'
 import { useOpen } from '@/hooks/useOpen'
 import FileInfo from '@/pages/mange/settings/files/file-info'
 import Filters from '@/pages/mange/settings/files/filters'
@@ -46,10 +47,11 @@ export default function Files () {
   const [loadingList, setLoadingList] = useState<number[]>([])
 
   const modal = useModal()
+  const t = useI18n()
 
   const onCopy = (link: string) => {
     navigator.clipboard.writeText(link)
-    sMessage.success('Link copied')
+    sMessage.success(t('链接已复制')) // 'Link copied'
   }
 
   const onLoading = (loading: boolean, id: number) => {
@@ -65,7 +67,7 @@ export default function Files () {
 
   const columns: STableProps['columns'] = [
     {
-      title: <div className={styles.colTitle}>File name</div>,
+      title: <div className={styles.colTitle}>{t('文件名')}</div>, // 'File name'
       code: 'file_name',
       name: 'file_name',
       width: 300,
@@ -114,7 +116,7 @@ export default function Files () {
       lock: true
     },
     {
-      title: 'Date added',
+      title: t('添加日期'), // 'Date added'
       code: 'data_added',
       name: 'data_added',
       width: 100,
@@ -123,20 +125,20 @@ export default function Files () {
       }
     },
     {
-      title: 'Size',
+      title: t('大小'), // 'Size'
       code: 'size',
       name: 'size',
       render: (size: number) => formatFileSize(size),
       width: 100
     },
     {
-      title: 'References',
+      title: t('引用'), // 'References'
       code: 'references',
       name: 'references',
       width: 100
     },
     {
-      title: 'Group name',
+      title: t('组名'), // 'Group name'
       code: 'group_id',
       name: 'group_id',
       width: 150,
@@ -147,16 +149,18 @@ export default function Files () {
       hidden: !groupList?.data?.length
     },
     {
-      title: 'Link',
+      title: t('链接'), // 'Link'
       code: 'src',
       name: 'src',
       width: 60,
       render: (src: string) => (
-        <Tooltip title={'Copy link'}>
-          <IconButton type={'text'} onMouseDown={e => { e.stopPropagation() }} onClick={(e) => { e.stopPropagation(); onCopy(src) }} size={26}>
-            <IconCopy size={14} />
-          </IconButton>
-        </Tooltip>
+        <div style={{ display: 'inline-block' }}>
+          <Tooltip placement={'top'} title={t('复制链接')}> {/* 'Copy link' */}
+            <IconButton type={'text'} onMouseDown={e => { e.stopPropagation() }} onClick={(e) => { e.stopPropagation(); onCopy(src) }} size={26}>
+              <IconCopy size={14} />
+            </IconButton>
+          </Tooltip>
+        </div>
       )
     }
   ]
@@ -174,13 +178,13 @@ export default function Files () {
 
   const onBatchDelete = () => {
     modal.confirm({
-      title: `Delete ${selected?.length} files?`,
-      content: 'This can’t be undone. The files will be removed from all places they’re being used in your Shopkone store.',
+      title: `${t('删除')} ${selected?.length} ${t('文件吗？')}`, // 'Delete {number} files?'
+      content: t('此操作无法撤销，文件将从您 Shopkone 商店的所有位置移除。'), // 'This can’t be undone. The files will be removed from all places they’re being used in your Shopkone store.'
       okButtonProps: { type: 'primary', danger: true },
-      okText: 'Delete',
+      okText: t('删除'), // 'Delete'
       onOk: async () => {
         await filesDelete.runAsync({ ids: selected })
-        sMessage.success('Delete files successfully')
+        sMessage.success(t('成功删除文件')) // 'Delete files successfully'
         list.refresh()
         setSelected([])
       }
@@ -215,11 +219,11 @@ export default function Files () {
       header={
         <SRender render={!!list?.data?.list?.length}>
           <Uploader>
-            <Button type={'primary'}>Upload files</Button>
+            <Button type={'primary'}>{t('上传文件')}</Button>
           </Uploader>
         </SRender>
       }
-      title={'Files'}
+      title={t('文件')}
     >
       <Flex gap={16}>
         <Group loading={groupList.loading} list={groupList?.data || []} asyncRefresh={groupList.refreshAsync} />
@@ -236,13 +240,13 @@ export default function Files () {
               }}
               actions={
                 <Flex gap={12}>
-                  <Button size={'small'} danger onClick={onBatchDelete}>Delete files</Button>
+                  <Button size={'small'} danger onClick={onBatchDelete}>{t('删除文件')}</Button>
                   <SRender render={!!groupList?.data?.length}>
                     <Button
                       size={'small'}
                       onClick={() => { moveGroupOpen.edit(selected) }}
                     >
-                      Move to new group
+                      {t('移动到新组')}
                     </Button>
                   </SRender>
                 </Flex>
@@ -263,12 +267,12 @@ export default function Files () {
               loading={list.loading}
               empty={{
                 title: params.group_id
-                  ? `No files in ${groupList?.data?.find(item => item.id === params.group_id)?.name} group`
-                  : 'Upload and manage your files',
-                desc: 'Files can be images, videos and zip.',
+                  ? `${t('在')} ${groupList?.data?.find(item => item.id === params.group_id)?.name} ${t('组中没有文件')}`
+                  : t('上传和管理您的文件'),
+                desc: t('文件可以是图像、视频和压缩包。'),
                 actions: (
                   <Uploader>
-                    <Button type={'primary'}>Upload files</Button>
+                    <Button type={'primary'}>{t('上传文件')}</Button>
                   </Uploader>
                 )
               }}

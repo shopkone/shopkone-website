@@ -2,24 +2,26 @@ import { Button, Card, Checkbox, Form } from 'antd'
 
 import Page from '@/components/page'
 import STable, { STableProps } from '@/components/s-table'
+import { useI18n } from '@/hooks/use-lang'
 
 export default function Taxes () {
+  const t = useI18n()
   const columns: STableProps['columns'] = [
-    { title: 'Country / Region', code: 'region', name: 'region' },
-    { title: 'Number of regions', code: 'region', name: 'region' },
-    { title: 'Sales tax rate', code: 'region', name: 'region' },
-    { title: 'Shipping tax rate', code: 'region', name: 'region' }
+    { title: t('国家 / 地区'), code: 'region', name: 'region' },
+    { title: t('地区数量'), code: 'region', name: 'region' },
+    { title: t('销售税率'), code: 'region', name: 'region' },
+    { title: t('运输税率'), code: 'region', name: 'region' }
   ]
   return (
-    <Page width={800} title={'Taxes'}>
+    <Page width={800} title={t('税务')}>
       <Card
         extra={
-          <Button size={'small'} type={'text'}>Select region</Button>
+          <Button size={'small'} type={'link'}>{t('选择地区')}</Button>
         }
-        title={'Regional settings'}
+        title={t('区域设置')}
       >
         <div className={'tips'} style={{ marginBottom: 12 }}>
-          Create a shipping zone in the region(s) you want to collect tax in. Then, find the region in this list and select it to manage its tax settings. If you’re unsure about where you’re liable, check with a tax professional.
+          {t('在您希望收税的区域创建一个运输区域。然后，在此列表中找到该区域并选择它以管理其税务设置。如果您不确定自己是否有责任，请咨询税务专业人士。')}
         </div>
         <STable
           init
@@ -30,16 +32,16 @@ export default function Taxes () {
         />
       </Card>
 
-      <Card style={{ marginTop: 16 }} title={'Global settings'}>
+      <Card style={{ marginTop: 16 }} title={t('全球设置')}>
         <Form.Item
           extra={
             <div className={'tips'} style={{ marginTop: -8, marginLeft: 24 }}>
-              Automatically calculated for Canada, European Union, and United States
+              {t('自动计算适用于加拿大、欧盟和美国')}
             </div>
           }
         >
           <Checkbox>
-            Charge sales tax on shipping
+            {t('对运输收取销售税')}
           </Checkbox>
         </Form.Item>
       </Card>

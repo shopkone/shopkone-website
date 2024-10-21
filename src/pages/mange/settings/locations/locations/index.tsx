@@ -8,10 +8,12 @@ import Page from '@/components/page'
 import SCard from '@/components/s-card'
 import SLocation from '@/components/s-location'
 import SRender from '@/components/s-render'
+import { useI18n } from '@/hooks/use-lang'
 
 export default function Locations () {
   const nav = useNavigate()
   const list = useRequest(LocationListApi)
+  const t = useI18n()
 
   return (
     <Page
@@ -20,17 +22,17 @@ export default function Locations () {
       header={
         <SRender render={list.data?.length}>
           <Button onClick={() => { nav('/settings/locations/change') }} type={'primary'}>
-            Add location
+            {t('添加位置')}
           </Button>
         </SRender>
       }
-      title={'Locations'}
+      title={t('位置')}
       width={800}
     >
       <SCard
-        tips={list?.data?.length ? 'Manage the places you sell products, ship orders, and keep inventory.' : ''}
+        tips={list?.data?.length ? t('管理您销售产品、发货和存货的地点。') : ''}
         loading={list.loading}
-        title={'All locations'}
+        title={t('所有位置')}
       >
 
         <SRender render={!list.data?.length}>
@@ -42,13 +44,13 @@ export default function Locations () {
             }
             description={(
               <div className={'secondary'}>
-                Manage the places you sell products, ship orders, and keep inventory.
+                {t('管理您销售产品、发货和存货的地点。')}
               </div>
             )}
             style={{ paddingBottom: 24, marginTop: -32 }}
           >
             <Button onClick={() => { nav('/settings/locations/change') }} type={'primary'}>
-              Add location
+              {t('添加位置')}
             </Button>
           </Empty>
         </SRender>

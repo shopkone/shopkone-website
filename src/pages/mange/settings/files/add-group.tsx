@@ -6,6 +6,7 @@ import { FileGroupAddApi } from '@/api/file/file-group-add'
 import { FileGroupUpdateApi } from '@/api/file/file-group-update'
 import { sMessage } from '@/components/s-message'
 import SModal from '@/components/s-modal'
+import { useI18n } from '@/hooks/use-lang'
 import { UseOpenType } from '@/hooks/useOpen'
 
 export interface AddGroupProps {
@@ -21,11 +22,12 @@ export default function AddGroup (props: AddGroupProps) {
 
   const addGroup = useRequest(FileGroupAddApi, { manual: true })
   const editGroup = useRequest(FileGroupUpdateApi, { manual: true })
+  const t = useI18n()
 
   const onAdd = async () => {
     if (!name) return
     const ret = await addGroup.runAsync({ name })
-    sMessage.success('Add group successfully')
+    sMessage.success(t('添加分组成功'))
     open.close()
     onComplete(ret.id || 0)
   }
@@ -33,7 +35,7 @@ export default function AddGroup (props: AddGroupProps) {
   const onEdit = async () => {
     if (!name || !open.data) return
     await editGroup.runAsync({ id: open.data?.id || 0, name })
-    sMessage.success('Edit group successfully')
+    sMessage.success(t('编辑分组成功'))
     open.close()
     onComplete(open.data?.id)
   }
@@ -68,12 +70,12 @@ export default function AddGroup (props: AddGroupProps) {
       onOk={onOk}
       confirmLoading={addGroup.loading || editGroup.loading}
       okButtonProps={{ disabled: !name }}
-      title={open.data?.name ? 'Edit group' : 'Add group'}
+      title={open.data?.name ? t('编辑分组') : t('添加分组')}
       onCancel={open.close}
       open={open.open}
     >
       <Form layout={'vertical'} style={{ margin: '16px 16px 24px 16px' }}>
-        <Form.Item label={'Group name'}>
+        <Form.Item label={t('分组名称')}>
           <Input ref={inputRef} value={name} autoComplete={'off'} onChange={e => { setName(e.target.value) }} />
         </Form.Item>
       </Form>

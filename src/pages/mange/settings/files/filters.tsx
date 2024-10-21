@@ -7,6 +7,7 @@ import SRender from '@/components/s-render'
 import FilterCheckbox from '@/components/table-filter/filter-checkbox'
 import FilterNumberRange, { FilterNumberRangeProps } from '@/components/table-filter/filter-number-range'
 import FilterRadio from '@/components/table-filter/filter-radio'
+import { useI18n } from '@/hooks/use-lang'
 
 import styles from './index.module.less'
 
@@ -25,11 +26,13 @@ export default function Filters (props: FiltersProps) {
   const { onChange, value, groupName } = props
   const [labels, setLabels] = useState<Record<string, ReactNode>>({})
 
+  const t = useI18n()
+
   const options = [
-    { value: FileType.Image, label: 'Image' },
-    { value: FileType.Video, label: 'Video' },
-    { value: FileType.Audio, label: 'Audio' },
-    { value: FileType.Other, label: 'Other' }
+    { value: FileType.Image, label: t('图片') },
+    { value: FileType.Video, label: t('视频') },
+    { value: FileType.Audio, label: t('音频') },
+    { value: FileType.Other, label: t('其他') }
   ]
 
   return (
@@ -43,7 +46,7 @@ export default function Filters (props: FiltersProps) {
             }}
             allowClear
             prefix={<IconSearch size={15} className={styles['filter-icon']} />}
-            placeholder={'Search files'}
+            placeholder={t('搜索文件')}
             size={'small'}
             style={{
               width: 250
@@ -55,14 +58,14 @@ export default function Filters (props: FiltersProps) {
           gap={8}
         >
           <FilterNumberRange
-            maxLabel={'Max size'}
-            minLabel= {'Min size'}
+            maxLabel={t('最大大小')}
+            minLabel={t('最小大小')}
             unit={'MB'}
             onChange={(v) => { onChange?.({ ...value, file_size: v }) }}
             onLabelChange={(l) => { setLabels({ ...labels, file_size: l }) }}
             value={value?.file_size || {}}
           >
-            File size
+            {t('文件大小')}
           </FilterNumberRange>
 
           <FilterCheckbox
@@ -73,19 +76,19 @@ export default function Filters (props: FiltersProps) {
             value={value?.file_type}
             onLabelChange={(l) => { setLabels({ ...labels, file_type: l }) }}
           >
-            File type
+            {t('文件类型')}
           </FilterCheckbox>
 
           <FilterRadio
             options={[
-              { label: 'Used', value: 1 },
-              { label: 'Unused', value: 2 }
+              { label: t('已使用'), value: 1 },
+              { label: t('未使用'), value: 2 }
             ]}
             value={value?.used}
             onChange={(v) => { onChange?.({ ...value, used: Number(v || 0) }) }}
             onLabelChange={(l) => { setLabels({ ...labels, used: l }) }}
           >
-            Used
+            {t('已使用')}
           </FilterRadio>
 
           <SRender render={groupName}>

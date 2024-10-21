@@ -11,6 +11,7 @@ import SCard from '@/components/s-card'
 import { sMessage } from '@/components/s-message'
 import { useModal } from '@/components/s-modal'
 import SRender from '@/components/s-render'
+import { useI18n } from '@/hooks/use-lang'
 import { useOpen } from '@/hooks/useOpen'
 import AddGroup from '@/pages/mange/settings/files/add-group'
 
@@ -32,8 +33,9 @@ export default function Group (props: GroupProps) {
 
   const gid = useParams().groupId
   const groupId = Number(gid || 0)
+  const t = useI18n()
 
-  const groups = useMemo(() => [{ id: 0, name: 'All files', count: 0 }, ...(list || [])], [list])
+  const groups = useMemo(() => [{ id: 0, name: t('所有文件'), count: 0 }, ...(list || [])], [list])
 
   const onSelect = (id: number) => {
     console.log(id)
@@ -43,17 +45,17 @@ export default function Group (props: GroupProps) {
 
   const onRemove = async (id: number) => {
     modal.confirm({
-      content: 'Are you sure to delete this group?',
+      content: t('您确定要删除这个分组吗？'),
       onOk: async () => {
         await groupRemove.runAsync({ id })
-        sMessage.success('Delete group successfully')
+        sMessage.success(t('删除分组成功'))
         asyncRefresh()
         if (groupId === id) {
           onSelect(0)
         }
       },
       okButtonProps: { type: 'primary', danger: true },
-      okText: 'Delete'
+      okText: t('删除')
     })
   }
 
@@ -64,7 +66,7 @@ export default function Group (props: GroupProps) {
         styles={{ body: { padding: 0 } }}
         className={'fit-height'}
       >
-        <div className={styles.sideTitle}>File group</div>
+        <div className={styles.sideTitle}>{t('文件分组')}</div>
         <div className={styles.sideContent}>
           {
             groups.map(group => (
@@ -84,10 +86,10 @@ export default function Group (props: GroupProps) {
                       placement={'bottom'}
                       content={
                         <Flex onClick={e => { e.stopPropagation(); setExpand(undefined) }} vertical gap={8}>
-                          <Button type={'text'} onClick={() => { open.edit({ id: group.id, name: group.name }) }}>Edit</Button>
-                          <Button onClick={() => { onRemove(group.id) }} type={'text'}>Delete</Button>
+                          <Button type={'text'} onClick={() => { open.edit({ id: group.id, name: group.name }) }}>{t('编辑')}</Button>
+                          <Button onClick={() => { onRemove(group.id) }} type={'text'}>{t('删除')}</Button>
                         </Flex>
-                    }
+                      }
                     >
                       <Button
                         style={{ background: expand === group.id ? '#e1e3e5' : undefined, opacity: expand === group.id ? 1 : undefined }}
@@ -107,7 +109,7 @@ export default function Group (props: GroupProps) {
         <div className={styles.sideBottom}>
           <Button onClick={() => { open.edit() }} block>
             <IconPlus size={14} />
-            Add group
+            {t('添加分组')}
           </Button>
         </div>
       </SCard>

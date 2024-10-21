@@ -2,14 +2,16 @@ import { Card, Flex } from 'antd'
 
 import Page from '@/components/page'
 import STable from '@/components/s-table'
+import { useI18n } from '@/hooks/use-lang'
 
 export default function Domains () {
+  const t = useI18n()
   return (
-    <Page title={'Domains'} width={800} bottom={48}>
+    <Page title={t('域名')} width={800} bottom={48}>
       <Flex vertical gap={16}>
-        <Card title={'Primary domain'}>
+        <Card title={t('主域名')}>
           <div className={'tips'} style={{ marginBottom: 12 }}>
-            Traffic generated from all store domains will be redirected to the registered default domain once activated.
+            {t('激活后，所有商店域名生成的流量将被重定向到注册的默认域名。')}
           </div>
           <STable
             borderless
@@ -22,15 +24,13 @@ export default function Domains () {
             data={[]}
           />
         </Card>
-        <Card title={'Domain list'}>
-          <div
-            className={'tips'} style={{ marginBottom: 12 }}
-          >
+        <Card title={t('域名列表')}>
+          <div className={'tips'} style={{ marginBottom: 12 }}>
             <div>
-              Your root domain is the highest level of domain in any domain naming system. We strongly suggest linking to a domain in the form of www.domain.com.
+              {t('您的根域名是任何域名命名系统中最高级别的域名。我们强烈建议链接到 www.domain.com 形式的域名。')}
             </div>
             <div style={{ marginTop: 4 }}>
-              Domains with suffix of ".fun" are not supported in Shopkone.
+              {t('后缀为 ".fun" 的域名在 Shopkone 中不被支持。')}
             </div>
           </div>
           <STable
@@ -40,14 +40,9 @@ export default function Domains () {
             data={[]}
           />
         </Card>
-        <Card title={'IP blocking'}>
-          <div
-            className={'tips'} style={{
-
-              marginBottom: 12
-            }}
-          >
-            Once enabled, you can block visitors from specific countries/regions
+        <Card title={t('IP 阻止')}>
+          <div className={'tips'} style={{ marginBottom: 12 }}>
+            {t('启用后，您可以阻止来自特定国家/地区的访客。')}
           </div>
           <STable
             borderless

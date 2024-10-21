@@ -28,7 +28,7 @@ export default function FilterBase (props: FilterBaseProps) {
     <div className={styles.base}>
       {children}
       <div className={styles.clear}>
-        <Button disabled={!onClear} onClick={clearHandler} type={'link'} size={'small'}>Clear</Button>
+        <Button disabled={!onClear} onClick={clearHandler} type={'link'} size={'small'}>清除</Button>
       </div>
     </div>
   ))

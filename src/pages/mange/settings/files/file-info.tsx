@@ -15,6 +15,7 @@ import { sMessage } from '@/components/s-message'
 import SModal from '@/components/s-modal'
 import SRender from '@/components/s-render'
 import Upload from '@/components/upload'
+import { useI18n } from '@/hooks/use-lang'
 import { useOss } from '@/hooks/use-oss'
 import { UseOpenType } from '@/hooks/useOpen'
 import { formatFileSize } from '@/utils/format'
@@ -43,6 +44,7 @@ export default function FileInfo (props: FileInfoProps) {
   const oss = useOss()
 
   const groupName = groups.find(item => item.id === info?.data?.group_id)?.name
+  const t = useI18n()
 
   const tranTimer = (time: number) => {
     const minutes = Math.floor(time / 60)
@@ -62,14 +64,14 @@ export default function FileInfo (props: FileInfoProps) {
       src: info?.data?.path || '',
       cover: cover || ''
     })
-    sMessage.success('Update file info successfully')
+    sMessage.success(t('文件信息更新成功'))
     open.close()
     reFresh()
   }
 
   const onCopyCoverLink = () => {
     navigator.clipboard.writeText(cover || '')
-    sMessage.success('Cover link copied!')
+    sMessage.success(t('封面链接已复制！'))
   }
 
   useEffect(() => {
@@ -128,7 +130,7 @@ export default function FileInfo (props: FileInfoProps) {
           <div className={styles.info}>
             <Flex vertical justify={'space-between'} className={'fit-height'}>
               <Form layout={'vertical'}>
-                <Form.Item label={'Name'}>
+                <Form.Item label={t('名称')}>
                   <Input
                     onChange={e => { setName(e.target.value) }}
                     value={name}
@@ -136,7 +138,7 @@ export default function FileInfo (props: FileInfoProps) {
                   />
                 </Form.Item>
                 <SRender render={info?.data?.type === FileType.Video}>
-                  <Form.Item label={'Cover'}>
+                  <Form.Item label={t('封面')}>
                     <Flex gap={8}>
                       <div style={{ display: 'inline-block' }}>
                         <FileImage loading={updaloadFile?.status === 'wait'} width={48} height={48} src={cover || ''} type={FileType.Image} />
@@ -146,7 +148,7 @@ export default function FileInfo (props: FileInfoProps) {
                           <Button type={'text'} size={'small'} className={'primary-text'}>
                             <Flex align={'center'} gap={6}>
                               <IconReplace size={14} style={{ position: 'relative', top: -1 }} />
-                              Replace cover
+                              {t('替换封面')}
                             </Flex>
                           </Button>
                         </Upload>
@@ -154,7 +156,7 @@ export default function FileInfo (props: FileInfoProps) {
                         <Button onClick={onCopyCoverLink} type={'text'} size={'small'}>
                           <Flex align={'center'} gap={6}>
                             <IconCopy size={14} style={{ position: 'relative', top: -1 }} />
-                            <div>Copy cover link</div>
+                            <div>{t('复制封面链接')}</div>
                           </Flex>
                         </Button>
                       </SRender>
@@ -162,7 +164,7 @@ export default function FileInfo (props: FileInfoProps) {
                   </Form.Item>
                 </SRender>
                 <SRender render={info?.data?.type === FileType.Image}>
-                  <Form.Item label={'Alt text'}>
+                  <Form.Item label={t('替代文本')}>
                     <Input
                       onChange={e => { setAlt(e.target.value) }}
                       value={alt}
@@ -170,7 +172,7 @@ export default function FileInfo (props: FileInfoProps) {
                     />
                   </Form.Item>
                 </SRender>
-                <Form.Item label={'Details'}>
+                <Form.Item label={t('详情')}>
                   <Flex className={styles.details} vertical>
                     <div>
                       {[
@@ -179,24 +181,24 @@ export default function FileInfo (props: FileInfoProps) {
                         formatFileSize(info?.data?.size || 0)
                       ].filter(i => i).join(' • ')}
                     </div>
-                    <SRender render={info?.data?.duration}>Duration {tranTimer(info?.data?.duration || 0)}</SRender>
-                    <div>Added {dayjs(info?.data?.created_at).format('MM/DD/YYYY')}</div>
+                    <SRender render={info?.data?.duration}>{t('时长')} {tranTimer(info?.data?.duration || 0)}</SRender>
+                    <div>{t('添加时间')} {dayjs(info?.data?.created_at).format('MM/DD/YYYY')}</div>
                     <SRender render={groupName}>
                       <Typography.Text ellipsis={{ tooltip: true }} style={{ width: 300 }}>
-                        Group by {groupName}
+                        {t('按')} {groupName} {t('分组')}
                       </Typography.Text>
                     </SRender>
                   </Flex>
                 </Form.Item>
-                <Form.Item label={'Used in'}>
+                <Form.Item label={t('使用情况')}>
                   <div className={styles.details} style={{ marginTop: -16 }}>
-                    Not referenced in your store
+                    {t('未在您的商店中引用')}
                   </div>
                 </Form.Item>
               </Form>
               <Flex justify={'flex-end'}>
                 <Button onClick={onSave} loading={update.loading} type={'primary'} disabled={!isChange}>
-                  Save
+                  {t('保存')}
                 </Button>
               </Flex>
             </Flex>
