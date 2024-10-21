@@ -7,7 +7,7 @@ import { AccountRoutes } from '@/pages/account/routes'
 import { useLayoutState } from '@/pages/mange/layout/state'
 
 export default function Account () {
-  const { language, t } = useLoadLanguage('account')
+  const { language, t } = useLoadLanguage('page/account')
   const setT = useLayoutState(state => state.setT)
   const accountRoutes = createBrowserRouter(
     AccountRoutes,
@@ -19,7 +19,7 @@ export default function Account () {
     setT(t)
   }, [t, language])
 
-  if (language.loading) return <SLoading />
+  if (!language.data) return <SLoading />
 
   return (
     <Suspense fallback={<SLoading />}>

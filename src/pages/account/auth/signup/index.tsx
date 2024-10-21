@@ -47,28 +47,23 @@ export default function Signup () {
 
   const checkPasswordStrength = useMemo(() => {
     let strength = 0
-    // 判断是否包含字母（大写或小写）
-    const hasLetters = /[a-zA-Z]/.test(password)
-    // 判断是否包含数字
-    const hasNumbers = /[0-9]/.test(password)
-    // 判断是否包含特殊字符
-    const hasSpecialChars = /[!@#$%^&*(),.?":{}|<>]/.test(password)
-    // 判断密码长度
-    const hasValidLength = password?.length >= 8
-    // 根据规则增加强度分数
-    if (hasLetters) strength++
-    if (hasNumbers) strength++
-    if (hasSpecialChars) strength++
-    if (hasValidLength) strength++
-    // 根据分数返回强度描述
-    if (strength <= 2) {
-      return 1 // Weak
-    } else if (strength === 3) {
-      return 2 // Medium
-    } else if (strength === 4) {
-      return 2 // Strong
+
+    // 检测密码长度，最短8位
+    if (password?.length >= 8) {
+      strength += 1
     }
-    return 1 // 默认返回弱
+
+    // 检测是否包含字母和数字的组合
+    if (/[a-zA-Z]/.test(password) && /\d/.test(password)) {
+      strength += 1
+    }
+
+    // 检测是否包含特殊字符
+    if (/[\W_]/.test(password)) {
+      strength += 1
+    }
+
+    return strength
   }, [password, isValidPwd])
 
   const pwdStrengthStr = useMemo(() => {
@@ -101,17 +96,25 @@ export default function Signup () {
     <div>
       <div className={styles.logo}>Shopkone</div>
       <div className={styles.title}>{t('注册')}</div>
-      <div className={styles.desc}>{t('注册后即可开始免费试用 15 天')}</div>
+      <div className={styles.desc}>{t('注册后即可开始免费试用')}</div>
 
       <Form layout={'vertical'} form={form} colon={false}>
-        <Form.Item rules={[{ required: true }, { pattern: EMAIL_REG, message: t('请输入有效的邮箱') }]} label={'Email'} name={'email'}>
+        <Form.Item
+          rules={[{ required: true }, {
+            pattern: EMAIL_REG,
+            message: t('请输入有效的邮箱')
+          }]} label={t('邮箱')} name={'email'}
+        >
           <Input onPressEnter={registerAccount} size={'large'} />
         </Form.Item>
         <Form.Item className={sendEmail ? 'mb0' : ''} name={'code'} label={t('验证码')}>
           <Input
             onPressEnter={registerAccount}
             suffix={
-              <Button disabled={!!count || send.loading} onClick={sendCode} className={styles.secondary} size={'small'} type={'text'}>
+              <Button
+                disabled={!!count || send.loading} onClick={sendCode} className={styles.secondary} size={'small'}
+                type={'text'}
+              >
                 <SRender render={!send.loading}>
                   <SRender render={sendEmail ? !count : false}>
                     {t('重新发送')}
@@ -121,7 +124,7 @@ export default function Signup () {
                   </SRender>
                   <SRender render={count}>
                     {t('重新发送')}
-                    Resend（{Math.round(count / 1000)}s）
+                    （{Math.round(count / 1000)}s）
                   </SRender>
                 </SRender>
                 <SRender render={send.loading}>
@@ -136,9 +139,9 @@ export default function Signup () {
           />
         </Form.Item>
         <SRender render={sendEmail} className={styles.tips}>
-          A 6-digit code was sent to {sendEmail}.
+          {t('验证码已发送至邮箱。', { email: sendEmail })}
         </SRender>
-        <Form.Item name={'password'} className={'mb0'} label={'Password'}>
+        <Form.Item name={'password'} className={'mb0'} label={t('密码')}>
           <Input.Password onPressEnter={registerAccount} autoComplete={'off'} size={'large'} />
         </Form.Item>
         <Progress
@@ -148,21 +151,38 @@ export default function Signup () {
           percent={(isValidPwd) ? (34 * checkPasswordStrength) : 0}
         />
         <SRender className={styles.tips} render={isValidPwd}>
-          <span style={{ fontWeight: 'bolder' }}>Password strength: {pwdStrengthStr}.</span> Try lengthening it or adding numbers or symbols.
+          <span style={{ fontWeight: 'bolder' }}>{t('密码强度', { pwdStrengthStr })}</span>
         </SRender>
         <SRender render={!isValidPwd} className={styles.tips}>
-          Your password must be at least 8 characters, and can’t begin or end with a space.
+          {t('密码要求')}
         </SRender>
-        <Button loading={register.loading || login.loading} onClick={registerAccount} className={styles.btn} disabled={!isValidPwd || !isValidEmail || !isValidCode} block type={'primary'} size={'large'}>
-          Create Shopkone account
+        <Button
+          loading={register.loading || login.loading} onClick={registerAccount} className={styles.btn}
+          disabled={!isValidPwd || !isValidEmail || !isValidCode} block type={'primary'} size={'large'}
+        >
+          {t('注册')}
         </Button>
         <Flex align={'center'} justify={'center'} className={styles['help-link']}>
-          <div>Already have a Shopkone account?</div>
-          <Button onClick={() => { nav('/auth/login') }} size={'small'} className={styles['link-btn']} type={'link'}>
+          <div>{t('已有账号？')}</div>
+          <Button
+            onClick={() => {
+              nav('/auth/login')
+            }} size={'small'} className={styles['link-btn']} type={'link'}
+          >
             <Flex style={{ fontSize: 13 }} align={'center'} gap={4}>
-              <div>Login</div>
+              <div>{t('直接登录')}</div>
               <ArrowRight className={styles['link-icon']} />
             </Flex>
+          </Button>
+        </Flex>
+
+        <Flex justify={'center'} className={`secondary ${styles.agreement}`} align={'center'}>
+          {t('协议')}
+          <Button target={'_blank'} href={'https://shoplineapp.cn/about/terms/'} className={styles.linkAgreement} type={'link'} size={'small'}>
+            {t('用户协议')}
+          </Button>
+          <Button target={'_blank'} href={'https://shoplineapp.cn/about/terms/'} className={styles.linkAgreement} type={'link'} size={'small'}>
+            {t('隐私政策')}
           </Button>
         </Flex>
       </Form>

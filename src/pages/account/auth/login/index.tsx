@@ -25,7 +25,7 @@ export default function Login () {
     await form.validateFields()
     if (!password || password?.length < 8) {
       modal.info({
-        content: 'The password you entered is incorrect. Please try again.'
+        content: t('您输入的密码不正确，请重试。')
       })
       return
     }
@@ -50,7 +50,7 @@ export default function Login () {
         </Form.Item>
         <Button style={{ marginLeft: -8, marginTop: 4 }} type={'link'} size={'small'}>{t('忘记密码？')}</Button>
         <Button loading={login.loading} onClick={onLogin} className={styles.btn} block type={'primary'} size={'large'}>
-          Login
+          {t('登录')}
         </Button>
         <Flex align={'center'} justify={'center'} className={styles['help-link']}>
           <div>{t('还没账号?')} </div>
