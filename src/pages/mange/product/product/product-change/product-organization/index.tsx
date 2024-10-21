@@ -7,17 +7,17 @@ import SelectCategory from '@/pages/mange/product/product/product-change/product
 export default function ProductOrganization () {
   const t = useI18n()
   return (
-    <Card title={t('商品分类组织')}>
-      <Form.Item name={'category'} label={t('商品分类')}>
+    <Card title={t('商品设置')}>
+      <Form.Item name={'category'} label={t('分类')}>
         <SelectCategory />
       </Form.Item>
-      <Form.Item name={'spu'} label={t('商品SPU')}>
+      <Form.Item name={'spu'} label={t('SPU')}>
         <Input autoComplete={'off'} />
       </Form.Item>
       <Form.Item name={'vendor'} label={t('供应商')}>
         <Input autoComplete={'off'} />
       </Form.Item>
-      <Form.Item name={'collections'} label={t('商品系列')}>
+      <Form.Item name={'collections'} label={t('专辑')}>
         <SSelect />
       </Form.Item>
       <Form.Item name={'tags'} className={'mb0'} label={t('标签')}>

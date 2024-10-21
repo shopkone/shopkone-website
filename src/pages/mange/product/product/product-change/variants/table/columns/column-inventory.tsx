@@ -3,6 +3,7 @@ import { Tooltip } from 'antd'
 
 import SInputNumber from '@/components/s-input-number'
 import SRender from '@/components/s-render'
+import { useI18n } from '@/hooks/use-lang'
 import { Variant } from '@/pages/mange/product/product/product-change/variants/state'
 import { genId } from '@/utils/random'
 
@@ -15,6 +16,7 @@ export interface ColumnInventoryProps {
 
 export default function ColumnInventory (props: ColumnInventoryProps) {
   const { row, onChange, value, locationId } = props
+  const t = useI18n()
 
   const onChangeHandle = (v: number | null) => {
     if (!locationId) return
@@ -57,7 +59,7 @@ export default function ColumnInventory (props: ColumnInventoryProps) {
   return (
     <div>
       <SRender render={row?.children?.length}>
-        <Tooltip title={'Update for individual variants only'}>
+        <Tooltip title={t('仅更新单个变体')}>
           <SInputNumber value={total} variant={'filled'} disabled style={{ border: 'none', cursor: 'default' }} />
         </Tooltip>
       </SRender>
@@ -70,7 +72,7 @@ export default function ColumnInventory (props: ColumnInventoryProps) {
         </SRender>
 
         <SRender render={!locationId}>
-          <Tooltip title={'Choose where you want to edit'}>
+          <Tooltip title={t('选择您想编辑的位置')}>
             <SInputNumber value={total} variant={'filled'} disabled style={{ border: 'none', cursor: 'default' }} />
           </Tooltip>
         </SRender>

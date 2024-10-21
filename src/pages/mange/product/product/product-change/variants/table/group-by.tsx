@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { Flex, Form } from 'antd'
 
 import SSelect from '@/components/s-select'
+import { useI18n } from '@/hooks/use-lang'
 import { Option, Variant } from '@/pages/mange/product/product/product-change/variants/state'
 
 // @ts-expect-error
@@ -19,6 +20,7 @@ export interface GroupByProps {
 export default function GroupBy (props: GroupByProps) {
   const { options, variants, onChange, filters, setGroupName, groupName } = props
   const form = Form.useFormInstance()
+  const t = useI18n()
 
   const onChangeHandle = (newVariants: Variant[]) => {
     onChange(newVariants)
@@ -70,7 +72,7 @@ export default function GroupBy (props: GroupByProps) {
 
   return (
     <Flex align={'center'} gap={8}>
-      <div style={{ flexShrink: 0 }}>Group by</div>
+      <div style={{ flexShrink: 0 }}>{t('分组查看')}</div>
       <SSelect
         value={groupName}
         onChange={setGroupName}

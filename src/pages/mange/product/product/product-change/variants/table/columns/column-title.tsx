@@ -2,6 +2,7 @@ import { Checkbox } from 'antd'
 
 import SRender from '@/components/s-render'
 import { VariantType } from '@/constant/product'
+import { useI18n } from '@/hooks/use-lang'
 import { Variant } from '@/pages/mange/product/product/product-change/variants/state'
 
 import styles from './index.module.less'
@@ -19,6 +20,7 @@ export default function ColumnTitle (props: ColumnTitleProps) {
   const isAllExpanded = variants.every(v => expands.includes(v.id))
 
   const hasChild = variants.some(v => v.children?.length)
+  const t = useI18n()
 
   const onExpandAll = () => {
     if (isAllExpanded) {
@@ -33,15 +35,15 @@ export default function ColumnTitle (props: ColumnTitleProps) {
       <SRender render={variantType === VariantType.Multiple}>
         <Checkbox style={{ marginLeft: -8 }} />
       </SRender>
-      <span style={{ marginLeft: 16 }}>Variants</span>
+      <span style={{ marginLeft: 16 }}>{t('变体')}</span>
       <SRender render={!isAllExpanded && hasChild}>
         <span style={{ margin: '0 8px' }}>·</span>
-        <span onClick={onExpandAll} className={styles.link}>expand all</span>
+        <span onClick={onExpandAll} className={styles.link}>{t('展开全部')}</span>
       </SRender>
       <SRender render={isAllExpanded ? hasChild : null}>
         <span style={{ margin: '0 8px' }}>·</span>
         <span className={styles.link} onClick={() => { setExpands([]) }}>
-          collapse all
+          {t('折叠全部')}
         </span>
       </SRender>
     </>

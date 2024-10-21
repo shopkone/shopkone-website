@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { Checkbox, Form, Input } from 'antd'
 
 import styles from '@/components/seo/index.module.less'
+import { useI18n } from '@/hooks/use-lang'
 
 export interface SeoType {
   page_title: string
@@ -31,6 +32,8 @@ export default function Edit (props: EditProps) {
 
   const follow = Form.useWatch('follow', seoForm)
 
+  const t = useI18n()
+
   useEffect(() => {
     seoForm.setFieldsValue(seo)
   }, [seo])
@@ -55,9 +58,9 @@ export default function Edit (props: EditProps) {
         valuePropName={'checked'}
         name={'follow'}
       >
-        <Checkbox>Follow product information</Checkbox>
+        <Checkbox>{t('跟踪产品信息')}</Checkbox>
       </Form.Item>
-      <Form.Item name={'page_title'} label={'Page title'}>
+      <Form.Item name={'page_title'} label={t('页面标题')}>
         <Input.TextArea
           disabled={follow}
           autoSize={{
@@ -66,7 +69,7 @@ export default function Edit (props: EditProps) {
           }}
         />
       </Form.Item>
-      <Form.Item name={'meta_description'} label={'Meta description'}>
+      <Form.Item name={'meta_description'} label={t('元描述')}>
         <Input.TextArea
           disabled={follow}
           autoSize={{
@@ -75,7 +78,7 @@ export default function Edit (props: EditProps) {
           }}
         />
       </Form.Item>
-      <Form.Item className={'mb0'} name={'url_handle'} label={'URL handle'}>
+      <Form.Item className={'mb0'} name={'url_handle'} label={t('链接')}>
         <div className={styles.input}>
           <span
             onClick={onFocus} className={'tips'} style={{

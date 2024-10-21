@@ -1,8 +1,10 @@
 import React, { ReactNode, useEffect, useMemo, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import { Button, Flex, Form } from 'antd'
 
 import SRender from '@/components/s-render'
 import STable from '@/components/s-table'
+import { useI18n } from '@/hooks/use-lang'
 import { Option, Variant } from '@/pages/mange/product/product/product-change/variants/state'
 import Filters from '@/pages/mange/product/product/product-change/variants/table/filters'
 import GroupBy from '@/pages/mange/product/product/product-change/variants/table/group-by'
@@ -32,6 +34,8 @@ export default function Table (props: TableProps) {
   const [groupName, setGroupName] = useState('')
   const [locationId, setLocationId] = useState(0)
   const [labels, setLabels] = useState<Record<string, ReactNode>>({})
+  const { id } = useParams()
+  const t = useI18n()
 
   const { columns, ColumnSettings, ImageUploader } = useColumns({
     variants: groupVariants,
@@ -63,6 +67,7 @@ export default function Table (props: TableProps) {
     if (groupName && !groupVariants?.[0]?.children?.length) return false
     if (variants?.[0]?.name?.length > 1 && !groupName) return false
     if (Number(variants?.[0]?.name?.length || 0) !== options.length) return false
+    if (id && !variants?.length) return false
     return true
   }, [groupVariants, groupName, columns, variants, ColumnSettings, locationId, options])
 
@@ -108,11 +113,11 @@ export default function Table (props: TableProps) {
           useVirtual={variants.length > 30}
           expand={{ value: expandedRowKeys, onChange: setExpandedRowKeys }}
           empty={{
-            title: 'Please configure the variant options for the product.',
-            desc: <span style={{ fontSize: 13 }}>Set options like size and color for the product variations.</span>,
+            title: t('请为商品配置变体选项'),
+            desc: <span style={{ fontSize: 13 }}>{t('设置产品变体的选项，如尺寸和颜色')}</span>,
             actions: (
               <Flex align={'center'} justify={'center'}>
-                <Button type={'primary'} onClick={onOpenOptions}>Set options</Button>
+                <Button type={'primary'} onClick={onOpenOptions}>{t('设置选项')}</Button>
               </Flex>
             )
           }}

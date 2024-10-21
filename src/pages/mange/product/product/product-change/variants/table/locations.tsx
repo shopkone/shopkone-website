@@ -6,6 +6,7 @@ import { Button, Flex, Form } from 'antd'
 import { LocationListApi } from '@/api/location/list'
 import SLoading from '@/components/s-loading'
 import SSelect from '@/components/s-select'
+import { useI18n } from '@/hooks/use-lang'
 import { useOpen } from '@/hooks/useOpen'
 import EditLocationModal from '@/pages/mange/product/product/product-change/variants/table/edit-location-modal'
 
@@ -24,6 +25,7 @@ export default function LocationsSelect (props: LocationsSelectProps) {
   const form = Form.useFormInstance()
   const isTrack = Form.useWatch('inventory_tracking', form)
   const initRef = useRef(0)
+  const t = useI18n()
 
   const openInfo = useOpen<number[]>()
 
@@ -65,11 +67,11 @@ export default function LocationsSelect (props: LocationsSelectProps) {
   return (
     <>
       <Flex align={'center'} gap={8}>
-        <div style={{ flexShrink: 0 }}>Location</div>
+        <div style={{ flexShrink: 0 }}>{t('地点')}</div>
         <SSelect
           value={selected}
           onChange={setSelected}
-          options={[{ label: 'All locations', value: 0 }].concat(options || [])}
+          options={[{ label: t('所有地点'), value: 0 }].concat(options || [])}
           size={'small'}
           dropdownStyle={{ minWidth: 300, maxWidth: 500 }}
           style={{ minWidth: 120, maxWidth: 300 }}
@@ -80,7 +82,7 @@ export default function LocationsSelect (props: LocationsSelectProps) {
           style={{ marginLeft: -6 }}
           size={'small'}
         >
-          编辑地点
+          {t('编辑地点')}
         </Button>
       </Flex>
 

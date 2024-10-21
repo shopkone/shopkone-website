@@ -5,6 +5,7 @@ import { useWatch } from 'antd/es/form/Form'
 
 import SCard from '@/components/s-card'
 import Edit, { SeoType } from '@/components/seo/edit'
+import { useI18n } from '@/hooks/use-lang'
 import { useManageState } from '@/pages/mange/state'
 
 import styles from './index.module.less'
@@ -22,6 +23,8 @@ export default function Seo (props: SeoProps) {
     height
   } = props
   const [editing, setEditing] = useState(false)
+
+  const t = useI18n()
 
   const mange = useManageState()
 
@@ -48,25 +51,25 @@ export default function Seo (props: SeoProps) {
     <SCard
       style={{ height: !height ? undefined : (editing ? 413 : 160) }}
       className={'fit-height'}
-      title={'SEO'}
+      title={t('SEO')}
       extra={
         <Flex>
           {
-              editing
-                ? (
-                  <Button
-                    onClick={() => {
-                      setEditing(!editing)
-                      onChange?.(tempSeoRef.current)
-                    }}
-                    size={'small'}
-                    type={'text'}
-                  >
-                    <div>Cancel</div>
-                  </Button>
-                  )
-                : null
-            }
+            editing
+              ? (
+                <Button
+                  onClick={() => {
+                    setEditing(!editing)
+                    onChange?.(tempSeoRef.current)
+                  }}
+                  size={'small'}
+                  type={'text'}
+                >
+                  <div>{t('取消')}</div>
+                </Button>
+                )
+              : null
+          }
           <Button
             onClick={() => {
               tempSeoRef.current = value
@@ -76,14 +79,14 @@ export default function Seo (props: SeoProps) {
             type={'text'}
           >
             {
-                editing
-                  ? (
-                    <div style={{ color: '#3370ff' }}>Done</div>
-                    )
-                  : (
-                    <div>Edit</div>
-                    )
-              }
+              editing
+                ? (
+                  <div style={{ color: '#3370ff' }}>{t('完成')}</div>
+                  )
+                : (
+                  <div>{t('编辑')}</div>
+                  )
+            }
           </Button>
           <Popover
             placement={'bottom'}
@@ -91,13 +94,13 @@ export default function Seo (props: SeoProps) {
             content={
               <Flex vertical gap={4}>
                 <Button type={'link'} style={{ textAlign: 'left', paddingLeft: 0 }}>
-                  Check Google indexing
+                  {t('检查谷歌索引')}
                 </Button>
                 <Button style={{ textAlign: 'left', paddingLeft: 0 }} type={'link'}>
-                  Submit for indexing
+                  {t('提交以便索引')}
                 </Button>
               </Flex>
-              }
+            }
             trigger={'click'}
           >
             <Button
@@ -112,35 +115,35 @@ export default function Seo (props: SeoProps) {
             </Button>
           </Popover>
         </Flex>
-        }
+      }
     >
       {
-          editing
-            ? (
-              <Edit
-                onChange={(seo) => {
-                  onChange?.(seo)
-                }}
-                seo={value}
-                title={title}
-                description={description}
-              />
-              )
-            : (
-              <Flex vertical>
-                <div className={styles.name}>{mange?.shopInfo?.store_name}</div>
-                <Typography.Text ellipsis={{ tooltip: true }} className={styles.link}>
-                  https://b3930d-c0.myshopify.com
-                </Typography.Text>
-                <Typography.Text ellipsis={{ tooltip: true }} className={styles.title}>
-                  {value?.page_title || '-'}
-                </Typography.Text>
-                <Typography.Text ellipsis={{ tooltip: true }} className={styles.desc}>
-                  {value?.meta_description || '-'}
-                </Typography.Text>
-              </Flex>
-              )
-        }
+        editing
+          ? (
+            <Edit
+              onChange={(seo) => {
+                onChange?.(seo)
+              }}
+              seo={value}
+              title={title}
+              description={description}
+            />
+            )
+          : (
+            <Flex vertical>
+              <div className={styles.name}>{mange?.shopInfo?.store_name}</div>
+              <Typography.Text ellipsis={{ tooltip: true }} className={styles.link}>
+                https://b3930d-c0.myshopify.com
+              </Typography.Text>
+              <Typography.Text ellipsis={{ tooltip: true }} className={styles.title}>
+                {value?.page_title || '-'}
+              </Typography.Text>
+              <Typography.Text ellipsis={{ tooltip: true }} className={styles.desc}>
+                {value?.meta_description || '-'}
+              </Typography.Text>
+            </Flex>
+            )
+      }
     </SCard>
   )
 }

@@ -4,19 +4,21 @@ import dayjs from 'dayjs'
 import SDatePicker from '@/components/s-date-picker'
 import SSelect from '@/components/s-select'
 import { useVariantStatusOptions, VariantStatus } from '@/constant/product'
+import { useI18n } from '@/hooks/use-lang'
 
 import styles from './index.module.less'
 
 export default function Status () {
   const form = Form.useFormInstance()
 
-  const statusOptions = useVariantStatusOptions()
+  const t = useI18n()
+  const statusOptions = useVariantStatusOptions(t)
 
   const status: VariantStatus = Form.useWatch('status', form)
 
   return (
     <Card style={{ height: status === VariantStatus.Draft ? 170 : 100 }} className={styles.container}>
-      <Form.Item name={'status'} label={'Status'}>
+      <Form.Item name={'status'} label={t('状态')}>
         <SSelect options={statusOptions} style={{ width: '100%' }} />
       </Form.Item>
 
@@ -24,8 +26,8 @@ export default function Status () {
         status === VariantStatus.Draft && (
           <Form.Item
             className={'mb0'}
-            tooltip={'After setting, the product will be published on schedule according to the set time'}
-            label={'Schedule availability'}
+            tooltip={t('设置后，产品将根据设定时间按计划发布')}
+            label={t('计划可用性')}
           >
             <SDatePicker
               hideDisabledOptions

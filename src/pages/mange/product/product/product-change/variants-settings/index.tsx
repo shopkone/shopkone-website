@@ -8,11 +8,11 @@ import TypeChanger from '@/pages/mange/product/product/product-change/variants-s
 import styles from './index.module.less'
 
 export default function VariantsSettings () {
-  const tackOptions = useInventoryPolicyOptions()
+  const t = useI18n()
+  const tackOptions = useInventoryPolicyOptions(t)
 
   const form = Form.useFormInstance()
   const inventoryTracking = Form.useWatch('inventory_tracking', form)
-  const t = useI18n()
 
   return (
     <Card

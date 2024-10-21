@@ -1,6 +1,7 @@
 import { App, Form, Radio } from 'antd'
 
 import { useVariantTypeOptions, VariantType } from '@/constant/product'
+import { useI18n } from '@/hooks/use-lang'
 import { Variant } from '@/pages/mange/product/product/product-change/variants/state'
 
 export interface TypeChangerProps {
@@ -10,9 +11,16 @@ export interface TypeChangerProps {
 
 export default function TypeChanger (props: TypeChangerProps) {
   const { value, onChange } = props
-  const options = useVariantTypeOptions()
   const { modal } = App.useApp()
   const form = Form.useFormInstance()
+  const t = useI18n()
+  const options = useVariantTypeOptions(t)
+
+  // 更新选项的标签为翻译内容
+  const translatedOptions = options.map(option => ({
+    label: option.label, // 使用翻译
+    value: option.value
+  }))
 
   const onChangeHandle = (v: number) => {
     const variants = form.getFieldValue('variants') || []
@@ -28,8 +36,8 @@ export default function TypeChanger (props: TypeChangerProps) {
       return
     }
     modal.confirm({
-      title: 'Are you sure to switch?',
-      content: 'Switch to a single variant will clear the current variant settings. Are you sure to switch?',
+      title: t('确认要切换吗？'), // 使用翻译
+      content: t('切换到单一变体将清除当前变体设置。您确定要切换吗？'), // 使用翻译
       onOk: () => {
         onChange?.(v)
       },
@@ -43,7 +51,7 @@ export default function TypeChanger (props: TypeChangerProps) {
       onChange={e => {
         onChangeHandle(e.target.value)
       }}
-      options={options}
+      options={translatedOptions}
     />
   )
 }

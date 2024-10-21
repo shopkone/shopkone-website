@@ -19,7 +19,7 @@ export default function FormMedia () {
       label={
         <>
           <SRender render={!select.length}>
-            {t('媒体')}
+            {t('商品图片/视频')}
           </SRender>
           <SRender render={!!select.length}>
             <Flex style={{ marginBottom: 4 }} className={'fit-width'} align={'center'} justify={'space-between'}>

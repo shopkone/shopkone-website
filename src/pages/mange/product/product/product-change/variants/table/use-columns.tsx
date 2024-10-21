@@ -9,6 +9,7 @@ import SelectFiles from '@/components/media/select-files'
 import SRender from '@/components/s-render'
 import { VariantType } from '@/constant/product'
 import { useColumn, UseColumnType } from '@/hooks/use-column'
+import { useI18n } from '@/hooks/use-lang'
 import { useOpen } from '@/hooks/useOpen'
 import { Variant } from '@/pages/mange/product/product/product-change/variants/state'
 import ColumnInventory from '@/pages/mange/product/product/product-change/variants/table/columns/column-inventory'
@@ -38,6 +39,7 @@ export default function useColumns (params: ColumnsParams) {
   const editingRow = useRef<Variant | undefined>()
   const fileList = useRequest(fileListByIds, { manual: true })
   const [imageResult, setImageResult] = useState<FileListByIdsRes[]>([])
+  const t = useI18n()
 
   const onUpdate = (row: Variant, key: keyof Variant, value: number | string | null | boolean) => {
     if (row.children?.length) {
@@ -101,7 +103,7 @@ export default function useColumns (params: ColumnsParams) {
   const cols: UseColumnType[] = [
     {
       title: <ColumnTitle expands={expands} setExpands={setExpands} variants={variants} variantType={variantType} />,
-      nick: 'Variant',
+      nick: t('变体'),
       code: 'variant',
       name: 'variant',
       render: (text, record: Variant) => {
@@ -124,7 +126,7 @@ export default function useColumns (params: ColumnsParams) {
       required: true
     },
     {
-      title: 'Price',
+      title: t('价格'),
       code: 'price',
       name: 'price',
       render: (price: number, row: Variant) => {
@@ -140,7 +142,7 @@ export default function useColumns (params: ColumnsParams) {
       width: 150
     },
     {
-      title: 'Compare at price',
+      title: t('比较价格'),
       code: 'compare_at_price',
       name: 'compare_at_price',
       render: (compare_at_price: number, row: Variant) => {
@@ -157,7 +159,7 @@ export default function useColumns (params: ColumnsParams) {
       hidden: true
     },
     {
-      title: 'Cost per item',
+      title: t('每件成本'),
       code: 'cost_per_item',
       name: 'cost_per_item',
       render: (cost_per_item: number, row: Variant) => {
@@ -174,7 +176,7 @@ export default function useColumns (params: ColumnsParams) {
       hidden: true
     },
     {
-      title: 'Inventory',
+      title: t('库存'),
       code: 'inventories',
       name: 'inventories',
       render: (inventories: Variant['inventories'], row: Variant) => {
@@ -191,7 +193,7 @@ export default function useColumns (params: ColumnsParams) {
       forceHidden: !inventoryTracking
     },
     {
-      title: 'Weight',
+      title: t('重量'),
       code: 'weight',
       name: 'weight',
       render: (weight: number, row: Variant) => {
@@ -206,7 +208,7 @@ export default function useColumns (params: ColumnsParams) {
       width: 150
     },
     {
-      title: 'Sku',
+      title: t('SKU'),
       code: 'sku',
       name: 'sku',
       render: (sku: string, row: Variant) => {
@@ -224,7 +226,7 @@ export default function useColumns (params: ColumnsParams) {
       width: 200
     },
     {
-      title: 'Barcode',
+      title: t('条形码'),
       code: 'barcode',
       name: 'barcode',
       render: (barcode: string, row: Variant) => {
@@ -243,7 +245,7 @@ export default function useColumns (params: ColumnsParams) {
       hidden: true
     },
     {
-      title: 'Charge Tax',
+      title: t('收取税费'),
       code: 'tax_required',
       name: 'tax_required',
       render: (_, row: Variant) => {
@@ -259,7 +261,7 @@ export default function useColumns (params: ColumnsParams) {
       hidden: true
     },
     {
-      title: 'Shipping Required',
+      title: t('需要运费'),
       code: 'shipping_required',
       name: 'shipping_required',
       render: (_, row: Variant) => {
@@ -277,12 +279,12 @@ export default function useColumns (params: ColumnsParams) {
       title: '',
       code: 'actions',
       name: 'actions',
-      nick: 'Actions',
+      nick: t('操作'),
       render: (id: number, row: Variant) => {
         return (
           <div>
             <SRender render={row?.children?.length}>
-              <Tooltip title={`Remove ${row?.children?.length} variants`}>
+              <Tooltip title={`${t('移除')} ${row?.children?.length} ${t('个变体')}`}>
                 <Button onClick={() => { onRemove(row) }} style={{ height: 32 }} size={'small'} type={'text'}>
                   <IconTrash size={16} />
                 </Button>
@@ -294,7 +296,6 @@ export default function useColumns (params: ColumnsParams) {
               </Button>
             </SRender>
           </div>
-
         )
       },
       align: 'center',

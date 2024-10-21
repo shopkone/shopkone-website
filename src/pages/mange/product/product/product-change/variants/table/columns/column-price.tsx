@@ -2,6 +2,7 @@ import { Tooltip } from 'antd'
 
 import SInputNumber from '@/components/s-input-number'
 import SRender from '@/components/s-render'
+import { useI18n } from '@/hooks/use-lang'
 import { Variant } from '@/pages/mange/product/product/product-change/variants/state'
 import { formatPrice } from '@/utils/num'
 
@@ -14,6 +15,7 @@ export interface ColumnPriceProps {
 
 export default function ColumnPrice (props: ColumnPriceProps) {
   const { value, onChange, row, type } = props
+  const t = useI18n()
 
   const getPriceRange = (prices?: Array<number | undefined>): any => {
     const list = (prices?.filter(i => typeof i === 'number') || []) as number[]
@@ -32,7 +34,7 @@ export default function ColumnPrice (props: ColumnPriceProps) {
   return (
     <div>
       <SRender render={row.children?.length}>
-        <Tooltip title={`Applies to all ${row?.children?.length} variants`}>
+        <Tooltip title={t(`适用于所有 ${row?.children?.length} 个变体`)}>
           <SInputNumber
             onChange={e => { onChange(e || null) }}
             money
