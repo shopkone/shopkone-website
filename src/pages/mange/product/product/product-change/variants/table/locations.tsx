@@ -62,7 +62,7 @@ export default function LocationsSelect (props: LocationsSelectProps) {
 
   if (locations.loading) return <div><SLoading black size={14} /></div>
 
-  if (Number(locations?.data?.length) < 2) return null
+  if (Number(locations?.data?.length) < 2 || !isTrack) return null
 
   return (
     <>
