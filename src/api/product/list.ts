@@ -5,6 +5,7 @@ export interface ProductListReq extends PageReq {
   collections?: number[]
   tags?: string[]
   price_range?: { max: number | null, min: number | null }
+  track_inventory?: number
 }
 
 export interface ProductListRes {

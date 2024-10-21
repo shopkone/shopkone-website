@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { IconChevronDown, IconPhoto, IconTrash } from '@tabler/icons-react'
+import { IconChevronDown, IconInfoCircle, IconPhoto, IconTrash } from '@tabler/icons-react'
 import { Button, Empty, Flex, Input, Popover, Tooltip, Typography } from 'antd'
 import cloneDeep from 'lodash/cloneDeep'
 
@@ -119,14 +119,24 @@ export default function Products (props: ProductsProps) {
       code: 'sku',
       name: 'sku',
       render: (sku: string, row: PurchaseItem) => (
-        <Typography.Text>
-          <SRender render={!infoMode}>
-            <Input value={sku} onChange={e => { onChangeValue(row, 'sku', e.target.value) }} />
+        <>
+          <SRender render={!row.is_deleted}>
+            <Typography.Text>
+              <SRender render={!infoMode}>
+                <Input value={sku} onChange={e => { onChangeValue(row, 'sku', e.target.value) }} />
+              </SRender>
+              <SRender render={infoMode}>
+                {renderText(sku)}
+              </SRender>
+            </Typography.Text>
           </SRender>
-          <SRender render={infoMode}>
-            {renderText(sku)}
+          <SRender className={styles.disabledText} style={{ opacity: 1 }} render={row.is_deleted}>
+            <Flex align={'center'} gap={4}>
+              <IconInfoCircle size={16} />
+              商品已被删除
+            </Flex>
           </SRender>
-        </Typography.Text>
+        </>
       ),
       width: 150
     },
@@ -209,7 +219,7 @@ export default function Products (props: ProductsProps) {
       name: 'total',
       width: 100,
       render: (total: number) => (
-        `$${formatPrice(total || 0)}`
+        <div>{`$${formatPrice(total || 0)}`}</div>
       )
     },
     {
@@ -279,6 +289,7 @@ export default function Products (props: ProductsProps) {
 
       <SRender render={!!value?.length}>
         <STable
+          rowClassName={row => row?.is_deleted && styles.disabled}
           borderless
           className={'table-border'}
           page={{
@@ -297,6 +308,7 @@ export default function Products (props: ProductsProps) {
       </SRender>
 
       <SelectVariants
+        isTracking
         onConfirm={async (ids) => {
           const newList = ids.filter(id => !value?.find(item => item.variant_id === id)).map(item => {
             return { id: genId(), variant_id: item, cost: 0, purchasing: 1, tax_rate: 0, sku: '', total: 0 }

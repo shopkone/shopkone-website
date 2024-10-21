@@ -10,4 +10,5 @@ export interface PurchaseItem {
   received?: number
   rejected_count?: number
   received_count?: number
+  is_deleted?: boolean
 }

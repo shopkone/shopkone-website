@@ -277,7 +277,7 @@ export default function Receive () {
             borderless
             init
             columns={columns}
-            data={list || []}
+            data={list.filter(i => !i.is_deleted) || []}
           />
         </SCard>
       </div>

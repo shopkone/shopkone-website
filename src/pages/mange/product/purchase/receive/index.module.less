@@ -11,3 +11,17 @@
     }
   }
 }
+
+.disabled {
+  cursor: not-allowed !important;
+  pointer-events: none;
+}
+
+.disabled :global .art-table-cell > div{
+  opacity: 0.5;
+}
+
+.disabledText {
+  color: var(--color--error);
+  font-weight: bolder;
+}

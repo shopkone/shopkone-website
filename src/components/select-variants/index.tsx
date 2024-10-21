@@ -26,6 +26,7 @@ export interface SelectVariantsProps {
   info: UseOpenType<number[]>
   onConfirm?: (value: number[]) => void
   disabled?: number[]
+  isTracking?: boolean
 }
 
 interface ProductVariants {
@@ -41,7 +42,7 @@ interface ProductVariants {
 }
 
 export default function SelectVariants (props: SelectVariantsProps) {
-  const { info, onConfirm, disabled } = props
+  const { info, onConfirm, disabled, isTracking } = props
   const [params, setParams] = useState<ProductListReq>({ page: 1, page_size: 50 })
   const [selected, setSelected] = useState<number[]>([])
   const [list, setList] = useState<ProductListRes[]>([])
@@ -242,7 +243,7 @@ export default function SelectVariants (props: SelectVariantsProps) {
 
   useEffect(() => {
     if (!info.open) return
-    productList.runAsync(params).then(res => {
+    productList.runAsync({ ...params, track_inventory: isTracking ? 1 : 0 }).then(res => {
       if (res.page.page === 1) {
         setList(res.list)
       } else {

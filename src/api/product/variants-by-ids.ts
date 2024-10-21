@@ -27,6 +27,7 @@ export interface VariantsByIdsRes {
   product_title: string
   rejected?: number
   received?: number
+  is_deleted: boolean
 }
 
 const variantsByIds = async (data: VariantsByIdsReq) => {
