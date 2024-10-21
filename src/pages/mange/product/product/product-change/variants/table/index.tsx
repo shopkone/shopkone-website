@@ -113,8 +113,8 @@ export default function Table (props: TableProps) {
           useVirtual={variants.length > 30}
           expand={{ value: expandedRowKeys, onChange: setExpandedRowKeys }}
           empty={{
-            title: t('请为商品配置变体选项'),
-            desc: <span style={{ fontSize: 13 }}>{t('设置产品变体的选项，如尺寸和颜色')}</span>,
+            title: t('请为商品配置款式选项'),
+            desc: <span style={{ fontSize: 13 }}>{t('设置商品款式的选项，如尺寸和颜色')}</span>,
             actions: (
               <Flex align={'center'} justify={'center'}>
                 <Button type={'primary'} onClick={onOpenOptions}>{t('设置选项')}</Button>

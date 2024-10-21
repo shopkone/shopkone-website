@@ -34,7 +34,7 @@ export default function ColumnPrice (props: ColumnPriceProps) {
   return (
     <div>
       <SRender render={row.children?.length}>
-        <Tooltip title={t(`适用于所有 ${row?.children?.length} 个变体`)}>
+        <Tooltip title={t(`同时修改 ${row?.children?.length} 个款式`)}>
           <SInputNumber
             onChange={e => { onChange(e || null) }}
             money

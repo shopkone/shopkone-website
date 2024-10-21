@@ -7,8 +7,8 @@ export enum VariantType {
 }
 
 export const useVariantTypeOptions = (t: ReturnType<typeof useI18n>) => [
-  { label: t('单一变体'), value: VariantType.Single }, // 将 'Single' 翻译为 '单一'
-  { label: t('多个变体'), value: VariantType.Multiple } // 将 'Multiple' 翻译为 '多个'
+  { label: t('单一款式'), value: VariantType.Single }, // 将 'Single' 翻译为 '单一'
+  { label: t('多款式'), value: VariantType.Multiple } // 将 'Multiple' 翻译为 '多个'
 ]
 
 // 变体状态
@@ -30,7 +30,7 @@ export enum InventoryPolicy {
 export const useInventoryPolicyOptions = (t: ReturnType<typeof useI18n>) => [
   { label: t('缺货时停止销售'), value: InventoryPolicy.Stop },
   { label: t('缺货时继续销售'), value: InventoryPolicy.Continue },
-  { label: t('缺货时设置为草稿'), value: InventoryPolicy.Draft }
+  { label: t('缺货时设置自动下架'), value: InventoryPolicy.Draft }
 ]
 
 // 重量

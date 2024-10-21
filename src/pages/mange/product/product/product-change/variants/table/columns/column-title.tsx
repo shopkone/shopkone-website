@@ -35,7 +35,7 @@ export default function ColumnTitle (props: ColumnTitleProps) {
       <SRender render={variantType === VariantType.Multiple}>
         <Checkbox style={{ marginLeft: -8 }} />
       </SRender>
-      <span style={{ marginLeft: 16 }}>{t('变体')}</span>
+      <span style={{ marginLeft: 16 }}>{t('款式')}</span>
       <SRender render={!isAllExpanded && hasChild}>
         <span style={{ margin: '0 8px' }}>·</span>
         <span onClick={onExpandAll} className={styles.link}>{t('展开全部')}</span>

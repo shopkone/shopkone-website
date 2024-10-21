@@ -59,9 +59,7 @@ export default function ColumnInventory (props: ColumnInventoryProps) {
   return (
     <div>
       <SRender render={row?.children?.length}>
-        <Tooltip title={t('仅更新单个变体')}>
-          <SInputNumber value={total} variant={'filled'} disabled style={{ border: 'none', cursor: 'default' }} />
-        </Tooltip>
+        <SInputNumber value={total} variant={'filled'} disabled style={{ border: 'none', cursor: 'default' }} />
       </SRender>
       <SRender render={!row?.children?.length}>
         <SRender render={locationId}>

@@ -18,7 +18,7 @@ export default function VariantsSettings () {
     <Card
       className={styles.container}
       style={{ height: inventoryTracking ? 230 : 135 }}
-      title={t('变体设置')}
+      title={t('款式设置')}
     >
       <div>
         <Form.Item name={'variant_type'}>

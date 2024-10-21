@@ -58,7 +58,7 @@ export default function Edit (props: EditProps) {
         valuePropName={'checked'}
         name={'follow'}
       >
-        <Checkbox>{t('跟踪产品信息')}</Checkbox>
+        <Checkbox>{t('跟随商品信息')}</Checkbox>
       </Form.Item>
       <Form.Item name={'page_title'} label={t('页面标题')}>
         <Input.TextArea

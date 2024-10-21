@@ -27,7 +27,7 @@ export default function Status () {
           <Form.Item
             name={'scheduled_at'}
             tooltip={t('设置后，产品将根据设定时间按计划发布')}
-            label={t('计划可用性')}
+            label={t('自动上架时间')}
           >
             <SDatePicker
               hideDisabledOptions
