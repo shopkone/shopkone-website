@@ -5,7 +5,7 @@ import cloneDeep from 'lodash/cloneDeep'
 
 import SRender from '@/components/s-render'
 import SSelect from '@/components/s-select'
-import { conditions } from '@/pages/mange/product/collections/change/get-conditions'
+import { useConditions } from '@/pages/mange/product/collections/change/get-conditions'
 
 export interface ConditionItemProps {
   value?: { id: number, action: string, value: string | number, key: string }
@@ -16,6 +16,7 @@ export interface ConditionItemProps {
 export default function ConditionItem (props: ConditionItemProps) {
   const { value, onClick } = props
   const { id, action, value: v, key } = value || {}
+  const conditions = useConditions()
   const item = conditions.find(i => i.key === key)
 
   const onChange = useMemoizedFn((k: 'action' | 'value' | 'key', vv?: string | number) => {

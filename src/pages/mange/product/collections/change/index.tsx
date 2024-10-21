@@ -11,6 +11,7 @@ import SCard from '@/components/s-card'
 import { sMessage } from '@/components/s-message'
 import SRender from '@/components/s-render'
 import Seo from '@/components/seo'
+import { useI18n } from '@/hooks/use-lang'
 import Conditions from '@/pages/mange/product/collections/change/conditions'
 import Products from '@/pages/mange/product/collections/change/products'
 import Uploader from '@/pages/mange/product/collections/change/uploader'
@@ -48,6 +49,7 @@ export default function Change () {
   const init = useRef<any>()
   const { id } = useParams()
   const nav = useNavigate()
+  const t = useI18n()
 
   const onValuesChange = () => {
     const values = form.getFieldsValue()
@@ -82,12 +84,12 @@ export default function Change () {
       const ret = await create.runAsync({ ...values, conditions })
       init.current = null
       nav(`/products/collections/change/${ret.id}`)
-      sMessage.success('Collection created!')
+      sMessage.success(t('系列创建成功'))
       setIsChange(false)
     } else {
       await update.runAsync({ ...values, id: Number(id), conditions })
       init.current = null
-      sMessage.success('Collection updated')
+      sMessage.success(t('系列更新成功'))
       info.refresh()
       setIsChange(false)
     }
@@ -131,35 +133,38 @@ export default function Change () {
 
   return (
     <Page
+      type={'product'}
       loading={loading}
       onOk={onOk}
       onCancel={onReset}
       isChange={isChange}
       back={'/products/collections'}
       width={950}
-      title={id ? 'Edit collection' : 'Create collection'}
+      title={id ? t('编辑系列') : t('创建系列')}
     >
       <Form onValuesChange={onValuesChange} initialValues={INIT_VALUES} form={form} layout={'vertical'}>
         <Flex gap={16}>
           <Flex vertical flex={1} gap={16}>
             <SCard className={'fit-width'}>
-              <Form.Item name={'title'} label={'Title'}>
-                <Input placeholder={'e.g. Summer collection, Under $100, Staff picks'} autoComplete={'off'} />
+              <Form.Item name={'title'} label={t('系列标题')}>
+                <Input placeholder={t('例如：夏季系列、100 美元以下、员工精选')} autoComplete={'off'} />
               </Form.Item>
-              <Form.Item name={'description'} className={'mb0'} label={'Description'}>
+              <Form.Item name={'description'} className={'mb0'} label={t('系列描述')}>
                 <Input.TextArea autoSize={{ minRows: 12 }} />
               </Form.Item>
             </SCard>
-            <SCard style={{ display: id ? 'none' : undefined }} title={'Collection type'} className={'fit-width'}>
+            <SCard style={{ display: id ? 'none' : undefined }} title={'系列模式'} className={'fit-width'}>
               <Form.Item className={'mb0'} name={'collection_type'}>
-                <Radio.Group options={[{ label: 'Manual', value: CollectionType.Manual }]} />
+                <Radio.Group options={[{ label: t('手动模式'), value: CollectionType.Manual }]} />
               </Form.Item>
-              <div style={{ marginBottom: 4, marginLeft: 26, marginTop: -4 }} className={'tips'}>Add products to this collection one by one.</div>
+              <div style={{ marginBottom: 4, marginLeft: 26, marginTop: -4 }} className={'tips'}>
+                {t('将产品逐一添加到该系列中。')}
+              </div>
               <Form.Item className={'mb0'} name={'collection_type'}>
-                <Radio.Group options={[{ label: 'Automated', value: CollectionType.Auto }]} />
+                <Radio.Group options={[{ label: t('自动模式'), value: CollectionType.Auto }]} />
               </Form.Item>
               <div style={{ marginLeft: 26, marginTop: -4 }} className={'tips'}>
-                Existing and future products that match the conditions you set will automatically be added to this collection.
+                {t('符合您设置的条件的现有和未来产品将自动添加到此系列中。')}
               </div>
             </SCard>
 

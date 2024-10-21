@@ -13,6 +13,7 @@ import SLoading from '@/components/s-loading'
 import { sMessage } from '@/components/s-message'
 import SRender from '@/components/s-render'
 import ItemSortable from '@/components/sortable/sortable-item'
+import { useI18n } from '@/hooks/use-lang'
 import { useOpen, UseOpenType } from '@/hooks/useOpen'
 import Sortable from '@/pages/mange/product/product/product-change/variants/changer/Sortable'
 import { Option, Variant } from '@/pages/mange/product/product/product-change/variants/state'
@@ -42,6 +43,7 @@ export default function Changer (props: ChangerProps) {
   const selectInfo = useOpen<number[]>([])
   const form = Form.useFormInstance()
   const [count, setCount] = useState(0)
+  const t = useI18n()
 
   const getItem = () => ({
     name: '',
@@ -187,7 +189,7 @@ export default function Changer (props: ChangerProps) {
       style={{ overflow: 'hidden' }}
       title={
         <Flex style={{ overflow: 'hidden' }} align={'center'} justify={'space-between'}>
-          <span>{info?.data?.length ? 'Edit options' : 'Set options'}</span>
+          <span>{info?.data?.length ? t('编辑款式') : t('添加款式')}</span>
           <Button
             style={{ width: 24 }}
             onClick={info.close}
@@ -203,7 +205,7 @@ export default function Changer (props: ChangerProps) {
         <Flex align={'center'} justify={'space-between'}>
           <div className={count > 500 ? styles.err : ''}>{count} / 500</div>
           <Button onClick={onOk} type={'primary'}>
-            Done
+            {t('确定')}
           </Button>
         </Flex>
       }
@@ -304,7 +306,7 @@ export default function Changer (props: ChangerProps) {
                 </SRender>
                 <SRender render={true}>
                   <div className={styles.content}>
-                    <div className={styles.label}>Option name</div>
+                    <div className={styles.label}>{t('款式名称')}</div>
                     <Input
                       value={option.name}
                       className={classNames({ [styles.errInput]: getErrorMsg(option.id) })}
@@ -319,7 +321,7 @@ export default function Changer (props: ChangerProps) {
                     >
                       {getErrorMsg(option.id)}
                     </div>
-                    <div className={styles.label} style={{ marginTop: 6 }}>Option values</div>
+                    <div className={styles.label} style={{ marginTop: 6 }}>{t('款式值')}</div>
                     <Sortable<Option['values'][number]>
                       over={(k) => (
                         <Flex align={'center'} className={styles.di}>
@@ -417,7 +419,6 @@ export default function Changer (props: ChangerProps) {
                                         >
                                           <SRender render={getImage(option.name, value.value).image}>
                                             <FileImage
-                                              forceNoLoading
                                               loading={!getImage(option.name, value.value).image}
                                               type={FileType.Image}
                                               src={getImage(option.name, value.value).image || ''}
@@ -457,19 +458,8 @@ export default function Changer (props: ChangerProps) {
       </Sortable>
       <SRender render={options.length < 5}>
         <Button style={{ background: '#f7f7f7' }} onClick={onAdd} block>
-          <Flex
-            style={{
-              position: 'relative',
-              top: -2
-            }} align={'center'} justify={'center'} gap={8}
-          >
-            <IconPlus
-              size={13} style={{
-                position: 'relative',
-                top: -1
-              }}
-            />
-            <div>Add another option</div>
+          <Flex align={'center'} justify={'center'} gap={8}>
+            <IconPlus size={13} />{t('添加款式选项')}
           </Flex>
         </Button>
       </SRender>

@@ -24,7 +24,7 @@ export default function TrackType (props: TrackTypeProps) {
 
   return (
     <Checkbox onChange={e => { onChangeHandle(e.target.checked) }} checked={value}>
-      <span style={{ position: 'relative', top: -1 }}>{t('库存跟踪')}</span>
+      <span style={{ position: 'relative', top: -1 }}>{t('跟踪库存')}</span>
     </Checkbox>
   )
 }

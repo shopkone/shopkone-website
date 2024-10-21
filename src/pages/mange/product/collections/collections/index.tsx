@@ -91,6 +91,7 @@ export default function Collections () {
 
   return (
     <Page
+      type={'product'}
       header={
         <SRender render={list?.data?.list?.length}>
           <Button

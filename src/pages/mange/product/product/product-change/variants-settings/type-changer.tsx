@@ -1,5 +1,6 @@
-import { App, Form, Radio } from 'antd'
+import { Form, Radio } from 'antd'
 
+import { useModal } from '@/components/s-modal'
 import { useVariantTypeOptions, VariantType } from '@/constant/product'
 import { useI18n } from '@/hooks/use-lang'
 import { Variant } from '@/pages/mange/product/product/product-change/variants/state'
@@ -11,7 +12,7 @@ export interface TypeChangerProps {
 
 export default function TypeChanger (props: TypeChangerProps) {
   const { value, onChange } = props
-  const { modal } = App.useApp()
+  const modal = useModal()
   const form = Form.useFormInstance()
   const t = useI18n()
   const options = useVariantTypeOptions(t)

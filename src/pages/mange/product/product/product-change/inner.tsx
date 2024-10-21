@@ -156,7 +156,7 @@ export default function ProductChangeInner (props: ProductChangeInnerProps) {
       onOk={onOK}
       onCancel={onCancel}
       isChange={isChange || isVariantChange}
-      title={id ? (info?.data?.title || '--') : 'Add product'}
+      title={id ? (info?.data?.title || '--') : '添加商品'}
       back={'/products/products'}
       width={950}
       bottom={48}

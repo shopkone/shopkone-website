@@ -103,7 +103,7 @@ export default function Change () {
       } else {
         modal.confirm({
           title: `${t('停用')} ${info?.data?.name}?`,
-          content: t('您可以随时重新激活此位置。'),
+          content: t('您可以随时重启用此位置。'),
           onOk: async () => {
             if (!info?.data?.id) return
             await update.runAsync({ ...info.data, active: false })

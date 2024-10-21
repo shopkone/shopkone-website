@@ -14,6 +14,7 @@ import SCard from '@/components/s-card'
 import SRender from '@/components/s-render'
 import STable, { STableProps } from '@/components/s-table'
 import { VariantStatus } from '@/constant/product'
+import { useI18n } from '@/hooks/use-lang'
 import Filters from '@/pages/mange/product/product/products/filters'
 import { formatPrice } from '@/utils/num'
 import { renderText } from '@/utils/render-text'
@@ -23,6 +24,7 @@ export default function Products () {
   const [params, setParams] = useState<ProductListReq>({ page: 1, page_size: 20 })
   const list = useRequest(ProductListApi, { manual: true })
   const [selected, setSelected] = useState<number[]>([])
+  const t = useI18n()
   const columns: STableProps['columns'] = [
     {
       title: 'Product',
@@ -177,7 +179,7 @@ export default function Products () {
             <Button type={'text'}>Export</Button>
             <Button type={'text'}>Import</Button>
             <Button type={'text'}>More actions</Button>
-            <Button onClick={() => { nav('change') }} type={'primary'}>Add product</Button>
+            <Button onClick={() => { nav('change') }} type={'primary'}>{t('添加商品')}</Button>
           </Flex>
         </SRender>
       }

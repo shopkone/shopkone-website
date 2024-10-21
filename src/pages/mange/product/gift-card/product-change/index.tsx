@@ -35,7 +35,7 @@ export default function ProductChange () {
                 <Checkbox>{t('需要图片')}</Checkbox>
               </Form.Item>
               <Form.Item name={'inventory_tracking'} valuePropName={'checked'}>
-                <Checkbox>{t('库存跟踪')}</Checkbox>
+                <Checkbox>{t('跟踪库存')}</Checkbox>
               </Form.Item>
               <Form.Item name={'inventory_policy'} style={{ marginBottom: 0, marginTop: -12 }}>
                 <Radio.Group className={styles.group} options={tackOptions} />

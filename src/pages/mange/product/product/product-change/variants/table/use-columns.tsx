@@ -142,7 +142,7 @@ export default function useColumns (params: ColumnsParams) {
       width: 150
     },
     {
-      title: t('比较价格'),
+      title: t('原价'),
       code: 'compare_at_price',
       name: 'compare_at_price',
       render: (compare_at_price: number, row: Variant) => {
@@ -159,7 +159,7 @@ export default function useColumns (params: ColumnsParams) {
       hidden: true
     },
     {
-      title: t('每件成本'),
+      title: t('成本价'),
       code: 'cost_per_item',
       name: 'cost_per_item',
       render: (cost_per_item: number, row: Variant) => {
@@ -261,7 +261,7 @@ export default function useColumns (params: ColumnsParams) {
       hidden: true
     },
     {
-      title: t('需要运费'),
+      title: t('发货'),
       code: 'shipping_required',
       name: 'shipping_required',
       render: (_, row: Variant) => {

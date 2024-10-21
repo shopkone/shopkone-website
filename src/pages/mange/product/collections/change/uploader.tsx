@@ -11,6 +11,7 @@ import SelectFiles from '@/components/media/select-files'
 import SCard from '@/components/s-card'
 import SRender from '@/components/s-render'
 import Upload from '@/components/upload'
+import { useI18n } from '@/hooks/use-lang'
 import { useOpen } from '@/hooks/useOpen'
 import styles from '@/pages/mange/product/collections/change/index.module.less'
 import FileInfo from '@/pages/mange/settings/files/file-info'
@@ -29,6 +30,7 @@ export default function Uploader (props: UploaderProps) {
   const openInfo = useOpen<number[]>()
   const infoOpen = useOpen<number>()
   const [open, setOpen] = useState(false)
+  const t = useI18n()
 
   const onOpen = useDebounceFn(() => {
     setOpen(false)
@@ -46,7 +48,7 @@ export default function Uploader (props: UploaderProps) {
         <SRender render={value}>
           <Flex>
             <Button onClick={() => { infoOpen.edit(value) }} type={'text'} size={'small'}>
-              Edit
+              {t('编辑')}
             </Button>
             <Popover
               open={open}
@@ -56,13 +58,13 @@ export default function Uploader (props: UploaderProps) {
               content={
                 <Flex vertical gap={4}>
                   <Button onClick={onOpen} size={'small'} type={'text'} style={{ textAlign: 'left' }}>
-                    Change image
+                    {t('更改图片')}
                   </Button>
                   <Button
                     onClick={() => { onChange?.(undefined); setOpen(false) }}
                     danger size={'small'} type={'text'} style={{ textAlign: 'left' }}
                   >
-                    Remove
+                    {t('取消设置')}
                   </Button>
                 </Flex>
              }
@@ -82,7 +84,7 @@ export default function Uploader (props: UploaderProps) {
           </Flex>
         </SRender>
       }
-      title={'Image'}
+      title={t('封面')}
     >
       <SRender render={!value}>
         <Upload
@@ -105,14 +107,14 @@ export default function Uploader (props: UploaderProps) {
           }
         >
           <SRender render={!uploadDragIn}>
-            <Button>Select image</Button>
-            <div className={'tips'}>or drop an image to upload</div>
+            <Button>{t('选择图片')}</Button>
+            <div className={'tips'}>{t('或将图片拖拽于此')}</div>
           </SRender>
           <SRender render={uploadDragIn ? !uploadImageErr : null}>
-            Drag image to upload.
+            {t('松开以上传')}
           </SRender>
           <SRender render={uploadImageErr ? uploadDragIn : null}>
-            Invalid image file.
+            {t('无效的图片格式')}
           </SRender>
         </Upload>
       </SRender>

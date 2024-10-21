@@ -5,12 +5,14 @@ import { Button, Empty, Flex } from 'antd'
 import { FileType } from '@/api/file/add-file-record'
 import { ProductListByIdsRes, useProductListByIds } from '@/api/product/list-by-ids'
 import FileImage from '@/components/file-image'
+import IconButton from '@/components/icon-button'
 import SCard from '@/components/s-card'
 import SRender from '@/components/s-render'
 import STable, { STableProps } from '@/components/s-table'
 import SelectProduct from '@/components/select-product'
 import Status from '@/components/status'
 import { VariantStatus } from '@/constant/product'
+import { useI18n } from '@/hooks/use-lang'
 import { useOpen } from '@/hooks/useOpen'
 import { CollectionType } from '@/pages/mange/product/collections/change/index'
 import { formatPrice } from '@/utils/num'
@@ -27,6 +29,7 @@ export default function Products (props: ProductsProps) {
   const products = useProductListByIds()
   const [select, setSelect] = useState<number[]>([])
   const [page, setPage] = useState({ current: 1, pageSize: 20 })
+  const t = useI18n()
 
   const isAutoType = collectionType === CollectionType.Auto
 
@@ -45,7 +48,7 @@ export default function Products (props: ProductsProps) {
 
   const columns: STableProps['columns'] = [
     {
-      title: 'Product',
+      title: t('商品'),
       code: 'product',
       name: 'product',
       render: (_, row: ProductListByIdsRes) => (
@@ -65,7 +68,7 @@ export default function Products (props: ProductsProps) {
       lock: true
     },
     {
-      title: 'Price',
+      title: t('售价'),
       code: 'price',
       name: 'price',
       render: (_, row: ProductListByIdsRes) => {
@@ -77,15 +80,15 @@ export default function Products (props: ProductsProps) {
       width: 100
     },
     {
-      title: 'Status',
+      title: t('状态'),
       code: 'status',
       name: 'status',
       width: 80,
       render: (status: VariantStatus) => {
         if (status === VariantStatus.Published) {
-          return <Status borderless type={'success'}>Active</Status>
+          return <Status borderless type={'success'}>{t('已上架')}</Status>
         }
-        return <Status borderless type={'default'}>Draft</Status>
+        return <Status borderless type={'default'}>{t('草稿')}</Status>
       }
     },
     {
@@ -94,9 +97,9 @@ export default function Products (props: ProductsProps) {
       name: 'id',
       width: 50,
       render: (_, row: ProductListByIdsRes) => (
-        <Button size={'small'} type={'text'} style={{ width: 26, height: 26 }}>
-          <IconTrash onClick={() => { onRemove(row.id) }} size={16} style={{ position: 'relative', left: -4, top: 1 }} />
-        </Button>
+        <IconButton type={'text'} size={24}>
+          <IconTrash onClick={() => { onRemove(row.id) }} size={14} />
+        </IconButton>
       ),
       hidden: isAutoType
     }
@@ -111,11 +114,11 @@ export default function Products (props: ProductsProps) {
       extra={
         <SRender render={value?.length ? !isAutoType : null}>
           <Button onClick={() => { selectInfo.edit(value || []) }}>
-            Select products
+            {t('选择商品')}
           </Button>
         </SRender>
       }
-      title={'Products'}
+      title={'商品'}
       className={'fit-width'}
     >
       <SRender render={!value?.length}>
@@ -127,15 +130,16 @@ export default function Products (props: ProductsProps) {
           description={(
             <Flex style={{ marginTop: -8, fontSize: 13 }} vertical gap={12}>
               <SRender render={!isAutoType}>
-                There are no products in this collection.
+                {t('添加和管理该系列关联的商品。')}
               </SRender>
               <SRender render={isAutoType}>
-                System will add products automatically based on the conditions you set.
+                {t('系统将根据您设定的条件自动添加商品。')}
               </SRender>
+              <SRender render={isAutoType} style={{ height: 32 }} />
               <SRender style={{ marginTop: 12 }} render={!isAutoType}>
                 <Flex justify={'center'}>
                   <Button onClick={() => { selectInfo.edit(value || []) }}>
-                    Select products
+                    {t('选择商品')}
                   </Button>
                 </Flex>
               </SRender>
