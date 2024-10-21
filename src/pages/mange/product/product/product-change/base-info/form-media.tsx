@@ -3,12 +3,14 @@ import { Button, Checkbox, Flex, Form } from 'antd'
 
 import Media from '@/components/media'
 import SRender from '@/components/s-render'
+import { useI18n } from '@/hooks/use-lang'
 import styles from '@/pages/mange/product/product/product-change/base-info/index.module.less'
 
 export default function FormMedia () {
   const [select, setSelect] = useState<number[]>([])
   const form = Form.useFormInstance()
   const fileIds: number[] = form.getFieldValue('file_ids') || []
+  const t = useI18n()
 
   return (
     <Form.Item
@@ -17,7 +19,7 @@ export default function FormMedia () {
       label={
         <>
           <SRender render={!select.length}>
-            Media
+            {t('媒体')}
           </SRender>
           <SRender render={!!select.length}>
             <Flex style={{ marginBottom: 4 }} className={'fit-width'} align={'center'} justify={'space-between'}>
@@ -31,7 +33,7 @@ export default function FormMedia () {
                     indeterminate={select.length > 0 && select.length < fileIds?.length}
                   />
                 </div>
-                {select.length} files selected
+                {t('{{count}} 个文件已选', { count: select.length })}
               </Flex>
               <Flex>
                 <Button
@@ -44,7 +46,7 @@ export default function FormMedia () {
                   type={'text'}
                   size={'small'}
                 >
-                  Remove
+                  {t('移除')}
                 </Button>
               </Flex>
             </Flex>

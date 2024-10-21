@@ -9,6 +9,7 @@ import SelectFiles from '@/components/media/select-files'
 import Uploading from '@/components/media/uploading'
 import SRender from '@/components/s-render'
 import Upload from '@/components/upload'
+import { useI18n } from '@/hooks/use-lang'
 import { useOpen } from '@/hooks/useOpen'
 
 import styles from './index.module.less'
@@ -27,18 +28,19 @@ export default function Media (props: MediaProps) {
   const [uploadImageErr, seUploadImageErr] = useState(false)
   const [uploadDragIn, setUploadDragIn] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
+  const t = useI18n()
 
   return (
     <div>
       <SRender render={!value?.length}>
         <Upload
           className={
-              classNames(
-                styles.container,
-                { [styles.dragIn]: uploadDragIn },
-                { [styles.error]: uploadImageErr }
-              )
-            }
+            classNames(
+              styles.container,
+              { [styles.dragIn]: uploadDragIn },
+              { [styles.error]: uploadImageErr }
+            )
+          }
           getElement={ele => { // @ts-expect-error
             inputRef.current = ele
           }}
@@ -55,15 +57,15 @@ export default function Media (props: MediaProps) {
           vertical
         >
           <SRender render={uploadDragIn ? !uploadImageErr : null}>
-            Drag image to upload.
+            {t('拖拽图片进行上传')}
           </SRender>
           <SRender render={uploadImageErr ? uploadDragIn : null}>
-            Invalid image file.
+            {t('无效的图片文件')}
           </SRender>
           <SRender render={!uploadDragIn}>
             <Flex gap={8}>
               <Button size={'small'}>
-                Select existing
+                {t('选择已有文件')}
               </Button>
               <Button
                 type={'text'}
@@ -71,10 +73,10 @@ export default function Media (props: MediaProps) {
                 className={'primary-text'}
                 onClick={(e) => { e.stopPropagation(); inputRef?.current?.click() }}
               >
-                Upload new
+                {t('上传新文件')}
               </Button>
             </Flex>
-            <div className={'tips'}>Accepts images or videos</div>
+            <div className={'tips'}>{t('支持上传图片或视频')}</div>
           </SRender>
         </Upload>
       </SRender>

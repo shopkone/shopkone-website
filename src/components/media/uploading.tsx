@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react'
-import { IconX } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
 import { Button, Flex, Typography } from 'antd'
 
@@ -11,6 +10,7 @@ import SModal from '@/components/s-modal'
 import SRender from '@/components/s-render'
 import STable, { STableProps } from '@/components/s-table'
 import { useUpload } from '@/components/upload/use-upload'
+import { useI18n } from '@/hooks/use-lang'
 import { formatFileSize } from '@/utils/format'
 
 export interface UploadingProps {
@@ -26,6 +26,7 @@ export default function Uploading (props: UploadingProps) {
   const isStart = useRef(false)
   const ids = useRef<number[]>([])
   const [forceUpdate, setForceUpdate] = useState(0)
+  const t = useI18n()
 
   const uploadList = async () => {
     try {
@@ -72,7 +73,7 @@ export default function Uploading (props: UploadingProps) {
       width: 85
     },
     {
-      title: 'File name',
+      title: t('文件名'),
       code: 'name',
       name: 'name',
       render: (name: string) => (
@@ -80,18 +81,18 @@ export default function Uploading (props: UploadingProps) {
       )
     },
     {
-      title: 'Type',
+      title: t('类型'),
       code: 'suffix',
       name: 'suffix'
     },
     {
-      title: 'Size',
+      title: t('大小'),
       code: 'size',
       name: 'size',
       render: (size: number) => formatFileSize(size)
     },
     {
-      title: 'Status',
+      title: t('状态'),
       code: 'status',
       name: 'status'
     }
@@ -120,20 +121,20 @@ export default function Uploading (props: UploadingProps) {
           align={'center'}
           justify={'space-between'}
         >
-          <div>{files.find(i => i.status === 'wait') ? 'Uploading' : 'Upload Complete!'}</div>
+          <div>{files.find(i => i.status === 'wait') ? t('正在上传') : t('上传完成')}</div>
           <div style={{ fontSize: 12, fontWeight: 450 }}>
             <SRender render={files.filter(i => i.status === 'wait')?.length}>
               <Flex style={{ marginLeft: -100 }} align={'center'} gap={6}>
                 <SLoading black size={18} />
-                <div>Uploading</div>
+                <div>{t('正在上传')}</div>
                 <div style={{ marginLeft: 4, fontWeight: 500 }}>
                   ({files.filter(i => i.status === 'done').length || 0} / {files.filter(i => i.status !== 'error')?.length})
                 </div>
               </Flex>
             </SRender>
             <SRender render={!files.filter(i => i.status === 'wait')?.length}>
-              <Button onClick={onConfirm} type={'text'} size={'small'}>
-                <IconX size={16} />
+              <Button onClick={onConfirm} type={'primary'} size={'small'}>
+                好的
               </Button>
             </SRender>
           </div>
