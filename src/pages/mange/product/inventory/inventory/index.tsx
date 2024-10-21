@@ -15,6 +15,7 @@ import SInputNumber from '@/components/s-input-number'
 import SRender from '@/components/s-render'
 import SSelect from '@/components/s-select'
 import STable, { STableProps } from '@/components/s-table'
+import { useI18n } from '@/hooks/use-lang'
 import { useOpen } from '@/hooks/useOpen'
 import ChangeHistory from '@/pages/mange/product/inventory/inventory/change-history'
 import Filters from '@/pages/mange/product/inventory/inventory/filters'
@@ -29,12 +30,12 @@ export default function Inventory () {
   const nav = useNavigate()
   const list = useRequest(InventoryListApi, { manual: true })
   const [selected, setSelected] = useState<number[]>([])
-
+  const t = useI18n()
   const info = useOpen<{ name: string, id: number }>()
 
   const columns: STableProps['columns'] = [
     {
-      title: 'Product',
+      title: t('商品款式'),
       code: 'product',
       name: 'product',
       render: (_, row: InventoryListRes) => (
@@ -64,19 +65,13 @@ export default function Inventory () {
       width: 150
     },
     {
-      title: 'Unavailable',
+      title: t('流程中'),
       code: 'unavailable',
       name: 'unavailable',
       width: 150
     },
     {
-      title: 'Committed',
-      code: 'committed',
-      name: 'committed',
-      width: 150
-    },
-    {
-      title: 'Available',
+      title: t('可售'),
       code: 'quantity',
       name: 'quantity',
       render: (quantity: number) => (
@@ -85,7 +80,7 @@ export default function Inventory () {
       width: 150
     },
     {
-      title: 'On hand',
+      title: t('现货'),
       code: 'on_hand',
       name: 'on_hand',
       width: 150
@@ -114,39 +109,32 @@ export default function Inventory () {
       header={
         <SRender render={list?.data?.list?.length}>
           <Flex gap={8}>
-            <Button type={'text'}>Export</Button>
-            <Button type={'text'}>Import</Button>
+            <Button type={'text'}>{t('导出')}</Button>
+            <Button type={'text'}>{t('导入')}</Button>
           </Flex>
         </SRender>
       }
       bottom={64}
       title={
-        <Flex align={'center'} gap={16}>
-          Inventory
+        <Flex align={'center'}>
+          {t('库存')}
           <SRender render={(locations.data?.length || 0) > 1}>
-            <Flex
-              style={{
-                position: 'relative',
-                top: 2
-              }} align={'center'}
-            >
-              <div className={styles.selectorLabel}>Location:</div>
-              <SSelect
-                onChange={v => {
-                  if (!v) return
-                  nav(`/products/inventory/${v}`)
-                }}
-                className={styles.selector}
-                value={params.location_id}
-                options={locations.data?.map(i => ({
-                  label: i.name,
-                  value: i.id
-                }))}
-                variant={'borderless'}
-                suffixIcon={<IconChevronDown color={'#444'} size={16} />}
-                dropdownStyle={{ minWidth: 400 }}
-              />
-            </Flex>
+            <span style={{ paddingLeft: 2 }}>:</span>
+            <SSelect
+              onChange={v => {
+                if (!v) return
+                nav(`/products/inventory/${v}`)
+              }}
+              className={styles.selector}
+              value={params.location_id}
+              options={locations.data?.map(i => ({
+                label: i.name,
+                value: i.id
+              }))}
+              variant={'borderless'}
+              suffixIcon={<IconChevronDown color={'#444'} size={16} />}
+              dropdownStyle={{ minWidth: 400 }}
+            />
           </SRender>
         </Flex>
       }
@@ -166,11 +154,11 @@ export default function Inventory () {
           columns={columns}
           data={list.data?.list || []}
           empty={{
-            title: 'Keep track of your inventory',
-            desc: 'When you enable inventory tracking on your products, you can view and adjust their inventory counts here.',
+            title: t('跟踪商品库存'),
+            desc: t('商品启用跟踪库存后，您可以在此查看和调整产品的库存计数。'),
             actions: (
               <Flex gap={8}>
-                <Button onClick={() => { nav('/products/products') }} type={'primary'}>Go to products</Button>
+                <Button onClick={() => { nav('/products/products') }} type={'primary'}>{t('前往商品')}</Button>
               </Flex>
             )
           }}
