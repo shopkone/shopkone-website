@@ -20,10 +20,10 @@ export default function ColumnRequired (props: ColumnPriceProps) {
   return (
     <div>
       <SRender render={row.children?.length}>
-        <Tooltip title={t(`适用于所有 ${row?.children?.length} 个变体`)}>
+        <Tooltip title={t('同时修改x个款式', { count: row?.children?.length })}>
           <Checkbox indeterminate={!allChecked && someChecked} checked={allChecked} onChange={e => { onChange(e.target.checked) }}>
             {
-              type === 'shipping_required' ? t('需要运输发货') : t('征收税费')
+              type === 'shipping_required' ? t('需要运输发货') : t('收取税费')
             }
           </Checkbox>
         </Tooltip>
@@ -31,7 +31,7 @@ export default function ColumnRequired (props: ColumnPriceProps) {
       <SRender render={!row.children?.length}>
         <Checkbox checked={row[type]} onChange={e => { onChange(e.target.checked) }}>
           {
-            type === 'shipping_required' ? t('需要运输发货') : t('征收税费')
+            type === 'shipping_required' ? t('需要运输发货') : t('收取税费')
           }
         </Checkbox>
       </SRender>

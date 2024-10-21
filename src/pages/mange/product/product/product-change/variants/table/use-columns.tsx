@@ -126,7 +126,7 @@ export default function useColumns (params: ColumnsParams) {
       required: true
     },
     {
-      title: t('价格'),
+      title: t('售价'),
       code: 'price',
       name: 'price',
       render: (price: number, row: Variant) => {

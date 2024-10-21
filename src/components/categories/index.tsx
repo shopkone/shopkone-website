@@ -10,6 +10,7 @@ import { CategoriesRes } from '@/api/base/categories'
 import SLoading from '@/components/s-loading'
 import SModal from '@/components/s-modal'
 import SRender from '@/components/s-render'
+import { useI18n } from '@/hooks/use-lang'
 import { UseOpenType } from '@/hooks/useOpen'
 
 import styles from './index.module.less'
@@ -33,6 +34,8 @@ export default function Categories (props: CategoriesProps) {
     }
     return data.filter(item => item.pid === key) || []
   })
+
+  const t = useI18n()
 
   const getHasChild = useMemoizedFn((pid: number) => {
     if (!info.open) return false
@@ -95,7 +98,7 @@ export default function Categories (props: CategoriesProps) {
   return (
     <SModal
       onOk={() => { onConfirm(value?.length ? value.pop() as number : 0) }}
-      title={'Select categories'}
+      title={t('选择分类')}
       open={info.open}
       onCancel={info.close}
       width={1000}
@@ -106,7 +109,7 @@ export default function Categories (props: CategoriesProps) {
           <Flex align={'center'} justify={'space-between'}>
             <div className={styles.search}>
               <Input
-                placeholder={'Search categories'}
+                placeholder={t('搜索分类')}
                 value={keyword}
                 onChange={e => { setKeyword(e.target.value) }}
                 prefix={<IconSearch size={14} className={styles.searchIcon} />}
@@ -114,7 +117,7 @@ export default function Categories (props: CategoriesProps) {
             </div>
             <SRender render={selectLabel}>
               <Flex style={{ marginRight: 16 }} align={'center'} gap={8}>
-                <div>Select:</div>
+                <div>{t('当前选中：')}</div>
                 <div className={styles.selectLabel}>
                   {selectLabel}
                 </div>

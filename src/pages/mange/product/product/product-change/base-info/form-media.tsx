@@ -33,7 +33,7 @@ export default function FormMedia () {
                     indeterminate={select.length > 0 && select.length < fileIds?.length}
                   />
                 </div>
-                {t('{{count}} 个文件已选', { count: select.length })}
+                {t('已选文件', { count: select.length })}
               </Flex>
               <Flex>
                 <Button

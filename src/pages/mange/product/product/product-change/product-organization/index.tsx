@@ -14,13 +14,13 @@ export default function ProductOrganization () {
       <Form.Item name={'category'} label={t('分类')}>
         <SelectCategory />
       </Form.Item>
-      <Form.Item tooltip={t('标准化产品单元，如：属性值、特性相同的商品可以称为一个 SPU')} name={'spu'} label={t('SPU')}>
+      <Form.Item tooltip={t('spu提示')} name={'spu'} label={t('SPU')}>
         <Input autoComplete={'off'} />
       </Form.Item>
       <Form.Item name={'vendor'} label={t('供应商')}>
         <Input autoComplete={'off'} />
       </Form.Item>
-      <Form.Item name={'collections'} label={t('专辑')}>
+      <Form.Item name={'collections'} label={t('系列')}>
         <SSelect loading={options.loading} options={options.data || []} />
       </Form.Item>
       <Form.Item name={'tags'} className={'mb0'} label={t('标签')}>

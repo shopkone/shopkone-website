@@ -26,7 +26,7 @@ export default function Status () {
         status === VariantStatus.Draft && (
           <Form.Item
             name={'scheduled_at'}
-            tooltip={t('设置后，产品将根据设定时间按计划发布')}
+            tooltip={t('设置指定上架时间后，商品将按照设置的时间如期发布')}
             label={t('自动上架时间')}
           >
             <SDatePicker

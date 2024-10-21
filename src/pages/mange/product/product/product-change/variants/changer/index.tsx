@@ -108,7 +108,7 @@ export default function Changer (props: ChangerProps) {
       return
     }
     if (count > 500) {
-      sMessage.warning('Too many variants, please delete some options')
+      sMessage.warning(t('抱歉，所有属性/款式项最大数量为500个！'))
       return
     }
     onChangeLoading(true)
@@ -126,19 +126,19 @@ export default function Changer (props: ChangerProps) {
     const errs: Array<{ id: number, msg: string }> = []
     options.forEach(option => {
       if (!option.name) {
-        errs.push({ id: option.id, msg: 'Option name is required' })
+        errs.push({ id: option.id, msg: t('请输入款式名称') })
       }
       if (options.find(item => item.name === option.name && item.id !== option.id)) {
-        errs.push({ id: option.id, msg: 'Option name must be unique' })
+        errs.push({ id: option.id, msg: t('款式名称重复') })
       }
       option.values.forEach((v, index) => {
         const isLast = index === option.values.length - 1
         if (isLast && option.values.length !== 1) return
         if (!v.value) {
-          errs.push({ id: v.id, msg: 'Option value is required' })
+          errs.push({ id: v.id, msg: t('请输入款式值') })
         }
         if (option.values.find(v2 => v2.value === v.value && v2.id !== v.id)) {
-          errs.push({ id: v.id, msg: 'Option value must be unique' })
+          errs.push({ id: v.id, msg: t('款式值重复') })
         }
       })
     })

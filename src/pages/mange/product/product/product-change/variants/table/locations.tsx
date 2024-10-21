@@ -71,7 +71,7 @@ export default function LocationsSelect (props: LocationsSelectProps) {
         <SSelect
           value={selected}
           onChange={setSelected}
-          options={[{ label: t('所有地点'), value: 0 }].concat(options || [])}
+          options={[{ label: t('全部地点'), value: 0 }].concat(options || [])}
           size={'small'}
           dropdownStyle={{ minWidth: 300, maxWidth: 500 }}
           style={{ minWidth: 120, maxWidth: 300 }}

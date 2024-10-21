@@ -117,7 +117,7 @@ export const useConditions = () => {
       actions: [eq, gt, lt]
     },
     {
-      label: t('款式名称'),
+      label: t('款式值'),
       key: 'variant_title',
       component: (p: ComponentProps) => {
         return <Input className={'flex1'} onChange={e => { p.onChange(e.target.value) }} value={p.value} />

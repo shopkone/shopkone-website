@@ -3,6 +3,7 @@ import { Button, Checkbox, Flex } from 'antd'
 
 import { LocationListRes } from '@/api/location/list'
 import SModal from '@/components/s-modal'
+import { useI18n } from '@/hooks/use-lang'
 import { UseOpenType } from '@/hooks/useOpen'
 
 export interface EditLocationModalProps {
@@ -14,6 +15,7 @@ export interface EditLocationModalProps {
 export default function EditLocationModal (props: EditLocationModalProps) {
   const { locationList, info, onConfirm } = props
   const [locationIds, setLocationIds] = useState<number[]>([])
+  const t = useI18n()
 
   const onChange = (id: number) => {
     if (locationIds.includes(id)) {
@@ -50,19 +52,19 @@ export default function EditLocationModal (props: EditLocationModalProps) {
       }}
       onCancel={info.close}
       width={620}
-      title={'编辑地点'}
+      title={t('编辑地点')}
       open={info.open}
       okButtonProps={{ disabled: locationIds.length === 0 }}
     >
       <div style={{ padding: 16 }}>
-        <div style={{ marginBottom: 16 }}>选择哪些地点拥有这些商品</div>
+        <div style={{ marginBottom: 12 }}>{t('哪些地点拥有这些商品？')}</div>
 
-        <Flex style={{ marginBottom: 16 }} align={'center'} justify={'space-between'}>
+        <Flex style={{ marginBottom: 12 }} align={'center'} justify={'space-between'}>
           <Button onClick={onSelectAll} style={{ marginLeft: -8, fontSize: 13 }} type={'link'} size={'small'}>
-            {isSelectedAll ? '全不选' : '全选'}
+            {isSelectedAll ? t('全不选') : t('全选')}
           </Button>
           <div>
-            已选择 {locationIds.length} 个，共 {locationList?.length || 0} 个
+            {t('已选中地点', { select: locationIds.length || 0, total: locationList?.length || 0 })}
           </div>
         </Flex>
 

@@ -59,7 +59,11 @@ export default function ColumnInventory (props: ColumnInventoryProps) {
   return (
     <div>
       <SRender render={row?.children?.length}>
-        <SInputNumber value={total} variant={'filled'} disabled style={{ border: 'none', cursor: 'default' }} />
+        <SInputNumber
+          value={total} variant={'filled'}
+          disabled
+          style={{ border: 'none', cursor: 'default', background: 'transparent', color: '#1f2329' }}
+        />
       </SRender>
       <SRender render={!row?.children?.length}>
         <SRender render={locationId}>
@@ -70,7 +74,7 @@ export default function ColumnInventory (props: ColumnInventoryProps) {
         </SRender>
 
         <SRender render={!locationId}>
-          <Tooltip title={t('选择您想编辑的位置')}>
+          <Tooltip title={t('请选择一个地点进行编辑')}>
             <SInputNumber value={total} variant={'filled'} disabled style={{ border: 'none', cursor: 'default' }} />
           </Tooltip>
         </SRender>

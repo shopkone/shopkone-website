@@ -7,6 +7,7 @@ import { FileListByIdsRes } from '@/api/file/file-list-by-ids'
 import FileImage from '@/components/file-image'
 import SLoading from '@/components/s-loading'
 import SRender from '@/components/s-render'
+import { useI18n } from '@/hooks/use-lang'
 import { Variant } from '@/pages/mange/product/product/product-change/variants/state'
 import ColumnImageList from '@/pages/mange/product/product/product-change/variants/table/columns/column-image-list'
 
@@ -31,6 +32,8 @@ export default function ColumnVariant (props: ColumnVariantProps) {
     return [...new Set(paths)]
   }, [fileList, row]) as string[]
 
+  const t = useI18n()
+
   return (
     <Flex className={'fit-width flex1'} style={{ userSelect: 'none' }}>
       <SRender render={row.children}>
@@ -54,7 +57,7 @@ export default function ColumnVariant (props: ColumnVariantProps) {
             </div>
             <Flex align={'center'} gap={8}>
               <div className={'secondary'}>
-                {row.children?.length} variants
+                {t('款式数', { count: row.children?.length })}
               </div>
               <IconChevronDown
                 className={styles.icon}
