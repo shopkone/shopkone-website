@@ -146,7 +146,7 @@ export default function Change () {
         <Flex gap={16}>
           <Flex vertical flex={1} gap={16}>
             <SCard className={'fit-width'}>
-              <Form.Item name={'title'} label={t('系列标题')}>
+              <Form.Item name={'title'} label={t('系列标题')} rules={[{ required: true }]}>
                 <Input placeholder={t('例如：夏季系列、100 美元以下、员工精选')} autoComplete={'off'} />
               </Form.Item>
               <Form.Item name={'description'} className={'mb0'} label={t('系列描述')}>

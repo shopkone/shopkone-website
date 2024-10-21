@@ -149,12 +149,12 @@ export default function Products () {
         <Flex justify={'center'} align={'center'} style={{ marginLeft: -6, cursor: 'default' }} onClick={e => { e.stopPropagation() }} gap={12}>
           <Tooltip title={'Preview'}>
             <IconButton size={26} type={'text'}>
-              <IconEye size={18} />
+              <IconEye size={17} />
             </IconButton>
           </Tooltip>
           <Tooltip title={'Duplicate'}>
             <IconButton size={26} type={'text'}>
-              <IconCopy size={14} />
+              <IconCopy size={13} />
             </IconButton>
           </Tooltip>
         </Flex>
