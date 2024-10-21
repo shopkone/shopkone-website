@@ -52,6 +52,7 @@ export default function EditLocationModal (props: EditLocationModalProps) {
       width={620}
       title={'编辑地点'}
       open={info.open}
+      okButtonProps={{ disabled: locationIds.length === 0 }}
     >
       <div style={{ padding: 16 }}>
         <div style={{ marginBottom: 16 }}>选择哪些地点拥有这些商品</div>

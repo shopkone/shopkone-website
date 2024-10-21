@@ -46,11 +46,9 @@ export default function LocationsSelect (props: LocationsSelectProps) {
       return
     }
     if (isTrack) {
-      console.log(123)
       onChange?.(locations?.data?.map(item => item.id) || [])
     } else {
-      console.log(456)
-      onChange?.(locations?.data?.map(item => item.id) || [])
+      // onChange?.(locations?.data?.map(item => item.id) || [])
     }
   }, [isTrack])
 
