@@ -94,7 +94,7 @@ export default function TransferList () {
         </SRender>
       }
       type={'product'}
-      title={'转移'}
+      title={'库存转移'}
     >
       <SCard styles={{ body: { padding: '8px 0' } }}>
         <Filters />
