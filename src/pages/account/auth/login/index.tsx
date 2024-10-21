@@ -5,6 +5,7 @@ import { Button, Flex, Form, Input } from 'antd'
 
 import { LoginApi } from '@/api/account/login'
 import { useModal } from '@/components/s-modal'
+import { useI18n } from '@/hooks/use-lang'
 import { setStorage, STORAGE_KEY } from '@/utils/storage-key'
 
 import styles from '../../index.module.less'
@@ -14,6 +15,7 @@ export default function Login () {
   const nav = useNavigate()
 
   const login = useRequest(LoginApi, { manual: true })
+  const t = useI18n()
 
   const EMAIL_REG = /^[a-zA-Z0-9_.]+@[a-zA-Z0-9-]+[.a-zA-Z]+$/
   const password = Form.useWatch('password', form)
@@ -36,25 +38,25 @@ export default function Login () {
   return (
     <div>
       <div className={styles.logo}>Shopkone</div>
-      <div className={styles.title}>Log in</div>
-      <div className={styles.desc}>Continue to Shopkone</div>
+      <div className={styles.title}>{t('登录')}</div>
+      <div className={styles.desc}>{t('进入 Shopkone')}</div>
 
       <Form layout={'vertical'} form={form}>
-        <Form.Item rules={[{ required: true }, { pattern: EMAIL_REG, message: 'Please enter a valid email address.' }]} label={'Email'} name={'email'}>
+        <Form.Item rules={[{ required: true }, { pattern: EMAIL_REG, message: t('请输入有效的邮箱') }]} label={t('邮箱')} name={'email'}>
           <Input onPressEnter={onLogin} size={'large'} />
         </Form.Item>
-        <Form.Item className={'mb0'} name={'password'} label={'Password'}>
+        <Form.Item className={'mb0'} name={'password'} label={t('密码')}>
           <Input.Password onPressEnter={onLogin} autoComplete={'off'} size={'large'} />
         </Form.Item>
-        <Button style={{ marginLeft: -8, marginTop: 4 }} type={'link'} size={'small'}>Forgot password?</Button>
+        <Button style={{ marginLeft: -8, marginTop: 4 }} type={'link'} size={'small'}>{t('忘记密码？')}</Button>
         <Button loading={login.loading} onClick={onLogin} className={styles.btn} block type={'primary'} size={'large'}>
           Login
         </Button>
         <Flex align={'center'} justify={'center'} className={styles['help-link']}>
-          <div>New to Shopkone? </div>
+          <div>{t('还没账号?')} </div>
           <Button onClick={() => { nav('/auth/signup') }} size={'small'} className={styles['link-btn']} type={'link'}>
             <Flex style={{ fontSize: 13 }} align={'center'} gap={4}>
-              <div>Get started</div>
+              <div>{t('立即注册')}</div>
               <ArrowRight className={styles['link-icon']} />
             </Flex>
           </Button>

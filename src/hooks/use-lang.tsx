@@ -34,7 +34,8 @@ const i18n = i18next
   .init({
     fallbackLng: 'en',
     lng: 'en',
-    interpolation: { escapeValue: false }
+    interpolation: { escapeValue: false },
+    debug: true
   })
 
 export { i18n }

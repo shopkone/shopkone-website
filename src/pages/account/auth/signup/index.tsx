@@ -9,6 +9,7 @@ import { LoginApi } from '@/api/account/login'
 import { RegisterApi } from '@/api/account/register'
 import { SendCodeApi } from '@/api/account/send-code'
 import SRender from '@/components/s-render'
+import { useI18n } from '@/hooks/use-lang'
 import { setStorage, STORAGE_KEY } from '@/utils/storage-key'
 
 import styles from '../../index.module.less'
@@ -24,6 +25,7 @@ export default function Signup () {
   const send = useRequest(SendCodeApi, { manual: true })
   const register = useRequest(RegisterApi, { manual: true })
   const login = useRequest(LoginApi, { manual: true })
+  const t = useI18n()
 
   const password: string = Form.useWatch('password', form)
   const email: string = Form.useWatch('email', form)
@@ -71,9 +73,9 @@ export default function Signup () {
 
   const pwdStrengthStr = useMemo(() => {
     if (!isValidPwd) return ''
-    if (checkPasswordStrength === 1) return 'weak'
-    if (checkPasswordStrength === 2) return 'medium'
-    return 'strong'
+    if (checkPasswordStrength === 1) return t('弱')
+    if (checkPasswordStrength === 2) return t('中')
+    return '强'
   }, [checkPasswordStrength, isValidPwd])
 
   const sendCode: ButtonProps['onClick'] = useMemoizedFn(async (e) => {
@@ -98,26 +100,27 @@ export default function Signup () {
   return (
     <div>
       <div className={styles.logo}>Shopkone</div>
-      <div className={styles.title}>Create a Shopkone account</div>
-      <div className={styles.desc}>One last step before starting your free trial.</div>
+      <div className={styles.title}>{t('注册')}</div>
+      <div className={styles.desc}>{t('注册后即可开始免费试用 15 天')}</div>
 
       <Form layout={'vertical'} form={form} colon={false}>
-        <Form.Item rules={[{ required: true }, { pattern: EMAIL_REG, message: 'Please enter a valid email address.' }]} label={'Email'} name={'email'}>
+        <Form.Item rules={[{ required: true }, { pattern: EMAIL_REG, message: t('请输入有效的邮箱') }]} label={'Email'} name={'email'}>
           <Input onPressEnter={registerAccount} size={'large'} />
         </Form.Item>
-        <Form.Item className={sendEmail ? 'mb0' : ''} name={'code'} label={'Verification code'}>
+        <Form.Item className={sendEmail ? 'mb0' : ''} name={'code'} label={t('验证码')}>
           <Input
             onPressEnter={registerAccount}
             suffix={
               <Button disabled={!!count || send.loading} onClick={sendCode} className={styles.secondary} size={'small'} type={'text'}>
                 <SRender render={!send.loading}>
                   <SRender render={sendEmail ? !count : false}>
-                    Resend
+                    {t('重新发送')}
                   </SRender>
                   <SRender render={!sendEmail}>
-                    Send Verification Code
+                    {t('发送验证码')}
                   </SRender>
                   <SRender render={count}>
+                    {t('重新发送')}
                     Resend（{Math.round(count / 1000)}s）
                   </SRender>
                 </SRender>
