@@ -13,7 +13,7 @@ export default function Taxes () {
     { title: t('运输税率'), code: 'region', name: 'region' }
   ]
   return (
-    <Page width={800} title={t('税务')}>
+    <Page type={'product'} width={800} title={t('税务')}>
       <Card
         extra={
           <Button size={'small'} type={'link'}>{t('选择地区')}</Button>

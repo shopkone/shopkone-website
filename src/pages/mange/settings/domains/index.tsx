@@ -7,7 +7,7 @@ import { useI18n } from '@/hooks/use-lang'
 export default function Domains () {
   const t = useI18n()
   return (
-    <Page title={t('域名')} width={800} bottom={48}>
+    <Page type={'settings'} title={t('域名')} width={800} bottom={48}>
       <Flex vertical gap={16}>
         <Card title={t('主域名')}>
           <div className={'tips'} style={{ marginBottom: 12 }}>

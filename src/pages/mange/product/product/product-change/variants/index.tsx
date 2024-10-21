@@ -8,6 +8,7 @@ import IconButton from '@/components/icon-button'
 import SCard from '@/components/s-card'
 import SRender from '@/components/s-render'
 import { VariantType } from '@/constant/product'
+import { useI18n } from '@/hooks/use-lang'
 import { useOpen } from '@/hooks/useOpen'
 import Changer from '@/pages/mange/product/product/product-change/variants/changer'
 import { Option, useProductChange, Variant } from '@/pages/mange/product/product/product-change/variants/state'
@@ -45,6 +46,7 @@ export default function Variants (props: VariantsProps) {
   const openInfo = useOpen<Variant[]>([])
 
   const info = useProductChange(state => state.info)
+  const t = useI18n()
 
   const onReverseVariants = async (variants: Variant[]) => await new Promise(resolve => {
     const worker: Worker = new ReserveHandle()
@@ -141,16 +143,16 @@ export default function Variants (props: VariantsProps) {
         style={{ margin: isFull ? '16px 24px' : undefined }}
         title={
           <Flex gap={8} align={'center'}>
-            <div>Variants</div>
+            <div>{t('变体')}</div>
             <div style={{ fontWeight: 400, fontSize: 12, position: 'relative', top: 1 }}>
-              {variants?.length > 1 ? `(${variants?.length} records)` : ''}
+              {variants?.length > 1 ? `(${variants?.length} ${t('条记录')})` : ''}
             </div>
           </Flex>
         }
         extra={
           <Flex gap={12}>
             <SRender render={variantType === VariantType.Multiple && !!variants?.length}>
-              <Tooltip title={'Edit options'}>
+              <Tooltip title={t('编辑选项')}>
                 <IconButton
                   onClick={() => { openInfo.edit(form.getFieldValue('variants')) }}
                   type={'text'}
@@ -164,7 +166,7 @@ export default function Variants (props: VariantsProps) {
             <SRender render={variants?.length} style={{ width: 24, height: 24 }} />
             <SRender render={variants?.length}>
               <SRender render={!isFull}>
-                <Tooltip title={'Maximize'}>
+                <Tooltip title={t('最大化')}>
                   <IconButton
                     onClick={() => { setIsFull(!isFull) }}
                     type={'text'}
@@ -175,7 +177,7 @@ export default function Variants (props: VariantsProps) {
                 </Tooltip>
               </SRender>
               <SRender render={isFull}>
-                <Tooltip title={'Minimize'}>
+                <Tooltip title={t('最小化')}>
                   <IconButton
                     onClick={() => { setIsFull(!isFull) }}
                     type={'text'}

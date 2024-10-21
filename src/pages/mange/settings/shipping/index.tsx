@@ -1,5 +1,5 @@
 import { Suspense, useEffect } from 'react'
-import { Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { Outlet, useNavigate } from 'react-router-dom'
 import { IconTruckDelivery } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
 import { Button, Empty, Flex, TabsProps } from 'antd'
@@ -16,7 +16,6 @@ import { useShippingState } from '@/pages/mange/settings/shipping/state'
 import styles from './index.module.less'
 
 export default function Shipping () {
-  const location = useLocation()
   const locationList = useRequest(LocationListApi)
   const nav = useNavigate()
   const shippingState = useShippingState()
@@ -29,7 +28,7 @@ export default function Shipping () {
     { label: t('店内自取'), key: 'pickup-in-store' }
   ]
 
-  const onTabClick: TabsProps['onTabClick'] = key => {
+  const onTabClick = (key: string) => {
     nav(`/settings/shipping/${key}`)
   }
 
@@ -39,7 +38,7 @@ export default function Shipping () {
   }, [locationList.data])
 
   return (
-    <Page title={locationList.data?.length ? '' : t('运输')} bottom={64} width={700}>
+    <Page type={'settings'} title={locationList.data?.length ? '' : t('运输')} bottom={64} width={700}>
       <SRender render={!locationList.data?.length && !countries.loading}>
         <SCard loading={locationList.loading}>
           <Empty
