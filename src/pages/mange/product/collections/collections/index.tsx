@@ -21,7 +21,7 @@ export default function Collections () {
   const list = useRequest(ProductCollectionListApi, { manual: true })
   const nav = useNavigate()
   const [selected, setSelected] = useState<number[]>([])
-  const { t } = useTranslation('product')
+  const { t } = useTranslation('product', { keyPrefix: 'collections' })
 
   const columns: STableProps['columns'] = [
     {
@@ -45,12 +45,12 @@ export default function Collections () {
       lock: true
     },
     {
-      title: t('系列模式'),
+      title: t('匹配模式1'),
       code: 'collection_type',
       name: 'collection_type',
       render: (collection_type: CollectionType) => {
-        if (collection_type === CollectionType.Auto) return t('自动模式')
-        return t('手动模式')
+        if (collection_type === CollectionType.Auto) return t('自动匹配1')
+        return t('手动选择1')
       },
       width: 200
     },
@@ -61,17 +61,18 @@ export default function Collections () {
       width: 200
     },
     {
-      title: t('修改时间'),
+      title: t('修改日期'),
       code: 'updated_at',
       name: 'updated_at',
       width: 150
     },
     {
-      title: t('操作'),
+      title: '',
       code: 'action',
       name: 'action',
+      align: 'center',
       render: () => (
-        <Flex align={'center'} style={{ marginLeft: -6, cursor: 'default' }} onClick={e => { e.stopPropagation() }} gap={12}>
+        <Flex justify={'center'} align={'center'} style={{ marginLeft: -6, cursor: 'default' }} onClick={e => { e.stopPropagation() }} gap={12}>
           <Tooltip title={t('预览')}>
             <IconButton size={25} type={'text'} >
               <IconEye size={17} />
@@ -134,7 +135,7 @@ export default function Collections () {
                   onClick={() => { nav('change') }}
                   type={'primary'}
                 >
-                  {t('创建系列')}
+                  {t('添加系列')}
                 </Button>
               </Flex>
             )

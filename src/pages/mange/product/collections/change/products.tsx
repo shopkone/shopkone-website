@@ -29,7 +29,7 @@ export default function Products (props: ProductsProps) {
   const products = useProductListByIds()
   const [select, setSelect] = useState<number[]>([])
   const [page, setPage] = useState({ current: 1, pageSize: 20 })
-  const { t } = useTranslation('product')
+  const { t } = useTranslation('product', { keyPrefix: 'collections' })
 
   const isAutoType = collectionType === CollectionType.Auto
 
@@ -68,7 +68,7 @@ export default function Products (props: ProductsProps) {
       lock: true
     },
     {
-      title: t('售价'),
+      title: t('售价1'),
       code: 'price',
       name: 'price',
       render: (_, row: ProductListByIdsRes) => {
@@ -113,7 +113,7 @@ export default function Products (props: ProductsProps) {
     <SCard
       extra={
         <SRender render={value?.length ? !isAutoType : null}>
-          <Button onClick={() => { selectInfo.edit(value || []) }}>
+          <Button type={'link'} size={'small'} onClick={() => { selectInfo.edit(value || []) }}>
             {t('选择商品')}
           </Button>
         </SRender>
@@ -139,7 +139,7 @@ export default function Products (props: ProductsProps) {
               <SRender style={{ marginTop: 12 }} render={!isAutoType}>
                 <Flex justify={'center'}>
                   <Button onClick={() => { selectInfo.edit(value || []) }}>
-                    {t('选择商品')}
+                    {t('选择商品1')}
                   </Button>
                 </Flex>
               </SRender>

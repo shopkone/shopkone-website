@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Right } from '@icon-park/react'
 import {
   IconBell,
@@ -33,6 +34,8 @@ export default function Header () {
   const [confirmLoading, setConfirmLoading] = useState(false)
   const [infoExpand, setInfoExpand] = useState(false)
 
+  const { t } = useTranslation('common', { keyPrefix: 'header' })
+
   const logout = async () => {
     await logoutApi.runAsync()
     toLogin()
@@ -49,7 +52,7 @@ export default function Header () {
 
   return (
     <header className={styles.header}>
-      <Flex justify={'space-between'} align={'center'} className={styles.logo}>shopkone</Flex>
+      <Flex justify={'space-between'} align={'center'} className={styles.logo}>Shopkone</Flex>
       <Flex justify={'space-between'} flex={1}>
         <div className={'flex1'} />
         <Flex flex={2} align={'center'} justify={'center'} className={styles.center} >
@@ -62,21 +65,21 @@ export default function Header () {
           >
             <Flex align={'center'} gap={4}>
               <IconInfoCircle size={18} />
-              <div>Unsaved</div>
+              <div>{t('未保存')}</div>
             </Flex>
             <Flex align={'center'} gap={12}>
-              <Button loading={page.resetLoading} onClick={page.onCancel}>Discard</Button>
-              <Button onClick={onOkHandler} type={'primary'} loading={confirmLoading}>{page.okText || 'Save'}</Button>
+              <Button loading={page.resetLoading} onClick={page.onCancel}>{t('取消')}</Button>
+              <Button onClick={onOkHandler} type={'primary'} loading={confirmLoading}>{page.okText || t('保存')}</Button>
             </Flex>
           </Flex>
         </Flex>
         <div className={styles.right}>
-          <Tooltip arrow={false} title={'View your online store'}>
+          <Tooltip arrow={false} title={t('前往在线商店')}>
             <Flex align={'center'} justify={'center'} className={styles.bell} >
               <IconBuildingStore size={18} />
             </Flex>
           </Tooltip>
-          <Tooltip arrow={false} title={'Help center'}>
+          <Tooltip arrow={false} title={t('帮助中心')}>
             <Flex style={{ marginLeft: 4 }} align={'center'} justify={'center'} className={styles.bell} >
               <IconHelp size={18} />
             </Flex>
@@ -114,19 +117,19 @@ export default function Header () {
                 }
                   <div style={{ margin: 0, marginBottom: 4 }} className={'line'} />
                   <div className={styles.info}>
-                    <SRender render={userInfo?.data?.is_master} style={{ fontWeight: 500 }}>admin</SRender>
+                    <SRender render={userInfo?.data?.is_master} style={{ fontWeight: 500 }}>{t('管理员')}</SRender>
                     <div>{userInfo?.data?.email}</div>
                   </div>
                   <Flex justify={'space-between'} align={'center'} className={styles.item}>
-                    <div>Language</div>
+                    <div>{t('语言')}</div>
                     <div className={styles['right-icon']}><Right size={14} /></div>
                   </Flex>
                   <div className={styles.item}>
-                    Manage account
+                    {t('账户管理')}
                   </div>
                   <div onClick={logout} className={styles.item}>
                     <SRender render={!logoutApi.loading}>
-                      Log out
+                      {t('退出登录')}
                     </SRender>
                     <SRender render={logoutApi.loading}>
                       <SLoading size={20} />

@@ -36,7 +36,7 @@ const CategoryRender = (p: { onChange: (value?: number) => void, value?: number 
 }
 
 export const useConditions = () => {
-  const { t } = useTranslation('product')
+  const { t } = useTranslation('product', { keyPrefix: 'collections' })
 
   const eq = { label: t('等于'), value: 'eq' }
   const neq = { label: t('不等于'), value: 'neq' }

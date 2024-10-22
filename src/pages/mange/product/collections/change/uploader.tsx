@@ -30,7 +30,7 @@ export default function Uploader (props: UploaderProps) {
   const openInfo = useOpen<number[]>()
   const infoOpen = useOpen<number>()
   const [open, setOpen] = useState(false)
-  const { t } = useTranslation('product')
+  const { t } = useTranslation('product', { keyPrefix: 'collections' })
 
   const onOpen = useDebounceFn(() => {
     setOpen(false)
@@ -58,7 +58,7 @@ export default function Uploader (props: UploaderProps) {
               content={
                 <Flex vertical gap={4}>
                   <Button onClick={onOpen} size={'small'} type={'text'} style={{ textAlign: 'left' }}>
-                    {t('更改图片')}
+                    {t('更换图片')}
                   </Button>
                   <Button
                     onClick={() => { onChange?.(undefined); setOpen(false) }}

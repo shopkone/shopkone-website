@@ -8,7 +8,7 @@ import { MatchModeType } from '@/pages/mange/product/collections/change/index'
 import { genId } from '@/utils/random'
 
 export default function Conditions () {
-  const { t } = useTranslation('product')
+  const { t } = useTranslation('product', { keyPrefix: 'collections' })
 
   const matchModeOptions = [
     { label: t('满足以下全部条件'), value: MatchModeType.All },
@@ -21,7 +21,7 @@ export default function Conditions () {
   return (
     <SCard title={t('条件')}>
       <Flex style={{ marginBottom: 16 }} gap={20} align={'center'}>
-        <div>{t('满足条件：')}</div>
+        <div>{t('满足条件')}</div>
         <Form.Item name={'match_mode'} className={'mb0'}>
           <Radio.Group options={matchModeOptions} />
         </Form.Item>

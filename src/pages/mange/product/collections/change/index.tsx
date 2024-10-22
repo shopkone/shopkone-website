@@ -49,7 +49,7 @@ export default function Change () {
   const init = useRef<any>()
   const { id } = useParams()
   const nav = useNavigate()
-  const { t } = useTranslation('product')
+  const { t } = useTranslation('product', { keyPrefix: 'collections' })
 
   const onValuesChange = () => {
     const values = form.getFieldsValue()
@@ -84,7 +84,7 @@ export default function Change () {
       const ret = await create.runAsync({ ...values, conditions })
       init.current = null
       nav(`/products/collections/change/${ret.id}`)
-      sMessage.success(t('系列创建成功'))
+      sMessage.success(t('系列添加成功'))
       setIsChange(false)
     } else {
       await update.runAsync({ ...values, id: Number(id), conditions })
@@ -139,7 +139,7 @@ export default function Change () {
       isChange={isChange}
       back={'/products/collections'}
       width={950}
-      title={id ? t('编辑系列') : t('创建系列')}
+      title={id ? t('编辑系列') : t('添加系列')}
     >
       <Form onValuesChange={onValuesChange} initialValues={INIT_VALUES} form={form} layout={'vertical'}>
         <Flex gap={16}>
@@ -152,15 +152,15 @@ export default function Change () {
                 <Input.TextArea autoSize={{ minRows: 12 }} />
               </Form.Item>
             </SCard>
-            <SCard style={{ display: id ? 'none' : undefined }} title={'系列模式'} className={'fit-width'}>
+            <SCard style={{ display: id ? 'none' : undefined }} title={'匹配模式'} className={'fit-width'}>
               <Form.Item className={'mb0'} name={'collection_type'}>
-                <Radio.Group options={[{ label: t('手动模式'), value: CollectionType.Manual }]} />
+                <Radio.Group options={[{ label: t('手动选择'), value: CollectionType.Manual }]} />
               </Form.Item>
               <div style={{ marginBottom: 4, marginLeft: 26, marginTop: -4 }} className={'tips'}>
-                {t('将产品逐一添加到该系列中。')}
+                {t('将商品逐一添加到该系列中。')}
               </div>
               <Form.Item className={'mb0'} name={'collection_type'}>
-                <Radio.Group options={[{ label: t('自动模式'), value: CollectionType.Auto }]} />
+                <Radio.Group options={[{ label: t('自动匹配'), value: CollectionType.Auto }]} />
               </Form.Item>
               <div style={{ marginLeft: 26, marginTop: -4 }} className={'tips'}>
                 {t('符合您设置的条件的现有和未来产品将自动添加到此系列中。')}

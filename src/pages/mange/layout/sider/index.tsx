@@ -19,7 +19,7 @@ export default function Sider () {
   const location = useLocation()
   const openKey = `/${location.pathname?.split('/')[1]}`
   const activeKey = `${location.pathname?.split('/')[2] || ''}`
-  const { t } = useTranslation('product')
+  const { t } = useTranslation('common', { keyPrefix: 'side' })
 
   const menus: MenuProps['items'] = [
     {
@@ -31,9 +31,9 @@ export default function Sider () {
       label: t('订单'),
       key: '/orders',
       children: [
-        { label: 'All orders', key: 'orders' },
-        { label: 'Drafts', key: 'Drafts' },
-        { label: 'Abandoned checkouts', key: 'Abandoned checkouts' }
+        { label: t('所有订单'), key: 'orders' },
+        { label: t('草稿单'), key: 'Drafts' },
+        { label: t('弃单'), key: 'Abandoned checkouts' }
       ],
       icon: <IconArchive size={16} />
     },
@@ -41,8 +41,8 @@ export default function Sider () {
       label: t('商品'),
       key: '/products',
       children: [
-        { label: t('商品'), key: 'products' },
-        { label: t('专辑'), key: 'collections' },
+        { label: t('商品1'), key: 'products' },
+        { label: t('系列'), key: 'collections' },
         { label: t('库存'), key: 'inventory' },
         { label: t('采购单'), key: 'purchase_orders' },
         { label: t('库存转移'), key: 'transfers' },
@@ -54,7 +54,7 @@ export default function Sider () {
       label: t('客户'),
       key: '/customers',
       children: [
-        { label: t('客户'), key: 'customers' },
+        { label: t('客户1'), key: 'customers' },
         { label: t('客户分组'), key: 'segments' }
       ],
       icon: <IconUser size={16} />
@@ -63,7 +63,7 @@ export default function Sider () {
       label: t('分析'),
       key: '/analytics',
       children: [
-        { label: t('分析'), key: 'analytics' },
+        { label: t('分析1'), key: 'analytics' },
         { label: t('报告'), key: 'reports' },
         { label: t('实时分析'), key: 'live-view' }
       ],
@@ -73,7 +73,7 @@ export default function Sider () {
       label: t('营销'),
       key: '/marketing',
       children: [
-        { label: t('营销'), key: 'marketing' },
+        { label: t('营销1'), key: 'marketing' },
         { label: t('宣传活动'), key: 'campaigns' },
         { label: t('自动化'), key: 'automations' }
       ],
@@ -102,7 +102,6 @@ export default function Sider () {
         { label: '通知', key: 'notifications' },
         { label: '订单设置', key: 'order_settings' },
         { label: '结账页设置', key: 'checkout_page' },
-        { label: 'Legal', key: 'legal' },
         { label: '元字段', key: 'metafields' },
         { label: '素材中心', key: 'files' },
         { label: '操作日志', key: 'activity_log' }
