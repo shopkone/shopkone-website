@@ -15,7 +15,7 @@ export default function Login () {
   const nav = useNavigate()
 
   const login = useRequest(LoginApi, { manual: true })
-  const { t } = useTranslation('account')
+  const { t } = useTranslation('account', { keyPrefix: 'login' })
 
   const EMAIL_REG = /^[a-zA-Z0-9_.]+@[a-zA-Z0-9-]+[.a-zA-Z]+$/
   const password = Form.useWatch('password', form)
@@ -50,10 +50,10 @@ export default function Login () {
         </Form.Item>
         <Button style={{ marginLeft: -8, marginTop: 4 }} type={'link'} size={'small'}>{t('忘记密码？')}</Button>
         <Button loading={login.loading} onClick={onLogin} className={styles.btn} block type={'primary'} size={'large'}>
-          {t('登录')}
+          {t('登录1')}
         </Button>
         <Flex align={'center'} justify={'center'} className={styles['help-link']}>
-          <div>{t('还没账号?')} </div>
+          <div>{t('还没账号？')} </div>
           <Button onClick={() => { nav('/auth/signup') }} size={'small'} className={styles['link-btn']} type={'link'}>
             <Flex style={{ fontSize: 13 }} align={'center'} gap={4}>
               <div>{t('立即注册')}</div>

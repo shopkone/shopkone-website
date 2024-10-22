@@ -25,7 +25,7 @@ export default function Signup () {
   const send = useRequest(SendCodeApi, { manual: true })
   const register = useRequest(RegisterApi, { manual: true })
   const login = useRequest(LoginApi, { manual: true })
-  const { t } = useTranslation('product')
+  const { t } = useTranslation('account', { keyPrefix: 'signup' })
 
   const password: string = Form.useWatch('password', form)
   const email: string = Form.useWatch('email', form)
@@ -103,7 +103,9 @@ export default function Signup () {
           rules={[{ required: true }, {
             pattern: EMAIL_REG,
             message: t('请输入有效的邮箱')
-          }]} label={t('邮箱')} name={'email'}
+          }]}
+          label={t('邮箱')}
+          name={'email'}
         >
           <Input onPressEnter={registerAccount} size={'large'} />
         </Form.Item>
@@ -112,7 +114,10 @@ export default function Signup () {
             onPressEnter={registerAccount}
             suffix={
               <Button
-                disabled={!!count || send.loading} onClick={sendCode} className={styles.secondary} size={'small'}
+                disabled={!!count || send.loading}
+                onClick={sendCode}
+                className={styles.secondary}
+                size={'small'}
                 type={'text'}
               >
                 <SRender render={!send.loading}>
@@ -123,7 +128,7 @@ export default function Signup () {
                     {t('发送验证码')}
                   </SRender>
                   <SRender render={count}>
-                    {t('重新发送')}
+                    {t('重新发送1')}
                     （{Math.round(count / 1000)}s）
                   </SRender>
                 </SRender>
@@ -139,7 +144,7 @@ export default function Signup () {
           />
         </Form.Item>
         <SRender render={sendEmail} className={styles.tips}>
-          {t('验证码已发送至邮箱。', { email: sendEmail })}
+          {t('验证码已发送至邮箱', { email: sendEmail })}
         </SRender>
         <Form.Item name={'password'} className={'mb0'} label={t('密码')}>
           <Input.Password onPressEnter={registerAccount} autoComplete={'off'} size={'large'} />
@@ -157,10 +162,15 @@ export default function Signup () {
           {t('密码要求')}
         </SRender>
         <Button
-          loading={register.loading || login.loading} onClick={registerAccount} className={styles.btn}
-          disabled={!isValidPwd || !isValidEmail || !isValidCode} block type={'primary'} size={'large'}
+          loading={register.loading || login.loading}
+          onClick={registerAccount}
+          className={styles.btn}
+          disabled={!isValidPwd || !isValidEmail || !isValidCode}
+          block
+          type={'primary'}
+          size={'large'}
         >
-          {t('注册')}
+          {t('注册1')}
         </Button>
         <Flex align={'center'} justify={'center'} className={styles['help-link']}>
           <div>{t('已有账号？')}</div>
