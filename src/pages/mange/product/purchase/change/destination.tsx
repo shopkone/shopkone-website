@@ -20,7 +20,7 @@ export default function Destination (props: DestinationProps) {
   const locations = useRequest(async () => await LocationListApi({ active: true }))
   const { id } = useParams()
   const form = Form.useFormInstance()
-  const { t } = useTranslation('product')
+  const { t } = useTranslation('product', { keyPrefix: 'purchase' })
 
   useEffect(() => {
     if (id) return

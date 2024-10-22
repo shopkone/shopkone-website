@@ -26,7 +26,7 @@ import { renderText } from '@/utils/render-text'
 import styles from './index.module.less'
 
 export default function Receive () {
-  const { t } = useTranslation('product')
+  const { t } = useTranslation('product', { keyPrefix: 'purchase' })
 
   const { id } = useParams()
   const info = useRequest(PurchaseInfoApi, { manual: true })
@@ -140,7 +140,7 @@ export default function Receive () {
             type={'link'}
             size={'small'}
           >
-            全部
+            {t('全部')}
           </Button>
         </Flex>
       )
@@ -163,7 +163,7 @@ export default function Receive () {
             type={'link'}
             size={'small'}
           >
-            全部
+            {t('全部')}
           </Button>
         </Flex>
       ),
@@ -256,12 +256,12 @@ export default function Receive () {
           extra={
             <SRender render={canActionAll}>
               <Flex gap={4}>
-                <Button type={'link'} size={'small'} onClick={onAcceptAll}>接收全部</Button>
-                <Button type={'link'} size={'small'} onClick={onRejectAll}>拒绝全部</Button>
+                <Button type={'link'} size={'small'} onClick={onAcceptAll}>{t('接收全部')}</Button>
+                <Button type={'link'} size={'small'} onClick={onRejectAll}>{t('拒绝全部')}</Button>
               </Flex>
             </SRender>
           }
-          title={'商品'}
+          title={t('商品')}
         >
           <SRender render={list.length >= 2 && (total.received || total.rejected)} style={{ padding: '8px 0 16px 4px' }}>
             <Flex>

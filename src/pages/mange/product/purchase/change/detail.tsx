@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { Flex } from 'antd'
 
 import styles from '@/pages/mange/product/purchase/change/index.module.less'
@@ -12,25 +13,26 @@ export interface DetailProps {
 
 export default function Detail (props: DetailProps) {
   const { vertical, rejected, received, purchasing } = props
+  const { t } = useTranslation('product', { keyPrefix: 'purchase' })
   return (
     <Flex vertical={vertical} gap={16} justify={'flex-end'}>
       <Flex gap={4} align={'center'}>
         <div style={{ background: '#2e7d32' }} className={styles.progressBlock} />
-        已入库
+        {t('已入库')}
         <span>({received})</span>
       </Flex>
       <Flex gap={4} align={'center'}>
         <div style={{ background: '#d32f2f' }} className={styles.progressBlock} />
-        已拒收
+        {t('已拒收')}
         <span>({rejected})</span>
       </Flex>
       <Flex gap={4} align={'center'}>
         <div style={{ background: '#c6c6c6' }} className={styles.progressBlock} />
-        未处理
+        {t('未处理')}
         <span>({reduce(purchasing, received, rejected) > 0 ? reduce(purchasing, received, rejected) : 0})</span>
       </Flex>
       <Flex gap={4} align={'center'}>
-        <span>总额</span>
+        <span>{t('总额')}</span>
         <span>{sum(rejected, received)} / {purchasing}</span>
       </Flex>
     </Flex>

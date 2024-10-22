@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { Tooltip } from 'antd'
 
 import SRender from '@/components/s-render'
@@ -14,16 +15,17 @@ export default function Progress (props: ProgressProps) {
 
   let remaining = purchasing - received - rejected
   remaining = remaining > 0 ? remaining : 0
+  const { t } = useTranslation('product', { keyPrefix: 'purchase' })
 
   return (
     <div className={styles.progressWrapper}>
       <SRender render={received}>
-        <Tooltip mouseEnterDelay={0} title={`已入库 (${received})`}>
+        <Tooltip mouseEnterDelay={0} title={`${t('已入库1')} (${received})`}>
           <div className={styles.progress} style={{ background: '#2e7d32', flex: received }} />
         </Tooltip>
       </SRender>
       <SRender render={rejected}>
-        <Tooltip mouseEnterDelay={0} title={`已拒收 (${rejected})`}>
+        <Tooltip mouseEnterDelay={0} title={`${t('已拒收1')} (${rejected})`}>
           <div
             className={styles.progress}
             style={{
@@ -36,7 +38,7 @@ export default function Progress (props: ProgressProps) {
         </Tooltip>
       </SRender>
       <SRender render={remaining}>
-        <Tooltip mouseEnterDelay={0} title={`未处理 (${purchasing})`}>
+        <Tooltip mouseEnterDelay={0} title={`${t('未处理1')} (${purchasing})`}>
           <div className={styles.progress} style={{ background: '#c6c6c6', flex: remaining }} />
         </Tooltip>
       </SRender>

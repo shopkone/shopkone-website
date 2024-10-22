@@ -21,7 +21,7 @@ export interface SupplierProps {
 
 export default function Supplier (props: SupplierProps) {
   const { value, onChange, infoMode } = props
-  const { t } = useTranslation('product')
+  const { t } = useTranslation('product', { keyPrefix: 'purchase' })
 
   const supplierList = useRequest(SupplierListApi)
   const [openSelect, setOpenSelect] = useState(false)
@@ -56,7 +56,7 @@ export default function Supplier (props: SupplierProps) {
                   size={'small'}
                   type={'link'}
                 >
-                  {t('Create new supplier')}
+                  {t('创建供应商1')}
                 </Button>
               </div>
             </Flex>
@@ -101,7 +101,7 @@ export default function Supplier (props: SupplierProps) {
                   type={'link'}
                   size={'small'}
                 >
-                  {t('编辑供应商信息')}
+                  {t('编辑供应商信息1')}
                 </Button>
               </div>
             }

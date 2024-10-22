@@ -43,7 +43,6 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
   const currencyList = useCurrencyList()
   const carriers = useCarriers()
   const [form] = Form.useForm()
-  const { t } = useTranslation('product')
 
   const create = useRequest(PurchaseCreateApi, { manual: true })
   const update = useRequest(PurchaseUpdateApi, { manual: true })
@@ -56,13 +55,14 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
   const [isChange, setIsChange] = useState(false)
   const nav = useNavigate()
   const modal = useModal()
-  const paymentTerms = getPaymentTerms(t)
 
   const isReadMode = id && window.location.href.includes('info')
   const isDraftStatus = info?.data?.status === PurchaseStatus.Draft
   const isNonEditableStatus = [1, 5].includes(info?.data?.status || 0)
   const isClosedStatus = info?.data?.status === PurchaseStatus.Closed
   const [open, setOpen] = useState(false)
+  const { t } = useTranslation('product', { keyPrefix: 'purchase' })
+  const paymentTerms = getPaymentTerms(t)
 
   const onOk = async () => {
     await form.validateFields()
@@ -85,12 +85,12 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
         ...values
       })
       onFresh(Number(id))
-      sMessage.success(t('采购单已更新'))
+      sMessage.success(t('采购单更新成功'))
       nav(`/products/purchase_orders/info/${id}`)
     } else {
       const ret = await create.runAsync(values)
       onFresh(ret.id)
-      sMessage.success(t('采购单已创建'))
+      sMessage.success(t('采购单创建成功'))
     }
   }
 
@@ -114,7 +114,7 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
   const onClose = async () => {
     await close.runAsync({ id: Number(id), close: info?.data?.status !== PurchaseStatus.Closed })
     info.refresh()
-    sMessage.success(t(`采购单已${!isClosedStatus ? t('关闭') : t('开启')}`))
+    sMessage.success(t('采购单开关', { status: !isClosedStatus ? t('关闭') : t('开启') }))
     setOpen(false)
   }
 
@@ -127,7 +127,7 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
       onOk: async () => {
         await remove.runAsync({ id: Number(id) })
         onFresh(Number(id))
-        sMessage.success(t('删除成功'))
+        sMessage.success(t('采购单删除成功'))
         nav('/products/purchase_orders')
       }
     })
@@ -141,7 +141,7 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
       onOk: async () => {
         await markToOrdered.runAsync({ id: Number(id) })
         onFresh(Number(id))
-        sMessage.success(t('标记成功'))
+        sMessage.success(t('采购单标记成功'))
         nav(`/products/purchase_orders/info/${id}`)
       }
     })

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useRequest } from 'ahooks'
 import { FormInstance } from 'antd'
 
@@ -23,18 +24,19 @@ export default function CreateSupplier (props: CreateSupplierProps) {
   const update = useRequest(SupplierUpdateApi, { manual: true })
 
   const form = useRef<FormInstance>()
+  const { t } = useTranslation('product', { keyPrefix: 'purchase' })
 
   const onConfirm = async () => {
     await form?.current?.validateFields()
     if (!value) return
     if (!info.data?.id) {
       const ret = await create.runAsync({ address: value })
-      sMessage.success('供应商创建成功')
+      sMessage.success(t('供应商创建成功'))
       onOk(ret.id)
     } else {
       await update.runAsync({ address: value, id: info?.data?.id })
       onOk(info?.data?.id)
-      sMessage.success('供应商信息更新成功')
+      sMessage.success(t('供应商信息更新成功'))
     }
     info.close()
   }
@@ -51,7 +53,7 @@ export default function CreateSupplier (props: CreateSupplierProps) {
       onCancel={info.close}
       open={info.open}
       width={600}
-      title={info?.data?.id ? '编辑供应商信息' : '创建供应商'}
+      title={info?.data?.id ? t('编辑供应商信息') : t('创建供应商')}
     >
       <div style={{ padding: 16 }}>
         <Address
@@ -62,7 +64,7 @@ export default function CreateSupplier (props: CreateSupplierProps) {
           onChange={onChange}
           hiddenTitle
           hasEmail
-          companyNameLabel={'Supplier name'}
+          companyNameLabel={t('供应商名称')}
         />
       </div>
     </SModal>

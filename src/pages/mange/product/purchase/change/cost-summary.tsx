@@ -21,7 +21,7 @@ export default function CostSummary (props: CostSummaryProps) {
   const { value, onChange, infoMode } = props
   const form = Form.useFormInstance()
   const items: PurchaseItem[] = Form.useWatch('purchase_items', form)
-  const { t } = useTranslation('product')
+  const { t } = useTranslation('product', { keyPrefix: 'purchase' })
 
   const info = useOpen<AdjustItem[]>()
 
@@ -35,6 +35,8 @@ export default function CostSummary (props: CostSummaryProps) {
     })
     return { total: roundPrice(total), taxFee: roundPrice(taxFee) }
   }, [items, value])
+
+  const itemCount = useMemo(() => items?.reduce((pre, cur) => pre + cur.purchasing, 0) || 0, [items])
 
   const total = roundPrice(useMemo(() => {
     if (!value?.length) return summary.total || 0
@@ -56,11 +58,11 @@ export default function CostSummary (props: CostSummaryProps) {
           ? ''
           : (
             <Button onClick={() => { info.edit(value) }} type={'link'} size={'small'}>
-              {t('Edit')}
+              {t('编辑')}
             </Button>
             )
       }
-      title={t('成本汇总')}
+      title={t('成本摘要')}
       style={{ marginTop: 16 }}
     >
       <Flex gap={6} vertical>
@@ -76,7 +78,7 @@ export default function CostSummary (props: CostSummaryProps) {
             <div>{formatPrice(summary.total, '$')}</div>
           </Flex>
         </div>
-        <div className={'secondary'}>{t('商品数', { count: items?.length || 0 })}</div>
+        <div className={'secondary'}>{t('商品数', { count: itemCount || 0 })}</div>
       </Flex>
 
       <SRender render={value?.length}>

@@ -27,11 +27,11 @@ export default function Purchase () {
   const locations = useRequest(async () => await LocationListApi({ active: true }))
   const supplierList = useRequest(SupplierListApi)
   const [selected, setSelected] = useState<number[]>([])
-  const { t } = useTranslation('product')
+  const { t } = useTranslation('product', { keyPrefix: 'purchase' })
 
   const columns: STableProps['columns'] = [
     {
-      title: 'Purchase order',
+      title: t('采购单号'),
       code: 'order_number',
       name: 'order_number',
       render: (order_number: string) => <div>{order_number}</div>,
@@ -39,7 +39,7 @@ export default function Purchase () {
       lock: true
     },
     {
-      title: 'Supplier',
+      title: t('供应商1'),
       code: 'supplier_id',
       name: 'supplier_id',
       render: (supplier_id: number) => {
@@ -48,7 +48,7 @@ export default function Purchase () {
       width: 200
     },
     {
-      title: 'Destination',
+      title: t('目的地1'),
       code: 'destination_id',
       name: 'destination_id',
       render: (destination_id: number) => {
@@ -57,7 +57,7 @@ export default function Purchase () {
       width: 200
     },
     {
-      title: 'Status',
+      title: t('状态'),
       code: 'status',
       name: 'status',
       render: (status: number) => {
@@ -66,7 +66,7 @@ export default function Purchase () {
       width: 120
     },
     {
-      title: '收货数量',
+      title: t('收货数量'),
       code: 'id',
       name: 'id',
       render: (_, row: PurchaseListRes) => {
@@ -102,14 +102,14 @@ export default function Purchase () {
       width: 150
     },
     {
-      title: 'Total',
+      title: t('总额'),
       code: 'total',
       name: 'total',
       render: (total: number) => <div>{formatPrice(total, '$')}</div>,
       width: 120
     },
     {
-      title: 'Expected arrival',
+      title: t('预计配送日期'),
       code: 'estimated_arrival',
       name: 'estimated_arrival',
       render: (expected_arrival: number) => {
@@ -147,7 +147,7 @@ export default function Purchase () {
             actions: (
               <Flex gap={8}>
                 <Button onClick={() => { nav('change') }} type={'primary'}>
-                  创建采购单
+                  {t('创建采购单')}
                 </Button>
               </Flex>
             )

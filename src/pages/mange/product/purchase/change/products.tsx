@@ -37,7 +37,7 @@ export default function Products (props: ProductsProps) {
   const { run, data } = useVariantsByIds()
   const { id } = useParams()
 
-  const { t } = useTranslation('product')
+  const { t } = useTranslation('product', { keyPrefix: 'purchase' })
 
   const openInfo = useOpen<number[]>([])
   const [page, setPage] = useState({ current: 1, pageSize: 20 })
@@ -134,7 +134,7 @@ export default function Products (props: ProductsProps) {
           <SRender className={styles.disabledText} style={{ opacity: 1 }} render={row.is_deleted}>
             <Flex align={'center'} gap={4}>
               <IconInfoCircle size={16} />
-              商品已被删除
+              {t('商品已被删除')}
             </Flex>
           </SRender>
         </>
@@ -215,7 +215,7 @@ export default function Products (props: ProductsProps) {
       width: 100
     },
     {
-      title: t('合计'),
+      title: t('合计1'),
       code: 'total',
       name: 'total',
       width: 100,
@@ -301,7 +301,6 @@ export default function Products (props: ProductsProps) {
               setPage({ current, pageSize })
             }
           }}
-          onRowClick={(infoMode && status && status !== PurchaseStatus.Closed) ? toReceive : undefined}
           columns={columns}
           data={renderList?.filter(i => (i as any).image !== undefined) || []}
           init={!!renderList?.filter(i => (i as any).image !== undefined)?.length}

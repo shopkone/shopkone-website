@@ -30,7 +30,7 @@ export interface AdjustProps {
 export default function Adjust (props: AdjustProps) {
   const { info, onConfirm } = props
   const [value, setValue] = useState<AdjustItem[]>([])
-  const { t } = useTranslation('product')
+  const { t } = useTranslation('product', { keyPrefix: 'purchase' })
 
   const onAddItem = () => {
     setValue([...value, { id: genId(), price: 0 }])
@@ -46,7 +46,7 @@ export default function Adjust (props: AdjustProps) {
 
   const columns: STableProps['columns'] = [
     {
-      title: t('Adjust'),
+      title: t('调整'),
       code: 'type',
       name: 'type',
       render: (type: number, row: AdjustItem) => (
@@ -61,7 +61,7 @@ export default function Adjust (props: AdjustProps) {
       width: 250
     },
     {
-      title: t('Price'),
+      title: t('价格'),
       code: 'price',
       name: 'price',
       render: (price: number, row: AdjustItem) => (
@@ -102,7 +102,7 @@ export default function Adjust (props: AdjustProps) {
   }, [info.open])
 
   return (
-    <SModal onOk={onConfirmHandle} width={600} title={t('Modify cost summary')} open={info.open} onCancel={info.close}>
+    <SModal onOk={onConfirmHandle} width={600} title={t('管理成本摘要')} open={info.open} onCancel={info.close}>
       <div style={{ padding: 12 }}>
         <STable
           className={'table-white-header table-border'}
@@ -114,7 +114,7 @@ export default function Adjust (props: AdjustProps) {
         <SRender render={value?.length !== 8 && value?.length}>
           <Button onClick={onAddItem} style={{ marginTop: 12, marginLeft: -8 }} size={'small'} type={'link'}>
             <IconCirclePlus size={15} style={{ position: 'relative', top: -1 }} />
-            {t('Add adjust')}
+            {t('添加调整')}
           </Button>
         </SRender>
       </div>
