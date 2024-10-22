@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
 import { IconDots, IconPlus } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
@@ -11,7 +12,6 @@ import SCard from '@/components/s-card'
 import { sMessage } from '@/components/s-message'
 import { useModal } from '@/components/s-modal'
 import SRender from '@/components/s-render'
-import { useI18n } from '@/hooks/use-lang'
 import { useOpen } from '@/hooks/useOpen'
 import AddGroup from '@/pages/mange/settings/files/add-group'
 
@@ -33,7 +33,7 @@ export default function Group (props: GroupProps) {
 
   const gid = useParams().groupId
   const groupId = Number(gid || 0)
-  const t = useI18n()
+  const { t } = useTranslation('product')
 
   const groups = useMemo(() => [{ id: 0, name: t('所有文件'), count: 0 }, ...(list || [])], [list])
 

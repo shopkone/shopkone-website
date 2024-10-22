@@ -1,6 +1,5 @@
+import { useTranslation } from 'react-i18next'
 import { Checkbox, Form } from 'antd'
-
-import { useI18n } from '@/hooks/use-lang'
 
 export interface TrackTypeProps {
   value?: boolean
@@ -10,7 +9,7 @@ export interface TrackTypeProps {
 export default function TrackType (props: TrackTypeProps) {
   const { value, onChange } = props
   const form = Form.useFormInstance()
-  const t = useI18n()
+  const { t } = useTranslation('product')
 
   const onChangeHandle = (checked: boolean) => {
     if (checked) {

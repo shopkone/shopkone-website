@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
 import { IconChevronDown, IconPhoto } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
@@ -16,7 +17,6 @@ import SInputNumber from '@/components/s-input-number'
 import { sMessage } from '@/components/s-message'
 import SRender from '@/components/s-render'
 import STable, { STableProps } from '@/components/s-table'
-import { useI18n } from '@/hooks/use-lang'
 import Detail from '@/pages/mange/product/purchase/change/detail'
 import Progress from '@/pages/mange/product/purchase/change/progress'
 import styles from '@/pages/mange/product/purchase/receive/index.module.less'
@@ -28,7 +28,8 @@ export default function TransferReceived () {
   const info = useRequest(TransferInfoApi, { manual: true })
   const [list, setList] = useState<TransferItem[]>([])
   const { run, data, loading } = useVariantsByIds()
-  const t = useI18n()
+  const { t } = useTranslation('product')
+
   const adjust = useRequest(TransferAdjustApi, { manual: true })
   const nav = useNavigate()
   const canActionAll = list.some(i => {
@@ -239,7 +240,6 @@ export default function TransferReceived () {
         </Flex>
       )}
       width={950}
-      type={'product'}
     >
       <SCard
         title={'商品'}

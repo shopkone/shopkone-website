@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Flex, Form } from 'antd'
 
 import SSelect from '@/components/s-select'
-import { useI18n } from '@/hooks/use-lang'
 import { Option, Variant } from '@/pages/mange/product/product/product-change/variants/state'
 
 // @ts-expect-error
@@ -20,7 +20,7 @@ export interface GroupByProps {
 export default function GroupBy (props: GroupByProps) {
   const { options, variants, onChange, filters, setGroupName, groupName } = props
   const form = Form.useFormInstance()
-  const t = useI18n()
+  const { t } = useTranslation('product')
 
   const onChangeHandle = (newVariants: Variant[]) => {
     onChange(newVariants)

@@ -1,8 +1,8 @@
+import { useTranslation } from 'react-i18next'
 import { Tooltip } from 'antd'
 
 import SInputNumber from '@/components/s-input-number'
 import SRender from '@/components/s-render'
-import { useI18n } from '@/hooks/use-lang'
 import { Variant } from '@/pages/mange/product/product/product-change/variants/state'
 import { formatPrice } from '@/utils/num'
 
@@ -15,7 +15,7 @@ export interface ColumnPriceProps {
 
 export default function ColumnPrice (props: ColumnPriceProps) {
   const { value, onChange, row, type } = props
-  const t = useI18n()
+  const { t } = useTranslation('product')
 
   const getPriceRange = (prices?: Array<number | undefined>): any => {
     const list = (prices?.filter(i => typeof i === 'number') || []) as number[]

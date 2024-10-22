@@ -1,10 +1,10 @@
+import { useTranslation } from 'react-i18next'
 import { Attention, Check, Close, Minus, Up } from '@icon-park/react'
 import { Badge, Button, Flex, Tabs } from 'antd'
 import classNames from 'classnames'
 
 import SLoading from '@/components/s-loading'
 import SRender from '@/components/s-render'
-import { useI18n } from '@/hooks/use-lang'
 import { useGlobalTask } from '@/pages/mange/task/state'
 import UploadRender from '@/pages/mange/task/upload/upload-render'
 import { useTaskUpload } from '@/pages/mange/task/upload/use-task-upload'
@@ -18,7 +18,7 @@ export default function Task () {
   const loadingCount = loadingFileCount
   const errorFileCount = globalTask.files.filter(file => file.status === 'error').length
   const errorCount = errorFileCount
-  const t = useI18n()
+  const { t } = useTranslation('product')
 
   const options = [
     { label: <Badge color={'#3370ff'} size={'small'} count={loadingCount}>{t('文件')}</Badge>, key: 'upload' },

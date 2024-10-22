@@ -1,13 +1,14 @@
+import { useTranslation } from 'react-i18next'
 import { Card, Flex } from 'antd'
 
 import Page from '@/components/page'
 import STable from '@/components/s-table'
-import { useI18n } from '@/hooks/use-lang'
 
 export default function Domains () {
-  const t = useI18n()
+  const { t } = useTranslation('product')
+
   return (
-    <Page type={'settings'} title={t('域名')} width={800} bottom={48}>
+    <Page title={t('域名')} width={800} bottom={48}>
       <Flex vertical gap={16}>
         <Card title={t('主域名')}>
           <div className={'tips'} style={{ marginBottom: 12 }}>

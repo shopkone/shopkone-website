@@ -1,8 +1,8 @@
+import { useTranslation } from 'react-i18next'
 import { Checkbox } from 'antd'
 
 import SRender from '@/components/s-render'
 import { VariantType } from '@/constant/product'
-import { useI18n } from '@/hooks/use-lang'
 import { Variant } from '@/pages/mange/product/product/product-change/variants/state'
 
 import styles from './index.module.less'
@@ -20,7 +20,7 @@ export default function ColumnTitle (props: ColumnTitleProps) {
   const isAllExpanded = variants.every(v => expands.includes(v.id))
 
   const hasChild = variants.some(v => v.children?.length)
-  const t = useI18n()
+  const { t } = useTranslation('product')
 
   const onExpandAll = () => {
     if (isAllExpanded) {

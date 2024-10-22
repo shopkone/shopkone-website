@@ -1,10 +1,10 @@
+import { useTranslation } from 'react-i18next'
 import { Input } from 'antd'
 
 import { useCategories } from '@/api/base/categories'
 import Categories from '@/components/categories'
 import SInputNumber from '@/components/s-input-number'
 import SSelect from '@/components/s-select'
-import { useI18n } from '@/hooks/use-lang'
 import { useOpen } from '@/hooks/useOpen'
 
 type ValueType = string | number
@@ -36,7 +36,7 @@ const CategoryRender = (p: { onChange: (value?: number) => void, value?: number 
 }
 
 export const useConditions = () => {
-  const t = useI18n()
+  const { t } = useTranslation('product')
 
   const eq = { label: t('等于'), value: 'eq' }
   const neq = { label: t('不等于'), value: 'neq' }

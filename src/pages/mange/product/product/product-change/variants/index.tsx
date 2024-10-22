@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import { IconMaximize, IconMinimize, IconPencil } from '@tabler/icons-react'
 import { Flex, Form, Tooltip } from 'antd'
@@ -8,7 +9,6 @@ import IconButton from '@/components/icon-button'
 import SCard from '@/components/s-card'
 import SRender from '@/components/s-render'
 import { VariantType } from '@/constant/product'
-import { useI18n } from '@/hooks/use-lang'
 import { useOpen } from '@/hooks/useOpen'
 import Changer from '@/pages/mange/product/product/product-change/variants/changer'
 import { Option, useProductChange, Variant } from '@/pages/mange/product/product/product-change/variants/state'
@@ -46,7 +46,7 @@ export default function Variants (props: VariantsProps) {
   const openInfo = useOpen<Variant[]>([])
 
   const info = useProductChange(state => state.info)
-  const t = useI18n()
+  const { t } = useTranslation('product')
 
   const onReverseVariants = async (variants: Variant[]) => await new Promise(resolve => {
     const worker: Worker = new ReserveHandle()

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { IconGripVertical, IconPhotoPlus, IconPlus, IconTrash, IconX } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
 import { Button, Drawer, Flex, Form, Input, Tag } from 'antd'
@@ -13,7 +14,6 @@ import SLoading from '@/components/s-loading'
 import { sMessage } from '@/components/s-message'
 import SRender from '@/components/s-render'
 import ItemSortable from '@/components/sortable/sortable-item'
-import { useI18n } from '@/hooks/use-lang'
 import { useOpen, UseOpenType } from '@/hooks/useOpen'
 import Sortable from '@/pages/mange/product/product/product-change/variants/changer/Sortable'
 import { Option, Variant } from '@/pages/mange/product/product/product-change/variants/state'
@@ -43,7 +43,7 @@ export default function Changer (props: ChangerProps) {
   const selectInfo = useOpen<number[]>([])
   const form = Form.useFormInstance()
   const [count, setCount] = useState(0)
-  const t = useI18n()
+  const { t } = useTranslation('product')
 
   const getItem = () => ({
     name: '',

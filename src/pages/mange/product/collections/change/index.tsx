@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useRequest } from 'ahooks'
 import { Flex, Form, Input, Radio } from 'antd'
@@ -11,7 +12,6 @@ import SCard from '@/components/s-card'
 import { sMessage } from '@/components/s-message'
 import SRender from '@/components/s-render'
 import Seo from '@/components/seo'
-import { useI18n } from '@/hooks/use-lang'
 import Conditions from '@/pages/mange/product/collections/change/conditions'
 import Products from '@/pages/mange/product/collections/change/products'
 import Uploader from '@/pages/mange/product/collections/change/uploader'
@@ -49,7 +49,7 @@ export default function Change () {
   const init = useRef<any>()
   const { id } = useParams()
   const nav = useNavigate()
-  const t = useI18n()
+  const { t } = useTranslation('product')
 
   const onValuesChange = () => {
     const values = form.getFieldsValue()
@@ -133,7 +133,6 @@ export default function Change () {
 
   return (
     <Page
-      type={'product'}
       loading={loading}
       onOk={onOk}
       onCancel={onReset}

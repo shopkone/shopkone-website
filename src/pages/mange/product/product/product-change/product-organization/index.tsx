@@ -1,14 +1,15 @@
+import { useTranslation } from 'react-i18next'
 import { useRequest } from 'ahooks'
 import { Card, Form, Input, Select } from 'antd'
 
 import { CollectionOptionsApi } from '@/api/collection/options'
 import SSelect from '@/components/s-select'
-import { useI18n } from '@/hooks/use-lang'
 import SelectCategory from '@/pages/mange/product/product/product-change/product-organization/select-category'
 
 export default function ProductOrganization () {
   const options = useRequest(CollectionOptionsApi)
-  const t = useI18n()
+  const { t } = useTranslation('product')
+
   return (
     <Card title={t('商品设置')}>
       <Form.Item name={'category'} label={t('分类')}>

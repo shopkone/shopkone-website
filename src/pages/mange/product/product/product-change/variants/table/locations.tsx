@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import { useRequest } from 'ahooks'
 import { Button, Flex, Form } from 'antd'
@@ -6,7 +7,6 @@ import { Button, Flex, Form } from 'antd'
 import { LocationListApi } from '@/api/location/list'
 import SLoading from '@/components/s-loading'
 import SSelect from '@/components/s-select'
-import { useI18n } from '@/hooks/use-lang'
 import { useOpen } from '@/hooks/useOpen'
 import EditLocationModal from '@/pages/mange/product/product/product-change/variants/table/edit-location-modal'
 
@@ -25,7 +25,7 @@ export default function LocationsSelect (props: LocationsSelectProps) {
   const form = Form.useFormInstance()
   const isTrack = Form.useWatch('inventory_tracking', form)
   const initRef = useRef(0)
-  const t = useI18n()
+  const { t } = useTranslation('product')
 
   const openInfo = useOpen<number[]>()
 

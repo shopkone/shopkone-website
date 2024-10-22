@@ -1,10 +1,10 @@
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { IconArrowRight, IconChevronRight, IconMapPin, IconTruckDelivery, IconWorld } from '@tabler/icons-react'
 import { Button, Empty, Flex } from 'antd'
 
 import SCard from '@/components/s-card'
 import SLocation from '@/components/s-location'
-import { useI18n } from '@/hooks/use-lang'
 import { useShippingState } from '@/pages/mange/settings/shipping/state'
 
 import styles from './index.module.less'
@@ -12,7 +12,7 @@ import styles from './index.module.less'
 export default function CourierService () {
   const nav = useNavigate()
   const defaultLocation = useShippingState().locations?.find(item => item.default)
-  const t = useI18n()
+  const { t } = useTranslation('product')
 
   return (
     <Flex vertical gap={16}>

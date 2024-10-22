@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { IconDots } from '@tabler/icons-react'
 import { Button, Flex, Form, Popover, Typography } from 'antd'
 import { useWatch } from 'antd/es/form/Form'
 
 import SCard from '@/components/s-card'
 import Edit, { SeoType } from '@/components/seo/edit'
-import { useI18n } from '@/hooks/use-lang'
 import { useManageState } from '@/pages/mange/state'
 
 import styles from './index.module.less'
@@ -24,7 +24,7 @@ export default function Seo (props: SeoProps) {
   } = props
   const [editing, setEditing] = useState(false)
 
-  const t = useI18n()
+  const { t } = useTranslation('product')
 
   const mange = useManageState()
 

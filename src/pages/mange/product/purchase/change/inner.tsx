@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
 import { IconChevronDown } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
@@ -22,7 +23,6 @@ import { useModal } from '@/components/s-modal'
 import SRender from '@/components/s-render'
 import SSelect from '@/components/s-select'
 import { getPaymentTerms, getPurchaseStatus } from '@/constant/purchase'
-import { useI18n } from '@/hooks/use-lang'
 import CostSummary from '@/pages/mange/product/purchase/change/cost-summary'
 import Destination from '@/pages/mange/product/purchase/change/destination'
 import Detail from '@/pages/mange/product/purchase/change/detail'
@@ -43,7 +43,8 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
   const currencyList = useCurrencyList()
   const carriers = useCarriers()
   const [form] = Form.useForm()
-  const t = useI18n()
+  const { t } = useTranslation('product')
+
   const create = useRequest(PurchaseCreateApi, { manual: true })
   const update = useRequest(PurchaseUpdateApi, { manual: true })
   const info = useRequest(PurchaseInfoApi, { manual: true })
@@ -247,7 +248,6 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
       onOk={onOk}
       isChange={isReadMode ? undefined : isChange}
       bottom={120}
-      type={'product'}
       width={950}
       title={
         <Flex align={'center'} gap={8}>

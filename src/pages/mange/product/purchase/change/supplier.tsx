@@ -1,4 +1,5 @@
 import { ReactNode, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useRequest } from 'ahooks'
 import { Button, Flex, Popover, Typography } from 'antd'
 
@@ -6,7 +7,6 @@ import { useCountries } from '@/api/base/countries'
 import { SupplierListApi, SupplierListRes } from '@/api/product/supplier-list'
 import SRender from '@/components/s-render'
 import SSelect from '@/components/s-select'
-import { useI18n } from '@/hooks/use-lang'
 import { useOpen } from '@/hooks/useOpen'
 import CreateSupplier from '@/pages/mange/product/purchase/change/create-supplier'
 import styles from '@/pages/mange/product/purchase/change/index.module.less'
@@ -21,7 +21,7 @@ export interface SupplierProps {
 
 export default function Supplier (props: SupplierProps) {
   const { value, onChange, infoMode } = props
-  const t = useI18n()
+  const { t } = useTranslation('product')
 
   const supplierList = useRequest(SupplierListApi)
   const [openSelect, setOpenSelect] = useState(false)

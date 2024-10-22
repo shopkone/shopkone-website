@@ -1,10 +1,11 @@
+import { useTranslation } from 'react-i18next'
 import { Card, Form, Input } from 'antd'
 
-import { useI18n } from '@/hooks/use-lang'
 import FormMedia from '@/pages/mange/product/product/product-change/base-info/form-media'
 
 export default function BaseInfo () {
-  const t = useI18n()
+  const { t } = useTranslation('product')
+
   return (
     <Card style={{ width: 612, flex: 1 }} bordered>
       <div>

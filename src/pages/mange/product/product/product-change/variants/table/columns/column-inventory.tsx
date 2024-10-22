@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Tooltip } from 'antd'
 
 import SInputNumber from '@/components/s-input-number'
 import SRender from '@/components/s-render'
-import { useI18n } from '@/hooks/use-lang'
 import { Variant } from '@/pages/mange/product/product/product-change/variants/state'
 import { genId } from '@/utils/random'
 
@@ -16,7 +16,7 @@ export interface ColumnInventoryProps {
 
 export default function ColumnInventory (props: ColumnInventoryProps) {
   const { row, onChange, value, locationId } = props
-  const t = useI18n()
+  const { t } = useTranslation('product')
 
   const onChangeHandle = (v: number | null) => {
     if (!locationId) return

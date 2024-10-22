@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate } from 'react-router-dom'
 import {
   IconArchive,
@@ -11,8 +12,6 @@ import {
 } from '@tabler/icons-react'
 import { Menu, MenuProps } from 'antd'
 
-import { useI18n } from '@/hooks/use-lang'
-
 import styles from './index.module.less'
 
 export default function Sider () {
@@ -20,7 +19,7 @@ export default function Sider () {
   const location = useLocation()
   const openKey = `/${location.pathname?.split('/')[1]}`
   const activeKey = `${location.pathname?.split('/')[2] || ''}`
-  const t = useI18n()
+  const { t } = useTranslation('product')
 
   const menus: MenuProps['items'] = [
     {

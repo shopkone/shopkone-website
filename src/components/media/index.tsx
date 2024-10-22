@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Button, Flex } from 'antd'
 import classNames from 'classnames'
 
@@ -9,7 +10,6 @@ import SelectFiles from '@/components/media/select-files'
 import Uploading from '@/components/media/uploading'
 import SRender from '@/components/s-render'
 import Upload from '@/components/upload'
-import { useI18n } from '@/hooks/use-lang'
 import { useOpen } from '@/hooks/useOpen'
 
 import styles from './index.module.less'
@@ -28,7 +28,7 @@ export default function Media (props: MediaProps) {
   const [uploadImageErr, seUploadImageErr] = useState(false)
   const [uploadDragIn, setUploadDragIn] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
-  const t = useI18n()
+  const { t } = useTranslation('product')
 
   return (
     <div>

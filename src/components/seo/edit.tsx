@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Checkbox, Form, Input } from 'antd'
 
 import styles from '@/components/seo/index.module.less'
-import { useI18n } from '@/hooks/use-lang'
 
 export interface SeoType {
   page_title: string
@@ -32,7 +32,7 @@ export default function Edit (props: EditProps) {
 
   const follow = Form.useWatch('follow', seoForm)
 
-  const t = useI18n()
+  const { t } = useTranslation('product')
 
   useEffect(() => {
     seoForm.setFieldsValue(seo)

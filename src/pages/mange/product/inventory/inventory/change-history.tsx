@@ -1,11 +1,11 @@
 import { useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useRequest } from 'ahooks'
 import dayjs from 'dayjs'
 
 import { HistoryListApi } from '@/api/inventory/history-list'
 import SModal from '@/components/s-modal'
 import STable, { STableProps } from '@/components/s-table'
-import { useI18n } from '@/hooks/use-lang'
 import { UseOpenType } from '@/hooks/useOpen'
 
 export interface ChangeHistoryProps {
@@ -15,7 +15,7 @@ export interface ChangeHistoryProps {
 export default function ChangeHistory (props: ChangeHistoryProps) {
   const { info } = props
   const list = useRequest(HistoryListApi, { manual: true })
-  const t = useI18n()
+  const { t } = useTranslation('product')
 
   const columns: STableProps['columns'] = [
     {

@@ -5,7 +5,6 @@ import { Button, Flex, Typography } from 'antd'
 
 import SLoading from '@/components/s-loading'
 import SRender from '@/components/s-render'
-import { useLoadLanguage } from '@/hooks/use-lang'
 import { useLayoutState } from '@/pages/mange/layout/state'
 
 import styles from './index.module.less'
@@ -23,22 +22,19 @@ export interface PageProps {
   onCancel?: () => void
   loading?: boolean
   resetLoading?: boolean
-  type: 'product' | 'settings'
   okText?: ReactNode
   loadingHiddenBg?: boolean
 }
 
 export default function Page (props: PageProps) {
-  const { loadingHiddenBg, children, width, header, footer, title, back, isChange, bottom, onOk, onCancel, loading = false, resetLoading = false, type, okText } = props
+  const { loadingHiddenBg, children, width, header, footer, title, back, isChange, bottom, onOk, onCancel, loading = false, resetLoading = false, okText } = props
   const nav = useNavigate()
   const [confirmLoading, setConfirmLoading] = useState(false)
   const setIsChange = useLayoutState(state => state.setChange)
   const setAction = useLayoutState(state => state.setAction)
   const resetPage = useLayoutState(state => state.reset)
   const setResetLoading = useLayoutState(state => state.setResetLoading)
-  const setT = useLayoutState(state => state.setT)
   const setOkText = useLayoutState(state => state.setOkText)
-  const { language, t } = useLoadLanguage(`/page/${type}`)
 
   const onOkHandle = async () => {
     try {
@@ -74,13 +70,6 @@ export default function Page (props: PageProps) {
       setOkText(okText)
     }
   }, [okText])
-
-  useEffect(() => {
-    if (!language?.data?.data) return
-    setT(t)
-  }, [language?.data?.data])
-
-  // if (!language?.data?.data) return <SLoading />
 
   return (
     <div

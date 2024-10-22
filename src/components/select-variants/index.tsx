@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { IconChevronDown, IconPhoto } from '@tabler/icons-react'
 import { useInViewport, useRequest } from 'ahooks'
 import { Button, Checkbox, Flex } from 'antd'
@@ -14,7 +15,6 @@ import STable, { STableProps } from '@/components/s-table'
 import Filters from '@/components/select-product/filters'
 import Status from '@/components/status'
 import { VariantStatus } from '@/constant/product'
-import { useI18n } from '@/hooks/use-lang'
 import { UseOpenType } from '@/hooks/useOpen'
 import { formatPrice } from '@/utils/num'
 import { genId } from '@/utils/random'
@@ -49,7 +49,7 @@ export default function SelectVariants (props: SelectVariantsProps) {
   const productList = useRequest(ProductListApi, { manual: true })
   const [showMoreLoading, setShowMoreLoading] = useState(false)
   const [expanded, setExpanded] = useState<number[]>([])
-  const t = useI18n()
+  const { t } = useTranslation('product')
 
   const getIsDisabled = (row: ProductVariants) => {
     if (disabled?.length === 200) return true

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
 import { IconChevronDown, IconPhoto } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
@@ -17,7 +18,6 @@ import SInputNumber from '@/components/s-input-number'
 import { sMessage } from '@/components/s-message'
 import SRender from '@/components/s-render'
 import STable, { STableProps } from '@/components/s-table'
-import { useI18n } from '@/hooks/use-lang'
 import Detail from '@/pages/mange/product/purchase/change/detail'
 import Progress from '@/pages/mange/product/purchase/change/progress'
 import { reduce, sum } from '@/utils'
@@ -26,7 +26,8 @@ import { renderText } from '@/utils/render-text'
 import styles from './index.module.less'
 
 export default function Receive () {
-  const t = useI18n()
+  const { t } = useTranslation('product')
+
   const { id } = useParams()
   const info = useRequest(PurchaseInfoApi, { manual: true })
   const { run, data } = useVariantsByIds()
@@ -249,7 +250,6 @@ export default function Receive () {
         </Flex>
       }
       bottom={64}
-      type={'product'}
     >
       <div style={{ minHeight: 400 }}>
         <SCard

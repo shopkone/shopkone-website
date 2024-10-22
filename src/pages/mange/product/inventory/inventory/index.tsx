@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
 import { IconChevronDown, IconPhoto } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
@@ -15,7 +16,6 @@ import SInputNumber from '@/components/s-input-number'
 import SRender from '@/components/s-render'
 import SSelect from '@/components/s-select'
 import STable, { STableProps } from '@/components/s-table'
-import { useI18n } from '@/hooks/use-lang'
 import { useOpen } from '@/hooks/useOpen'
 import ChangeHistory from '@/pages/mange/product/inventory/inventory/change-history'
 import Filters from '@/pages/mange/product/inventory/inventory/filters'
@@ -30,7 +30,8 @@ export default function Inventory () {
   const nav = useNavigate()
   const list = useRequest(InventoryListApi, { manual: true })
   const [selected, setSelected] = useState<number[]>([])
-  const t = useI18n()
+  const { t } = useTranslation('product')
+
   const info = useOpen<{ name: string, id: number }>()
 
   const columns: STableProps['columns'] = [
@@ -105,7 +106,6 @@ export default function Inventory () {
 
   return (
     <Page
-      type={'product'}
       header={
         <SRender render={list?.data?.list?.length}>
           <Flex gap={8}>

@@ -1,13 +1,14 @@
+import { useTranslation } from 'react-i18next'
 import { Card, Flex, Form, Input } from 'antd'
 
 import Page from '@/components/page'
 import SLocation from '@/components/s-location'
-import { useI18n } from '@/hooks/use-lang'
 
 export default function Change () {
-  const t = useI18n()
+  const { t } = useTranslation('product')
+
   return (
-    <Page type={'settings'} back={'/settings/shipping'} width={700} title={t('创建运输档案')}>
+    <Page back={'/settings/shipping'} width={700} title={t('创建运输档案')}>
       <Flex gap={16} vertical>
         <Card title={t('档案名称')}>
           <Form.Item className={'mb0'} extra={t('客户将看不到此项')}>

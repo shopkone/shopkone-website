@@ -1,14 +1,14 @@
+import { useTranslation } from 'react-i18next'
 import { Card, Form, Radio } from 'antd'
 
 import { useInventoryPolicyOptions } from '@/constant/product'
-import { useI18n } from '@/hooks/use-lang'
 import TrackType from '@/pages/mange/product/product/product-change/variants-settings/track-type'
 import TypeChanger from '@/pages/mange/product/product/product-change/variants-settings/type-changer'
 
 import styles from './index.module.less'
 
 export default function VariantsSettings () {
-  const t = useI18n()
+  const { t } = useTranslation('product')
   const tackOptions = useInventoryPolicyOptions(t)
 
   const form = Form.useFormInstance()

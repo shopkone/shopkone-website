@@ -1,4 +1,5 @@
 import { ReactNode, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { IconSearch } from '@tabler/icons-react'
 import { Flex, Input, Typography } from 'antd'
 
@@ -7,7 +8,6 @@ import SRender from '@/components/s-render'
 import FilterCheckbox from '@/components/table-filter/filter-checkbox'
 import FilterNumberRange, { FilterNumberRangeProps } from '@/components/table-filter/filter-number-range'
 import FilterRadio from '@/components/table-filter/filter-radio'
-import { useI18n } from '@/hooks/use-lang'
 
 import styles from './index.module.less'
 
@@ -26,7 +26,7 @@ export default function Filters (props: FiltersProps) {
   const { onChange, value, groupName } = props
   const [labels, setLabels] = useState<Record<string, ReactNode>>({})
 
-  const t = useI18n()
+  const { t } = useTranslation('product')
 
   const options = [
     { value: FileType.Image, label: t('图片') },

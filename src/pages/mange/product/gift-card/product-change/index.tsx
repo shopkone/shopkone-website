@@ -1,9 +1,9 @@
+import { useTranslation } from 'react-i18next'
 import { Card, Checkbox, Flex, Form, Radio } from 'antd'
 
 import Page from '@/components/page'
 import Seo from '@/components/seo'
 import { useInventoryPolicyOptions, VariantStatus } from '@/constant/product'
-import { useI18n } from '@/hooks/use-lang'
 import BaseInfo from '@/pages/mange/product/gift-card/product-change/base-info'
 import Denominations from '@/pages/mange/product/gift-card/product-change/denominations'
 import Status from '@/pages/mange/product/gift-card/product-change/status'
@@ -11,7 +11,7 @@ import styles from '@/pages/mange/product/product/product-change/variants-settin
 import { genId } from '@/utils/random'
 
 export default function ProductChange () {
-  const t = useI18n()
+  const { t } = useTranslation('product')
   const tackOptions = useInventoryPolicyOptions(t)
   const [form] = Form.useForm()
 
@@ -21,7 +21,7 @@ export default function ProductChange () {
   }
 
   return (
-    <Page type={'product'} isChange back={'/products/gift_cards'} width={950} title={t('创建礼品卡产品')}>
+    <Page isChange back={'/products/gift_cards'} width={950} title={t('创建礼品卡产品')}>
       <Form initialValues={initValues} form={form} className={'fit-width'} layout={'vertical'}>
         <Flex className={'fit-width'} gap={16}>
           <Flex vertical flex={1} gap={16}>

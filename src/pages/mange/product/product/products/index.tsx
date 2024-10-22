@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { IconAlertCircleFilled, IconCopy, IconDownload, IconEye, IconPhoto, IconPlus } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
@@ -14,7 +15,6 @@ import SCard from '@/components/s-card'
 import SRender from '@/components/s-render'
 import STable, { STableProps } from '@/components/s-table'
 import { VariantStatus } from '@/constant/product'
-import { useI18n } from '@/hooks/use-lang'
 import Filters from '@/pages/mange/product/product/products/filters'
 import { formatPrice } from '@/utils/num'
 import { renderText } from '@/utils/render-text'
@@ -24,7 +24,8 @@ export default function Products () {
   const [params, setParams] = useState<ProductListReq>({ page: 1, page_size: 20 })
   const list = useRequest(ProductListApi, { manual: true })
   const [selected, setSelected] = useState<number[]>([])
-  const t = useI18n()
+  const { t } = useTranslation('product')
+
   const columns: STableProps['columns'] = [
     {
       title: 'Product',
@@ -171,7 +172,6 @@ export default function Products () {
 
   return (
     <Page
-      type={'product'}
       bottom={64}
       header={
         <SRender render={list?.data?.list?.length}>

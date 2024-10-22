@@ -1,8 +1,8 @@
 import { ReactNode } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Flex } from 'antd'
 
 import FilterRadio from '@/components/table-filter/filter-radio'
-import { useI18n } from '@/hooks/use-lang'
 import { Option } from '@/pages/mange/product/product/product-change/variants/state'
 
 export interface FiltersProps {
@@ -15,7 +15,7 @@ export interface FiltersProps {
 
 export default function Filters (props: FiltersProps) {
   const { options, onChange, value, setLabels, labels } = props
-  const t = useI18n()
+  const { t } = useTranslation('product')
 
   if (!options.length) return <div />
 

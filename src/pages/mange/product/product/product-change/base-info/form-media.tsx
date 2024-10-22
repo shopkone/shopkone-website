@@ -1,16 +1,16 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Button, Checkbox, Flex, Form } from 'antd'
 
 import Media from '@/components/media'
 import SRender from '@/components/s-render'
-import { useI18n } from '@/hooks/use-lang'
 import styles from '@/pages/mange/product/product/product-change/base-info/index.module.less'
 
 export default function FormMedia () {
   const [select, setSelect] = useState<number[]>([])
   const form = Form.useFormInstance()
   const fileIds: number[] = form.getFieldValue('file_ids') || []
-  const t = useI18n()
+  const { t } = useTranslation('product')
 
   return (
     <Form.Item

@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { LoadingOutlined } from '@ant-design/icons'
 import { ArrowRight } from '@icon-park/react'
@@ -9,7 +10,6 @@ import { LoginApi } from '@/api/account/login'
 import { RegisterApi } from '@/api/account/register'
 import { SendCodeApi } from '@/api/account/send-code'
 import SRender from '@/components/s-render'
-import { useI18n } from '@/hooks/use-lang'
 import { setStorage, STORAGE_KEY } from '@/utils/storage-key'
 
 import styles from '../../index.module.less'
@@ -25,7 +25,7 @@ export default function Signup () {
   const send = useRequest(SendCodeApi, { manual: true })
   const register = useRequest(RegisterApi, { manual: true })
   const login = useRequest(LoginApi, { manual: true })
-  const t = useI18n()
+  const { t } = useTranslation('product')
 
   const password: string = Form.useWatch('password', form)
   const email: string = Form.useWatch('email', form)

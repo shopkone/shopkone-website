@@ -1,11 +1,12 @@
+import { useTranslation } from 'react-i18next'
 import { Button, Card, Checkbox, Form } from 'antd'
 
 import Page from '@/components/page'
 import STable, { STableProps } from '@/components/s-table'
-import { useI18n } from '@/hooks/use-lang'
 
 export default function Taxes () {
-  const t = useI18n()
+  const { t } = useTranslation('product')
+
   const columns: STableProps['columns'] = [
     { title: t('国家 / 地区'), code: 'region', name: 'region' },
     { title: t('地区数量'), code: 'region', name: 'region' },
@@ -13,7 +14,7 @@ export default function Taxes () {
     { title: t('运输税率'), code: 'region', name: 'region' }
   ]
   return (
-    <Page type={'product'} width={800} title={t('税务')}>
+    <Page width={800} title={t('税务')}>
       <Card
         extra={
           <Button size={'small'} type={'link'}>{t('选择地区')}</Button>

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { ArrowRight } from '@icon-park/react'
 import { useRequest } from 'ahooks'
@@ -5,7 +6,6 @@ import { Button, Flex, Form, Input } from 'antd'
 
 import { LoginApi } from '@/api/account/login'
 import { useModal } from '@/components/s-modal'
-import { useI18n } from '@/hooks/use-lang'
 import { setStorage, STORAGE_KEY } from '@/utils/storage-key'
 
 import styles from '../../index.module.less'
@@ -15,7 +15,7 @@ export default function Login () {
   const nav = useNavigate()
 
   const login = useRequest(LoginApi, { manual: true })
-  const t = useI18n()
+  const { t } = useTranslation('account')
 
   const EMAIL_REG = /^[a-zA-Z0-9_.]+@[a-zA-Z0-9-]+[.a-zA-Z]+$/
   const password = Form.useWatch('password', form)

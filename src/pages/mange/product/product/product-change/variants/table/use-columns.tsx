@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { IconTrash } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
 import { Button, Form, Tooltip } from 'antd'
@@ -9,7 +10,6 @@ import SelectFiles from '@/components/media/select-files'
 import SRender from '@/components/s-render'
 import { VariantType } from '@/constant/product'
 import { useColumn, UseColumnType } from '@/hooks/use-column'
-import { useI18n } from '@/hooks/use-lang'
 import { useOpen } from '@/hooks/useOpen'
 import { Variant } from '@/pages/mange/product/product/product-change/variants/state'
 import ColumnInventory from '@/pages/mange/product/product/product-change/variants/table/columns/column-inventory'
@@ -39,7 +39,7 @@ export default function useColumns (params: ColumnsParams) {
   const editingRow = useRef<Variant | undefined>()
   const fileList = useRequest(fileListByIds, { manual: true })
   const [imageResult, setImageResult] = useState<FileListByIdsRes[]>([])
-  const t = useI18n()
+  const { t } = useTranslation('product')
 
   const onUpdate = (row: Variant, key: keyof Variant, value: number | string | null | boolean) => {
     if (row.children?.length) {

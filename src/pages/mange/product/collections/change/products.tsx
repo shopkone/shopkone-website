@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { IconPhoto, IconTag, IconTrash } from '@tabler/icons-react'
 import { Button, Empty, Flex } from 'antd'
 
@@ -12,7 +13,6 @@ import STable, { STableProps } from '@/components/s-table'
 import SelectProduct from '@/components/select-product'
 import Status from '@/components/status'
 import { VariantStatus } from '@/constant/product'
-import { useI18n } from '@/hooks/use-lang'
 import { useOpen } from '@/hooks/useOpen'
 import { CollectionType } from '@/pages/mange/product/collections/change/index'
 import { formatPrice } from '@/utils/num'
@@ -29,7 +29,7 @@ export default function Products (props: ProductsProps) {
   const products = useProductListByIds()
   const [select, setSelect] = useState<number[]>([])
   const [page, setPage] = useState({ current: 1, pageSize: 20 })
-  const t = useI18n()
+  const { t } = useTranslation('product')
 
   const isAutoType = collectionType === CollectionType.Auto
 

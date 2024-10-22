@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useRequest } from 'ahooks'
 import { Button, Flex, Form, Input } from 'antd'
@@ -19,7 +20,6 @@ import { useModal } from '@/components/s-modal'
 import SRender from '@/components/s-render'
 import SSelect from '@/components/s-select'
 import { getTransferStatus, TransferStatus } from '@/constant/transfers'
-import { useI18n } from '@/hooks/use-lang'
 import Detail from '@/pages/mange/product/purchase/change/detail'
 import styles from '@/pages/mange/product/purchase/change/index.module.less'
 import Progress from '@/pages/mange/product/purchase/change/progress'
@@ -31,7 +31,8 @@ export default function Create () {
   const locations = useRequest(async () => await LocationListApi({ active: true }))
   const carriers = useCarriers()
   const nav = useNavigate()
-  const t = useI18n()
+  const { t } = useTranslation('product')
+
   const [form] = Form.useForm()
   const create = useRequest(TransferCreateApi, { manual: true })
   const info = useRequest(TransferInfoApi, { manual: true })
@@ -193,7 +194,6 @@ export default function Create () {
           </Flex>
         </SRender>
       }
-      type={'product'}
     >
       <Form onValuesChange={onValuesChange} layout={'vertical'} form={form}>
         <div className={styles.card}>

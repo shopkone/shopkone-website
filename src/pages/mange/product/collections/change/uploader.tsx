@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { IconDots } from '@tabler/icons-react'
 import { useDebounceFn, useRequest } from 'ahooks'
 import { Button, Flex, Popover } from 'antd'
@@ -11,7 +12,6 @@ import SelectFiles from '@/components/media/select-files'
 import SCard from '@/components/s-card'
 import SRender from '@/components/s-render'
 import Upload from '@/components/upload'
-import { useI18n } from '@/hooks/use-lang'
 import { useOpen } from '@/hooks/useOpen'
 import styles from '@/pages/mange/product/collections/change/index.module.less'
 import FileInfo from '@/pages/mange/settings/files/file-info'
@@ -30,7 +30,7 @@ export default function Uploader (props: UploaderProps) {
   const openInfo = useOpen<number[]>()
   const infoOpen = useOpen<number>()
   const [open, setOpen] = useState(false)
-  const t = useI18n()
+  const { t } = useTranslation('product')
 
   const onOpen = useDebounceFn(() => {
     setOpen(false)

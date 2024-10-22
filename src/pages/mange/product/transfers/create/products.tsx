@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import { IconChevronDown, IconPhoto, IconTrash } from '@tabler/icons-react'
 import { Button, Empty, Flex, Popover } from 'antd'
@@ -13,7 +14,6 @@ import SInputNumber from '@/components/s-input-number'
 import SRender from '@/components/s-render'
 import STable, { STableProps } from '@/components/s-table'
 import SelectVariants from '@/components/select-variants'
-import { useI18n } from '@/hooks/use-lang'
 import { useOpen } from '@/hooks/useOpen'
 import Detail from '@/pages/mange/product/purchase/change/detail'
 import Progress from '@/pages/mange/product/purchase/change/progress'
@@ -32,7 +32,8 @@ export interface ProductsProps {
 export default function Products (props: ProductsProps) {
   const { value, onChange, onLoading, infoMode } = props
   const { run, loading, data } = useVariantsByIds()
-  const t = useI18n()
+  const { t } = useTranslation('product')
+
   const openInfo = useOpen<number[]>([])
   const [page, setPage] = useState({ current: 1, pageSize: 20 })
   const { id } = useParams()

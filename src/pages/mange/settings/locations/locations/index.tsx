@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { IconChevronRight, IconMapPin } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
@@ -8,16 +9,14 @@ import Page from '@/components/page'
 import SCard from '@/components/s-card'
 import SLocation from '@/components/s-location'
 import SRender from '@/components/s-render'
-import { useI18n } from '@/hooks/use-lang'
 
 export default function Locations () {
   const nav = useNavigate()
   const list = useRequest(LocationListApi)
-  const t = useI18n()
+  const { t } = useTranslation('product')
 
   return (
     <Page
-      type={'settings'}
       bottom={64}
       header={
         <SRender render={list.data?.length}>

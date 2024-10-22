@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Button, Checkbox, Flex } from 'antd'
 
 import { LocationListRes } from '@/api/location/list'
 import SModal from '@/components/s-modal'
-import { useI18n } from '@/hooks/use-lang'
 import { UseOpenType } from '@/hooks/useOpen'
 
 export interface EditLocationModalProps {
@@ -15,7 +15,7 @@ export interface EditLocationModalProps {
 export default function EditLocationModal (props: EditLocationModalProps) {
   const { locationList, info, onConfirm } = props
   const [locationIds, setLocationIds] = useState<number[]>([])
-  const t = useI18n()
+  const { t } = useTranslation('product')
 
   const onChange = (id: number) => {
     if (locationIds.includes(id)) {

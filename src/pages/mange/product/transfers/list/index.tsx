@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { useRequest } from 'ahooks'
 import { Button, Flex } from 'antd'
@@ -11,7 +12,6 @@ import SCard from '@/components/s-card'
 import SRender from '@/components/s-render'
 import STable, { STableProps } from '@/components/s-table'
 import { getTransferStatus, TransferStatus } from '@/constant/transfers'
-import { useI18n } from '@/hooks/use-lang'
 import Filters from '@/pages/mange/product/transfers/list/filters'
 import { renderText } from '@/utils/render-text'
 
@@ -20,7 +20,7 @@ export default function TransferList () {
   const list = useRequest(TransferListApi, { manual: true })
   const [params, setParams] = useState<TransferListReq>({ page: 1, page_size: 20 })
   const nav = useNavigate()
-  const t = useI18n()
+  const { t } = useTranslation('product')
 
   const onRowClick = (record: TransferListRes) => {
     nav(`info/${record.id}`)
@@ -93,7 +93,6 @@ export default function TransferList () {
           <Button onClick={() => { nav('create') }} type={'primary'}>创建转移</Button>
         </SRender>
       }
-      type={'product'}
       title={'库存转移'}
     >
       <SCard styles={{ body: { padding: '8px 0' } }}>

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useDebounce } from 'ahooks'
 import { Col, Form, FormInstance, Input, Row } from 'antd'
 import random from 'lodash/random'
@@ -10,7 +11,6 @@ import PhoneCode from '@/components/address/phone-code'
 import SCard from '@/components/s-card'
 import SRender from '@/components/s-render'
 import SSelect from '@/components/s-select'
-import { useI18n } from '@/hooks/use-lang'
 
 export interface AddressProps {
   requiredName?: boolean
@@ -40,7 +40,7 @@ const INIT_DATA = {
 
 export default function Address (props: AddressProps) {
   const { companyNameLabel, hasEmail, loading, value, onChange, hasName, hiddenTitle, getFormInstance } = props
-  const t = useI18n()
+  const { t } = useTranslation('product')
 
   const [form] = Form.useForm()
 

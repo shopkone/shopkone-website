@@ -1,7 +1,7 @@
+import { useTranslation } from 'react-i18next'
 import { Checkbox, Tooltip } from 'antd'
 
 import SRender from '@/components/s-render'
-import { useI18n } from '@/hooks/use-lang'
 import { Variant } from '@/pages/mange/product/product/product-change/variants/state'
 
 export interface ColumnPriceProps {
@@ -15,7 +15,7 @@ export default function ColumnRequired (props: ColumnPriceProps) {
 
   const allChecked = row?.children?.every(i => i?.[type])
   const someChecked = row?.children?.some(i => i?.[type])
-  const t = useI18n()
+  const { t } = useTranslation('product')
 
   return (
     <div>

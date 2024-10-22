@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useRequest } from 'ahooks'
 import { Checkbox, Flex, Form, FormInstance, Input } from 'antd'
 import isEqual from 'lodash/isEqual'
@@ -12,7 +13,6 @@ import Page from '@/components/page'
 import SCard from '@/components/s-card'
 import { sMessage } from '@/components/s-message'
 import SSelect from '@/components/s-select'
-import { useI18n } from '@/hooks/use-lang'
 import Uploader from '@/pages/mange/settings/general/uploader'
 import { useManageState } from '@/pages/mange/state'
 
@@ -30,7 +30,7 @@ export default function General () {
   const addressForm = useRef<FormInstance>()
 
   const [isChange, setIsChange] = useState(false)
-  const t = useI18n()
+  const { t } = useTranslation('product')
 
   const formattingOptions = [
     { label: t('例如 123,456.78'), value: '123,456.78' },
@@ -70,7 +70,6 @@ export default function General () {
 
   return (
     <Page
-      type={'settings'}
       onOk={onOk}
       onCancel={onCancel}
       isChange={isChange}

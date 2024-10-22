@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useRequest } from 'ahooks'
 import { Form, Input, InputRef } from 'antd'
 
@@ -6,7 +7,6 @@ import { FileGroupAddApi } from '@/api/file/file-group-add'
 import { FileGroupUpdateApi } from '@/api/file/file-group-update'
 import { sMessage } from '@/components/s-message'
 import SModal from '@/components/s-modal'
-import { useI18n } from '@/hooks/use-lang'
 import { UseOpenType } from '@/hooks/useOpen'
 
 export interface AddGroupProps {
@@ -22,7 +22,7 @@ export default function AddGroup (props: AddGroupProps) {
 
   const addGroup = useRequest(FileGroupAddApi, { manual: true })
   const editGroup = useRequest(FileGroupUpdateApi, { manual: true })
-  const t = useI18n()
+  const { t } = useTranslation('product')
 
   const onAdd = async () => {
     if (!name) return

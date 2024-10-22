@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { IconCirclePlus, IconTrash } from '@tabler/icons-react'
 import { Button } from 'antd'
 
@@ -9,7 +10,6 @@ import SRender from '@/components/s-render'
 import SSelect from '@/components/s-select'
 import STable, { STableProps } from '@/components/s-table'
 import { getAdjustTypeOptions } from '@/constant/purchase'
-import { useI18n } from '@/hooks/use-lang'
 import { UseOpenType } from '@/hooks/useOpen'
 import { genId } from '@/utils/random'
 
@@ -30,7 +30,7 @@ export interface AdjustProps {
 export default function Adjust (props: AdjustProps) {
   const { info, onConfirm } = props
   const [value, setValue] = useState<AdjustItem[]>([])
-  const t = useI18n()
+  const { t } = useTranslation('product')
 
   const onAddItem = () => {
     setValue([...value, { id: genId(), price: 0 }])

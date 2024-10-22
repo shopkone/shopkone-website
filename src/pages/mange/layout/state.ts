@@ -6,7 +6,6 @@ export interface LayoutState {
   onCancel?: () => void
   onOk?: () => Promise<void> | void
   resetLoading: boolean
-  t?: (query: string, context?: any) => string
   okText?: ReactNode
 }
 
@@ -15,7 +14,6 @@ export interface LayoutAction {
   reset: () => void
   setAction: (action: { onCancel: LayoutState['onCancel'], onOk: LayoutState['onOk'] }) => void
   setResetLoading: (loading: boolean) => void
-  setT: (t: LayoutState['t']) => void
   setOkText: (text: ReactNode) => void
 }
 
@@ -34,11 +32,7 @@ export const useLayoutState = create<LayoutState & LayoutAction>((set, get, stor
     set({ resetLoading: loading })
   },
   reset: () => {
-    set({ isChange: false, onCancel: () => {}, onOk: () => {}, resetLoading: false, t: undefined })
-  },
-
-  setT: (t) => {
-    set({ t })
+    set({ isChange: false, onCancel: () => {}, onOk: () => {}, resetLoading: false })
   },
 
   setOkText: (text) => {

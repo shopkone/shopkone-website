@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useDebounce, useRequest } from 'ahooks'
 import { Button, Checkbox, Flex, Form, FormInstance, Input } from 'antd'
@@ -15,7 +16,6 @@ import SCard from '@/components/s-card'
 import { sMessage } from '@/components/s-message'
 import { useModal } from '@/components/s-modal'
 import SRender from '@/components/s-render'
-import { useI18n } from '@/hooks/use-lang'
 import { useOpen } from '@/hooks/useOpen'
 import MoveInventory from '@/pages/mange/settings/locations/change/move-inventory'
 import { useManageState } from '@/pages/mange/state'
@@ -38,7 +38,7 @@ export default function Change () {
   const existInventory = useRequest(LocationExistInventoryApi, { manual: true })
   const addressForm = useRef<FormInstance>()
   const modal = useModal()
-  const t = useI18n()
+  const { t } = useTranslation('product')
 
   const renderFooter = useDebounce(!!id && info?.data, { wait: 100 })
 
@@ -149,7 +149,6 @@ export default function Change () {
 
   return (
     <Page
-      type={'settings'}
       onOk={onSubmit}
       onCancel={onCancel}
       isChange={isChange}

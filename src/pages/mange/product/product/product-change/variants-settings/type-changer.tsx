@@ -1,8 +1,8 @@
+import { useTranslation } from 'react-i18next'
 import { Form, Radio } from 'antd'
 
 import { useModal } from '@/components/s-modal'
 import { useVariantTypeOptions, VariantType } from '@/constant/product'
-import { useI18n } from '@/hooks/use-lang'
 import { Variant } from '@/pages/mange/product/product/product-change/variants/state'
 
 export interface TypeChangerProps {
@@ -14,7 +14,8 @@ export default function TypeChanger (props: TypeChangerProps) {
   const { value, onChange } = props
   const modal = useModal()
   const form = Form.useFormInstance()
-  const t = useI18n()
+  const { t } = useTranslation('product')
+
   const options = useVariantTypeOptions(t)
 
   // 更新选项的标签为翻译内容

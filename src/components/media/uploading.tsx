@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useRequest } from 'ahooks'
 import { Button, Flex, Typography } from 'antd'
 
@@ -10,7 +11,6 @@ import SModal from '@/components/s-modal'
 import SRender from '@/components/s-render'
 import STable, { STableProps } from '@/components/s-table'
 import { useUpload } from '@/components/upload/use-upload'
-import { useI18n } from '@/hooks/use-lang'
 import { formatFileSize } from '@/utils/format'
 
 export interface UploadingProps {
@@ -26,7 +26,7 @@ export default function Uploading (props: UploadingProps) {
   const isStart = useRef(false)
   const ids = useRef<number[]>([])
   const [forceUpdate, setForceUpdate] = useState(0)
-  const t = useI18n()
+  const { t } = useTranslation('product')
 
   const uploadList = async () => {
     try {

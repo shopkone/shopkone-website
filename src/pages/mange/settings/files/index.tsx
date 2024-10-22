@@ -1,4 +1,5 @@
 import { ReactNode, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import { IconCopy } from '@tabler/icons-react'
 import { useDebounceFn, useMemoizedFn, useRequest } from 'ahooks'
@@ -17,7 +18,6 @@ import { useModal } from '@/components/s-modal'
 import SRender from '@/components/s-render'
 import STable, { STableProps } from '@/components/s-table'
 import Upload from '@/components/upload'
-import { useI18n } from '@/hooks/use-lang'
 import { useOpen } from '@/hooks/useOpen'
 import FileInfo from '@/pages/mange/settings/files/file-info'
 import Filters from '@/pages/mange/settings/files/filters'
@@ -47,7 +47,7 @@ export default function Files () {
   const [loadingList, setLoadingList] = useState<number[]>([])
 
   const modal = useModal()
-  const t = useI18n()
+  const { t } = useTranslation('product')
 
   const onCopy = (link: string) => {
     navigator.clipboard.writeText(link)
@@ -214,7 +214,6 @@ export default function Files () {
 
   return (
     <Page
-      type={'settings'}
       bottom={64}
       header={
         <SRender render={!!list?.data?.list?.length}>

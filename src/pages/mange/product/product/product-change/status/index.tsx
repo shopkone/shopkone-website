@@ -1,17 +1,18 @@
+import { useTranslation } from 'react-i18next'
 import { Card, Form } from 'antd'
 import dayjs from 'dayjs'
 
 import SDatePicker from '@/components/s-date-picker'
 import SSelect from '@/components/s-select'
 import { useVariantStatusOptions, VariantStatus } from '@/constant/product'
-import { useI18n } from '@/hooks/use-lang'
 
 import styles from './index.module.less'
 
 export default function Status () {
   const form = Form.useFormInstance()
 
-  const t = useI18n()
+  const { t } = useTranslation('product')
+
   const statusOptions = useVariantStatusOptions(t)
 
   const status: VariantStatus = Form.useWatch('status', form)

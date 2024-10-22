@@ -1,10 +1,10 @@
 import React, { ReactNode, useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import { Button, Flex, Form } from 'antd'
 
 import SRender from '@/components/s-render'
 import STable from '@/components/s-table'
-import { useI18n } from '@/hooks/use-lang'
 import { Option, Variant } from '@/pages/mange/product/product/product-change/variants/state'
 import Filters from '@/pages/mange/product/product/product-change/variants/table/filters'
 import GroupBy from '@/pages/mange/product/product/product-change/variants/table/group-by'
@@ -35,7 +35,7 @@ export default function Table (props: TableProps) {
   const [locationId, setLocationId] = useState(0)
   const [labels, setLabels] = useState<Record<string, ReactNode>>({})
   const { id } = useParams()
-  const t = useI18n()
+  const { t } = useTranslation('product')
 
   const { columns, ColumnSettings, ImageUploader } = useColumns({
     variants: groupVariants,

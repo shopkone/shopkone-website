@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { FixedSizeList as List } from 'react-window'
 import { IconChevronRight, IconSearch } from '@tabler/icons-react'
 import { useMemoizedFn } from 'ahooks'
@@ -10,7 +11,6 @@ import { CategoriesRes } from '@/api/base/categories'
 import SLoading from '@/components/s-loading'
 import SModal from '@/components/s-modal'
 import SRender from '@/components/s-render'
-import { useI18n } from '@/hooks/use-lang'
 import { UseOpenType } from '@/hooks/useOpen'
 
 import styles from './index.module.less'
@@ -35,7 +35,7 @@ export default function Categories (props: CategoriesProps) {
     return data.filter(item => item.pid === key) || []
   })
 
-  const t = useI18n()
+  const { t } = useTranslation('product')
 
   const getHasChild = useMemoizedFn((pid: number) => {
     if (!info.open) return false

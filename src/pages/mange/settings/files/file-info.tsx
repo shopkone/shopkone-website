@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { IconCopy, IconReplace } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
 import { Button, Flex, Form, Input, Typography } from 'antd'
@@ -15,7 +16,6 @@ import { sMessage } from '@/components/s-message'
 import SModal from '@/components/s-modal'
 import SRender from '@/components/s-render'
 import Upload from '@/components/upload'
-import { useI18n } from '@/hooks/use-lang'
 import { useOss } from '@/hooks/use-oss'
 import { UseOpenType } from '@/hooks/useOpen'
 import { formatFileSize } from '@/utils/format'
@@ -44,7 +44,7 @@ export default function FileInfo (props: FileInfoProps) {
   const oss = useOss()
 
   const groupName = groups.find(item => item.id === info?.data?.group_id)?.name
-  const t = useI18n()
+  const { t } = useTranslation('product')
 
   const tranTimer = (time: number) => {
     const minutes = Math.floor(time / 60)

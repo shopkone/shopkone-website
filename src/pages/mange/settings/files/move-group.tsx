@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useRequest } from 'ahooks'
 import { Form, Radio } from 'antd'
 
@@ -7,7 +8,6 @@ import { UpdateGroupIdByFileIdsApi } from '@/api/file/file-update-group-id'
 import { sMessage } from '@/components/s-message'
 import SModal from '@/components/s-modal'
 import SSelect from '@/components/s-select'
-import { useI18n } from '@/hooks/use-lang'
 import { UseOpenType } from '@/hooks/useOpen'
 
 export interface MoveGroupProps {
@@ -23,7 +23,7 @@ export default function MoveGroup (props: MoveGroupProps) {
   const [form] = Form.useForm()
 
   const type = Form.useWatch('type', form)
-  const t = useI18n()
+  const { t } = useTranslation('product')
 
   const onOk = async () => {
     if (!open.data?.length) return

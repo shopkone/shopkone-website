@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { IconCopy, IconEye, IconPhoto, IconTrash } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
@@ -12,7 +13,6 @@ import Page from '@/components/page'
 import SCard from '@/components/s-card'
 import SRender from '@/components/s-render'
 import STable, { STableProps } from '@/components/s-table'
-import { useI18n } from '@/hooks/use-lang'
 import { CollectionType } from '@/pages/mange/product/collections/change'
 import Filters from '@/pages/mange/product/collections/collections/filters'
 
@@ -21,7 +21,7 @@ export default function Collections () {
   const list = useRequest(ProductCollectionListApi, { manual: true })
   const nav = useNavigate()
   const [selected, setSelected] = useState<number[]>([])
-  const t = useI18n()
+  const { t } = useTranslation('product')
 
   const columns: STableProps['columns'] = [
     {
@@ -100,7 +100,6 @@ export default function Collections () {
 
   return (
     <Page
-      type={'product'}
       header={
         <SRender render={list?.data?.list?.length}>
           <Button

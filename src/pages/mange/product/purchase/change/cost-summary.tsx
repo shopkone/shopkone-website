@@ -1,11 +1,11 @@
 import { ReactNode, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Button, Flex, Form } from 'antd'
 
 import { PurchaseItem } from '@/api/purchase/base'
 import SCard from '@/components/s-card'
 import SRender from '@/components/s-render'
 import { getAdjustTypeOptions } from '@/constant/purchase'
-import { useI18n } from '@/hooks/use-lang'
 import { useOpen } from '@/hooks/useOpen'
 import Adjust, { AdjustItem } from '@/pages/mange/product/purchase/change/adjust'
 import styles from '@/pages/mange/product/purchase/change/index.module.less'
@@ -21,7 +21,8 @@ export default function CostSummary (props: CostSummaryProps) {
   const { value, onChange, infoMode } = props
   const form = Form.useFormInstance()
   const items: PurchaseItem[] = Form.useWatch('purchase_items', form)
-  const t = useI18n()
+  const { t } = useTranslation('product')
+
   const info = useOpen<AdjustItem[]>()
 
   const summary = useMemo(() => {

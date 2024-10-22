@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { IconChevronDown } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
@@ -12,7 +13,6 @@ import Page from '@/components/page'
 import SCard from '@/components/s-card'
 import STable, { STableProps } from '@/components/s-table'
 import { getPurchaseStatus } from '@/constant/purchase'
-import { useI18n } from '@/hooks/use-lang'
 import Detail from '@/pages/mange/product/purchase/change/detail'
 import Progress from '@/pages/mange/product/purchase/change/progress'
 import Filters from '@/pages/mange/product/purchase/purchase/filters'
@@ -27,7 +27,7 @@ export default function Purchase () {
   const locations = useRequest(async () => await LocationListApi({ active: true }))
   const supplierList = useRequest(SupplierListApi)
   const [selected, setSelected] = useState<number[]>([])
-  const t = useI18n()
+  const { t } = useTranslation('product')
 
   const columns: STableProps['columns'] = [
     {
@@ -131,7 +131,6 @@ export default function Purchase () {
           {t('创建采购单')}
         </Button>
       }
-      type={'product'}
       title={'Purchase'}
     >
       <SCard styles={{ body: { padding: '8px 0' } }}>

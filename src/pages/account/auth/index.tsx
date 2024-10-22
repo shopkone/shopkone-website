@@ -1,15 +1,15 @@
 import { Suspense } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Outlet } from 'react-router-dom'
 import { Flex } from 'antd'
 
 import { ReactComponent as BannerImg } from '@/assets/image/banner.svg'
 import SLoading from '@/components/s-loading'
-import { useI18n } from '@/hooks/use-lang' // 引入国际化钩子
 
 import styles from '../index.module.less'
 
 export default function Auth () {
-  const t = useI18n()
+  const { t } = useTranslation('product')
 
   return (
     <div className={styles.wrap}>

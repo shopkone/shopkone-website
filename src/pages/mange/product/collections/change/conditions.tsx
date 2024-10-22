@@ -1,14 +1,14 @@
+import { useTranslation } from 'react-i18next'
 import { IconPlus } from '@tabler/icons-react'
 import { Button, Flex, Form, Radio } from 'antd'
 
 import SCard from '@/components/s-card'
-import { useI18n } from '@/hooks/use-lang'
 import ConditionItem from '@/pages/mange/product/collections/change/condition-item'
 import { MatchModeType } from '@/pages/mange/product/collections/change/index'
 import { genId } from '@/utils/random'
 
 export default function Conditions () {
-  const t = useI18n()
+  const { t } = useTranslation('product')
 
   const matchModeOptions = [
     { label: t('满足以下全部条件'), value: MatchModeType.All },
