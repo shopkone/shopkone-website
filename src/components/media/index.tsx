@@ -28,7 +28,7 @@ export default function Media (props: MediaProps) {
   const [uploadImageErr, seUploadImageErr] = useState(false)
   const [uploadDragIn, setUploadDragIn] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
-  const { t } = useTranslation('common')
+  const { t } = useTranslation('common', { keyPrefix: 'media' })
 
   return (
     <div>
@@ -57,25 +57,25 @@ export default function Media (props: MediaProps) {
           vertical
         >
           <SRender render={uploadDragIn ? !uploadImageErr : null}>
-            {t('media.拖拽图片进行上传')}
+            {t('拖拽图片进行上传')}
           </SRender>
           <SRender render={uploadImageErr ? uploadDragIn : null}>
-            {t('media.无效的图片格式')}
+            {t('无效的图片格式')}
           </SRender>
           <SRender render={!uploadDragIn}>
             <Flex gap={8}>
               <Button size={'small'}>
-                {t('media.从素材库中选择')}
+                {t('从素材库中选择')}
               </Button>
               <Button
                 type={'link'}
                 size={'small'}
                 onClick={(e) => { e.stopPropagation(); inputRef?.current?.click() }}
               >
-                {t('media.上传本地文件1')}
+                {t('上传本地文件1')}
               </Button>
             </Flex>
-            <div className={'tips'}>{t('media.支持上传图片或视频')}</div>
+            <div className={'tips'}>{t('支持上传图片或视频')}</div>
           </SRender>
         </Upload>
       </SRender>

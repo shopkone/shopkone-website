@@ -16,7 +16,7 @@ export const useModal = () => {
 
   const { modal: m } = App.useApp()
 
-  const { t } = useTranslation('common')
+  const { t } = useTranslation('common', { keyPrefix: 'modal' })
 
   const renderIcon = (props: ModalFuncProps) => {
     const { icon } = props
@@ -32,7 +32,7 @@ export const useModal = () => {
 
   useEffect(() => {
     modal.current.confirm = (props: ModalFuncProps = {}) => {
-      const { title = t('model.提示') } = props
+      const { title = t('提示') } = props
       m.confirm({
         centered: true,
         title,
@@ -42,11 +42,11 @@ export const useModal = () => {
       })
     }
     modal.current.info = (props: ModalFuncProps = {}) => {
-      const { title = t('model.提示') } = props
+      const { title = t('提示') } = props
       m.info({ centered: true, title, icon: renderIcon(props), width: 450, ...props })
     }
     modal.current.simple = (props: ModalFuncProps = {}) => {
-      const { title = t('model.提示') } = props
+      const { title = t('提示') } = props
       m.confirm({ centered: true, title, icon: null, width: 450, ...props })
     }
   }, [m])

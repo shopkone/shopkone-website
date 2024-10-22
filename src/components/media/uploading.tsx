@@ -27,13 +27,13 @@ export default function Uploading (props: UploadingProps) {
   const isStart = useRef(false)
   const ids = useRef<number[]>([])
   const [forceUpdate, setForceUpdate] = useState(0)
-  const { t } = useTranslation('common')
+  const { t } = useTranslation('common', { keyPrefix: 'media' })
 
   const StatsMap: Record<UploadFileType['status'], ReactNode> = {
-    wait: <Status type={'info'}>{t('media.等待上传')}</Status>,
-    uploading: <Status type={'info'}>{t('media.上传中1')}</Status>,
-    done: <Status type={'success'}>{t('media.已完成')}</Status>,
-    error: <Status type={'error'}>{t('media.上传出错')}</Status>
+    wait: <Status type={'info'}>{t('等待上传')}</Status>,
+    uploading: <Status type={'info'}>{t('上传中1')}</Status>,
+    done: <Status type={'success'}>{t('已完成')}</Status>,
+    error: <Status type={'error'}>{t('上传出错')}</Status>
   }
 
   const uploadList = async () => {
@@ -79,7 +79,7 @@ export default function Uploading (props: UploadingProps) {
       width: 70
     },
     {
-      title: t('media.文件名'),
+      title: t('文件名'),
       code: 'name',
       name: 'name',
       render: (name: string) => (
@@ -87,18 +87,18 @@ export default function Uploading (props: UploadingProps) {
       )
     },
     {
-      title: t('media.类型'),
+      title: t('类型'),
       code: 'suffix',
       name: 'suffix'
     },
     {
-      title: t('media.大小'),
+      title: t('大小'),
       code: 'size',
       name: 'size',
       render: (size: number) => formatFileSize(size)
     },
     {
-      title: t('media.状态'),
+      title: t('状态'),
       code: 'status',
       name: 'status',
       render: (status: UploadFileType['status']) => (
@@ -130,7 +130,7 @@ export default function Uploading (props: UploadingProps) {
           align={'center'}
           justify={'space-between'}
         >
-          <div>{files.find(i => i.status === 'wait') ? t('media.正在上传') : t('media.上传完成')}</div>
+          <div>{files.find(i => i.status === 'wait') ? t('正在上传') : t('上传完成')}</div>
           <div style={{ fontSize: 12, fontWeight: 450 }}>
             <SRender render={files.filter(i => i.status === 'wait')?.length}>
               <Flex style={{ marginLeft: -100 }} align={'center'} gap={6}>
@@ -143,7 +143,7 @@ export default function Uploading (props: UploadingProps) {
             </SRender>
             <SRender render={!files.filter(i => i.status === 'wait')?.length}>
               <Button onClick={onConfirm} type={'primary'} size={'small'}>
-                {t('media.好的')}
+                {t('好的')}
               </Button>
             </SRender>
           </div>

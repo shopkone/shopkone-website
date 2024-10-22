@@ -40,7 +40,7 @@ const INIT_DATA = {
 
 export default function Address (props: AddressProps) {
   const { companyNameLabel, hasEmail, loading, value, onChange, hasName, hiddenTitle, getFormInstance } = props
-  const { t } = useTranslation('common')
+  const { t } = useTranslation('common', { keyPrefix: 'address' })
 
   const [form] = Form.useForm()
 
@@ -115,17 +115,17 @@ export default function Address (props: AddressProps) {
     <Form.Item
       rules={[{
         pattern: new RegExp(c?.postal_code_config?.regex || ''),
-        message: t('address.邮编不合法', { name: `${c?.config?.postal_code || t('邮政编码')}`, code: PostalCodeMsg })
+        message: t('邮编不合法', { name: `${c?.config?.postal_code || t('邮政编码')}`, code: PostalCodeMsg })
       }]}
       name={'postal_code'}
-      label={c?.config?.postal_code || t('address.邮政编码')}
+      label={c?.config?.postal_code || t('邮政编码')}
     >
       <Input autoComplete={'off'} />
     </Form.Item>
   )
 
   return (
-    <SCard title={hiddenTitle ? undefined : t('address.地址')} loading={cardLoading}>
+    <SCard title={hiddenTitle ? undefined : t('地址')} loading={cardLoading}>
       <Form initialValues={INIT_DATA} layout={'vertical'} form={form} onValuesChange={onChangeHandler}>
         <Row gutter={16}>
           <SRender render={companyNameLabel}>
@@ -185,7 +185,7 @@ export default function Address (props: AddressProps) {
 
           <SRender render={hasEmail}>
             <Col span={12}>
-              <Form.Item className={'flex1'} name={'email'} label={t('address.邮箱')}>
+              <Form.Item className={'flex1'} name={'email'} label={t('邮箱')}>
                 <Input autoComplete={'off'} />
               </Form.Item>
             </Col>

@@ -51,15 +51,15 @@ function SelectFiles (props: SelectFilesProps) {
   const [confirmLoading, setConfirmLoading] = useState(false)
   const [labels, setLabels] = useState<Record<string, ReactNode>>({})
   const isUploading = !!list?.filter(i => i.uuid)?.length
-  const { t } = useTranslation('common')
+  const { t } = useTranslation('common', { keyPrefix: 'media' })
 
   const hasSearch = params.keyword?.length || params.file_type?.length || params.file_size?.min || params.file_size?.max || params.used || params.group_id
 
   const options = [
-    { value: FileType.Image, label: t('media.图片') },
-    { value: FileType.Video, label: t('media.视频') },
-    { value: FileType.Audio, label: t('media.音频') },
-    { value: FileType.Other, label: t('media.其他') }
+    { value: FileType.Image, label: t('图片') },
+    { value: FileType.Video, label: t('视频') },
+    { value: FileType.Audio, label: t('音频') },
+    { value: FileType.Other, label: t('其他') }
   ]
 
   const hiddenStyle = {
@@ -170,16 +170,16 @@ function SelectFiles (props: SelectFilesProps) {
   return (
     <SModal
       className={styles.modal}
-      title={t('media.素材库')}
+      title={t('素材库')}
       width={936}
       onCancel={info.close}
       destroyOnClose={true}
       footer={
         (
           <Flex justify={'space-between'}>
-            <div>{selected?.length && multiple ? t('media.已选中', { count: selected?.length }) : ''}</div>
+            <div>{selected?.length && multiple ? t('已选中', { count: selected?.length }) : ''}</div>
             <Flex gap={12}>
-              <Button onClick={info.close}>{t('modal.取消')}</Button>
+              <Button onClick={info.close}>{t('取消')}</Button>
               <Button
                 type={'primary'}
                 loading={confirmLoading}
@@ -192,7 +192,7 @@ function SelectFiles (props: SelectFilesProps) {
                   }
                 }}
               >
-                {t('modal.确定')}
+                {t('确定')}
               </Button>
             </Flex>
           </Flex>
@@ -214,20 +214,20 @@ function SelectFiles (props: SelectFilesProps) {
               }}
               autoComplete={'off'}
               prefix={<IconSearch size={15} className={styles['filter-icon']} />}
-              placeholder={t('media.搜索素材')}
+              placeholder={t('搜索素材')}
               className={styles['search-input']}
             />
           </div>
           <Flex align={'center'} gap={4}>
             <FilterNumberRange
-              maxLabel={t('media.最小值')}
-              minLabel= {t('media.最大值')}
+              maxLabel={t('最小值')}
+              minLabel= {t('最大值')}
               unit={'MB'}
               onChange={(v) => { setParams?.({ ...params, file_size: v }) }}
               onLabelChange={(l) => { setLabels({ ...labels, file_size: l }) }}
               value={params?.file_size || {}}
             >
-              {t('media.文件大小')}
+              {t('文件大小')}
             </FilterNumberRange>
 
             <FilterCheckbox
@@ -238,19 +238,19 @@ function SelectFiles (props: SelectFilesProps) {
               value={params?.file_type}
               onLabelChange={(l) => { setLabels({ ...labels, file_type: l }) }}
             >
-              {t('media.文件类型')}
+              {t('文件类型')}
             </FilterCheckbox>
 
             <FilterRadio
               options={[
-                { label: t('media.使用中'), value: 1 },
-                { label: t('media.未使用'), value: 2 }
+                { label: t('使用中'), value: 1 },
+                { label: t('未使用'), value: 2 }
               ]}
               value={params?.used}
               onChange={(v) => { setParams?.({ ...params, used: Number(v || 0) }) }}
               onLabelChange={(l) => { setLabels({ ...labels, used: l }) }}
             >
-              {t('media.使用状态')}
+              {t('使用状态')}
             </FilterRadio>
           </Flex>
           <FilterLabels style={{ marginTop: 12 }} labels={labels} value={params} onChange={setParams} />
@@ -272,7 +272,7 @@ function SelectFiles (props: SelectFilesProps) {
             >
               <Flex ref={headerRef} gap={12}>
                 <Button size={'small'}>{t('上传本地文件')}</Button>
-                <Button type={'text'} size={'small'}>{t('media.从URL添加素材')}</Button>
+                <Button type={'text'} size={'small'}>{t('从URL添加素材')}</Button>
               </Flex>
             </Upload>
 
@@ -280,8 +280,8 @@ function SelectFiles (props: SelectFilesProps) {
               <SRender className={styles.empty} render={!list?.length && !fileList.loading}>
                 <div style={{ width: 700 }}>
                   <Empty
-                    title={hasSearch ? t('media.未搜索到任何内容') : t('media.请上传你的素材')}
-                    desc={hasSearch ? t('media.尝试修改搜索条件或上传新的素材') : ''}
+                    title={hasSearch ? t('未搜索到任何内容') : t('请上传你的素材')}
+                    desc={hasSearch ? t('尝试修改搜索条件或上传新的素材') : ''}
                     actions={
                       <Flex gap={12}>
                         <Upload
@@ -290,9 +290,9 @@ function SelectFiles (props: SelectFilesProps) {
                           maxSize={20 * 1024 * 1024}
                           accepts={['video', 'image', 'zip', 'audio']}
                         >
-                          <Button type={'primary'}>{t('media.上传本地文件')}</Button>
+                          <Button type={'primary'}>{t('上传本地文件')}</Button>
                         </Upload>
-                        <Button>{t('media.从URL添加素材1')}</Button>
+                        <Button>{t('从URL添加素材1')}</Button>
                       </Flex>
                       }
                   />
@@ -386,13 +386,13 @@ function SelectFiles (props: SelectFilesProps) {
               <SRender style={{ paddingTop: 24, paddingBottom: 48 }} render={showMoreLoading ? (!isUploading && list?.length) : null}>
                 <Flex ref={moreRef} gap={12} justify={'center'} align={'center'}>
                   <div><SLoading size={24} /></div>
-                  <div style={{ fontWeight: '550' }}>{t('media.加载中')}</div>
+                  <div style={{ fontWeight: '550' }}>{t('加载中')}</div>
                 </Flex>
               </SRender>
               <SRender style={{ paddingTop: 24, paddingBottom: 48 }} render={showMoreLoading ? isUploading : null}>
                 <Flex gap={12} justify={'center'} align={'center'}>
                   <div><SLoading size={24} /></div>
-                  <div style={{ fontWeight: '550' }}>{t('media.请等待上传完成...')}</div>
+                  <div style={{ fontWeight: '550' }}>{t('请等待上传完成...')}</div>
                 </Flex>
               </SRender>
             </div>

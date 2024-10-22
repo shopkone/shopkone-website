@@ -36,7 +36,7 @@ export default function Page (props: PageProps) {
   const resetPage = useLayoutState(state => state.reset)
   const setResetLoading = useLayoutState(state => state.setResetLoading)
   const setOkText = useLayoutState(state => state.setOkText)
-  const { t } = useTranslation('common')
+  const { t } = useTranslation('common', { keyPrefix: 'page' })
 
   const onOkHandle = async () => {
     try {
@@ -107,7 +107,7 @@ export default function Page (props: PageProps) {
         <Flex gap={12} align={'center'} className={styles.footer}>
           {footer}
           <SRender render={isChange !== undefined}>
-            <Button onClick={onOkHandle} loading={confirmLoading} disabled={!isChange} type={'primary'}>{okText || t('page.保存')}</Button>
+            <Button onClick={onOkHandle} loading={confirmLoading} disabled={!isChange} type={'primary'}>{okText || t('保存')}</Button>
           </SRender>
         </Flex>
       </SLoading>
