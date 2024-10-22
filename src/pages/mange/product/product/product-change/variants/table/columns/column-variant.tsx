@@ -84,7 +84,7 @@ export default function ColumnVariant (props: ColumnVariantProps) {
           </SRender>
           <div>
             {row?.name?.filter(i => i.label !== groupName).map(item => (
-              <div key={item.id}>
+              <div key={item.value + item.label}>
                 {item.value}
               </div>
             ))}

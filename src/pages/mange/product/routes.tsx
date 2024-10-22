@@ -1,6 +1,8 @@
 import { lazy } from 'react'
 import { RouteObject } from 'react-router-dom'
 
+import Container from '@/pages/mange/product/container'
+
 const ProductChange = lazy(async () => await import('./product/product-change'))
 const Products = lazy(async () => await import('./product/products'))
 const Collections = lazy(async () => await import('./collections/collections'))
@@ -17,24 +19,30 @@ const TransferCreate = lazy(async () => await import('./transfers/create'))
 const TransferReceived = lazy(async () => await import('./transfers/received'))
 
 export const ProductRoutes: RouteObject[] = [
-  { element: <Products />, path: '/products/products' },
-  { element: <ProductChange />, path: '/products/products/change' },
-  { element: <ProductChange />, path: '/products/products/change/:id' },
-  { element: <Collections />, path: '/products/collections' },
-  { element: <CollectionsChange />, path: '/products/collections/change' },
-  { element: <CollectionsChange />, path: '/products/collections/change/:id' },
-  { element: <Inventory />, path: '/products/inventory' },
-  { element: <Inventory />, path: '/products/inventory/:id' },
-  { element: <Purchase />, path: '/products/purchase_orders' },
-  { element: <PurchaseChange />, path: '/products/purchase_orders/change' },
-  { element: <PurchaseChange />, path: '/products/purchase_orders/change/:id' },
-  { element: <PurchaseChange />, path: '/products/purchase_orders/info/:id' },
-  { element: <PurchaseReceive />, path: '/products/purchase_orders/receive/:id' },
-  { element: <GiftCard />, path: '/products/gift_cards' },
-  { element: <GiftCardChange />, path: '/products/gift_cards/change' },
-  { element: <GiftCardProductChange />, path: '/products/gift_cards/product_change' },
-  { element: <TransferList />, path: '/products/transfers' },
-  { element: <TransferCreate />, path: '/products/transfers/create' },
-  { element: <TransferCreate />, path: '/products/transfers/info/:id' },
-  { element: <TransferReceived />, path: '/products/transfers/received/:id' }
+  {
+    path: '/products',
+    element: <Container />,
+    children: [
+      { element: <Products />, path: '/products/products' },
+      { element: <ProductChange />, path: '/products/products/change' },
+      { element: <ProductChange />, path: '/products/products/change/:id' },
+      { element: <Collections />, path: '/products/collections' },
+      { element: <CollectionsChange />, path: '/products/collections/change' },
+      { element: <CollectionsChange />, path: '/products/collections/change/:id' },
+      { element: <Inventory />, path: '/products/inventory' },
+      { element: <Inventory />, path: '/products/inventory/:id' },
+      { element: <Purchase />, path: '/products/purchase_orders' },
+      { element: <PurchaseChange />, path: '/products/purchase_orders/change' },
+      { element: <PurchaseChange />, path: '/products/purchase_orders/change/:id' },
+      { element: <PurchaseChange />, path: '/products/purchase_orders/info/:id' },
+      { element: <PurchaseReceive />, path: '/products/purchase_orders/receive/:id' },
+      { element: <GiftCard />, path: '/products/gift_cards' },
+      { element: <GiftCardChange />, path: '/products/gift_cards/change' },
+      { element: <GiftCardProductChange />, path: '/products/gift_cards/product_change' },
+      { element: <TransferList />, path: '/products/transfers' },
+      { element: <TransferCreate />, path: '/products/transfers/create' },
+      { element: <TransferCreate />, path: '/products/transfers/info/:id' },
+      { element: <TransferReceived />, path: '/products/transfers/received/:id' }
+    ]
+  }
 ]
