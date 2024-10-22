@@ -1,4 +1,5 @@
 import { ReactNode, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { IconArrowLeft } from '@tabler/icons-react'
 import { Button, Flex, Typography } from 'antd'
@@ -35,6 +36,7 @@ export default function Page (props: PageProps) {
   const resetPage = useLayoutState(state => state.reset)
   const setResetLoading = useLayoutState(state => state.setResetLoading)
   const setOkText = useLayoutState(state => state.setOkText)
+  const { t } = useTranslation('common')
 
   const onOkHandle = async () => {
     try {
@@ -105,7 +107,7 @@ export default function Page (props: PageProps) {
         <Flex gap={12} align={'center'} className={styles.footer}>
           {footer}
           <SRender render={isChange !== undefined}>
-            <Button onClick={onOkHandle} loading={confirmLoading} disabled={!isChange} type={'primary'}>{okText || 'Save'}</Button>
+            <Button onClick={onOkHandle} loading={confirmLoading} disabled={!isChange} type={'primary'}>{okText || t('page.保存')}</Button>
           </SRender>
         </Flex>
       </SLoading>

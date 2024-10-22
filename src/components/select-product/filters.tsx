@@ -1,10 +1,12 @@
 import { ReactNode, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { IconRefresh, IconSearch } from '@tabler/icons-react'
 import { Button, Flex, Input, Typography } from 'antd'
 
 import { FileType } from '@/api/file/add-file-record'
+import SCompact from '@/components/s-compact'
 import SRender from '@/components/s-render'
-import FilterCheckbox from '@/components/table-filter/filter-checkbox'
+import SSelect from '@/components/s-select'
 import FilterNumberRange, { FilterNumberRangeProps } from '@/components/table-filter/filter-number-range'
 import FilterRadio from '@/components/table-filter/filter-radio'
 import FilterLabels from '@/components/table-filter/FilterLabels'
@@ -14,9 +16,10 @@ import styles from './index.module.less'
 export interface FiltersProps {
   value?: {
     keyword?: string
-    file_size?: FilterNumberRangeProps['value']
-    file_type?: number[]
-    used?: number
+    type?: string
+    collection_id?: number
+    status?: []
+    PriceRange?: FilterNumberRangeProps['value']
   }
   onChange?: (value: FiltersProps['value']) => void
   groupName?: string
@@ -25,12 +28,21 @@ export interface FiltersProps {
 export default function Filters (props: FiltersProps) {
   const { onChange, value, groupName } = props
   const [labels, setLabels] = useState<Record<string, ReactNode>>({})
+  const { t } = useTranslation('common')
 
   const options = [
-    { value: FileType.Image, label: 'Image' },
-    { value: FileType.Video, label: 'Video' },
-    { value: FileType.Audio, label: 'Audio' },
-    { value: FileType.Other, label: 'Other' }
+    { value: FileType.Image, label: t('selectProduct.图片') },
+    { value: FileType.Video, label: t('selectProduct.视频') },
+    { value: FileType.Audio, label: t('selectProduct.音频') },
+    { value: FileType.Other, label: t('selectProduct.其他') }
+  ]
+
+  const selectOptions = [
+    { value: 'title', label: t('selectProduct.商品名称') },
+    { value: 'vendor', label: t('selectProduct.商品供应商') },
+    { value: 'sku', label: t('selectProduct.商品SKU') },
+    { value: 'spu', label: t('selectProduct.商品SPU') },
+    { value: 'id', label: t('selectProduct.商品ID') }
   ]
 
   return (
@@ -44,7 +56,13 @@ export default function Filters (props: FiltersProps) {
     >
       <Flex align={'center'} justify={'space-between'}>
         <Flex align={'center'} gap={20}>
-          <div>
+          <SCompact>
+            <SSelect
+              options={selectOptions}
+              style={{ minWidth: 100 }}
+              dropdownStyle={{ minWidth: 150 }}
+              size={'small'}
+            />
             <Input
               value={value?.keyword}
               onChange={(e) => {
@@ -55,13 +73,13 @@ export default function Filters (props: FiltersProps) {
               }}
               allowClear
               prefix={<IconSearch size={15} className={styles['filter-icon']} />}
-              placeholder={'Search files'}
+              placeholder={t('selectProduct.搜索商品')}
               style={{
-                width: 250
+                width: 200
               }}
               size={'small'}
             />
-          </div>
+          </SCompact>
           <Flex
             align={'center'}
             gap={8}
@@ -84,10 +102,10 @@ export default function Filters (props: FiltersProps) {
               }}
               value={value?.file_size || {}}
             >
-              File size
+              {t('selectProduct.系列')}
             </FilterNumberRange>
 
-            <FilterCheckbox
+            <FilterRadio
               options={options}
               onChange={(v) => {
                 onChange?.({
@@ -103,8 +121,8 @@ export default function Filters (props: FiltersProps) {
                 })
               }}
             >
-              File type
-            </FilterCheckbox>
+              {t('selectProduct.状态')}
+            </FilterRadio>
 
             <FilterRadio
               options={[
@@ -131,7 +149,7 @@ export default function Filters (props: FiltersProps) {
                 })
               }}
             >
-              Used
+              {t('selectProduct.售价')}
             </FilterRadio>
             <SRender render={groupName}>
               <Typography.Text className={styles.tag} ellipsis={{ tooltip: true }}>

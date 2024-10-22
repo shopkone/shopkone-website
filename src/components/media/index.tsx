@@ -68,9 +68,8 @@ export default function Media (props: MediaProps) {
                 {t('media.从素材库中选择')}
               </Button>
               <Button
-                type={'text'}
+                type={'link'}
                 size={'small'}
-                className={'primary-text'}
                 onClick={(e) => { e.stopPropagation(); inputRef?.current?.click() }}
               >
                 {t('media.上传本地文件1')}

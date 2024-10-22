@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { IconInfoCircleFilled } from '@tabler/icons-react'
 import { App, Flex, Modal, ModalFuncProps, ModalProps, Typography } from 'antd'
 
@@ -15,6 +16,8 @@ export const useModal = () => {
 
   const { modal: m } = App.useApp()
 
+  const { t } = useTranslation('common')
+
   const renderIcon = (props: ModalFuncProps) => {
     const { icon } = props
     if (icon) {
@@ -29,7 +32,7 @@ export const useModal = () => {
 
   useEffect(() => {
     modal.current.confirm = (props: ModalFuncProps = {}) => {
-      const { title = 'Tips' } = props
+      const { title = t('model.提示') } = props
       m.confirm({
         centered: true,
         title,
@@ -39,11 +42,11 @@ export const useModal = () => {
       })
     }
     modal.current.info = (props: ModalFuncProps = {}) => {
-      const { title = 'Tips' } = props
+      const { title = t('model.提示') } = props
       m.info({ centered: true, title, icon: renderIcon(props), width: 450, ...props })
     }
     modal.current.simple = (props: ModalFuncProps = {}) => {
-      const { title = 'Tips' } = props
+      const { title = t('model.提示') } = props
       m.confirm({ centered: true, title, icon: null, width: 450, ...props })
     }
   }, [m])

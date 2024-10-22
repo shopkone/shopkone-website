@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { ReactNode, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useRequest } from 'ahooks'
 import { Button, Flex, Typography } from 'antd'
@@ -10,6 +10,7 @@ import SLoading from '@/components/s-loading'
 import SModal from '@/components/s-modal'
 import SRender from '@/components/s-render'
 import STable, { STableProps } from '@/components/s-table'
+import Status from '@/components/status'
 import { useUpload } from '@/components/upload/use-upload'
 import { formatFileSize } from '@/utils/format'
 
@@ -27,6 +28,13 @@ export default function Uploading (props: UploadingProps) {
   const ids = useRef<number[]>([])
   const [forceUpdate, setForceUpdate] = useState(0)
   const { t } = useTranslation('common')
+
+  const StatsMap: Record<UploadFileType['status'], ReactNode> = {
+    wait: <Status type={'info'}>{t('media.等待上传')}</Status>,
+    uploading: <Status type={'info'}>{t('media.上传中1')}</Status>,
+    done: <Status type={'success'}>{t('media.已完成')}</Status>,
+    error: <Status type={'error'}>{t('media.上传出错')}</Status>
+  }
 
   const uploadList = async () => {
     try {
@@ -68,7 +76,7 @@ export default function Uploading (props: UploadingProps) {
           />
         </div>
       ),
-      width: 85
+      width: 70
     },
     {
       title: t('media.文件名'),
@@ -92,7 +100,10 @@ export default function Uploading (props: UploadingProps) {
     {
       title: t('media.状态'),
       code: 'status',
-      name: 'status'
+      name: 'status',
+      render: (status: UploadFileType['status']) => (
+        <div style={{ display: 'inline-block' }}>{StatsMap[status]}</div>
+      )
     }
   ]
 
