@@ -1,4 +1,5 @@
 import React, { CSSProperties, forwardRef, HTMLAttributes } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Checkbox, Tag } from 'antd'
 import classNames from 'classnames'
 
@@ -21,6 +22,7 @@ export interface FileItemProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onS
 
 const FileItem = (props: FileItemProps, ref: React.Ref<HTMLDivElement>) => {
   const { faded, style, index, dragging, bgDragging, onSelect, item, ...rest } = props
+  const { t } = useTranslation('common')
   const inlineStyles: CSSProperties = {
     opacity: faded ? '0.2' : '1',
     transformOrigin: '0 0',
@@ -69,7 +71,7 @@ const FileItem = (props: FileItemProps, ref: React.Ref<HTMLDivElement>) => {
       </SRender>
       <SRender render={item?.type === FileType.Video} style={{ position: 'absolute', right: -4, bottom: 4 }}>
         <Tag style={{ fontWeight: 'bolder', background: '#d9e4ff', color: '#3370ff', borderColor: '#3370ffa0', borderRadius: 4 }}>
-          <div>Video</div>
+          <div>{t('media.视频1')}</div>
         </Tag>
       </SRender>
     </div>

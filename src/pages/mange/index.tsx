@@ -32,11 +32,9 @@ export default function Mange () {
   const router = createBrowserRouter(MangeRoutes, { basename: `/${shopId}` })
 
   return (
-    <>
+    <Suspense fallback={<SLoading />}>
       <Task />
-      <Suspense fallback={<SLoading />}>
-        <RouterProvider router={router} />
-      </Suspense>
-    </>
+      <RouterProvider router={router} />
+    </Suspense>
   )
 }

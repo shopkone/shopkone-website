@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { Flex, Input } from 'antd'
 
 import { useCountries } from '@/api/base/countries'
@@ -17,8 +17,6 @@ export default function PhoneCode (props: PhoneCodeProps) {
 
   const phoneCodes = usePhonePrefix()
   const countries = useCountries()
-
-  const [focus, setFoucus] = useState(false)
 
   const options = useMemo(() => {
     if (!phoneCodes.data) return []
@@ -49,8 +47,6 @@ export default function PhoneCode (props: PhoneCodeProps) {
     <Flex>
       <Flex gap={4}>
         <SSelect
-          onFocus={() => { setFoucus(true) }}
-          onBlur={() => { setFoucus(false) }}
           showSearch
           virtual={false}
           optionFilterProp={'label'}

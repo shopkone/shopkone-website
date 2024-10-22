@@ -1,5 +1,7 @@
 import ReactDOM from 'react-dom/client'
+import { I18nextProvider } from 'react-i18next'
 import { App, ConfigProvider } from 'antd'
+import i18next from 'i18next'
 
 import Pages from '@/pages/pages'
 
@@ -13,21 +15,23 @@ const dom = document.getElementById('root')
 
 if (dom) {
   ReactDOM.createRoot(dom).render(
-    <ConfigProvider
-      theme={{
-        token: {
-          fontSize: 13,
-          colorText: '#1f2329',
-          motionDurationMid: '0.1s',
-          motionDurationSlow: '0.1s',
-          colorPrimary: '#3370ff'
-        }
-      }}
-      prefixCls={'shopkone'}
-    >
-      <App>
-        <Pages />
-      </App>
-    </ConfigProvider>
+    <I18nextProvider i18n={i18next}>
+      <ConfigProvider
+        theme={{
+          token: {
+            fontSize: 13,
+            colorText: '#1f2329',
+            motionDurationMid: '0.1s',
+            motionDurationSlow: '0.1s',
+            colorPrimary: '#3370ff'
+          }
+        }}
+        prefixCls={'shopkone'}
+      >
+        <App>
+          <Pages />
+        </App>
+      </ConfigProvider>
+    </I18nextProvider>
   )
 }
