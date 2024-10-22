@@ -32,7 +32,7 @@ export default function Edit (props: EditProps) {
 
   const follow = Form.useWatch('follow', seoForm)
 
-  const { t } = useTranslation('product')
+  const { t } = useTranslation('common', { keyPrefix: 'seo' })
 
   useEffect(() => {
     seoForm.setFieldsValue(seo)
@@ -69,7 +69,7 @@ export default function Edit (props: EditProps) {
           }}
         />
       </Form.Item>
-      <Form.Item name={'meta_description'} label={t('元描述')}>
+      <Form.Item name={'meta_description'} label={t('SEO 描述')}>
         <Input.TextArea
           disabled={follow}
           autoSize={{
@@ -78,7 +78,7 @@ export default function Edit (props: EditProps) {
           }}
         />
       </Form.Item>
-      <Form.Item className={'mb0'} name={'url_handle'} label={t('链接')}>
+      <Form.Item className={'mb0'} name={'url_handle'} label={t('SEO 链接')}>
         <div className={styles.input}>
           <span
             onClick={onFocus} className={'tips'} style={{

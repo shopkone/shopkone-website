@@ -49,7 +49,7 @@ export default function SelectVariants (props: SelectVariantsProps) {
   const productList = useRequest(ProductListApi, { manual: true })
   const [showMoreLoading, setShowMoreLoading] = useState(false)
   const [expanded, setExpanded] = useState<number[]>([])
-  const { t } = useTranslation('product')
+  const { t } = useTranslation('common', { keyPrefix: 'selectVariants' })
 
   const getIsDisabled = (row: ProductVariants) => {
     if (disabled?.length === 200) return true
@@ -193,7 +193,7 @@ export default function SelectVariants (props: SelectVariantsProps) {
       lock: true
     },
     {
-      title: t('价格'),
+      title: t('售价'),
       code: 'price',
       name: 'price',
       width: 150
@@ -204,7 +204,7 @@ export default function SelectVariants (props: SelectVariantsProps) {
       name: 'inventory',
       width: 200,
       render: (inventory: number) => (
-        renderText(t('x在售', { inventory }))
+        renderText(t('x在售', { count: inventory }))
       )
     },
     {
@@ -214,7 +214,7 @@ export default function SelectVariants (props: SelectVariantsProps) {
       width: 120,
       render: (status: VariantStatus) => {
         if (status === VariantStatus.Published) {
-          return <Status borderless type={'success'}>{t('启用')}</Status>
+          return <Status borderless type={'success'}>{t('已发布')}</Status>
         }
         return <Status borderless type={'warning'}>{t('草稿')}</Status>
       }
@@ -276,19 +276,19 @@ export default function SelectVariants (props: SelectVariantsProps) {
         <Flex align={'center'} justify={'space-between'}>
           <Flex align={'center'} gap={12}>
             <Flex align={'center'} gap={8}>
-              <div>{selected.length} selected</div>
+              <div>{t('已选', { count: selected.length })}</div>
               <span>/</span>
-              <div>200 max</div>
+              <div>{t('最多', { count: 200 })}</div>
             </Flex>
           </Flex>
           <Flex gap={12}>
-            <Button onClick={info.close}>Cancel</Button>
-            <Button onClick={onOk} type={'primary'}>Done</Button>
+            <Button onClick={info.close}>{t('取消')}</Button>
+            <Button onClick={onOk} type={'primary'}>{t('确定')}</Button>
           </Flex>
         </Flex>
       )}
       width={1000}
-      title={'选择商品'}
+      title={t('选择商品')}
       onCancel={info.close}
       open={info.open}
     >
@@ -311,11 +311,11 @@ export default function SelectVariants (props: SelectVariantsProps) {
           <SRender render={showMoreLoading}>
             <Flex ref={moreRef} justify={'center'} align={'center'} gap={12} style={{ paddingTop: 24, opacity: list.length ? 1 : 0 }}>
               <div><SLoading size={20} /></div>
-              Loading
+              {t('加载中')}
             </Flex>
           </SRender>
           <SRender style={{ display: 'flex', paddingTop: 24, justifyContent: 'center' }} render={!showMoreLoading} className={'fit-width secondary'}>
-            - No more -
+            - {t('已经到底了')} -
           </SRender>
         </div>
       </div>

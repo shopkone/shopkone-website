@@ -24,7 +24,7 @@ export default function Seo (props: SeoProps) {
   } = props
   const [editing, setEditing] = useState(false)
 
-  const { t } = useTranslation('product')
+  const { t } = useTranslation('common', { keyPrefix: 'seo' })
 
   const mange = useManageState()
 
@@ -94,10 +94,10 @@ export default function Seo (props: SeoProps) {
             content={
               <Flex vertical gap={4}>
                 <Button type={'link'} style={{ textAlign: 'left', paddingLeft: 0 }}>
-                  {t('检查谷歌索引')}
+                  {t('查看收录')}
                 </Button>
                 <Button style={{ textAlign: 'left', paddingLeft: 0 }} type={'link'}>
-                  {t('提交以便索引')}
+                  {t('手动提交')}
                 </Button>
               </Flex>
             }

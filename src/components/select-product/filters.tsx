@@ -26,20 +26,20 @@ export interface FiltersProps {
 
 export default function Filters (props: FiltersProps) {
   const { onChange, value } = props
-  const { t } = useTranslation('common')
+  const { t } = useTranslation('common', { keyPrefix: 'selectProduct' })
   const collectionOptions = useRequest(CollectionOptionsApi)
 
   const selectOptions = [
-    { value: 'title', label: t('selectProduct.商品名称') },
-    { value: 'vendor', label: t('selectProduct.商品供应商') },
-    { value: 'sku', label: t('selectProduct.商品SKU') },
-    { value: 'spu', label: t('selectProduct.商品SPU') },
-    { value: 'id', label: t('selectProduct.商品ID') }
+    { value: 'title', label: t('商品名称') },
+    { value: 'vendor', label: t('商品供应商') },
+    { value: 'sku', label: t('商品SKU') },
+    { value: 'spu', label: t('商品SPU') },
+    { value: 'id', label: t('商品ID') }
   ]
 
   const statusOptions = [
-    { label: t('selectProduct.草稿'), value: VariantStatus.Draft },
-    { label: t('selectProduct.已发布'), value: VariantStatus.Published }
+    { label: t('草稿'), value: VariantStatus.Draft },
+    { label: t('已发布'), value: VariantStatus.Published }
   ]
 
   return (
@@ -70,7 +70,7 @@ export default function Filters (props: FiltersProps) {
               }}
               allowClear
               prefix={<IconSearch size={15} className={styles['filter-icon']} />}
-              placeholder={t('selectProduct.搜索商品')}
+              placeholder={t('搜索商品')}
               style={{
                 width: 200
               }}
@@ -89,7 +89,7 @@ export default function Filters (props: FiltersProps) {
                 options={collectionOptions?.data || []}
                 value={value?.collection_id}
               >
-                {t('selectProduct.系列')}
+                {t('系列')}
               </FilterRadio>
             </SRender>
 
@@ -100,7 +100,7 @@ export default function Filters (props: FiltersProps) {
               }}
               value={value?.status}
             >
-              {t('selectProduct.状态')}
+              {t('状态')}
             </FilterRadio>
 
             <FilterNumberRange
@@ -108,11 +108,12 @@ export default function Filters (props: FiltersProps) {
               onChange={(v) => {
                 onChange?.({ ...value, price_range: v })
               }}
-              maxLabel={t('selectProduct.最高价')}
-              minLabel={t('selectProduct.最低价')}
+              maxLabel={t('最高价')}
+              minLabel={t('最低价')}
               unit={'$'}
+              prefix
             >
-              {t('selectProduct.售价')}
+              {t('售价')}
             </FilterNumberRange>
           </Flex>
         </Flex>

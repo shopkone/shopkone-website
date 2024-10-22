@@ -1,4 +1,5 @@
 import { ReactNode } from 'react'
+import { useTranslation } from 'react-i18next'
 import { IconChevronDown, IconX } from '@tabler/icons-react'
 import { useMemoizedFn } from 'ahooks'
 import { Button, Flex, Popover } from 'antd'
@@ -18,7 +19,7 @@ export interface FilterBaseProps {
 
 export default function FilterBase (props: FilterBaseProps) {
   const { open, setOpen, children, label, onClear, showLabel } = props
-
+  const { t } = useTranslation('common', { keyPrefix: 'filter' })
   const clearHandler = (e: React.MouseEvent) => {
     e.stopPropagation()
     onClear?.()
@@ -28,7 +29,9 @@ export default function FilterBase (props: FilterBaseProps) {
     <div className={styles.base}>
       {children}
       <div className={styles.clear}>
-        <Button disabled={!onClear} onClick={clearHandler} type={'link'} size={'small'}>清除</Button>
+        <Button disabled={!onClear} onClick={clearHandler} type={'link'} size={'small'}>
+          {t('清除')}
+        </Button>
       </div>
     </div>
   ))

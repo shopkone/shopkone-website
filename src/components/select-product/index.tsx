@@ -90,7 +90,7 @@ export default function SelectProduct (props: SelectProductProps) {
         return (
           <div>
             <Flex>
-              <div>{row.variants?.reduce((sum, variant) => sum + variant.quantity, 0)} on sale</div>
+              <div>{t('x在售', { count: row.variants?.reduce((sum, variant) => sum + variant.quantity, 0) })}</div>
               <SRender render={row.variants?.length !== 1}>
                 <span
                   style={{
@@ -99,12 +99,12 @@ export default function SelectProduct (props: SelectProductProps) {
                   }}
                 >·
                 </span>
-                {row.variants?.length} variants
+                {t('x种款式', { count: row.variants?.length || 0 })}
               </SRender>
             </Flex>
             <Flex style={{ color: '#856404', display: !someInStock ? 'flex' : 'none' }} align={'center'} gap={4}>
               <IconAlertCircleFilled size={15} strokeWidth={2} />
-              <Flex><SRender render={!everyInStock && someInStock}>Partial - </SRender>Out of stock</Flex>
+              <Flex align={'center'}><SRender render={!everyInStock && someInStock}>{t('部分')} - </SRender>{t('库存不足')}</Flex>
             </Flex>
           </div>
         )
@@ -184,26 +184,26 @@ export default function SelectProduct (props: SelectProductProps) {
     <SModal
       footer={(
         <Flex align={'center'} justify={'space-between'}>
-          <Flex gap={12}>
+          <Flex align={'center'} gap={12}>
             <Checkbox
               onChange={onSelectAll}
               checked={isAllSelect}
               indeterminate={!isAllSelect && !!selected.length}
             />
             <SRender render={selected.length}>
-              <div>{selected.length} selected</div>
+              <div>{t('已选', { count: selected.length })}</div>
               <span>/</span>
             </SRender>
-            <div>{productList.data?.total} total</div>
+            <div>{t('共', { count: productList.data?.total })}</div>
           </Flex>
           <Flex gap={12}>
-            <Button onClick={info.close}>Cancel</Button>
-            <Button onClick={onOk} type={'primary'}>Done</Button>
+            <Button onClick={info.close}>{t('取消')}</Button>
+            <Button onClick={onOk} type={'primary'}>{t('确定')}</Button>
           </Flex>
         </Flex>
     )}
       width={1000}
-      title={'选择商品'}
+      title={t('选择商品')}
       onCancel={info.close}
       open={info.open}
     >
@@ -220,11 +220,11 @@ export default function SelectProduct (props: SelectProductProps) {
           <SRender render={showMoreLoading}>
             <Flex ref={moreRef} justify={'center'} align={'center'} gap={12} style={{ paddingTop: 24, opacity: list.length ? 1 : 0 }}>
               <div><SLoading size={20} /></div>
-              Loading
+              {t('加载中')}
             </Flex>
           </SRender>
           <SRender style={{ display: 'flex', paddingTop: 24, justifyContent: 'center' }} render={!showMoreLoading} className={'fit-width secondary'}>
-            - No more -
+            - {t('已经到底了')} -
           </SRender>
         </div>
       </div>

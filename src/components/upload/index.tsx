@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useMemoizedFn } from 'ahooks'
 import { Flex, FlexProps } from 'antd'
 import classNames from 'classnames'
@@ -46,6 +47,7 @@ export default function Upload (props: UploadProps) {
   const isDragIn = useRef(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const [onDragging, setDragging] = useState(false)
+  const { t } = useTranslation('common', { keyPrefix: 'upload' })
 
   const directoryProps = {
     webkitdirectory: directory ? '' : false,
@@ -68,6 +70,13 @@ export default function Upload (props: UploadProps) {
     return ''
   }).join(',')
 
+  const acceptMap = {
+    video: '视频',
+    image: '图片',
+    audio: '音频',
+    zip: '压缩包'
+  }
+
   const onClickHandle = () => {
     props.onClick
       ? props.onClick?.()
@@ -77,10 +86,14 @@ export default function Upload (props: UploadProps) {
   const checkFile = (file: UploadFileType) => {
     let errMsg = ''
     if (file.fileInstance.size > maxSize) {
-      errMsg = `The file is too large. Please upload a file smaller than ${formatFileSize(maxSize)}.`
+      const max: string = formatFileSize(maxSize)
+      errMsg = t('超过', { n: max })
     }
     if (!accepts.some(item => file.fileInstance.type.includes(item))) {
-      errMsg = `The file format is not supported. Please try uploading an ${accepts?.map(item => item).join(' or ')}.`
+      const typeMsg = accepts?.map(item => acceptMap[item]).map((item, index) => {
+        return index === accepts?.length - 1 ? `${t('或')}${item}` : `${item}、`
+      }).join('') || ''
+      errMsg = t('类型错误', { n: typeMsg, m: file.suffix })
     }
     return { ...file, status: errMsg ? 'error' : file.status, errMsg }
   }
@@ -103,7 +116,7 @@ export default function Upload (props: UploadProps) {
         }
       }
       reader.onerror = () => {
-        reject(new Error('Failed to read file.'))
+        reject(new Error(t('文件读取异常')))
       }
       reader.readAsDataURL(file)
     })
