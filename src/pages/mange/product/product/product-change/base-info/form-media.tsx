@@ -10,7 +10,7 @@ export default function FormMedia () {
   const [select, setSelect] = useState<number[]>([])
   const form = Form.useFormInstance()
   const fileIds: number[] = form.getFieldValue('file_ids') || []
-  const { t } = useTranslation('product')
+  const { t } = useTranslation('product', { keyPrefix: 'product' })
 
   return (
     <Form.Item

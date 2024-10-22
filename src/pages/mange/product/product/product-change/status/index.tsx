@@ -11,7 +11,7 @@ import styles from './index.module.less'
 export default function Status () {
   const form = Form.useFormInstance()
 
-  const { t } = useTranslation('product')
+  const { t } = useTranslation('product', { keyPrefix: 'product' })
 
   const statusOptions = useVariantStatusOptions(t)
 

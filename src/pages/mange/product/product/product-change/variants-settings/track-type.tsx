@@ -9,7 +9,7 @@ export interface TrackTypeProps {
 export default function TrackType (props: TrackTypeProps) {
   const { value, onChange } = props
   const form = Form.useFormInstance()
-  const { t } = useTranslation('product')
+  const { t } = useTranslation('product', { keyPrefix: 'product' })
 
   const onChangeHandle = (checked: boolean) => {
     if (checked) {

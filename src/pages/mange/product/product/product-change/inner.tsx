@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import { useRequest } from 'ahooks'
 import { Button, Flex, Form } from 'antd'
@@ -60,6 +61,7 @@ export default function ProductChangeInner (props: ProductChangeInnerProps) {
   const setInfo = useProductChange(state => state.setInfo)
   const { id } = useParams()
   const [loaded, setLoaded] = useState(false)
+  const { t } = useTranslation('product', { keyPrefix: 'product' })
 
   const onOK = async () => {
     await form.validateFields()
@@ -81,13 +83,13 @@ export default function ProductChangeInner (props: ProductChangeInnerProps) {
       form.resetFields()
       onCancel()
       props.onFresh(Number(id))
-      sMessage.success('Product updated')
+      sMessage.success(t('商品更新成功'))
     } else {
       const ret = await create.runAsync(values)
       props.onFresh(ret.id)
       form.resetFields()
       onCancel()
-      sMessage.success('Product created')
+      sMessage.success(t('商品添加成功'))
     }
   }
 
@@ -155,23 +157,23 @@ export default function ProductChangeInner (props: ProductChangeInnerProps) {
       onOk={onOK}
       onCancel={onCancel}
       isChange={isChange || isVariantChange}
-      title={id ? (info?.data?.title || '--') : '添加商品'}
+      title={id ? (info?.data?.title || '--') : t('添加商品')}
       back={'/products/products'}
       width={950}
       bottom={48}
       header={
         <SRender render={info?.data?.title}>
           <Flex gap={8}>
-            <Button type={'text'}>Duplicate</Button>
-            <Button type={'text'}>Preview</Button>
-            <Button type={'text'}>Share</Button>
+            <Button type={'text'}>{t('复制')}</Button>
+            <Button type={'text'}>{t('预览')}</Button>
+            <Button type={'text'}>{t('分享')}</Button>
           </Flex>
         </SRender>
       }
       footer={
         <SRender render={info?.data?.title}>
           <Flex gap={8}>
-            <Button type={'primary'} danger>Delete Product</Button>
+            <Button type={'primary'} danger>{t('删除商品')}</Button>
           </Flex>
         </SRender>
       }

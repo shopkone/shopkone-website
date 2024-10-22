@@ -4,7 +4,7 @@ import { Card, Form, Input } from 'antd'
 import FormMedia from '@/pages/mange/product/product/product-change/base-info/form-media'
 
 export default function BaseInfo () {
-  const { t } = useTranslation('product')
+  const { t } = useTranslation('product', { keyPrefix: 'product' })
 
   return (
     <Card style={{ width: 612, flex: 1 }} bordered>

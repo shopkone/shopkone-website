@@ -20,7 +20,7 @@ export interface GroupByProps {
 export default function GroupBy (props: GroupByProps) {
   const { options, variants, onChange, filters, setGroupName, groupName } = props
   const form = Form.useFormInstance()
-  const { t } = useTranslation('product')
+  const { t } = useTranslation('product', { keyPrefix: 'product' })
 
   const onChangeHandle = (newVariants: Variant[]) => {
     onChange(newVariants)

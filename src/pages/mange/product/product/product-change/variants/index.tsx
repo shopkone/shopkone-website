@@ -46,7 +46,7 @@ export default function Variants (props: VariantsProps) {
   const openInfo = useOpen<Variant[]>([])
 
   const info = useProductChange(state => state.info)
-  const { t } = useTranslation('product')
+  const { t } = useTranslation('product', { keyPrefix: 'product' })
 
   const onReverseVariants = async (variants: Variant[]) => await new Promise(resolve => {
     const worker: Worker = new ReserveHandle()
@@ -145,7 +145,7 @@ export default function Variants (props: VariantsProps) {
           <Flex gap={8} align={'center'}>
             <div>{t('款式')}</div>
             <div style={{ fontWeight: 400, fontSize: 12, position: 'relative', top: 1 }}>
-              {variants?.length > 1 ? `(${variants?.length} ${t('条记录')})` : ''}
+              {variants?.length > 1 ? t('x个款式', { x: variants?.length }) : ''}
             </div>
           </Flex>
         }

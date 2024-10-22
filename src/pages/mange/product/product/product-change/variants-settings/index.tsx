@@ -8,7 +8,7 @@ import TypeChanger from '@/pages/mange/product/product/product-change/variants-s
 import styles from './index.module.less'
 
 export default function VariantsSettings () {
-  const { t } = useTranslation('product')
+  const { t } = useTranslation('product', { keyPrefix: 'product' })
   const tackOptions = useInventoryPolicyOptions(t)
 
   const form = Form.useFormInstance()

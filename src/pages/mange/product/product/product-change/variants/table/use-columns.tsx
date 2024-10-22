@@ -39,7 +39,7 @@ export default function useColumns (params: ColumnsParams) {
   const editingRow = useRef<Variant | undefined>()
   const fileList = useRequest(fileListByIds, { manual: true })
   const [imageResult, setImageResult] = useState<FileListByIdsRes[]>([])
-  const { t } = useTranslation('product')
+  const { t } = useTranslation('product', { keyPrefix: 'product' })
 
   const onUpdate = (row: Variant, key: keyof Variant, value: number | string | null | boolean) => {
     if (row.children?.length) {
@@ -102,13 +102,14 @@ export default function useColumns (params: ColumnsParams) {
 
   const cols: UseColumnType[] = [
     {
-      title: <ColumnTitle expands={expands} setExpands={setExpands} variants={variants} variantType={variantType} />,
+      title: <ColumnTitle t={t} expands={expands} setExpands={setExpands} variants={variants} variantType={variantType} />,
       nick: t('款式'),
       code: 'variant',
       name: 'variant',
       render: (text, record: Variant) => {
         return (
           <ColumnVariant
+            t={t}
             fileList={imageResult || []}
             expands={expands}
             groupName={groupName}
@@ -132,6 +133,7 @@ export default function useColumns (params: ColumnsParams) {
       render: (price: number, row: Variant) => {
         return (
           <ColumnPrice
+            t={t}
             type={'price'}
             row={row}
             onChange={v => { onUpdate(row, 'price', v) }}
@@ -148,6 +150,7 @@ export default function useColumns (params: ColumnsParams) {
       render: (compare_at_price: number, row: Variant) => {
         return (
           <ColumnPrice
+            t={t}
             type={'compare_at_price'}
             row={row}
             onChange={v => { onUpdate(row, 'compare_at_price', v) }}
@@ -165,6 +168,7 @@ export default function useColumns (params: ColumnsParams) {
       render: (cost_per_item: number, row: Variant) => {
         return (
           <ColumnPrice
+            t={t}
             type={'cost_per_item'}
             row={row}
             onChange={v => { onUpdate(row, 'cost_per_item', v) }}
@@ -182,6 +186,7 @@ export default function useColumns (params: ColumnsParams) {
       render: (inventories: Variant['inventories'], row: Variant) => {
         return (
           <ColumnInventory
+            t={t}
             locationId={locationId}
             onChange={v => { onUpdate(row, 'inventories', v as any) }}
             value={inventories}
@@ -199,6 +204,7 @@ export default function useColumns (params: ColumnsParams) {
       render: (weight: number, row: Variant) => {
         return (
           <ColumnWeight
+            t={t}
             onChangeWeight={v => { onUpdate(row, 'weight', v) }}
             onChangeWeightUnit={v => { onUpdate(row, 'weight_unit', v) }}
             row={row}
@@ -208,7 +214,7 @@ export default function useColumns (params: ColumnsParams) {
       width: 150
     },
     {
-      title: t('SKU'),
+      title: t('SKU1'),
       code: 'sku',
       name: 'sku',
       render: (sku: string, row: Variant) => {
@@ -251,6 +257,7 @@ export default function useColumns (params: ColumnsParams) {
       render: (_, row: Variant) => {
         return (
           <ColumnRequired
+            t={t}
             onChange={v => { onUpdate(row, 'tax_required', v) }}
             row={row}
             type={'tax_required'}
@@ -267,6 +274,7 @@ export default function useColumns (params: ColumnsParams) {
       render: (_, row: Variant) => {
         return (
           <ColumnRequired
+            t={t}
             onChange={v => { onUpdate(row, 'shipping_required', v) }}
             row={row} type={'shipping_required'}
           />
@@ -284,7 +292,7 @@ export default function useColumns (params: ColumnsParams) {
         return (
           <div>
             <SRender render={row?.children?.length}>
-              <Tooltip title={`${t('移除')} ${row?.children?.length} ${t('个款式')}`}>
+              <Tooltip title={t('移除x个款式', { n: row?.children?.length })}>
                 <Button onClick={() => { onRemove(row) }} style={{ height: 32 }} size={'small'} type={'text'}>
                   <IconTrash size={16} />
                 </Button>

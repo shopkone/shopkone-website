@@ -8,7 +8,7 @@ export enum VariantType {
 }
 
 export const useVariantTypeOptions = (t: TFunction) => [
-  { label: t('单一款式'), value: VariantType.Single }, // 将 'Single' 翻译为 '单一'
+  { label: t('单个款式'), value: VariantType.Single }, // 将 'Single' 翻译为 '单一'
   { label: t('多款式'), value: VariantType.Multiple } // 将 'Multiple' 翻译为 '多个'
 ]
 
@@ -20,7 +20,7 @@ export enum VariantStatus {
 
 export const useVariantStatusOptions = (t: TFunction) => [
   { label: t('草稿'), value: VariantStatus.Draft }, // 将 'Draft' 翻译为 '草稿'
-  { label: t('上架'), value: VariantStatus.Published } // 将 'Active' 翻译为 '活动'
+  { label: t('已发布'), value: VariantStatus.Published } // 将 'Active' 翻译为 '活动'
 ]
 // 库存策略
 export enum InventoryPolicy {

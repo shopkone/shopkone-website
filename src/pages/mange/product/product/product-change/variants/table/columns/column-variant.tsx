@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
-import { useTranslation } from 'react-i18next'
 import { IconChevronDown, IconPhotoPlus } from '@tabler/icons-react'
 import { Button, Checkbox, Flex } from 'antd'
+import { TFunction } from 'i18next'
 
 import { FileType } from '@/api/file/add-file-record'
 import { FileListByIdsRes } from '@/api/file/file-list-by-ids'
@@ -19,10 +19,11 @@ export interface ColumnVariantProps {
   expands: number[]
   onClick?: () => void
   fileList: FileListByIdsRes[]
+  t: TFunction
 }
 
 export default function ColumnVariant (props: ColumnVariantProps) {
-  const { row, groupName, expands, onClick, fileList } = props
+  const { row, groupName, expands, onClick, fileList, t } = props
 
   const image = row.image_id ? fileList?.find(i => i.id === row.image_id)?.path : undefined
 
@@ -31,8 +32,6 @@ export default function ColumnVariant (props: ColumnVariantProps) {
     const paths = ids?.map(i => fileList?.find(j => j.id === i)?.path).filter(Boolean) || []
     return [...new Set(paths)]
   }, [fileList, row]) as string[]
-
-  const { t } = useTranslation('product')
 
   return (
     <Flex className={'fit-width flex1'} style={{ userSelect: 'none' }}>

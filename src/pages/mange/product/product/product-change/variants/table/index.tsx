@@ -35,7 +35,7 @@ export default function Table (props: TableProps) {
   const [locationId, setLocationId] = useState(0)
   const [labels, setLabels] = useState<Record<string, ReactNode>>({})
   const { id } = useParams()
-  const { t } = useTranslation('product')
+  const { t } = useTranslation('product', { keyPrefix: 'product' })
 
   const { columns, ColumnSettings, ImageUploader } = useColumns({
     variants: groupVariants,

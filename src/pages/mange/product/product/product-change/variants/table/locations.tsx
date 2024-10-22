@@ -25,7 +25,7 @@ export default function LocationsSelect (props: LocationsSelectProps) {
   const form = Form.useFormInstance()
   const isTrack = Form.useWatch('inventory_tracking', form)
   const initRef = useRef(0)
-  const { t } = useTranslation('product')
+  const { t } = useTranslation('product', { keyPrefix: 'product' })
 
   const openInfo = useOpen<number[]>()
 

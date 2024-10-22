@@ -8,7 +8,7 @@ import SelectCategory from '@/pages/mange/product/product/product-change/product
 
 export default function ProductOrganization () {
   const options = useRequest(CollectionOptionsApi)
-  const { t } = useTranslation('product')
+  const { t } = useTranslation('product', { keyPrefix: 'product' })
 
   return (
     <Card title={t('商品设置')}>

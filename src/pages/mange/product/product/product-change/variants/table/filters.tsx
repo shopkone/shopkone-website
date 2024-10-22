@@ -15,7 +15,7 @@ export interface FiltersProps {
 
 export default function Filters (props: FiltersProps) {
   const { options, onChange, value, setLabels, labels } = props
-  const { t } = useTranslation('product')
+  const { t } = useTranslation('product', { keyPrefix: 'product' })
 
   if (!options.length) return <div />
 
@@ -31,7 +31,7 @@ export default function Filters (props: FiltersProps) {
             value={value[option.name]}
             onLabelChange={(l) => { setLabels({ ...labels, [option.name]: l }) }}
           >
-            {t(option.name)}
+            {option.name}
           </FilterRadio>
         ))
       }

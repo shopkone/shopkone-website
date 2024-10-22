@@ -15,7 +15,7 @@ export interface EditLocationModalProps {
 export default function EditLocationModal (props: EditLocationModalProps) {
   const { locationList, info, onConfirm } = props
   const [locationIds, setLocationIds] = useState<number[]>([])
-  const { t } = useTranslation('product')
+  const { t } = useTranslation('product', { keyPrefix: 'product' })
 
   const onChange = (id: number) => {
     if (locationIds.includes(id)) {

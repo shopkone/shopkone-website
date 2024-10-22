@@ -1,5 +1,6 @@
 import { IconChevronDown } from '@tabler/icons-react'
 import { Tooltip } from 'antd'
+import { TFunction } from 'i18next'
 
 import SInputNumber from '@/components/s-input-number'
 import SRender from '@/components/s-render'
@@ -11,10 +12,11 @@ export interface ColumnWeightProps {
   row: Variant
   onChangeWeight: (weight: number | null) => void
   onChangeWeightUnit: (unit: Variant['weight_unit']) => void
+  t: TFunction
 }
 
 export default function ColumnWeight (props: ColumnWeightProps) {
-  const { row, onChangeWeight, onChangeWeightUnit } = props
+  const { row, onChangeWeight, onChangeWeightUnit, t } = props
 
   const getWeightRange = (prices?: Array<number | undefined>): any => {
     const list = (prices?.filter(i => typeof i === 'number') || []) as number[]
@@ -33,7 +35,7 @@ export default function ColumnWeight (props: ColumnWeightProps) {
   return (
     <div>
       <SRender render={row?.children?.length}>
-        <Tooltip title={`Applies to all ${row?.children?.length} variants`}>
+        <Tooltip title={t('同时修改x个款式', { count: row?.children?.length })}>
           <SInputNumber
             onChange={v => { onChangeWeight(v || null) }}
             value={getWeightRange(row?.children?.map(i => i.weight) as any)?.value}

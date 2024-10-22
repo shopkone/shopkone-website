@@ -24,11 +24,11 @@ export default function Products () {
   const [params, setParams] = useState<ProductListReq>({ page: 1, page_size: 20 })
   const list = useRequest(ProductListApi, { manual: true })
   const [selected, setSelected] = useState<number[]>([])
-  const { t } = useTranslation('product')
+  const { t } = useTranslation('product', { keyPrefix: 'product' })
 
   const columns: STableProps['columns'] = [
     {
-      title: 'Product',
+      title: t('商品'),
       code: 'product',
       name: 'product',
       render: (_, row: ProductListRes) => (
@@ -48,7 +48,7 @@ export default function Products () {
       lock: true
     },
     {
-      title: 'Price',
+      title: t('售价1'),
       code: 'price',
       name: 'price',
       render: (_, row: ProductListRes) => {
@@ -61,21 +61,21 @@ export default function Products () {
       width: 120
     },
     {
-      title: 'SPU',
+      title: t('SPU1'),
       code: 'spu',
       name: 'spu',
       render: (spu: string) => renderText(spu),
       width: 150
     },
     {
-      title: 'Vendor',
+      title: t('供应商1'),
       code: 'vendor',
       name: 'vendor',
       render: (vendor: string) => renderText(vendor),
       width: 150
     },
     {
-      title: 'Inventory',
+      title: t('库存1'),
       code: 'quantity',
       name: 'quantity',
       render: (_, row: ProductListRes) => {
@@ -84,15 +84,15 @@ export default function Products () {
         return (
           <div>
             <SRender className={'secondary'} render={!row.inventory_tracking}>
-              Inventory not tracked
+              {t('未跟踪库存')}
             </SRender>
             <SRender render={row.inventory_tracking}>
               <Flex wrap={'wrap'} style={{ columnGap: 8, rowGap: 2, whiteSpace: 'nowrap' }}>
                 <Flex>
-                  <div>{row.variants?.reduce((sum, variant) => sum + variant.quantity, 0)} on sale</div>
+                  <div>{t('x在售', { x: row.variants?.reduce((sum, variant) => sum + variant.quantity, 0) })}</div>
                   <SRender render={row.variants?.length !== 1}>
                     <span style={{ padding: '0 6px', transform: 'scale(1.5)' }}>·</span>
-                    {row.variants?.length} variants
+                    {t('x个款式1', { x: row.variants?.length || 0 })}
                   </SRender>
                 </Flex>
                 <Flex
@@ -102,7 +102,7 @@ export default function Products () {
                   }} align={'center'} gap={4}
                 >
                   <IconAlertCircleFilled size={15} strokeWidth={2} />
-                  <Flex><SRender render={!everyInStock && someInStock}>Partial - </SRender>Out of stock</Flex>
+                  <Flex><SRender render={!everyInStock && someInStock}>{t('部分')} - </SRender>{t('库存不足')}</Flex>
                 </Flex>
               </Flex>
             </SRender>
@@ -112,7 +112,7 @@ export default function Products () {
       width: 200
     },
     {
-      title: 'Created',
+      title: t('创建时间'),
       code: 'created_at',
       name: 'id',
       width: 120,
@@ -122,7 +122,7 @@ export default function Products () {
       }
     },
     {
-      title: 'Status',
+      title: t('状态1'),
       code: 'status',
       name: 'status',
       width: 150,
@@ -134,26 +134,26 @@ export default function Products () {
         >
           <Switch size={'small'} checked={status === VariantStatus.Published} />
           <SRender style={{ fontSize: 12, position: 'relative', top: 1 }} render={status === VariantStatus.Published}>
-            Active
+            {t('已上架1')}
           </SRender>
           <SRender style={{ fontSize: 12, position: 'relative', top: 1 }} render={status !== VariantStatus.Published}>
-            Draft
+            {t('草稿1')}
           </SRender>
         </Flex>
       )
     },
     {
-      title: 'Action',
+      title: '',
       code: 'action',
       name: 'action',
       render: () => (
         <Flex justify={'center'} align={'center'} style={{ marginLeft: -6, cursor: 'default' }} onClick={e => { e.stopPropagation() }} gap={12}>
-          <Tooltip title={'Preview'}>
+          <Tooltip title={t('预览1')}>
             <IconButton size={26} type={'text'}>
               <IconEye size={17} />
             </IconButton>
           </Tooltip>
-          <Tooltip title={'Duplicate'}>
+          <Tooltip title={t('复制1')}>
             <IconButton size={26} type={'text'}>
               <IconCopy size={13} />
             </IconButton>
@@ -176,9 +176,9 @@ export default function Products () {
       header={
         <SRender render={list?.data?.list?.length}>
           <Flex gap={8}>
-            <Button type={'text'}>Export</Button>
-            <Button type={'text'}>Import</Button>
-            <Button type={'text'}>More actions</Button>
+            <Button type={'text'}>{t('导出')}</Button>
+            <Button type={'text'}>{t('导入')}</Button>
+            <Button type={'text'}>{t('更多操作')}</Button>
             <Button onClick={() => { nav('change') }} type={'primary'}>{t('添加商品')}</Button>
           </Flex>
         </SRender>
@@ -206,17 +206,17 @@ export default function Products () {
           rowSelection={{ onChange: setSelected, value: selected }}
           init={!!list.data}
           empty={{
-            title: 'Add your products',
-            desc: 'Start by stocking your store with products your customers will love',
+            title: t('新建并上架你的商品'),
+            desc: t('创建提示'),
             actions: (
               <Flex gap={12}>
                 <Button>
                   <IconDownload className={'fpt1'} size={15} />
-                  <div>Import</div>
+                  <div>{t('导入')}</div>
                 </Button>
                 <Button>
                   <IconDownload className={'fpt1'} size={15} />
-                  <div>Import by Shopify</div>
+                  <div>{t('导入 Shopify')}</div>
                 </Button>
                 <Button
                   onClick={() => {
@@ -225,7 +225,7 @@ export default function Products () {
                   type={'primary'}
                 >
                   <IconPlus className={'fpt1'} size={15} />
-                  <div>Add products</div>
+                  <div>{t('添加商品1')}</div>
                 </Button>
               </Flex>
             )

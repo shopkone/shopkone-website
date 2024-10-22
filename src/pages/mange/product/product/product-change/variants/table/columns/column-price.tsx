@@ -1,5 +1,5 @@
-import { useTranslation } from 'react-i18next'
 import { Tooltip } from 'antd'
+import { TFunction } from 'i18next'
 
 import SInputNumber from '@/components/s-input-number'
 import SRender from '@/components/s-render'
@@ -11,11 +11,11 @@ export interface ColumnPriceProps {
   onChange: (value: number | null) => void
   row: Variant
   type: 'price' | 'compare_at_price' | 'cost_per_item'
+  t: TFunction
 }
 
 export default function ColumnPrice (props: ColumnPriceProps) {
-  const { value, onChange, row, type } = props
-  const { t } = useTranslation('product')
+  const { value, onChange, row, type, t } = props
 
   const getPriceRange = (prices?: Array<number | undefined>): any => {
     const list = (prices?.filter(i => typeof i === 'number') || []) as number[]

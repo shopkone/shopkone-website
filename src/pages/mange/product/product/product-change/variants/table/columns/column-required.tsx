@@ -1,5 +1,5 @@
-import { useTranslation } from 'react-i18next'
 import { Checkbox, Tooltip } from 'antd'
+import { TFunction } from 'i18next'
 
 import SRender from '@/components/s-render'
 import { Variant } from '@/pages/mange/product/product/product-change/variants/state'
@@ -8,14 +8,14 @@ export interface ColumnPriceProps {
   onChange: (is: boolean) => void
   row: Variant
   type: 'tax_required' | 'shipping_required'
+  t: TFunction
 }
 
 export default function ColumnRequired (props: ColumnPriceProps) {
-  const { onChange, row, type } = props
+  const { onChange, row, type, t } = props
 
   const allChecked = row?.children?.every(i => i?.[type])
   const someChecked = row?.children?.some(i => i?.[type])
-  const { t } = useTranslation('product')
 
   return (
     <div>

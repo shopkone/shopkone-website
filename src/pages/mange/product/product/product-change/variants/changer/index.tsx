@@ -43,7 +43,7 @@ export default function Changer (props: ChangerProps) {
   const selectInfo = useOpen<number[]>([])
   const form = Form.useFormInstance()
   const [count, setCount] = useState(0)
-  const { t } = useTranslation('product')
+  const { t } = useTranslation('product', { keyPrefix: 'product' })
 
   const getItem = () => ({
     name: '',

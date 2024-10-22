@@ -14,7 +14,7 @@ export default function TypeChanger (props: TypeChangerProps) {
   const { value, onChange } = props
   const modal = useModal()
   const form = Form.useFormInstance()
-  const { t } = useTranslation('product')
+  const { t } = useTranslation('product', { keyPrefix: 'product' })
 
   const options = useVariantTypeOptions(t)
 

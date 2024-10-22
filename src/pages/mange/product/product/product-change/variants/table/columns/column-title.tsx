@@ -1,5 +1,5 @@
-import { useTranslation } from 'react-i18next'
 import { Checkbox } from 'antd'
+import { TFunction } from 'i18next'
 
 import SRender from '@/components/s-render'
 import { VariantType } from '@/constant/product'
@@ -12,15 +12,15 @@ export interface ColumnTitleProps {
   setExpands: (expands: number[]) => void
   variants: Variant[]
   variantType: VariantType
+  t: TFunction
 }
 
 export default function ColumnTitle (props: ColumnTitleProps) {
-  const { expands, setExpands, variants, variantType } = props
+  const { expands, setExpands, variants, variantType, t } = props
 
   const isAllExpanded = variants.every(v => expands.includes(v.id))
 
   const hasChild = variants.some(v => v.children?.length)
-  const { t } = useTranslation('product')
 
   const onExpandAll = () => {
     if (isAllExpanded) {

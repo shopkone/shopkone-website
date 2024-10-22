@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
-import { useTranslation } from 'react-i18next'
 import { Tooltip } from 'antd'
+import { TFunction } from 'i18next'
 
 import SInputNumber from '@/components/s-input-number'
 import SRender from '@/components/s-render'
@@ -12,11 +12,11 @@ export interface ColumnInventoryProps {
   locationId: number
   value: Variant['inventories']
   onChange: (value: Variant['inventories']) => void
+  t: TFunction
 }
 
 export default function ColumnInventory (props: ColumnInventoryProps) {
-  const { row, onChange, value, locationId } = props
-  const { t } = useTranslation('product')
+  const { row, onChange, value, locationId, t } = props
 
   const onChangeHandle = (v: number | null) => {
     if (!locationId) return
