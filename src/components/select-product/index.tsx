@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { IconAlertCircleFilled, IconPhoto } from '@tabler/icons-react'
 import { useInViewport, useRequest } from 'ahooks'
 import { Button, Checkbox, Flex } from 'antd'
@@ -32,6 +33,8 @@ export default function SelectProduct (props: SelectProductProps) {
     setSelected(selected.includes(row.id) ? selected.filter(id => id !== row.id) : [...selected, row.id])
   }
 
+  const { t } = useTranslation('common', { keyPrefix: 'selectProduct' })
+
   const moreRef = useRef<HTMLDivElement>(null)
   const [inViewport] = useInViewport(moreRef)
   const columns: STableProps['columns'] = [
@@ -45,7 +48,7 @@ export default function SelectProduct (props: SelectProductProps) {
       width: 35
     },
     {
-      title: 'Product',
+      title: t('商品'),
       code: 'product',
       name: 'product',
       render: (_, row: ProductListRes) => (
@@ -65,7 +68,7 @@ export default function SelectProduct (props: SelectProductProps) {
       lock: true
     },
     {
-      title: 'Price',
+      title: t('售价1'),
       code: 'price',
       name: 'price',
       render: (_, row: ProductListRes) => {
@@ -78,7 +81,7 @@ export default function SelectProduct (props: SelectProductProps) {
       width: 150
     },
     {
-      title: 'Inventory',
+      title: t('库存'),
       code: 'quantity',
       name: 'quantity',
       render: (_, row: ProductListRes) => {
@@ -109,15 +112,15 @@ export default function SelectProduct (props: SelectProductProps) {
       width: 200
     },
     {
-      title: 'Status',
+      title: t('状态1'),
       code: 'status',
       name: 'status',
       width: 120,
       render: (status: VariantStatus) => {
         if (status === VariantStatus.Published) {
-          return <Status borderless type={'success'}>Active</Status>
+          return <Status borderless type={'success'}>{t('已发布1')}</Status>
         }
-        return <Status borderless type={'default'}>Draft</Status>
+        return <Status borderless type={'default'}>{t('草稿1')}</Status>
       }
     }
   ]
@@ -205,7 +208,7 @@ export default function SelectProduct (props: SelectProductProps) {
       open={info.open}
     >
       <div >
-        <Filters />
+        <Filters value={params} onChange={p => { setParams({ ...params, ...p }) }} />
         <div style={{ overflowY: 'auto', height: 550, paddingBottom: 24 }}>
           <STable
             loading={productList.loading ? !list.length : false}

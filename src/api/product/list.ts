@@ -1,11 +1,17 @@
 import { api, PageReq, PageRes } from '@/api/api'
+import { FilterNumberRangeProps } from '@/components/table-filter/filter-number-range'
+import { VariantStatus } from '@/constant/product'
 import { VariantName } from '@/pages/mange/product/product/product-change/variants/state'
 
 export interface ProductListReq extends PageReq {
   collections?: number[]
   tags?: string[]
-  price_range?: { max: number | null, min: number | null }
   track_inventory?: number
+  keyword?: string
+  type?: string
+  collection_id?: number
+  status?: VariantStatus
+  price_range?: FilterNumberRangeProps['value']
 }
 
 export interface ProductListRes {

@@ -1,15 +1,15 @@
-import { ReactNode, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { IconRefresh, IconSearch } from '@tabler/icons-react'
-import { Button, Flex, Input, Typography } from 'antd'
+import { IconSearch } from '@tabler/icons-react'
+import { useRequest } from 'ahooks'
+import { Flex, Input } from 'antd'
 
-import { FileType } from '@/api/file/add-file-record'
+import { CollectionOptionsApi } from '@/api/collection/options'
 import SCompact from '@/components/s-compact'
 import SRender from '@/components/s-render'
 import SSelect from '@/components/s-select'
 import FilterNumberRange, { FilterNumberRangeProps } from '@/components/table-filter/filter-number-range'
 import FilterRadio from '@/components/table-filter/filter-radio'
-import FilterLabels from '@/components/table-filter/FilterLabels'
+import { VariantStatus } from '@/constant/product'
 
 import styles from './index.module.less'
 
@@ -18,24 +18,16 @@ export interface FiltersProps {
     keyword?: string
     type?: string
     collection_id?: number
-    status?: []
-    PriceRange?: FilterNumberRangeProps['value']
+    status?: VariantStatus
+    price_range?: FilterNumberRangeProps['value']
   }
   onChange?: (value: FiltersProps['value']) => void
-  groupName?: string
 }
 
 export default function Filters (props: FiltersProps) {
-  const { onChange, value, groupName } = props
-  const [labels, setLabels] = useState<Record<string, ReactNode>>({})
+  const { onChange, value } = props
   const { t } = useTranslation('common')
-
-  const options = [
-    { value: FileType.Image, label: t('selectProduct.图片') },
-    { value: FileType.Video, label: t('selectProduct.视频') },
-    { value: FileType.Audio, label: t('selectProduct.音频') },
-    { value: FileType.Other, label: t('selectProduct.其他') }
-  ]
+  const collectionOptions = useRequest(CollectionOptionsApi)
 
   const selectOptions = [
     { value: 'title', label: t('selectProduct.商品名称') },
@@ -43,6 +35,11 @@ export default function Filters (props: FiltersProps) {
     { value: 'sku', label: t('selectProduct.商品SKU') },
     { value: 'spu', label: t('selectProduct.商品SPU') },
     { value: 'id', label: t('selectProduct.商品ID') }
+  ]
+
+  const statusOptions = [
+    { label: t('selectProduct.草稿'), value: VariantStatus.Draft },
+    { label: t('selectProduct.已发布'), value: VariantStatus.Published }
   ]
 
   return (
@@ -84,96 +81,43 @@ export default function Filters (props: FiltersProps) {
             align={'center'}
             gap={8}
           >
-            <FilterNumberRange
-              maxLabel={'Max size'}
-              minLabel={'Min size'}
-              unit={'MB'}
-              onChange={(v) => {
-                onChange?.({
-                  ...value,
-                  file_size: v
-                })
-              }}
-              onLabelChange={(l) => {
-                setLabels({
-                  ...labels,
-                  file_size: l
-                })
-              }}
-              value={value?.file_size || {}}
-            >
-              {t('selectProduct.系列')}
-            </FilterNumberRange>
+            <SRender render={collectionOptions?.data?.length}>
+              <FilterRadio
+                onChange={(v) => {
+                  onChange?.({ ...value, collection_id: Number(v || 0) })
+                }}
+                options={collectionOptions?.data || []}
+                value={value?.collection_id}
+              >
+                {t('selectProduct.系列')}
+              </FilterRadio>
+            </SRender>
 
             <FilterRadio
-              options={options}
+              options={statusOptions}
               onChange={(v) => {
-                onChange?.({
-                  ...value,
-                  file_type: v.map(i => Number(i || 0))
-                })
+                onChange?.({ ...value, status: Number(v || 0) })
               }}
-              value={value?.file_type}
-              onLabelChange={(l) => {
-                setLabels({
-                  ...labels,
-                  file_type: l
-                })
-              }}
+              value={value?.status}
             >
               {t('selectProduct.状态')}
             </FilterRadio>
 
-            <FilterRadio
-              options={[
-                {
-                  label: 'Used',
-                  value: 1
-                },
-                {
-                  label: 'Unused',
-                  value: 2
-                }
-              ]}
-              value={value?.used}
+            <FilterNumberRange
+              value={value?.price_range}
               onChange={(v) => {
-                onChange?.({
-                  ...value,
-                  used: Number(v || 0)
-                })
+                onChange?.({ ...value, price_range: v })
               }}
-              onLabelChange={(l) => {
-                setLabels({
-                  ...labels,
-                  used: l
-                })
-              }}
+              maxLabel={t('selectProduct.最高价')}
+              minLabel={t('selectProduct.最低价')}
+              unit={'$'}
             >
               {t('selectProduct.售价')}
-            </FilterRadio>
-            <SRender render={groupName}>
-              <Typography.Text className={styles.tag} ellipsis={{ tooltip: true }}>
-                {groupName}
-              </Typography.Text>
-            </SRender>
+            </FilterNumberRange>
           </Flex>
         </Flex>
-        <Button
-          type={'text'} style={{
-            width: 24,
-            height: 24
-          }}
-        >
-          <IconRefresh
-            style={{
-              position: 'relative',
-              left: -7,
-              top: -2
-            }} size={14}
-          />
-        </Button>
+
       </Flex>
-      <FilterLabels style={{ marginTop: 12 }} labels={labels} value={value} onChange={onChange} />
     </div>
   )
 }
