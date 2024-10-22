@@ -15,7 +15,7 @@ export interface ChangeHistoryProps {
 export default function ChangeHistory (props: ChangeHistoryProps) {
   const { info } = props
   const list = useRequest(HistoryListApi, { manual: true })
-  const { t } = useTranslation('product')
+  const { t } = useTranslation('product', { keyPrefix: 'inventory' })
 
   const columns: STableProps['columns'] = [
     {

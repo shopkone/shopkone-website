@@ -30,7 +30,7 @@ export default function Inventory () {
   const nav = useNavigate()
   const list = useRequest(InventoryListApi, { manual: true })
   const [selected, setSelected] = useState<number[]>([])
-  const { t } = useTranslation('product')
+  const { t } = useTranslation('product', { keyPrefix: 'inventory' })
 
   const info = useOpen<{ name: string, id: number }>()
 
@@ -59,20 +59,20 @@ export default function Inventory () {
       lock: true
     },
     {
-      title: 'Sku',
+      title: t('SKU'),
       code: 'sku',
       name: 'sku',
       render: (sku: string) => renderText(sku),
       width: 150
     },
     {
-      title: t('流程中'),
+      title: t('流程中1'),
       code: 'unavailable',
       name: 'unavailable',
       width: 150
     },
     {
-      title: t('可售'),
+      title: t('可售1'),
       code: 'quantity',
       name: 'quantity',
       render: (quantity: number) => (
@@ -81,7 +81,7 @@ export default function Inventory () {
       width: 150
     },
     {
-      title: t('现货'),
+      title: t('现货1'),
       code: 'on_hand',
       name: 'on_hand',
       width: 150
