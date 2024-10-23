@@ -183,7 +183,7 @@ export default function Products () {
           </Flex>
         </SRender>
       }
-      title={'Products'}
+      title={t('商品')}
     >
       <SCard styles={{ body: { padding: '8px 0' } }}>
         <Filters />

@@ -136,6 +136,7 @@ export default function FileList (props: FileListProps) {
             {
               items.map((item, index) => (
                 <FileItemSortable
+                  hasSelect={!!select?.length}
                   onSelect={() => { onSelectHandle?.(item.id) }}
                   select={select.includes(item.id)}
                   onClick={() => { onClick(item) }}

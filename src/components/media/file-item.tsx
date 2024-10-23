@@ -18,10 +18,11 @@ export interface FileItemProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onS
   onSelect: () => void
   select: boolean
   item?: FileListByIdsRes
+  hasSelect?: boolean
 }
 
 const FileItem = (props: FileItemProps, ref: React.Ref<HTMLDivElement>) => {
-  const { faded, style, index, dragging, bgDragging, onSelect, item, ...rest } = props
+  const { faded, style, index, dragging, bgDragging, onSelect, item, hasSelect, ...rest } = props
   const { t } = useTranslation('common', { keyPrefix: 'media' })
   const inlineStyles: CSSProperties = {
     opacity: faded ? '0.2' : '1',
@@ -48,13 +49,15 @@ const FileItem = (props: FileItemProps, ref: React.Ref<HTMLDivElement>) => {
       }
     >
       <SRender
+        style={{ cursor: hasSelect ? 'default' : undefined }}
         className={classNames(styles.mask, { [styles.checkedMask]: props.select })}
         render={!dragging}
       >
         <div
           onClick={e => {
             e.stopPropagation()
-          }} style={{ cursor: 'default' }}
+          }}
+          style={{ cursor: 'default' }}
         >
           <Checkbox
             checked={props.select}

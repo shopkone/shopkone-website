@@ -43,7 +43,7 @@ export default function FormMedia () {
                   }}
                   style={{ height: 20, position: 'relative', right: -12 }}
                   danger
-                  type={'text'}
+                  type={'link'}
                   size={'small'}
                 >
                   {t('移除')}

@@ -11,6 +11,7 @@ export interface FileItemSortableProps {
   onSelect: () => void
   select: boolean
   item: FileListByIdsRes
+  hasSelect?: boolean
 }
 
 export default function FileItemSortable (props: FileItemSortableProps) {
