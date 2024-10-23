@@ -19,8 +19,24 @@
   }
 
   .shopkone-btn-loading {
-    span {
-      flex: 0
+    position: relative;
+    * {
+      opacity: 0;
+    }
+    .shopkone-btn-loading-icon {
+      position: absolute;
+      display: inline-block;
+      margin-right: 0;
+      opacity: 1;
+      * {
+        svg {
+          scale: 1.2;
+        }
+        opacity: 1;
+      }
+    }
+    &.shopkone-btn-lg .shopkone-btn-loading-icon{
+      scale: 1.5;
     }
   }
 

@@ -88,7 +88,7 @@ export default function Header () {
             <IconBell size={18} />
           </Flex>
           <span style={{ padding: '0 8px', color: '#00000030' }}>|</span>
-          <SLoading loading={manageState.shopInfoLoading}>
+          <SLoading size={24} loading={manageState.shopInfoLoading}>
             <Popover
               open={infoExpand}
               onOpenChange={(open) => { setInfoExpand(open) }}

@@ -1,6 +1,7 @@
 import ReactDOM from 'react-dom/client'
 import { I18nextProvider } from 'react-i18next'
 import { App, ConfigProvider } from 'antd'
+import zh_CN from 'antd/locale/zh_CN'
 import i18next from 'i18next'
 
 import Pages from '@/pages/pages'
@@ -26,6 +27,7 @@ if (dom) {
             colorPrimary: '#3370ff'
           }
         }}
+        locale={zh_CN}
         prefixCls={'shopkone'}
       >
         <App>

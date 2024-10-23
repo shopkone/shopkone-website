@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { LoadingOutlined } from '@ant-design/icons'
 import { ArrowRight } from '@icon-park/react'
+import { IconCircleCheckFilled } from '@tabler/icons-react'
 import { useCountDown, useMemoizedFn, useRequest } from 'ahooks'
 import { Button, ButtonProps, Flex, Form, Input, Progress, Spin } from 'antd'
 
@@ -144,7 +145,10 @@ export default function Signup () {
           />
         </Form.Item>
         <SRender render={sendEmail} className={styles.tips}>
-          {t('验证码已发送至邮箱', { email: sendEmail })}
+          <Flex align={'center'} gap={4}>
+            <IconCircleCheckFilled color={'#32a645'} size={16} />
+            {t('验证码已发送至邮箱', { email: sendEmail })}
+          </Flex>
         </SRender>
         <Form.Item name={'password'} className={'mb0'} label={t('密码')}>
           <Input.Password onPressEnter={registerAccount} autoComplete={'off'} size={'large'} />
