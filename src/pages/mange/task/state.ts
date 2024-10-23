@@ -2,49 +2,36 @@ import { create } from 'zustand/react'
 
 import { UploadFileType } from '@/api/file/UploadFileType'
 
-export interface TaskState {
-  files: UploadFileType[]
-  fileDoneFlag: number
-  isOpen: boolean
-  isExpand: boolean
+export interface ITaskState {
+  uploadTasks: UploadFileType[]
+  uploadFinished: number
 }
 
-export interface TaskAction {
-  addFiles: (files: UploadFileType[]) => void
-  updateFile: (file: UploadFileType) => void
-  setFileDone: (clear?: boolean) => void
-  close: () => void
-  open: () => void
-  expand: () => void
-  collapse: () => void
+export interface ITaskAction {
+  addUploadTasks: (tasks: UploadFileType[]) => void
+  updateUploadTask: (task: UploadFileType) => void
+  setUploadFinished: () => void
+  resetUploadFinished: () => void
 }
 
-export const useGlobalTask = create<TaskState & TaskAction>((set, get, store) => ({
-  files: [],
-  fileDoneFlag: 0,
-  addFiles: (files: UploadFileType[]) => {
-    set({ files: [...get().files, ...files] })
-  },
-  updateFile: (file: UploadFileType) => {
-    set({ files: get().files.map(item => item.uuid === file.uuid ? file : item) })
-  },
-  setFileDone: (clear = false) => {
-    set({ fileDoneFlag: clear ? 0 : get().fileDoneFlag + 1 })
+export const useTask = create<ITaskState & ITaskAction>((set, get, store) => ({
+  uploadTasks: [],
+  uploadFinished: 0,
+
+  addUploadTasks: (tasks) => {
+    set({ uploadTasks: [...get().uploadTasks, ...tasks] })
   },
 
-  isOpen: false,
-  close: () => {
-    set({ isOpen: false, files: [] })
-  },
-  open: () => {
-    set({ isOpen: true })
+  updateUploadTask: (task) => {
+    set({ uploadTasks: get().uploadTasks.map(item => item.uuid === task.uuid ? task : item) })
   },
 
-  isExpand: false,
-  expand: () => {
-    set({ isExpand: true })
+  setUploadFinished: () => {
+    set({ uploadFinished: get().uploadFinished + 1 })
   },
-  collapse: () => {
-    set({ isExpand: false })
+
+  resetUploadFinished: () => {
+    set({ uploadFinished: 0 })
   }
-}))
+})
+)

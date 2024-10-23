@@ -26,7 +26,7 @@ import MoveGroup from '@/pages/mange/settings/files/move-group'
 import ReplaceCover from '@/pages/mange/settings/files/replace-cover'
 import ReplaceImage from '@/pages/mange/settings/files/replace-image'
 import ReplaceVideo from '@/pages/mange/settings/files/replace-video'
-import { useGlobalTask } from '@/pages/mange/task/state'
+import { useTask } from '@/pages/mange/task/state'
 import { formatFileSize } from '@/utils/format'
 
 import styles from './index.module.less'
@@ -41,10 +41,10 @@ export default function Files () {
   const [selected, setSelected] = useState<number[]>([])
   const fileInfoOpen = useOpen<number>()
   const moveGroupOpen = useOpen<number[]>()
-  const addFiles = useGlobalTask(state => state.addFiles)
-  const fileDoneFlag = useGlobalTask(state => state.fileDoneFlag)
-  const setFileDone = useGlobalTask(state => state.setFileDone)
   const [loadingList, setLoadingList] = useState<number[]>([])
+  const addTasks = useTask(state => state.addUploadTasks)
+  const uploadFinished = useTask(state => state.uploadFinished)
+  const resetUploadFinished = useTask(state => state.resetUploadFinished)
 
   const modal = useModal()
   const { t } = useTranslation('settings', { keyPrefix: 'file' })
@@ -166,7 +166,7 @@ export default function Files () {
   ]
   const Uploader = useMemoizedFn((p: { children: ReactNode }) => (
     <Upload
-      onChange={addFiles}
+      onChange={addTasks}
       groupId={params.group_id}
       multiple
       maxSize={1024 * 1024 * 20}
@@ -191,7 +191,9 @@ export default function Files () {
     })
   }
 
-  const onFreshDebounce = useDebounceFn(list.refresh, { wait: 500 }).run
+  const onFreshDebounce = useDebounceFn(() => {
+    list.refresh()
+  }, { wait: 1000 }).run
 
   useEffect(() => {
     list.run(params)
@@ -205,12 +207,13 @@ export default function Files () {
   }, [groupId])
 
   useEffect(() => {
-    if (!fileDoneFlag) return
-    onFreshDebounce()
-    return () => {
-      setFileDone(true)
+    if (uploadFinished) {
+      onFreshDebounce()
     }
-  }, [fileDoneFlag])
+    return () => {
+      resetUploadFinished()
+    }
+  }, [uploadFinished])
 
   return (
     <Page

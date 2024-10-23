@@ -1,112 +1,126 @@
+import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Attention, Check, Close, Minus, Up } from '@icon-park/react'
-import { Badge, Button, Flex, Tabs } from 'antd'
+import {
+  IconChecklist,
+  IconChevronUp,
+  IconCircleCheckFilled,
+  IconExclamationCircleFilled,
+  IconX
+} from '@tabler/icons-react'
+import { useMemoizedFn } from 'ahooks'
+import { Flex, Progress, Tooltip } from 'antd'
 import classNames from 'classnames'
 
-import SLoading from '@/components/s-loading'
+import IconButton from '@/components/icon-button'
 import SRender from '@/components/s-render'
-import { useGlobalTask } from '@/pages/mange/task/state'
-import UploadRender from '@/pages/mange/task/upload/upload-render'
-import { useTaskUpload } from '@/pages/mange/task/upload/use-task-upload'
+import { useTask } from '@/pages/mange/task/state'
+import UploadTask from '@/pages/mange/task/upload-task'
 
 import styles from './index.module.less'
 
 export default function Task () {
-  const globalTask = useGlobalTask(state => state)
-  useTaskUpload()
-  const loadingFileCount = globalTask.files.filter(file => ['wait', 'uploading'].includes(file.status)).length
-  const loadingCount = loadingFileCount
-  const errorFileCount = globalTask.files.filter(file => file.status === 'error').length
-  const errorCount = errorFileCount
-  const { t } = useTranslation('product')
+  const { t } = useTranslation('common', { keyPrefix: 'task' })
+  const state = useTask(state => state)
+  const [expand, setExpand] = useState(false)
+  const [close, setClose] = useState(true)
 
-  const options = [
-    { label: <Badge color={'#3370ff'} size={'small'} count={loadingCount}>{t('文件')}</Badge>, key: 'upload' },
-    { label: t('导入'), key: 'import' },
-    { label: t('导出'), key: 'export' }
-  ]
+  const total = useMemo(() => {
+    return state.uploadTasks.length
+  }, [state.uploadTasks])
 
-  if (!globalTask.isOpen) return null
+  const errorTotal = useMemo(() => {
+    const upload = state.uploadTasks.filter(item => item.status === 'error')
+    return upload.length
+  }, [state.uploadTasks])
+
+  const successTotal = useMemo(() => {
+    const upload = state.uploadTasks.filter(item => item.status === 'done')
+    return upload.length
+  }, [state.uploadTasks])
+
+  const loadingTotal = useMemo(() => {
+    const upload = state.uploadTasks.filter(item => item.status === 'uploading')
+    return upload.length
+  }, [state.uploadTasks])
+
+  const LoadingRender = useMemoizedFn(() => (
+    <Flex align={'center'} gap={6}>
+      <Flex align={'center'} gap={4}>
+        <Progress percent={total ? (successTotal + errorTotal) * 100 / total : 0} strokeWidth={16} size={17} type={'circle'} />
+        <div>{successTotal + errorTotal} / {total}</div>
+      </Flex>
+      <div>{t('任务正在执行，请不要关闭或刷新页面')}</div>
+    </Flex>
+  ))
+
+  const ErrorRender = useMemoizedFn(() => (
+    <Flex align={'center'} gap={6}>
+      <IconExclamationCircleFilled color={'#d32f2f'} size={17} />
+      <div>{t('执行失败', { count: errorTotal })}</div>
+    </Flex>
+  ))
+
+  const SuccessRender = useMemoizedFn(() => (
+    <Flex align={'center'} gap={6}>
+      <IconCircleCheckFilled color={'#32a645'} size={18} />
+      <div>{t('已完成', { count: successTotal })}</div>
+    </Flex>
+  ))
+
+  useEffect(() => {
+    if (close && expand) {
+      setExpand(false)
+    }
+  }, [close])
+
+  useEffect(() => {
+    if (total > 0) {
+      setClose(false)
+    }
+  }, [total])
 
   return (
-    <div className={classNames([styles.container, { [styles.max]: globalTask.isExpand }])}>
-      <SRender render={globalTask.isExpand} className={styles.maxContent}>
-        <Flex className={styles.header} justify={'space-between'}>
-          <Tabs className={'flex1'} size={'small'} items={options} />
-          <Button type={'text'} onClick={() => { globalTask.collapse() }} className={styles.btn}>
-            <Minus className={styles.icon} size={16} />
-          </Button>
-        </Flex>
-
-        <div className={styles.content}>
-          <UploadRender />
-        </div>
-      </SRender>
-
-      <SRender render={!globalTask.isExpand}>
-        <Flex style={{ position: 'relative', top: 2 }} justify={'space-between'} align={'center'} gap={12}>
-          <Flex align={'center'} gap={6}>
-            <div style={{ width: 20 }}>
-              <SRender render={loadingCount}>
-                <SLoading size={16} />
-              </SRender>
-              <SRender render={!loadingCount && !errorCount}>
-                <Check
-                  theme={'filled'}
-                  fill={'#32a645'}
-                  strokeWidth={6}
-                  style={{ position: 'relative', top: 2 }}
-                />
-              </SRender>
-              <SRender render={errorCount ? !loadingCount : null}>
-                <Attention
-                  size={16}
-                  theme={'filled'}
-                  fill={'#de7802'}
-                  strokeWidth={6}
-                  style={{ position: 'relative', top: 3 }}
-                />
-              </SRender>
-            </div>
-            <div>
-              <SRender render={loadingCount}>
-                <span>
-                  {loadingCount} {t('个任务正在进行中。')}
-                </span>
-              </SRender>
-              <SRender render={!loadingCount && !errorCount}>
-                <span>{t('所有任务已完成。')}</span>
-              </SRender>
-              <SRender render={errorCount ? !loadingCount : null}>
-                <span>{errorCount} {t('个任务失败。')}</span>
-              </SRender>
-            </div>
-          </Flex>
-          <Flex align={'center'} gap={12}>
-            <SRender render={!(!loadingCount && !errorCount)}>
-              <Button
-                onClick={globalTask.expand}
-                className={styles.btn}
-              >
-                <Up className={styles.icon} size={16} />
-              </Button>
-            </SRender>
-            <SRender render={!loadingCount}>
-              <Button
-                onClick={globalTask.close}
-                style={{
-                  height: 26,
-                  width: 26
-                }}
-                type={'text'}
-                size={'small'}
-              >
-                <Close style={{ position: 'relative', left: -2, top: 1 }} size={12} />
-              </Button>
+    <div className={classNames(styles.container, close && styles.close)}>
+      <SRender render={!close}>
+        <Flex gap={16} align={'center'} justify={'space-between'} style={{ padding: '8px 8px 8px 16px' }}>
+          <SRender render={successTotal === total && total}>
+            <SuccessRender />
+          </SRender>
+          <SRender render={loadingTotal}>
+            <LoadingRender />
+          </SRender>
+          <SRender render={errorTotal ? !loadingTotal : null}>
+            <ErrorRender />
+          </SRender>
+          <SRender render={!total}>
+            {t('没有正在执行的任务')}
+          </SRender>
+          <Flex gap={8}>
+            <Tooltip title={expand ? t('收起') : t('展开')}>
+              <IconButton onClick={() => { setExpand(!expand) }} type={'text'} size={24}>
+                <IconChevronUp size={16} style={{ transform: `rotate(${expand ? 180 : 0}deg)` }} />
+              </IconButton>
+            </Tooltip>
+            <SRender render={!loadingTotal}>
+              <Tooltip title={t('关闭')}>
+                <IconButton onClick={() => { setClose(true) }} type={'text'} size={24}>
+                  <IconX size={14} />
+                </IconButton>
+              </Tooltip>
             </SRender>
           </Flex>
         </Flex>
       </SRender>
+
+      <SRender render={close}>
+        <IconButton onClick={() => { setClose(false) }} size={26}>
+          <IconChecklist size={20} color={'#888'} />
+        </IconButton>
+      </SRender>
+
+      <div className={classNames(expand && styles.expand, !expand && styles.unExpand)}>
+        <UploadTask tasks={state.uploadTasks} />
+      </div>
     </div>
   )
 }
