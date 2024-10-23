@@ -13,15 +13,9 @@ export default function Login () {
   const nav = useNavigate()
 
   const { t } = useTranslation('account', { keyPrefix: 'login' })
-  // const hasEmail = useLocation().pathname.includes('email')
 
   return (
     <Flex vertical className={'fit-width fit-height'} style={{ position: 'relative' }}>
-      {/*    <SRender render={hasEmail} style={{ position: 'absolute', left: -42, top: -48 }}>
-        <IconButton onClick={() => { nav('/auth/login') }} type={'text'} size={32}>
-          <IconChevronLeft size={24} />
-        </IconButton>
-      </SRender> */}
 
       <div className={styles.title}>{t('登录 Shopkone')}</div>
 
