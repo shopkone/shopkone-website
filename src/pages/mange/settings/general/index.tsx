@@ -30,10 +30,10 @@ export default function General () {
   const addressForm = useRef<FormInstance>()
 
   const [isChange, setIsChange] = useState(false)
-  const { t } = useTranslation('product')
+  const { t } = useTranslation('settings', { keyPrefix: 'general' })
 
   const formattingOptions = [
-    { label: t('例如 123,456.78'), value: '123,456.78' },
+    { label: t('例如123,456.78'), value: '123,456.78' },
     { label: t('例如 123,456'), value: '123,456' },
     { label: t('例如 123.456,78'), value: '123.456,78' },
     { label: t('例如 123.456'), value: '123.456' },
@@ -78,16 +78,16 @@ export default function General () {
     >
       <Form onValuesChange={onValuesChange} form={form} layout={'vertical'}>
         <Flex vertical gap={16}>
-          <SCard loading={general.loading} title={t('个人资料')}>
+          <SCard loading={general.loading} title={t('商店信息')}>
             <Flex gap={48}>
               <Flex vertical flex={3}>
                 <Form.Item name={'store_name'} className={'flex1'} label={t('商店名称')}>
                   <Input autoComplete={'off'} />
                 </Form.Item>
-                <Form.Item name={'store_owner_email'} extra={t('Shopkone 用此邮箱与您联系。')} className={'flex1'} label={t('商店所有者邮箱')}>
+                <Form.Item name={'store_owner_email'} extra={t('如果有需要，Shopkone 会通过此邮箱来联系您。')} className={'flex1'} label={t('店主邮箱')}>
                   <Input autoComplete={'off'} />
                 </Form.Item>
-                <Form.Item name={'customer_service_email'} extra={t('此邮箱用于联系客户。')} label={t('客服邮箱')}>
+                <Form.Item name={'customer_service_email'} extra={t('此邮箱将作为商店联系顾客的默认邮箱')} label={t('客服邮箱')}>
                   <Input autoComplete={'off'} />
                 </Form.Item>
               </Flex>
@@ -105,7 +105,7 @@ export default function General () {
             <Flex vertical>
               <Form.Item
                 name={'store_currency'}
-                extra={t('在商店正常运营后更改货币将影响其产品价格、订单、数据等信息，请谨慎操作。')} label={t('商店货币')}
+                extra={t('商店正常运营之后，更改货币将影响您商店的商品价格、订单和数据等信息，请谨慎操作。')} label={t('商店货币')}
               >
                 <SSelect
                   listHeight={400}
@@ -119,7 +119,7 @@ export default function General () {
                 <Form.Item style={{ flexShrink: 0 }} name={'currency_formatting'} className={'flex1'} label={t('货币格式')}>
                   <SSelect options={formattingOptions} />
                 </Form.Item>
-                <Form.Item style={{ flexShrink: 0 }} className={'flex1'} name={'timezone'} label={t('时区')}>
+                <Form.Item style={{ flexShrink: 0 }} className={'flex1'} name={'timezone'} label={t('商店时区')}>
                   <SSelect
                     showSearch
                     optionFilterProp={'label'}
@@ -131,7 +131,7 @@ export default function General () {
           </SCard>
           <SCard loading={general.loading} title={t('订单 ID')}>
             <div className={'tips'} style={{ marginTop: -4, marginBottom: 12 }}>
-              {t('显示在订单页面、客户页面和客户订单通知中以识别订单')}
+              {t('系统自动生成的订单唯一标识，用户侧页面上不会展示。')}
             </div>
             <Form.Item name={'order_id_prefix'} label={t('前缀')}>
               <Input autoComplete={'off'} />
@@ -143,7 +143,7 @@ export default function General () {
           </SCard>
           <SCard loading={general.loading} title={t('密码保护')}>
             <div className={'tips'} style={{ marginTop: -8, marginBottom: 12 }}>
-              {t('启用密码保护后，只有获得授权的客户才能访问您的商店。')}
+              {t('启用密码来限制他人访问你的在线商店，启用密码后，你的商店仅向拥有密码的客户开放。')}
             </div>
             <Form.Item valuePropName={'checked'} name={'password_protection'} style={{ marginBottom: 8, fontWeight: 500 }}>
               <Checkbox>{t('启用')}</Checkbox>
@@ -151,9 +151,8 @@ export default function General () {
             <Form.Item name={'password'} label={t('密码')}>
               <Input style={{ width: 400 }} />
             </Form.Item>
-            <Form.Item name={'password_message'} label={t('密码提示')}>
+            <Form.Item name={'password_message'} label={t('访问提示文案')}>
               <Input.TextArea
-                placeholder={t('该商店已启用密码保护。使用密码进入商店')}
                 autoSize={{ minRows: 5 }}
                 style={{ width: 400 }}
               />
