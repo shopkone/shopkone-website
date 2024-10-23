@@ -10,7 +10,7 @@ export default function SignUpType () {
   const nav = useNavigate()
 
   return (
-    <Flex style={{ paddingTop: 24 }} vertical gap={16}>
+    <Flex vertical gap={16}>
       <Button onClick={() => { nav('/auth/signup/email') }} size={'large'} block>
         <Flex align={'center'} gap={8}>
           <IconMailFilled size={16} />
