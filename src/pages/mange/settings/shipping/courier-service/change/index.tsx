@@ -5,10 +5,10 @@ import Page from '@/components/page'
 import SLocation from '@/components/s-location'
 
 export default function Change () {
-  const { t } = useTranslation('product')
+  const { t } = useTranslation('settings', { keyPrefix: 'shipping' })
 
   return (
-    <Page back={'/settings/shipping'} width={700} title={t('创建运输档案')}>
+    <Page back={'/settings/shipping'} width={700} title={t('创建运费方案')}>
       <Flex gap={16} vertical>
         <Card title={t('档案名称')}>
           <Form.Item className={'mb0'} extra={t('客户将看不到此项')}>

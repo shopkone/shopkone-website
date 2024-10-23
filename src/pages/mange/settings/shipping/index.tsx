@@ -17,12 +17,12 @@ export default function Shipping () {
   const nav = useNavigate()
   const shippingState = useShippingState()
   const countries = useCountries()
-  const { t } = useTranslation('product')
+  const { t } = useTranslation('settings', { keyPrefix: 'shipping' })
 
   const tabs: TabsProps['items'] = [
-    { label: t('快递服务'), key: '' },
+    { label: t('快递发货'), key: '' },
     { label: t('本地配送'), key: 'local-delivery' },
-    { label: t('店内自取'), key: 'pickup-in-store' }
+    { label: t('到店自提'), key: 'pickup-in-store' }
   ]
 
   const onTabClick = (key: string) => {
@@ -35,7 +35,7 @@ export default function Shipping () {
   }, [locationList.data])
 
   return (
-    <Page title={locationList.data?.length ? '' : t('运输')} bottom={64} width={700}>
+    <Page bottom={64} width={700}>
       <Flex className={styles.tabs}>
         {
             tabs.map(tab => (
