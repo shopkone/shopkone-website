@@ -27,6 +27,7 @@ export default function Auth () {
           </div>
         </div>
       </Flex>
+
     </div>
   )
 }

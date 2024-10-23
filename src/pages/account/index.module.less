@@ -19,16 +19,23 @@
   border: 1px solid var(--color-border);
   box-shadow: 0 1px 1px 0 var(--color-border);
   min-height: 600px;
+  @media screen and (width <= 700px) {
+    width: 100%;
+    border: none;
+    box-shadow: none;
+  }
 }
 
 .trem {
   padding: 40px;
 }
 
-
 .form {
-  min-height: 400px;
-  padding: 40px 40px 0 40px;
+  height: 600px;
+  padding: 40px;
+  @media screen and (width <= 700px) {
+    padding: 0 20px;
+  }
 }
 
 .banner {
@@ -53,20 +60,15 @@
   width: 100%;
   font-weight: 600;
   font-size: 18px;
-  line-height: 40px;
+  line-height: 36px;
   text-align: center;
   padding: 0 24px;
 }
 
-
-.logo {
-  margin-bottom: 32px;
-  font-size: 20px;
-  font-weight: bolder;
-}
-
 .title {
-  margin-bottom: 2px;
+  text-align: center;
+  margin-bottom: 36px;
+  margin-top: 12px;
   font-size: 24px;
   font-weight: bolder;
 }
@@ -117,7 +119,7 @@
 }
 
 .agreement {
-  padding: 42px 0;
+  padding: 18px 0 24px 0;
 }
 
 .linkAgreement {
