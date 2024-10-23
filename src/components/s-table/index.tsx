@@ -1,4 +1,5 @@
 import { memo, useEffect, useMemo, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { IconChevronLeft, IconChevronRight, IconDots } from '@tabler/icons-react'
 import { useMemoizedFn } from 'ahooks'
 import { Timeout } from 'ahooks/es/useRequest/src/types'
@@ -65,6 +66,7 @@ function STable (props: STableProps) {
   } = props
 
   const timer = useRef<Timeout>()
+  const { t } = useTranslation('common', { keyPrefix: 'table' })
 
   const columns = useMemo(() => {
     if (!rowSelection?.value?.length) return cols
@@ -74,7 +76,7 @@ function STable (props: STableProps) {
           ...col,
           title: (
             <Flex align={'center'} justify={'space-between'} className={styles.header}>
-              <span style={{ position: 'relative', top: 1 }}>{rowSelection?.value?.length} selected</span>
+              <span style={{ position: 'relative', top: 1 }}>{t('已选中', { selected: rowSelection?.value?.length } || 0)}</span>
             </Flex>
           )
         }

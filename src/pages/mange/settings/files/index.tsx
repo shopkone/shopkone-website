@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import { IconCopy } from '@tabler/icons-react'
 import { useDebounceFn, useMemoizedFn, useRequest } from 'ahooks'
-import { Button, Card, Flex, Tooltip, Typography } from 'antd'
+import { Button, Flex, Tooltip, Typography } from 'antd'
 import dayjs from 'dayjs'
 
 import { FileType } from '@/api/file/add-file-record'
@@ -13,6 +13,7 @@ import { FileListApi, FileListReq, FileListRes } from '@/api/file/file-list'
 import FileImage from '@/components/file-image'
 import IconButton from '@/components/icon-button'
 import Page from '@/components/page'
+import SCard from '@/components/s-card'
 import { sMessage } from '@/components/s-message'
 import { useModal } from '@/components/s-modal'
 import SRender from '@/components/s-render'
@@ -229,61 +230,60 @@ export default function Files () {
     >
       <Flex gap={16}>
         <Group loading={groupList.loading} list={groupList?.data || []} asyncRefresh={groupList.refreshAsync} />
-        <div className={styles.right}>
-          <Card styles={{ body: { padding: '8px 0' } }}>
-            <Filters
-              groupName={groupList?.data?.find(item => item.id === params.group_id)?.name}
-              value={params}
-              onChange={(v) => { setParams({ ...params, ...(v || {}), page: 1 }) }}
-            />
-            <STable
-              onRowClick={(row: FileListRes) => {
-                fileInfoOpen.edit(row.id)
-              }}
-              actions={
-                <Flex gap={12}>
-                  <Button size={'small'} danger onClick={onBatchDelete}>{t('删除文件')}</Button>
-                  <SRender render={!!groupList?.data?.length}>
-                    <Button
-                      size={'small'}
-                      onClick={() => { moveGroupOpen.edit(selected) }}
-                    >
-                      {t('移动到新组')}
-                    </Button>
-                  </SRender>
-                </Flex>
+        <SCard styles={{ body: { padding: '8px 0' } }} style={{ flex: 1 }}>
+          <Filters
+            groupName={groupList?.data?.find(item => item.id === params.group_id)?.name}
+            value={params}
+            onChange={(v) => { setParams({ ...params, ...(v || {}), page: 1 }) }}
+          />
+          <STable
+            onRowClick={(row: FileListRes) => {
+              fileInfoOpen.edit(row.id)
+            }}
+            actions={
+              <Flex gap={12}>
+                <Button type={'text'} size={'small'} danger onClick={onBatchDelete}>{t('删除文件')}</Button>
+                <SRender render={!!groupList?.data?.length}>
+                  <Button
+                    type={'text'}
+                    size={'small'}
+                    onClick={() => { moveGroupOpen.edit(selected) }}
+                  >
+                    {t('移动到新组')}
+                  </Button>
+                </SRender>
+              </Flex>
               }
-              page={{
-                total: list?.data?.total || 0,
-                current: params.page,
-                pageSize: params.page_size,
-                onChange: (page, page_size) => {
-                  if (page !== params.page) {
-                    setSelected([])
-                  }
-                  setParams({ ...params, page, page_size })
+            page={{
+              total: list?.data?.total || 0,
+              current: params.page,
+              pageSize: params.page_size,
+              onChange: (page, page_size) => {
+                if (page !== params.page) {
+                  setSelected([])
                 }
-              }}
-              rowSelection={{ onChange: setSelected, value: selected }}
-              init={!!list?.data?.list}
-              loading={list.loading}
-              empty={{
-                title: params.group_id
-                  // ? `${t('在')} ${groupList?.data?.find(item => item.id === params.group_id)?.name} ${t('组中没有文件')}`
-                  ? t('分组没文件', { name: groupList?.data?.find(item => item.id === params.group_id)?.name })
-                  : t('上传和管理您的文件'),
-                actions: (
-                  <Uploader>
-                    <Button type={'primary'}>{t('上传文件1')}</Button>
-                  </Uploader>
-                ),
-                desc: ''
-              }}
-              data={list?.data?.list || []}
-              columns={columns}
-            />
-          </Card>
-        </div>
+                setParams({ ...params, page, page_size })
+              }
+            }}
+            rowSelection={{ onChange: setSelected, value: selected }}
+            init={!!list?.data?.list}
+            loading={list.loading}
+            empty={{
+              title: params.group_id
+              // ? `${t('在')} ${groupList?.data?.find(item => item.id === params.group_id)?.name} ${t('组中没有文件')}`
+                ? t('分组没文件', { name: groupList?.data?.find(item => item.id === params.group_id)?.name })
+                : t('上传和管理您的文件'),
+              actions: (
+                <Uploader>
+                  <Button type={'primary'}>{t('上传文件1')}</Button>
+                </Uploader>
+              ),
+              desc: ''
+            }}
+            data={list?.data?.list || []}
+            columns={columns}
+          />
+        </SCard>
       </Flex>
       <FileInfo
         reFresh={list.refresh}

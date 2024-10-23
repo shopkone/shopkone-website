@@ -22,33 +22,8 @@
   margin-left: 52px;
 }
 
-.right {
-  top: 68px;
-  flex: 1;
-  :global {
-    .art-table-row:hover{
-      .file_row_action_icons {
-        opacity: 1;
-      }
-    }
-    .file_row_action_icons {
-      transition: all 0.1s;
-      opacity: 0;
-    }
-  }
-  .actionsIcon {
-    padding: 0 !important;
-    height: 14px !important;
-    &:hover {
-      background-color: transparent !important;
-      svg {
-        color: var(--color-primary) !important;
-      }
-    }
-  }
-}
-
 .side {
+  flex-shrink: 0;
   position: sticky;
   top: 12px;
   width: 250px;
