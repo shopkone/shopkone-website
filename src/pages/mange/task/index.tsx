@@ -8,10 +8,11 @@ import {
   IconX
 } from '@tabler/icons-react'
 import { useMemoizedFn } from 'ahooks'
-import { Flex, Progress, Tooltip } from 'antd'
+import { Flex, Tooltip } from 'antd'
 import classNames from 'classnames'
 
 import IconButton from '@/components/icon-button'
+import SLoading from '@/components/s-loading'
 import SRender from '@/components/s-render'
 import { useTask } from '@/pages/mange/task/state'
 import UploadTask from '@/pages/mange/task/upload-task'
@@ -45,9 +46,9 @@ export default function Task () {
 
   const LoadingRender = useMemoizedFn(() => (
     <Flex align={'center'} gap={6}>
-      <Flex align={'center'} gap={4}>
-        <Progress percent={total ? (successTotal + errorTotal) * 100 / total : 0} strokeWidth={16} size={17} type={'circle'} />
-        <div>{successTotal + errorTotal} / {total}</div>
+      <Flex align={'center'} gap={6}>
+        <div><SLoading size={18} /></div>
+        <div>{successTotal + errorTotal} / {total}，</div>
       </Flex>
       <div>{t('任务正在执行，请不要关闭或刷新页面')}</div>
     </Flex>
