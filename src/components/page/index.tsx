@@ -80,7 +80,8 @@ export default function Page (props: PageProps) {
         margin: '0 auto',
         paddingBottom: isChange !== undefined ? 60 : bottom,
         maxHeight: loading && loadingHiddenBg ? 500 : undefined,
-        overflow: loading && loadingHiddenBg ? 'hidden' : undefined
+        overflow: loading && loadingHiddenBg ? 'hidden' : undefined,
+        minHeight: '110%'
       }}
     >
       <SLoading loading={loading} foreShow={!loadingHiddenBg}>

@@ -163,7 +163,6 @@ export default function Create () {
 
   return (
     <Page
-      loadingHiddenBg
       onOk={onOk}
       onCancel={onCancel}
       isChange={isChange}
