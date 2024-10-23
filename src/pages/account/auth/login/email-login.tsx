@@ -32,11 +32,11 @@ export default function EmailLogin () {
 
   return (
     <div>
-      <Form.Item rules={[{ required: true }, { pattern: EMAIL_REG, message: t('请输入有效的邮箱') }]} label={t('邮箱')} name={'email'}>
-        <Input onPressEnter={onLogin} size={'large'} />
+      <Form.Item rules={[{ required: true }, { pattern: EMAIL_REG, message: t('请输入有效的邮箱') }]} name={'email'}>
+        <Input onPressEnter={onLogin} size={'large'} placeholder={t('邮箱')} />
       </Form.Item>
-      <Form.Item className={'mb0'} name={'password'} label={t('密码')}>
-        <Input.Password onPressEnter={onLogin} autoComplete={'off'} size={'large'} />
+      <Form.Item className={'mb0'} name={'password'}>
+        <Input.Password placeholder={t('密码')} onPressEnter={onLogin} autoComplete={'off'} size={'large'} />
       </Form.Item>
       <Button style={{ marginLeft: -8, marginTop: 4 }} type={'link'} size={'small'}>{t('忘记密码？')}</Button>
       <Button loading={login.loading} onClick={onLogin} className={styles.btn} block type={'primary'} size={'large'}>

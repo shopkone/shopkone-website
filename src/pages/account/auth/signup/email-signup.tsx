@@ -96,13 +96,13 @@ export default function EmailSignup () {
           pattern: EMAIL_REG,
           message: t('请输入有效的邮箱')
         }]}
-        label={t('邮箱')}
         name={'email'}
       >
-        <Input onPressEnter={registerAccount} size={'large'} />
+        <Input placeholder={t('邮箱')} onPressEnter={registerAccount} size={'large'} />
       </Form.Item>
-      <Form.Item className={sendEmail ? 'mb0' : ''} name={'code'} label={t('验证码')}>
+      <Form.Item className={sendEmail ? 'mb0' : ''} name={'code'}>
         <Input
+          placeholder={t('验证码')}
           onPressEnter={registerAccount}
           suffix={
             <Button
@@ -141,8 +141,8 @@ export default function EmailSignup () {
           {t('验证码已发送至邮箱', { email: sendEmail })}
         </Flex>
       </SRender>
-      <Form.Item name={'password'} className={'mb0'} label={t('密码')}>
-        <Input.Password onPressEnter={registerAccount} autoComplete={'off'} size={'large'} />
+      <Form.Item name={'password'} className={'mb0'}>
+        <Input.Password onPressEnter={registerAccount} placeholder={t('密码')} autoComplete={'off'} size={'large'} />
       </Form.Item>
       <Progress
         showInfo={false}
