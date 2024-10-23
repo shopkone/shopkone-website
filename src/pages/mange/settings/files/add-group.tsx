@@ -22,7 +22,7 @@ export default function AddGroup (props: AddGroupProps) {
 
   const addGroup = useRequest(FileGroupAddApi, { manual: true })
   const editGroup = useRequest(FileGroupUpdateApi, { manual: true })
-  const { t } = useTranslation('product')
+  const { t } = useTranslation('settings', { keyPrefix: 'file' })
 
   const onAdd = async () => {
     if (!name) return

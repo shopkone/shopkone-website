@@ -44,7 +44,7 @@ export default function FileInfo (props: FileInfoProps) {
   const oss = useOss()
 
   const groupName = groups.find(item => item.id === info?.data?.group_id)?.name
-  const { t } = useTranslation('product')
+  const { t } = useTranslation('settings', { keyPrefix: 'file' })
 
   const tranTimer = (time: number) => {
     const minutes = Math.floor(time / 60)
@@ -185,7 +185,7 @@ export default function FileInfo (props: FileInfoProps) {
                     <div>{t('添加时间')} {dayjs(info?.data?.created_at).format('MM/DD/YYYY')}</div>
                     <SRender render={groupName}>
                       <Typography.Text ellipsis={{ tooltip: true }} style={{ width: 300 }}>
-                        {t('按')} {groupName} {t('分组')}
+                        {t('分组', { name: groupName })}
                       </Typography.Text>
                     </SRender>
                   </Flex>

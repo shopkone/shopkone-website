@@ -26,7 +26,7 @@ export default function Filters (props: FiltersProps) {
   const { onChange, value, groupName } = props
   const [labels, setLabels] = useState<Record<string, ReactNode>>({})
 
-  const { t } = useTranslation('product')
+  const { t } = useTranslation('settings', { keyPrefix: 'file' })
 
   const options = [
     { value: FileType.Image, label: t('图片') },
@@ -58,8 +58,8 @@ export default function Filters (props: FiltersProps) {
           gap={8}
         >
           <FilterNumberRange
-            maxLabel={t('最大大小')}
-            minLabel={t('最小大小')}
+            maxLabel={t('最大')}
+            minLabel={t('最小')}
             unit={'MB'}
             onChange={(v) => { onChange?.({ ...value, file_size: v }) }}
             onLabelChange={(l) => { setLabels({ ...labels, file_size: l }) }}

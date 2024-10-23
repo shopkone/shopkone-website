@@ -19,7 +19,7 @@ export default function ReplaceImage (props: ReplaceImageProps) {
   const { id, onLoading } = props
   const updateFile = useRequest(FileUpdateApi, { manual: true })
   const { upload } = useUpload()
-  const { t } = useTranslation('product')
+  const { t } = useTranslation('settings', { keyPrefix: 'file' })
 
   const onUpload = async (files: UploadFileType[]) => {
     if (files?.[0]?.status !== 'wait') return
@@ -28,7 +28,7 @@ export default function ReplaceImage (props: ReplaceImageProps) {
       onLoading(true)
       const res = await upload({ ...files[0], status: 'uploading' })
       await updateFile.runAsync({ id, src: res.path })
-      sMessage.success(t('替换成功'))
+      sMessage.success(t('替换成功1'))
     } finally {
       onLoading(false)
     }

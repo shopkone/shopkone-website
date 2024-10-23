@@ -19,7 +19,7 @@ export default function ReplaceCover (props: ReplaceCoverProps) {
   const { id, onLoading } = props
   const updateFile = useRequest(FileUpdateApi, { manual: true })
   const { upload } = useUpload()
-  const { t } = useTranslation('product')
+  const { t } = useTranslation('settings', { keyPrefix: 'file' })
 
   const onUpload = async (files: UploadFileType[]) => {
     if (files?.[0]?.status !== 'wait') return
@@ -40,7 +40,7 @@ export default function ReplaceCover (props: ReplaceCoverProps) {
       maxSize={1024 * 1024 * 10}
       onChange={onUpload}
     >
-      <Tooltip title={t('替换封面')}>
+      <Tooltip title={t('替换封面1')}>
         <Button
           onMouseDown={e => { e.stopPropagation() }}
           className={styles.actionsIcon}

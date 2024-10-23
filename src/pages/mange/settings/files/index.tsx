@@ -47,7 +47,7 @@ export default function Files () {
   const [loadingList, setLoadingList] = useState<number[]>([])
 
   const modal = useModal()
-  const { t } = useTranslation('product')
+  const { t } = useTranslation('settings', { keyPrefix: 'file' })
 
   const onCopy = (link: string) => {
     navigator.clipboard.writeText(link)
@@ -178,10 +178,10 @@ export default function Files () {
 
   const onBatchDelete = () => {
     modal.confirm({
-      title: `${t('删除')} ${selected?.length} ${t('文件吗？')}`, // 'Delete {number} files?'
+      title: t('删除1', { count: selected?.length }),
       content: t('此操作无法撤销，文件将从您 Shopkone 商店的所有位置移除。'), // 'This can’t be undone. The files will be removed from all places they’re being used in your Shopkone store.'
       okButtonProps: { type: 'primary', danger: true },
-      okText: t('删除'), // 'Delete'
+      okText: t('删除2'), // 'Delete'
       onOk: async () => {
         await filesDelete.runAsync({ ids: selected })
         sMessage.success(t('成功删除文件')) // 'Delete files successfully'
@@ -266,14 +266,15 @@ export default function Files () {
               loading={list.loading}
               empty={{
                 title: params.group_id
-                  ? `${t('在')} ${groupList?.data?.find(item => item.id === params.group_id)?.name} ${t('组中没有文件')}`
+                  // ? `${t('在')} ${groupList?.data?.find(item => item.id === params.group_id)?.name} ${t('组中没有文件')}`
+                  ? t('分组没文件', { name: groupList?.data?.find(item => item.id === params.group_id)?.name })
                   : t('上传和管理您的文件'),
-                desc: t('文件可以是图像、视频和压缩包。'),
                 actions: (
                   <Uploader>
-                    <Button type={'primary'}>{t('上传文件')}</Button>
+                    <Button type={'primary'}>{t('上传文件1')}</Button>
                   </Uploader>
-                )
+                ),
+                desc: ''
               }}
               data={list?.data?.list || []}
               columns={columns}

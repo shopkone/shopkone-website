@@ -33,7 +33,7 @@ export default function Group (props: GroupProps) {
 
   const gid = useParams().groupId
   const groupId = Number(gid || 0)
-  const { t } = useTranslation('product')
+  const { t } = useTranslation('settings', { keyPrefix: 'file' })
 
   const groups = useMemo(() => [{ id: 0, name: t('所有文件'), count: 0 }, ...(list || [])], [list])
 
@@ -109,7 +109,7 @@ export default function Group (props: GroupProps) {
         <div className={styles.sideBottom}>
           <Button onClick={() => { open.edit() }} block>
             <IconPlus size={14} />
-            {t('添加分组')}
+            {t('添加分组1')}
           </Button>
         </div>
       </SCard>

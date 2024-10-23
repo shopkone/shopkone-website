@@ -23,7 +23,7 @@ export default function MoveGroup (props: MoveGroupProps) {
   const [form] = Form.useForm()
 
   const type = Form.useWatch('type', form)
-  const { t } = useTranslation('product')
+  const { t } = useTranslation('settings', { keyPrefix: 'file' })
 
   const onOk = async () => {
     if (!open.data?.length) return
@@ -57,7 +57,8 @@ export default function MoveGroup (props: MoveGroupProps) {
       onOk={onOk}
       confirmLoading={move.loading}
       onCancel={open.close}
-      title={t(`将 ${open?.data?.length} 个文件移动到新组`)}
+      // title={t(`将 ${open?.data?.length} 个文件移动到新组`)}
+      title={t('移动x个文件', { x: open?.data?.length })}
       open={open.open}
     >
       <Form initialValues={{ type: 1 }} form={form} layout={'vertical'} style={{ padding: '0 16px' }}>
