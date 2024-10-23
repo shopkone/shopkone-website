@@ -280,7 +280,7 @@ function SelectFiles (props: SelectFilesProps) {
               <SRender className={styles.empty} render={!list?.length && !fileList.loading}>
                 <div style={{ width: 700 }}>
                   <Empty
-                    title={hasSearch ? t('未搜索到任何内容') : t('请上传你的素材')}
+                    title={hasSearch ? t('未搜索到任何内容') : t('上传并管理您的素材')}
                     desc={hasSearch ? t('尝试修改搜索条件或上传新的素材') : ''}
                     actions={
                       <Flex gap={12}>
