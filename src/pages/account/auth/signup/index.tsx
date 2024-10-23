@@ -1,10 +1,13 @@
 import { Suspense } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Outlet, useNavigate } from 'react-router-dom'
+import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { ArrowRight } from '@icon-park/react'
+import { IconChevronLeft } from '@tabler/icons-react'
 import { Button, Flex, Form } from 'antd'
 
+import IconButton from '@/components/icon-button'
 import SLoading from '@/components/s-loading'
+import SRender from '@/components/s-render'
 
 import styles from '../../index.module.less'
 
@@ -13,8 +16,16 @@ export default function Signup () {
   const { t } = useTranslation('account', { keyPrefix: 'signup' })
   const nav = useNavigate()
 
+  const hasEmail = useLocation().pathname.includes('email')
+
   return (
-    <Flex vertical className={'fit-height fit-width'}>
+    <Flex vertical className={'fit-width fit-height'} style={{ position: 'relative' }}>
+      <SRender render={hasEmail} style={{ position: 'absolute', left: -42, top: -48 }}>
+        <IconButton onClick={() => { nav('/auth/signup') }} type={'text'} size={32}>
+          <IconChevronLeft size={24} />
+        </IconButton>
+      </SRender>
+
       <div className={styles.title}>{t('注册 Shopkone')}</div>
 
       <Form style={{ flex: 1 }} layout={'vertical'} form={form} colon={false}>
