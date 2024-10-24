@@ -13,7 +13,7 @@ import styles from './index.module.less'
 
 export interface SLocationProps {
   onClick?: (item: LocationListRes) => void
-  extra?: (item: LocationListRes) => React.ReactNode
+  extra?: (item: LocationListRes, index: number) => React.ReactNode
   value?: LocationListRes[]
   hideTag?: boolean
   hideLogo?: boolean
@@ -27,7 +27,7 @@ export default function SLocation (props: SLocationProps) {
     <SLoading loading={countries.loading}>
       <div className={styles.container}>
         {
-          value?.map(item => (
+          value?.map((item, index) => (
             <Flex
               onClick={() => onClick?.(item)}
               key={item.id}
@@ -67,7 +67,7 @@ export default function SLocation (props: SLocationProps) {
                   {formatInfo(countries, item.address)}
                 </Typography.Text>
               </div>
-              {extra?.(item)}
+              {extra?.(item, index)}
             </Flex>
           ))
         }

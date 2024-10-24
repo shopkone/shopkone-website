@@ -1,6 +1,6 @@
 import { Suspense, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Outlet, useNavigate } from 'react-router-dom'
+import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useRequest } from 'ahooks'
 import { Button, Flex, TabsProps } from 'antd'
 
@@ -13,11 +13,13 @@ import { useShippingState } from '@/pages/mange/settings/shipping/state'
 import styles from './index.module.less'
 
 export default function Shipping () {
-  const locationList = useRequest(LocationListApi)
+  const locationList = useRequest(async () => await LocationListApi({ active: true }))
   const nav = useNavigate()
   const shippingState = useShippingState()
   const countries = useCountries()
   const { t } = useTranslation('settings', { keyPrefix: 'shipping' })
+  let pathname = useLocation().pathname?.split('/')?.pop()
+  pathname = pathname === 'shipping' ? '' : pathname
 
   const tabs: TabsProps['items'] = [
     { label: t('快递发货'), key: '' },
@@ -35,11 +37,16 @@ export default function Shipping () {
   }, [locationList.data])
 
   return (
-    <Page bottom={64} width={700}>
-      <Flex className={styles.tabs}>
+    <Page loading={locationList.loading || countries.loading} bottom={64} width={700}>
+      <Flex gap={4} className={styles.tabs}>
         {
             tabs.map(tab => (
-              <Button type={'text'} key={tab.key} onClick={() => { onTabClick(tab.key) }}>
+              <Button
+                className={tab.key === pathname ? styles.checked : ''}
+                type={'text'}
+                key={tab.key}
+                onClick={() => { onTabClick(tab.key) }}
+              >
                 {tab.label}
               </Button>
             ))

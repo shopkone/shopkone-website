@@ -5,13 +5,16 @@ import { Button, Empty, Flex } from 'antd'
 
 import SCard from '@/components/s-card'
 import SLocation from '@/components/s-location'
+import SRender from '@/components/s-render'
+import Status from '@/components/status'
 import { useShippingState } from '@/pages/mange/settings/shipping/state'
 
 import styles from './index.module.less'
 
 export default function CourierService () {
   const nav = useNavigate()
-  const defaultLocation = useShippingState().locations?.find(item => item.default)
+  const locations = useShippingState().locations
+  const defaultLocation = locations?.find(item => item.default)
   const { t } = useTranslation('settings', { keyPrefix: 'shipping' })
 
   return (
@@ -23,7 +26,10 @@ export default function CourierService () {
         )}
         title={t('默认地点')}
       >
-        <SLocation hideTag value={defaultLocation ? [defaultLocation] : []} />
+        <SLocation
+          hideTag
+          value={defaultLocation ? [defaultLocation] : []}
+        />
       </SCard>
 
       <SCard
@@ -31,20 +37,27 @@ export default function CourierService () {
         title={t('发货点路由')}
         tips={t('当新订单产生时，将根据此路由规则，自动为订单分配库存满足发货地点。')}
       >
-        <SLocation hideTag value={defaultLocation ? [defaultLocation] : []} />
+        <Flex gap={8}>
+          {t('当前顺序：')}
+          {
+            locations?.map((item, index) => (
+              <Flex key={item.id} align={'center'} wrap={'wrap'}>
+                <SRender render={index}>
+                  <IconChevronRight style={{ marginRight: 9 }} size={15} />
+                </SRender>
+                <Status>{item.name}</Status>
+              </Flex>
+            ))
+          }
+        </Flex>
       </SCard>
 
       <SCard
-        extra={
-          <Button onClick={() => { nav('courier-service/change') }} size={'small'} type={'link'}>
-            {t('创建自定义方案')}
-          </Button>
-        }
         title={t('运费方案')}
         tips={t('设置店铺可配送的区域，以及顾客在结算时可选择的运费方案。')}
       >
         <div className={styles.table}>
-          <div className={styles.title}>{t('通用物流方案')}</div>
+          <div className={styles.title}>{t('通用运费方案')}</div>
           <Flex vertical>
             <Flex align={'center'} className={styles.item}>
               <div className={styles.left}>
@@ -58,7 +71,7 @@ export default function CourierService () {
                   <div>{t('x发货地点', { count: 2 })}</div>
                   <div style={{ position: 'relative', top: 3, marginLeft: 12, marginRight: 12 }}><IconArrowRight size={15} /></div>
                   <div style={{ position: 'relative', top: 2, marginRight: 4 }}><IconWorld size={16} /></div>
-                  <div>{t('x送达区域', { count: 2 })}</div>
+                  <div>{t('x送达地区', { count: 2 })}</div>
                 </Flex>
               </div>
               <div className={styles['right-icon']}>
@@ -69,9 +82,12 @@ export default function CourierService () {
         </div>
 
         <div style={{ marginTop: 16 }} className={styles.table}>
-          <div className={styles.title}>
-            {t('自定义方案')}
-          </div>
+          <Flex align={'center'} justify={'space-between'} className={styles.title}>
+            {t('自定义运费方案')}
+            <Button onClick={() => { nav('courier-service/change') }} size={'small'} type={'link'}>
+              {t('添加自定义运费方案')}
+            </Button>
+          </Flex>
           <Empty
             image={
               <div style={{ paddingTop: 32 }}>
@@ -80,14 +96,14 @@ export default function CourierService () {
             }
             description={(
               <div className={'secondary'}>
-                {t('创建一组新的自定义物流方案，您可以为该物流方案设置指定运输区域下的运费')}
+                {t('单独为商品设置不同的运费')}
               </div>
             )}
             style={{ paddingBottom: 24 }}
           >
             <Flex justify={'center'}>
               <Button onClick={() => { nav('/settings/shipping/courier-service/change') }} type={'primary'}>
-                {t('创建自定义方案')}
+                {t('添加自定义运费方案')}
               </Button>
             </Flex>
           </Empty>
