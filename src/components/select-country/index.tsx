@@ -23,19 +23,19 @@ export default function SelectCountry (props: SelectCountryProps) {
   const { onChange, value = [], height } = props
   const countries = useCountries()
   const [tree, setTree] = useState<CountryTree[]>([])
-  const { t } = useTranslation('settings', { keyPrefix: 'selectCountry' })
+  const { t } = useTranslation('common', { keyPrefix: 'selectCountry' })
   const containerRef = useRef<HTMLDivElement>(null)
   const [searchKey, setSearchKey] = useState('')
 
   useEffect(() => {
     if (!countries.data || tree?.length) return
     const continent: CountryTree[] = [
-      { code: 'Europe', name: t('xx'), children: [] },
-      { code: 'Asia', name: t('xx'), children: [] },
-      { code: 'Africa', name: t('xx'), children: [] },
-      { code: 'North America', name: t('xx'), children: [] },
-      { code: 'South America', name: t('xx'), children: [] },
-      { code: 'Oceania', name: t('xx'), children: [] }
+      { code: 'Europe', name: t('欧洲'), children: [] },
+      { code: 'Asia', name: t('亚洲'), children: [] },
+      { code: 'Africa', name: t('非洲'), children: [] },
+      { code: 'North America', name: t('北美洲'), children: [] },
+      { code: 'South America', name: t('南美洲'), children: [] },
+      { code: 'Oceania', name: t('大洋洲'), children: [] }
     ]
     countries.data.forEach((country) => {
       const continentIndex = continent.findIndex(item => item.code === country.continent)
