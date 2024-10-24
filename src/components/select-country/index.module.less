@@ -1,0 +1,48 @@
+.select {
+  width: 0;
+  height: 0;
+  padding: 0;
+  overflow: hidden;
+  margin: 0;
+}
+
+.tree {
+  position: relative;
+  top: -12px !important;
+  left: 0 !important;
+  box-shadow: none;
+  padding: 0 12px !important;
+  background-color: #fff;
+  :global {
+    padding: 12px;
+    .shopkone-select-tree-title {
+      line-height: 28px;
+    }
+    .shopkone-select-tree-checkbox {
+      margin-top: 6px !important;
+      margin-left: 4px;
+    }
+    .shopkone-select-tree-switcher {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 24px;
+      position: relative;
+      top: 1px;
+      svg {
+        font-size: 12px;
+      }
+    }
+    .shopkone-select-tree-list-holder {
+      background-color: #fff;
+    }
+  }
+}
+
+.container {
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+  border-radius: 12px;
+  background-color: #fff;
+  padding-top: 12px;
+}

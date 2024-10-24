@@ -17,10 +17,11 @@ export interface SLocationProps {
   value?: LocationListRes[]
   hideTag?: boolean
   hideLogo?: boolean
+  style?: (item: LocationListRes, index: number) => React.CSSProperties
 }
 
 export default function SLocation (props: SLocationProps) {
-  const { onClick, extra, value, hideTag, hideLogo } = props
+  const { onClick, extra, value, hideTag, hideLogo, style } = props
   const countries = useCountries()
 
   return (
@@ -34,6 +35,7 @@ export default function SLocation (props: SLocationProps) {
               gap={16}
               align={'center'}
               className={classNames([styles.item, { [styles['click-item']]: onClick }])}
+              style={style?.(item, index)}
             >
               <SRender render={!hideLogo}>
                 <Flex align={'center'} justify={'center'} className={styles.mapPin}>

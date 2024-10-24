@@ -168,7 +168,7 @@ export default function SelectProduct (props: SelectProductProps) {
   }, [params])
 
   useEffect(() => {
-    if (!info.open || list.length) return
+    if (!info.open) return
     setList([])
     setSelected(info.data || [])
     setParams({ page: 1, page_size: 50 })
@@ -211,7 +211,7 @@ export default function SelectProduct (props: SelectProductProps) {
         <Filters value={params} onChange={p => { setParams({ ...params, ...p }) }} />
         <div style={{ overflowY: 'auto', height: 550, paddingBottom: 24 }}>
           <STable
-            loading={productList.loading ? !list.length : false}
+            loading={productList.loading ? !list.length || !showMoreLoading : false}
             init={!!productList.data}
             columns={columns}
             data={list || []}
@@ -223,7 +223,11 @@ export default function SelectProduct (props: SelectProductProps) {
               {t('加载中')}
             </Flex>
           </SRender>
-          <SRender style={{ display: 'flex', paddingTop: 24, justifyContent: 'center' }} render={!showMoreLoading} className={'fit-width secondary'}>
+          <SRender
+            style={{ display: 'flex', paddingTop: 24, justifyContent: 'center' }}
+            render={!showMoreLoading && !productList.loading}
+            className={'fit-width secondary'}
+          >
             - {t('已经到底了')} -
           </SRender>
         </div>
