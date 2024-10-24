@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { IconSearch } from '@tabler/icons-react'
 import { Input, TreeSelect } from 'antd'
 
 import { CountriesRes, useCountries } from '@/api/base/countries'
@@ -51,6 +52,7 @@ export default function SelectCountry (props: SelectCountryProps) {
       <div className={styles.container}>
         <div style={{ padding: '0 12px' }}>
           <Input
+            prefix={<IconSearch size={14} style={{ position: 'relative', top: 1 }} />}
             placeholder={t('搜索国家/地区')}
             allowClear
             value={searchKey}

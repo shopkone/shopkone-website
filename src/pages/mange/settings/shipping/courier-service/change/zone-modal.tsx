@@ -65,7 +65,11 @@ export default function ZoneModal (props: ZoneModalProps) {
 
         <Input />
 
-        <div style={{ marginBottom: 4, marginTop: 16 }}>
+        <div style={{
+          marginBottom: 4,
+          marginTop: 16
+        }}
+        >
           {t('国家/地区')}
         </div>
 

@@ -22,7 +22,14 @@ export default function Zones (props: ZonesProps) {
   }
 
   return (
-    <Card title={t('收货地点')}>
+    <Card
+      extra={
+        <Button type={'link'} size={'small'} onClick={() => { openInfo.edit() }}>
+          {t('添加区域')}
+        </Button>
+      }
+      title={t('收货地点')}
+    >
       <SRender render={!value.length}>
         <Empty
           image={<IconWorld size={64} color={'#eee'} />}
