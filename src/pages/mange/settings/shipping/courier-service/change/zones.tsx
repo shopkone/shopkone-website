@@ -6,7 +6,7 @@ import { Button, Card, Empty, Flex, Tooltip } from 'antd'
 import classNames from 'classnames'
 
 import { useCountries } from '@/api/base/countries'
-import { BaseShippingZone } from '@/api/shipping/base'
+import { BaseShippingZone, BaseShippingZoneFee } from '@/api/shipping/base'
 import SRender from '@/components/s-render'
 import { useOpen } from '@/hooks/useOpen'
 import FeeModal from '@/pages/mange/settings/shipping/courier-service/change/fee-modal'
@@ -24,6 +24,7 @@ export default function Zones (props: ZonesProps) {
   const { onChange, value = [] } = props
   const { t } = useTranslation('settings', { keyPrefix: 'shipping' })
   const openInfo = useOpen<BaseShippingZone>()
+  const feeOpenInfo = useOpen<BaseShippingZoneFee>()
   const countries = useCountries()
   const [expands, setExpands] = useState<number[]>()
 
@@ -132,7 +133,9 @@ export default function Zones (props: ZonesProps) {
                     <Flex justify={'center'} align={'center'} style={{ padding: 16 }} vertical>
                       {t('请为该区域添加运费')}
 
-                      <Button type={'primary'} style={{ marginTop: 16 }}>{t('添加运费')}</Button>
+                      <Button onClick={() => { feeOpenInfo.edit() }} type={'primary'} style={{ marginTop: 16 }}>
+                        {t('添加运费')}
+                      </Button>
                     </Flex>
                   </SRender>
                 </div>
@@ -150,7 +153,8 @@ export default function Zones (props: ZonesProps) {
 
       <SRender render={value.length}>
         <Button
-          style={{ marginTop: 16 }} onClick={() => {
+          style={{ marginTop: 16 }}
+          onClick={() => {
             openInfo.edit()
           }}
         >
@@ -165,7 +169,7 @@ export default function Zones (props: ZonesProps) {
         openInfo={openInfo}
       />
 
-      <FeeModal />
+      <FeeModal openInfo={feeOpenInfo} />
     </Card>
   )
 }

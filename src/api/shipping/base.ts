@@ -3,14 +3,7 @@ export enum ShippingType {
   CustomerExpressDelivery = 2 // 自定义方案
 }
 
-/* var (
-ShippingZoneFeeMatchRuleOrderPrice   ShippingZoneFeeMatchRule = 1 // 订单价格匹配
-ShippingZoneFeeMatchRuleProductPrice ShippingZoneFeeMatchRule = 2 // 商品价格
-ShippingZoneFeeMatchRuleProductCount ShippingZoneFeeMatchRule = 3 // 商品数量匹配
-ShippingZoneFeeMatchRuleOrderWeight  ShippingZoneFeeMatchRule = 4 // 订单重量匹配
-) */
-
-export enum ShippingZoneFeeMatchRule {
+export enum ShippingZoneFeeRule {
   OrderPrice = 1, // 订单价格匹配
   ProductPrice = 2, // 商品价格
   ProductCount = 3, // 商品数量匹配
@@ -23,22 +16,26 @@ export enum ShippingZoneFeeType {
   Count = 3 // 按商品数量
 }
 
+export interface BaseShippingZoneFeeCondition {
+  id: number
+  fixed: number
+  first: number
+  first_fee: number
+  next: number
+  next_fee: number
+  max: number
+  min: number
+}
+
 export interface BaseShippingZoneFee {
   id: number
   name: string
   note: string
-  match_rule: ShippingZoneFeeMatchRule
-  match_max: number
-  match_min: number
-  match_weight_unit: string
+  weight_unit: string
   type: ShippingZoneFeeType
-  fixed: number
-  first: number
-  first_uint: string
-  first_fee: number
-  next: number
-  next_uint: string
-  next_fee: number
+  currency_code: string
+  conditions?: BaseShippingZoneFeeCondition[]
+  rule?: ShippingZoneFeeRule
 }
 
 export interface BaseShippingZone {

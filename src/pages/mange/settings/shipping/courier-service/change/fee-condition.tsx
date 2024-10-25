@@ -3,44 +3,51 @@ import { useTranslation } from 'react-i18next'
 import { Button, Flex, Form } from 'antd'
 
 import { useCurrencyList } from '@/api/base/currency-list'
-import { ShippingZoneFeeMatchRule, ShippingZoneFeeType } from '@/api/shipping/base'
+import { BaseShippingZoneFeeCondition, ShippingZoneFeeRule, ShippingZoneFeeType } from '@/api/shipping/base'
 import SInputNumber from '@/components/s-input-number'
+import SRender from '@/components/s-render'
 import STable, { STableProps } from '@/components/s-table'
 
-export default function FeeCondition () {
+export interface FeeConditionProps {
+  value?: BaseShippingZoneFeeCondition[]
+  onChange?: (value: BaseShippingZoneFeeCondition[]) => void
+}
+
+export default function FeeCondition (props: FeeConditionProps) {
+  const { value, onChange } = props
   const { t } = useTranslation('settings', { keyPrefix: 'shipping' })
   const currencyList = useCurrencyList()
   const form = Form.useFormInstance()
-  const match_rule: ShippingZoneFeeMatchRule = Form.useWatch('match_rule', form)
+  const rule: ShippingZoneFeeRule = Form.useWatch('rule', form)
   const type: ShippingZoneFeeType = Form.useWatch('type', form)
   const currency_code = Form.useWatch('currency_code', form)
-  const weight_uint = Form.useWatch('weight_uint', form)
+  const weight_unit = Form.useWatch('weight_unit', form)
   const currency = currencyList?.data?.find(item => item.code === currency_code)
 
   const options = [
-    { label: t('按订单总价'), value: ShippingZoneFeeMatchRule.OrderPrice },
-    { label: t('按商品总价'), value: ShippingZoneFeeMatchRule.ProductPrice },
-    { label: t('按商品件数'), value: ShippingZoneFeeMatchRule.ProductCount },
-    { label: t('按包裹重量'), value: ShippingZoneFeeMatchRule.OrderWeight }
+    { label: t('按订单总价'), value: ShippingZoneFeeRule.OrderPrice },
+    { label: t('按商品总价'), value: ShippingZoneFeeRule.ProductPrice },
+    { label: t('按商品件数'), value: ShippingZoneFeeRule.ProductCount },
+    { label: t('按包裹重量'), value: ShippingZoneFeeRule.OrderWeight }
   ]
 
   const isCount = type === ShippingZoneFeeType.Count
 
-  const isPriceRange = match_rule === ShippingZoneFeeMatchRule.OrderPrice || match_rule === ShippingZoneFeeMatchRule.ProductPrice
-  const isCountRange = match_rule === ShippingZoneFeeMatchRule.ProductCount
+  const isPriceRange = rule === ShippingZoneFeeRule.OrderPrice || rule === ShippingZoneFeeRule.ProductPrice
+  const isCountRange = rule === ShippingZoneFeeRule.ProductCount
 
   const rangeSuffix = useMemo(() => {
-    if (match_rule === ShippingZoneFeeMatchRule.ProductCount) {
+    if (rule === ShippingZoneFeeRule.ProductCount) {
       return t('件')
     }
-    if (match_rule === ShippingZoneFeeMatchRule.OrderWeight) {
-      return weight_uint
+    if (rule === ShippingZoneFeeRule.OrderWeight) {
+      return weight_unit
     }
-  }, [match_rule])
+  }, [rule])
 
   const columns: STableProps['columns'] = [
     {
-      title: options.find(item => item.value === match_rule)?.label,
+      title: options.find(item => item.value === rule)?.label,
       code: 'march_rule',
       name: 'march_rule',
       render: () => {
@@ -62,14 +69,15 @@ export default function FeeCondition () {
           </Flex>
         )
       },
-      width: 250
+      width: 250,
+      hidden: !rule
     },
     {
       title: t('运费'),
       code: 'fixed',
       name: 'fixed',
-      render: () => (
-        <SInputNumber />
+      render: (fixed: number) => (
+        <SInputNumber value={fixed} money />
       ),
       width: 150,
       hidden: type !== ShippingZoneFeeType.Fixed
@@ -78,7 +86,7 @@ export default function FeeCondition () {
       title: isCount ? t('首件') : t('首重'),
       code: 'first_weight',
       name: 'first_weight',
-      render: () => <SInputNumber suffix={isCount ? t('件') : weight_uint} />,
+      render: () => <SInputNumber suffix={isCount ? t('件') : weight_unit} />,
       width: 150,
       hidden: type === ShippingZoneFeeType.Fixed
     },
@@ -94,7 +102,7 @@ export default function FeeCondition () {
       title: isCount ? t('续件') : t('续重'),
       code: 'next_weight',
       name: 'next_weight',
-      render: () => <SInputNumber suffix={isCount ? t('件') : weight_uint} />,
+      render: () => <SInputNumber suffix={isCount ? t('件') : weight_unit} />,
       width: 150,
       hidden: type === ShippingZoneFeeType.Fixed
     },
@@ -115,16 +123,32 @@ export default function FeeCondition () {
     }
   ]
 
+  if (value?.length === 1 && type === ShippingZoneFeeType.Fixed && !rule) {
+    return (
+      <Flex
+        align={'center'} style={{
+          marginBottom: 16,
+          width: 400
+        }}
+      >
+        <div style={{ flexShrink: 0 }}>{t('运费价格：')}</div>
+        <SInputNumber value={value[0].fixed} money />
+      </Flex>
+    )
+  }
+
   return (
     <div>
       <STable
         init
         borderless
-        className={'table-white-header table-border'}
+        className={'table-border'}
         data={[{ id: 123 }]}
         columns={columns}
       />
-      <Button style={{ marginTop: 16 }}>{t('添加区间')}</Button>
+      <SRender render={rule}>
+        <Button style={{ marginTop: 16 }}>{t('添加区间')}</Button>
+      </SRender>
     </div>
   )
 }
