@@ -57,7 +57,7 @@ export default function FeeModal (props: FeeModalProps) {
 
   useEffect(() => {
     if (!openInfo.open) return
-    if (openInfo.data) {
+    if (openInfo.data?.fee) {
       form.setFieldsValue(openInfo.data?.fee)
     } else {
       const item: BaseShippingZoneFee = {
