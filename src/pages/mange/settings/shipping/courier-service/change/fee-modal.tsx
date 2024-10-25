@@ -13,11 +13,12 @@ import FeeCondition from '@/pages/mange/settings/shipping/courier-service/change
 import { genId } from '@/utils/random'
 
 export interface FeeModalProps {
-  openInfo: UseOpenType<BaseShippingZoneFee>
+  openInfo: UseOpenType<{ fee?: BaseShippingZoneFee, zoneId: number }>
+  onConfirm: (value: { fee?: BaseShippingZoneFee, zoneId: number }) => void
 }
 
 export default function FeeModal (props: FeeModalProps) {
-  const { openInfo } = props
+  const { openInfo, onConfirm } = props
   const [form] = Form.useForm()
   const { t } = useTranslation('settings', { keyPrefix: 'shipping' })
   const currency = useCurrencyList()
@@ -42,14 +43,22 @@ export default function FeeModal (props: FeeModalProps) {
     if (is) {
       form.setFieldValue('rule', ShippingZoneFeeRule.OrderPrice)
     } else {
+      form.setFieldValue('conditions', [form.getFieldValue('conditions')[0]])
       form.setFieldValue('rule', undefined)
     }
+  }
+
+  const onOk = async () => {
+    await form.validateFields()
+    const values = form.getFieldsValue()
+    onConfirm({ fee: values, zoneId: openInfo.data?.zoneId || 0 })
+    openInfo.close()
   }
 
   useEffect(() => {
     if (!openInfo.open) return
     if (openInfo.data) {
-      form.setFieldsValue(openInfo.data)
+      form.setFieldsValue(openInfo.data?.fee)
     } else {
       const item: BaseShippingZoneFee = {
         id: genId(),
@@ -67,12 +76,12 @@ export default function FeeModal (props: FeeModalProps) {
   }, [openInfo.open])
 
   return (
-    <SModal title={openInfo?.data ? t('编辑运费') : t('添加运费')} onCancel={openInfo.close} open={openInfo.open} width={1000} >
-      <Form form={form} style={{ height: 600, padding: 16, overflowY: 'auto' }} layout={'vertical'}>
-        <Form.Item label={t('运费名称（客户选择物流方案时展示）')}>
-          <Input style={{ maxWidth: 600 }} placeholder={t('请填写运费名称')} />
+    <SModal onOk={onOk} title={openInfo?.data?.fee ? t('编辑运费') : t('添加运费')} onCancel={openInfo.close} open={openInfo.open} width={1000} >
+      <Form id={'form_id_scroll_handle_to_bottom'} form={form} style={{ height: 600, overflowY: 'auto', padding: '0 16px 32px 16px' }} layout={'vertical'}>
+        <Form.Item required={false} name={'name'} rules={[{ required: true, message: t('请填写运费名称') }]} style={{ paddingTop: 16 }} label={t('运费名称（客户选择物流方案时展示）')}>
+          <Input autoComplete={'off'} style={{ maxWidth: 600 }} placeholder={t('请填写运费名称')} />
         </Form.Item>
-        <Form.Item label={t('补充说明')}>
+        <Form.Item name={'remarks'} label={t('补充说明')}>
           <Input.TextArea
             style={{ maxWidth: 600 }}
             autoSize={{ minRows: 4, maxRows: 4 }}
@@ -94,18 +103,17 @@ export default function FeeModal (props: FeeModalProps) {
             <Form.Item name={'type'} className={'mb0 flex1'}>
               <SSelect options={feeTypeOptions} />
             </Form.Item>
-            <SRender render={type === ShippingZoneFeeType.Weight}>
-              <Form.Item
-                name={'weight_unit'}
-                className={'mb0'}
-                style={{
-                  width: 141,
-                  marginLeft: 16
-                }}
-              >
-                <SSelect options={WEIGHT_UNIT_OPTIONS} />
-              </Form.Item>
-            </SRender>
+            <Form.Item
+              name={'weight_unit'}
+              className={'mb0'}
+              style={{
+                width: 141,
+                marginLeft: 16,
+                display: type === ShippingZoneFeeType.Weight ? undefined : 'none'
+              }}
+            >
+              <SSelect options={WEIGHT_UNIT_OPTIONS} />
+            </Form.Item>
           </Flex>
         </Flex>
 

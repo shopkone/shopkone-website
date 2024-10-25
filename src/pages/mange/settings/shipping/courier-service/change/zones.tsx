@@ -8,6 +8,7 @@ import classNames from 'classnames'
 import { useCountries } from '@/api/base/countries'
 import { BaseShippingZone, BaseShippingZoneFee } from '@/api/shipping/base'
 import SRender from '@/components/s-render'
+import STable, { STableProps } from '@/components/s-table'
 import { useOpen } from '@/hooks/useOpen'
 import FeeModal from '@/pages/mange/settings/shipping/courier-service/change/fee-modal'
 import ZoneModal from '@/pages/mange/settings/shipping/courier-service/change/zone-modal'
@@ -24,7 +25,7 @@ export default function Zones (props: ZonesProps) {
   const { onChange, value = [] } = props
   const { t } = useTranslation('settings', { keyPrefix: 'shipping' })
   const openInfo = useOpen<BaseShippingZone>()
-  const feeOpenInfo = useOpen<BaseShippingZoneFee>()
+  const feeOpenInfo = useOpen<{ fee?: BaseShippingZoneFee, zoneId: number }>({ zoneId: 0 })
   const countries = useCountries()
   const [expands, setExpands] = useState<number[]>()
 
@@ -36,6 +37,26 @@ export default function Zones (props: ZonesProps) {
       onChange?.([...value, item])
     }
   }
+
+  const onUpdateFee = (item: { fee?: BaseShippingZoneFee, zoneId: number }) => {
+    const { fee, zoneId } = item
+    if (!fee) return
+    const zone = value.find(i => i.id === zoneId)
+    if (!zone) return
+    const zoneFee = zone.fees.find(i => i.id === fee?.id)
+    if (zoneFee) {
+    } else {
+      zone.fees = [...zone.fees, fee]
+      onChange?.(value?.map(i => i.id === zone.id ? zone : i))
+    }
+  }
+
+  const feeColumns: STableProps['columns'] = [
+    { title: t('运费名称'), code: 'name', name: 'name' },
+    { title: t('运费'), code: 'fees', name: 'fees', render: () => 123 },
+    { title: t('货到付款'), name: 'code', render: () => 123 },
+    { title: '', name: 'id', code: 'id', render: () => 123 }
+  ]
 
   const onExpand = (item: BaseShippingZone) => {
     setExpands(expands?.includes(item.id) ? expands.filter(i => i !== item.id) : [...expands || [], item.id])
@@ -89,7 +110,7 @@ export default function Zones (props: ZonesProps) {
             const width = getTextWidth(names.reduce((i, ii) => ii.country + i, ''), 13) + names.length * 14
             return (
               <div key={item.name}>
-                <div>
+                <div style={{ marginBottom: 8 }}>
                   <Flex align={'center'} justify={'space-between'}>
                     <div className={styles.name}>{item.name}</div>
                     <Flex align={'center'}>
@@ -128,17 +149,25 @@ export default function Zones (props: ZonesProps) {
                   </SRender>
                 </div>
 
-                <div className={styles.areaItem}>
-                  <SRender render={!item?.fees?.length}>
-                    <Flex justify={'center'} align={'center'} style={{ padding: 16 }} vertical>
-                      {t('请为该区域添加运费')}
+                <SRender render={!item?.fees?.length} className={styles.areaItem}>
+                  <Flex justify={'center'} align={'center'} style={{ padding: 16 }} vertical>
+                    {t('请为该区域添加运费')}
 
-                      <Button onClick={() => { feeOpenInfo.edit() }} type={'primary'} style={{ marginTop: 16 }}>
-                        {t('添加运费')}
-                      </Button>
-                    </Flex>
-                  </SRender>
-                </div>
+                    <Button onClick={() => { feeOpenInfo.edit({ zoneId: item.id }) }} type={'primary'} style={{ marginTop: 16 }}>
+                      {t('添加运费')}
+                    </Button>
+                  </Flex>
+                </SRender>
+
+                <SRender render={item?.fees?.length}>
+                  <STable
+                    borderless
+                    className={'table-border'}
+                    data={item.fees}
+                    columns={feeColumns}
+                    init
+                  />
+                </SRender>
                 <SRender
                   render={index !== value.length - 1} className={'line'} style={{
                     margin: '16px 0',
@@ -169,7 +198,7 @@ export default function Zones (props: ZonesProps) {
         openInfo={openInfo}
       />
 
-      <FeeModal openInfo={feeOpenInfo} />
+      <FeeModal onConfirm={onUpdateFee} openInfo={feeOpenInfo} />
     </Card>
   )
 }

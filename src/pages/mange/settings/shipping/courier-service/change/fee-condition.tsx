@@ -1,12 +1,15 @@
-import { useMemo } from 'react'
+import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
+import { IconTrash } from '@tabler/icons-react'
 import { Button, Flex, Form } from 'antd'
 
 import { useCurrencyList } from '@/api/base/currency-list'
 import { BaseShippingZoneFeeCondition, ShippingZoneFeeRule, ShippingZoneFeeType } from '@/api/shipping/base'
+import IconButton from '@/components/icon-button'
 import SInputNumber from '@/components/s-input-number'
 import SRender from '@/components/s-render'
 import STable, { STableProps } from '@/components/s-table'
+import { genId } from '@/utils/random'
 
 export interface FeeConditionProps {
   value?: BaseShippingZoneFeeCondition[]
@@ -36,6 +39,31 @@ export default function FeeCondition (props: FeeConditionProps) {
   const isPriceRange = rule === ShippingZoneFeeRule.OrderPrice || rule === ShippingZoneFeeRule.ProductPrice
   const isCountRange = rule === ShippingZoneFeeRule.ProductCount
 
+  const onUpdateItem = (row: BaseShippingZoneFeeCondition, key: keyof BaseShippingZoneFeeCondition, v: any) => {
+    row[key] = v
+    onChange?.(value?.map(item => ({ ...item, currency_code })) || [])
+  }
+
+  const onRemoveItem = (id: number) => {
+    onChange?.(value?.filter(i => i.id !== id) || [])
+  }
+
+  const onAdd = () => {
+    onChange?.([...(value || []), {
+      id: genId(),
+      min: 0,
+      max: 0,
+      fixed: 0,
+      first: 0,
+      first_fee: 0,
+      next: 0,
+      next_fee: 0
+    }])
+    setTimeout(() => {
+      document.getElementById('form_id_scroll_handle_to_bottom')?.scrollTo({ left: 0, top: 1000 })
+    })
+  }
+
   const rangeSuffix = useMemo(() => {
     if (rule === ShippingZoneFeeRule.ProductCount) {
       return t('件')
@@ -50,21 +78,25 @@ export default function FeeCondition (props: FeeConditionProps) {
       title: options.find(item => item.value === rule)?.label,
       code: 'march_rule',
       name: 'march_rule',
-      render: () => {
+      render: (_, row: BaseShippingZoneFeeCondition) => {
         return (
           <Flex gap={8} align={'center'}>
             <SInputNumber
+              value={row.min}
               uint={isCountRange}
               money={isPriceRange}
               prefix={isPriceRange ? currency?.symbol : undefined}
               suffix={rangeSuffix}
+              onChange={v => { onUpdateItem(row, 'min', v) }}
             />
             <div>-</div>
             <SInputNumber
+              value={row.max}
               uint={isCountRange}
               money={isPriceRange}
               prefix={isPriceRange ? currency?.symbol : undefined}
               suffix={rangeSuffix}
+              onChange={v => { onUpdateItem(row, 'max', v) }}
             />
           </Flex>
         )
@@ -76,17 +108,27 @@ export default function FeeCondition (props: FeeConditionProps) {
       title: t('运费'),
       code: 'fixed',
       name: 'fixed',
-      render: (fixed: number) => (
-        <SInputNumber value={fixed} money />
+      render: (fixed: number, row: BaseShippingZoneFeeCondition) => (
+        <SInputNumber
+          onChange={v => { onUpdateItem(row, 'fixed', v) }}
+          value={fixed}
+          money
+        />
       ),
       width: 150,
       hidden: type !== ShippingZoneFeeType.Fixed
     },
     {
       title: isCount ? t('首件') : t('首重'),
-      code: 'first_weight',
-      name: 'first_weight',
-      render: () => <SInputNumber suffix={isCount ? t('件') : weight_unit} />,
+      code: 'first',
+      name: 'first',
+      render: (first: number, row: BaseShippingZoneFeeCondition) => (
+        <SInputNumber
+          onChange={v => { onUpdateItem(row, 'first', v) }}
+          value={first}
+          suffix={isCount ? t('件') : weight_unit}
+        />
+      ),
       width: 150,
       hidden: type === ShippingZoneFeeType.Fixed
     },
@@ -94,15 +136,28 @@ export default function FeeCondition (props: FeeConditionProps) {
       title: isCount ? t('首件费用') : t('首重费用'),
       code: 'first_fee',
       name: 'first_fee',
-      render: () => <SInputNumber money prefix={currency?.symbol} />,
+      render: (first_fee: number, row: BaseShippingZoneFeeCondition) => (
+        <SInputNumber
+          onChange={v => { onUpdateItem(row, 'first_fee', v) }}
+          value={first_fee}
+          money
+          prefix={currency?.symbol}
+        />
+      ),
       width: 150,
       hidden: type === ShippingZoneFeeType.Fixed
     },
     {
       title: isCount ? t('续件') : t('续重'),
-      code: 'next_weight',
-      name: 'next_weight',
-      render: () => <SInputNumber suffix={isCount ? t('件') : weight_unit} />,
+      code: 'next',
+      name: 'next',
+      render: (next: number, row: BaseShippingZoneFeeCondition) => (
+        <SInputNumber
+          onChange={v => { onUpdateItem(row, 'next', v) }}
+          value={next}
+          suffix={isCount ? t('件') : weight_unit}
+        />
+      ),
       width: 150,
       hidden: type === ShippingZoneFeeType.Fixed
     },
@@ -110,9 +165,31 @@ export default function FeeCondition (props: FeeConditionProps) {
       title: isCount ? t('续件费用') : t('续重费用'),
       code: 'next_fee',
       name: 'next_fee',
-      render: () => <SInputNumber money prefix={currency?.symbol} />,
+      render: (next_fee: number, row: BaseShippingZoneFeeCondition) => (
+        <SInputNumber
+          onChange={v => { onUpdateItem(row, 'next_fee', v) }}
+          value={next_fee}
+          money
+          prefix={currency?.symbol}
+        />
+      ),
       width: 150,
       hidden: type === ShippingZoneFeeType.Fixed
+    },
+    {
+      title: '',
+      code: 'id',
+      name: 'id',
+      width: 80,
+      align: 'center',
+      render: (id: number) => (
+        <Flex justify={'center'}>
+          <IconButton onClick={() => { onRemoveItem(id) }} size={24} type={'text'}>
+            <IconTrash size={15} />
+          </IconButton>
+        </Flex>
+      ),
+      hidden: value?.length === 1
     },
     {
       title: '',
@@ -132,7 +209,7 @@ export default function FeeCondition (props: FeeConditionProps) {
         }}
       >
         <div style={{ flexShrink: 0 }}>{t('运费价格：')}</div>
-        <SInputNumber value={value[0].fixed} money />
+        <SInputNumber onChange={v => { onUpdateItem(value[0], 'fixed', v) }} value={value[0].fixed} money />
       </Flex>
     )
   }
@@ -143,11 +220,11 @@ export default function FeeCondition (props: FeeConditionProps) {
         init
         borderless
         className={'table-border'}
-        data={[{ id: 123 }]}
+        data={value || []}
         columns={columns}
       />
-      <SRender render={rule}>
-        <Button style={{ marginTop: 16 }}>{t('添加区间')}</Button>
+      <SRender render={rule ? (value?.length || 0) < 20 : null}>
+        <Button style={{ marginTop: 16 }} onClick={onAdd}>{t('添加区间')}</Button>
       </SRender>
     </div>
   )
