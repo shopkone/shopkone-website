@@ -1,28 +1,44 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Button, Flex, Input } from 'antd'
+import { Button, Flex, Form, Input } from 'antd'
 
 import { BaseShippingZone } from '@/api/shipping/base'
+import { sMessage } from '@/components/s-message'
 import SModal from '@/components/s-modal'
 import SelectCountry from '@/components/select-country'
 import { UseOpenType } from '@/hooks/useOpen'
+import { genId } from '@/utils/random'
 
 export interface ZoneModalProps {
   openInfo: UseOpenType<BaseShippingZone>
   confirm?: (value: BaseShippingZone) => void
+  olds: BaseShippingZone[]
 }
 
 export default function ZoneModal (props: ZoneModalProps) {
-  const { openInfo, confirm } = props
+  const { openInfo, confirm, olds } = props
   const { t } = useTranslation('settings', { keyPrefix: 'shipping' })
   const [selectedZoneIds, setSelectedZoneIds] = useState<string[]>([])
-  const [name, setName] = useState('')
-
-  const onOk = () => {
+  const [form] = Form.useForm()
+  const onOk = async () => {
+    const { name } = form.getFieldsValue()
+    if (!name) {
+      sMessage.warning(t('请输入区域名称'))
+      return
+    }
+    if (!selectedZoneIds.length) {
+      sMessage.warning(t('至少选择一个国家/地区'))
+      return
+    }
+    const same = olds.find(item => item.name === name)
+    if (same && same.id !== openInfo.data?.id) {
+      sMessage.warning(t('区域名称已存在'))
+      return
+    }
     if (openInfo.data) {
       confirm?.({ ...openInfo.data, name, codes: selectedZoneIds })
     } else {
-      confirm?.({ codes: selectedZoneIds, name, fees: [] })
+      confirm?.({ codes: selectedZoneIds, name, fees: [], id: genId() })
     }
     openInfo.close()
   }
@@ -30,7 +46,7 @@ export default function ZoneModal (props: ZoneModalProps) {
   useEffect(() => {
     if (!openInfo.open) return
     setSelectedZoneIds(openInfo.data?.codes || [])
-    setName(openInfo.data?.name || '')
+    form.setFieldValue('name', openInfo.data?.name)
   }, [openInfo])
 
   return (
@@ -61,19 +77,16 @@ export default function ZoneModal (props: ZoneModalProps) {
       }
     >
       <Flex vertical style={{ height: 600, overflowY: 'hidden', padding: 16 }}>
-        <div style={{ marginBottom: 4 }}>{t('区域名称')}</div>
+        <Form colon={false} form={form} layout={'vertical'}>
+          <Form.Item required={false} rules={[{ required: true }]} name={'name'} label={t('区域名称')}>
+            <Input autoComplete={'off'} />
+          </Form.Item>
 
-        <Input />
+          <Form.Item label={t('国家/地区')}>
+            <SelectCountry height={400} value={selectedZoneIds} onChange={setSelectedZoneIds} />
+          </Form.Item>
 
-        <div style={{
-          marginBottom: 4,
-          marginTop: 16
-        }}
-        >
-          {t('国家/地区')}
-        </div>
-
-        <SelectCountry height={400} value={selectedZoneIds} onChange={setSelectedZoneIds} />
+        </Form>
       </Flex>
     </SModal>
   )

@@ -1,0 +1,47 @@
+.areaItem {
+  margin-top: 8px;
+  background-color: #f5f5f5;
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.expand {
+  margin-left: 12px;
+  color: var(--color-primary);
+  cursor: pointer;
+  white-space: nowrap;
+  position: relative;
+  top: -5px;
+  &:hover{
+    text-decoration: underline;
+  }
+}
+
+.expanded {
+  max-width: unset !important;
+  height: auto !important;
+  white-space: wrap !important;
+}
+
+.name {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.inner {
+  height: 20px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 500px;
+  white-space: nowrap;
+  display: inline-block;
+  margin-bottom: 0 !important;
+  span {
+    line-height: 20px !important;
+  }
+}
+
+.hasZones {
+  border-bottom: 1px dashed #888;
+  cursor: default;
+}

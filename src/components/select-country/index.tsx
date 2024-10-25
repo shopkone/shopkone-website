@@ -41,7 +41,8 @@ export default function SelectCountry (props: SelectCountryProps) {
     countries.data.forEach((country) => {
       const continentIndex = continent.findIndex(item => item.code === country.continent)
       if (continentIndex !== -1) {
-        continent[continentIndex].children.push(country)
+        const children = country.zones.map(zone => ({ ...zone, children: [], code: country.code + '_____' + zone.code }))
+        continent[continentIndex].children.push({ ...country, children, zones: [] } as any)
       }
     })
     setTree(continent)
