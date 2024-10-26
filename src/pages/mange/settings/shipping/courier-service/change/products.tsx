@@ -94,7 +94,7 @@ export default function Products (props: ProductsProps) {
       width: 50,
       render: (_, row: ProductListByIdsRes) => (
         <IconButton type={'text'} size={24}>
-          <IconTrash onClick={() => { onRemove(row.id) }} size={14} />
+          <IconTrash onClick={() => { onRemove(row.id) }} size={15} />
         </IconButton>
       )
     }

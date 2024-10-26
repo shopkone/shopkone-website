@@ -171,7 +171,7 @@ export default function Zones (props: ZonesProps) {
             return (
               <div key={item.name}>
                 <div style={{ marginBottom: 8 }}>
-                  <Flex align={'center'} style={{ marginBottom: 4 }} gap={12}>
+                  <Flex align={'center'} gap={12}>
                     <div className={styles.name}>{item.name}</div>
                     <Flex style={{ marginTop: -2 }} align={'center'}>
                       <Button
