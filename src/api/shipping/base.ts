@@ -23,7 +23,7 @@ export interface BaseShippingZoneFeeCondition {
   first_fee: number
   next: number
   next_fee: number
-  max: number
+  max?: number
   min: number
 }
 
@@ -36,6 +36,7 @@ export interface BaseShippingZoneFee {
   currency_code: string
   conditions?: BaseShippingZoneFeeCondition[]
   rule?: ShippingZoneFeeRule
+  remark?: string
 }
 
 export interface BaseShippingZone {

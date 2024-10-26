@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { IconPlus, IconWorld } from '@tabler/icons-react'
+import { IconPencil, IconPlus, IconTrash, IconWorld } from '@tabler/icons-react'
 import { useMemoizedFn } from 'ahooks'
 import { Button, Card, Empty, Flex, Tooltip } from 'antd'
 import classNames from 'classnames'
 
 import { useCountries } from '@/api/base/countries'
 import { BaseShippingZone, BaseShippingZoneFee } from '@/api/shipping/base'
+import IconButton from '@/components/icon-button'
 import SRender from '@/components/s-render'
 import STable, { STableProps } from '@/components/s-table'
 import { useOpen } from '@/hooks/useOpen'
@@ -45,18 +46,77 @@ export default function Zones (props: ZonesProps) {
     if (!zone) return
     const zoneFee = zone.fees.find(i => i.id === fee?.id)
     if (zoneFee) {
+      zone.fees = zone.fees?.map(i => i.id === fee?.id ? fee : i)
+      onChange?.(value?.map(i => i.id === zone.id ? zone : i))
     } else {
       zone.fees = [...zone.fees, fee]
       onChange?.(value?.map(i => i.id === zone.id ? zone : i))
     }
   }
 
-  const feeColumns: STableProps['columns'] = [
-    { title: t('运费名称'), code: 'name', name: 'name' },
-    { title: t('运费'), code: 'fees', name: 'fees', render: () => 123 },
-    { title: t('货到付款'), name: 'code', render: () => 123 },
-    { title: '', name: 'id', code: 'id', render: () => 123 }
-  ]
+  const feeColumns = useMemoizedFn((item: BaseShippingZone): STableProps['columns'] => [
+    {
+      title: t('运费名称'),
+      code: 'name',
+      name: 'name',
+      width: 200,
+      render: (name: string, row: BaseShippingZoneFee) => {
+        if (!row.id) {
+          return (
+            null
+          )
+        }
+        return name
+      }
+    },
+    {
+      title: t('运费'),
+      code: 'fees',
+      name: 'fees',
+      render: (_, row: BaseShippingZoneFee) => {
+        if (!row.id) {
+          return (
+            <Button onClick={() => { feeOpenInfo.edit({ zoneId: item.id }) }} style={{ position: 'relative', left: 85 }} type={'link'} size={'small'}>
+              <IconPlus size={14} />
+              {t('添加运费')}
+            </Button>
+          )
+        }
+        return 123
+      },
+      width: 250
+    },
+    {
+      title: t('货到付款'),
+      name: 'cod',
+      code: 'cod',
+      render: (cod: boolean, row: BaseShippingZoneFee) => {
+        if (!row.id) return null
+        if (cod) {
+          return t('支持')
+        }
+        return t('不支持')
+      }
+    },
+    {
+      title: '',
+      name: 'id',
+      code: 'id',
+      render: (_, row: BaseShippingZoneFee) => (
+        <SRender render={row.id}>
+          <Flex gap={12}>
+            <IconButton onClick={() => { feeOpenInfo.edit({ fee: row, zoneId: item.id }) }} type={'text'} size={24}>
+              <IconPencil size={16} />
+            </IconButton>
+            <IconButton type={'text'} size={24}>
+              <IconTrash size={15} />
+            </IconButton>
+          </Flex>
+        </SRender>
+      ),
+      width: 80
+    }
+  ])
 
   const onExpand = (item: BaseShippingZone) => {
     setExpands(expands?.includes(item.id) ? expands.filter(i => i !== item.id) : [...expands || [], item.id])
@@ -111,18 +171,18 @@ export default function Zones (props: ZonesProps) {
             return (
               <div key={item.name}>
                 <div style={{ marginBottom: 8 }}>
-                  <Flex align={'center'} justify={'space-between'}>
+                  <Flex align={'center'} style={{ marginBottom: 4 }} gap={12}>
                     <div className={styles.name}>{item.name}</div>
-                    <Flex align={'center'}>
+                    <Flex style={{ marginTop: -2 }} align={'center'}>
                       <Button
                         onClick={() => {
                           openInfo.edit(item)
                         }} type={'link'} size={'small'}
                       >
-                        {t('编辑')}
+                        {t('编辑区域')}
                       </Button>
                       <Button type={'link'} size={'small'} danger>
-                        {t('删除')}
+                        {t('删除区域')}
                       </Button>
                     </Flex>
                   </Flex>
@@ -163,13 +223,13 @@ export default function Zones (props: ZonesProps) {
                   <STable
                     borderless
                     className={'table-border'}
-                    data={item.fees}
-                    columns={feeColumns}
+                    data={[...item.fees, { id: 0 }]}
+                    columns={feeColumns(item)}
                     init
                   />
                 </SRender>
-                <SRender
-                  render={index !== value.length - 1} className={'line'} style={{
+                <div
+                  className={'line'} style={{
                     margin: '16px 0',
                     width: '100%'
                   }}
@@ -198,7 +258,7 @@ export default function Zones (props: ZonesProps) {
         openInfo={openInfo}
       />
 
-      <FeeModal onConfirm={onUpdateFee} openInfo={feeOpenInfo} />
+      <FeeModal olds={value?.find(i => i.id === feeOpenInfo?.data?.zoneId)?.fees || []} onConfirm={onUpdateFee} openInfo={feeOpenInfo} />
     </Card>
   )
 }
