@@ -124,7 +124,7 @@ export default function FeeModal (props: FeeModalProps) {
               style={{
                 width: 141,
                 marginLeft: 16,
-                display: type === ShippingZoneFeeType.Weight ? undefined : 'none'
+                display: type === ShippingZoneFeeType.Weight || rule === ShippingZoneFeeRule.OrderWeight ? undefined : 'none'
               }}
             >
               <SSelect options={WEIGHT_UNIT_OPTIONS} />

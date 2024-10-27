@@ -6,7 +6,14 @@ import { Button, Empty, Flex, Tooltip } from 'antd'
 import classNames from 'classnames'
 
 import { useCountries } from '@/api/base/countries'
-import { BaseShippingZone, BaseShippingZoneFee } from '@/api/shipping/base'
+import { useCurrencyList } from '@/api/base/currency-list'
+import {
+  BaseShippingZone,
+  BaseShippingZoneFee,
+  BaseShippingZoneFeeCondition,
+  ShippingZoneFeeRule,
+  ShippingZoneFeeType
+} from '@/api/shipping/base'
 import IconButton from '@/components/icon-button'
 import SCard from '@/components/s-card'
 import SRender from '@/components/s-render'
@@ -15,6 +22,7 @@ import { useOpen } from '@/hooks/useOpen'
 import FeeModal from '@/pages/mange/settings/shipping/courier-service/change/fee-modal'
 import ZoneModal from '@/pages/mange/settings/shipping/courier-service/change/zone-modal'
 import { getTextWidth } from '@/utils'
+import { formatPrice } from '@/utils/num'
 
 import styles from './index.module.less'
 
@@ -30,15 +38,48 @@ export default function Zones (props: ZonesProps) {
   const feeOpenInfo = useOpen<{ fee?: BaseShippingZoneFee, zoneId: number }>({ zoneId: 0 })
   const countries = useCountries()
   const [expands, setExpands] = useState<number[]>()
+  const currencyList = useCurrencyList()
 
-  const onConfirm = (item: BaseShippingZone) => {
+  const onConfirm = useMemoizedFn((item: BaseShippingZone) => {
     const find = value.find(i => i.id === item.id)
     if (find) {
       onChange?.(value?.map(i => i.id === find.id ? item : i))
     } else {
       onChange?.([...value, item])
     }
-  }
+  })
+
+  const getConditionText = useMemoizedFn((row: BaseShippingZoneFee, condition: BaseShippingZoneFeeCondition) => {
+    const { max, min } = condition
+    const currencySymbol = currencyList.data?.find(i => i.code === row.currency_code)?.symbol || ''
+    if (row.rule === ShippingZoneFeeRule.OrderPrice) {
+      return t('订单总价') + ` ${formatPrice(min, currencySymbol)} ~ ${formatPrice(max, currencySymbol)}`
+    }
+    if (row.rule === ShippingZoneFeeRule.OrderWeight) {
+      return t('商品') + [min, max].map(i => ` ${i}${row.weight_unit}`).join(' ~ ')
+    }
+    if (row.rule === ShippingZoneFeeRule.ProductCount) {
+      return t('商品') + [min, max].map(i => ` ${i}${t('件')}`).join(' ~ ')
+    }
+    if (row.rule === ShippingZoneFeeRule.ProductPrice) {
+      return t('商品总价') + ` ${formatPrice(min, currencySymbol)} ~ ${formatPrice(max, currencySymbol)}`
+    }
+    return '-'
+  })
+
+  const getFeeText = useMemoizedFn((row: BaseShippingZoneFee, condition: BaseShippingZoneFeeCondition) => {
+    const { first, first_fee, next, next_fee, fixed } = condition
+    const currencySymbol = currencyList.data?.find(i => i.code === row.currency_code)?.symbol || ''
+    if (row.type === ShippingZoneFeeType.Fixed) {
+      return `${t('价格', { x: formatPrice(fixed, currencySymbol) })}`
+    }
+    if (row.type === ShippingZoneFeeType.Weight) {
+      const firstText = `${t('首重x', { x: `${first} ${row.weight_unit}`, money: formatPrice(first_fee, currencySymbol) })}`
+      const secondText = `${t('续重x', { money: formatPrice(next_fee, currencySymbol), x: `${next} ${row.weight_unit}` })}`
+      return firstText + secondText
+    }
+    return '-'
+  })
 
   const onUpdateFee = (item: { fee?: BaseShippingZoneFee, zoneId: number }) => {
     setExpands([])
@@ -64,29 +105,65 @@ export default function Zones (props: ZonesProps) {
       width: 200,
       render: (name: string, row: BaseShippingZoneFee) => {
         if (!row.id) {
-          return (
-            null
-          )
+          return null
         }
         return name
-      }
+      },
+      lock: true
     },
     {
-      title: t('运费'),
+      title: t('适用条件'),
       code: 'fees',
       name: 'fees',
       render: (_, row: BaseShippingZoneFee) => {
         if (!row.id) {
+          return null
+        }
+        return (
+          <Flex vertical gap={8}>
+            {
+              row.conditions?.map(condition => (
+                <div key={condition.id}>
+                  {getConditionText(row, condition)}
+                </div>
+              ))
+            }
+          </Flex>
+        )
+      },
+      width: 190
+    },
+    {
+      title: t('运费'),
+      name: 'fees',
+      code: 'fees',
+      render: (_, row: BaseShippingZoneFee) => {
+        if (!row.id) {
           return (
-            <Button onClick={() => { feeOpenInfo.edit({ zoneId: item.id }) }} style={{ position: 'relative', left: 85 }} type={'link'} size={'small'}>
+            <Button
+              onClick={() => { feeOpenInfo.edit({ zoneId: item.id }) }}
+              style={{ position: 'relative', left: -42 }}
+              type={'link'}
+              size={'small'}
+            >
               <IconPlus size={14} />
               {t('添加运费')}
             </Button>
           )
         }
-        return 123
+        return (
+          <Flex gap={8} vertical>
+            {
+              row.conditions?.map(condition => (
+                <div key={condition.id}>
+                  {getFeeText(row, condition)}
+                </div>
+              ))
+            }
+          </Flex>
+        )
       },
-      width: 250
+      width: 260
     },
     {
       title: t('货到付款'),
@@ -98,7 +175,8 @@ export default function Zones (props: ZonesProps) {
           return t('支持')
         }
         return t('不支持')
-      }
+      },
+      width: 80
     },
     {
       title: '',
@@ -116,7 +194,8 @@ export default function Zones (props: ZonesProps) {
           </Flex>
         </SRender>
       ),
-      width: 80
+      width: 80,
+      lock: true
     }
   ])
 

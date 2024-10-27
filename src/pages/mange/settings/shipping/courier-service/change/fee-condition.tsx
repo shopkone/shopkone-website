@@ -101,7 +101,7 @@ export default function FeeCondition (props: FeeConditionProps) {
     if (rule === ShippingZoneFeeRule.OrderWeight) {
       return weight_unit
     }
-  }, [rule])
+  }, [rule, weight_unit])
 
   const columns: STableProps['columns'] = [
     {

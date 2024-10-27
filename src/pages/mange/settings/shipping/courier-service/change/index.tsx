@@ -117,7 +117,7 @@ export default function Change () {
       isChange={isChange}
       bottom={64}
       back={'/settings/shipping'}
-      width={700}
+      width={850}
       title={title}
       loading={loading}
     >
