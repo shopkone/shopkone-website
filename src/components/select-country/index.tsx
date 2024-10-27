@@ -18,10 +18,11 @@ export interface SelectCountryProps {
   onChange?: (value: string[]) => void
   value?: string[]
   height: number
+  disabled?: string[]
 }
 
 export default function SelectCountry (props: SelectCountryProps) {
-  const { onChange, value = [], height } = props
+  const { onChange, value = [], height, disabled } = props
   const countries = useCountries()
   const [tree, setTree] = useState<CountryTree[]>([])
   const { t } = useTranslation('common', { keyPrefix: 'selectCountry' })
@@ -29,8 +30,8 @@ export default function SelectCountry (props: SelectCountryProps) {
   const [searchKey, setSearchKey] = useState('')
 
   useEffect(() => {
-    if (!countries.data || tree?.length) return
-    const continent: CountryTree[] = [
+    if (!countries.data) return
+    let continent: CountryTree[] = [
       { code: 'Europe', name: t('欧洲'), children: [] },
       { code: 'Asia', name: t('亚洲'), children: [] },
       { code: 'Africa', name: t('非洲'), children: [] },
@@ -41,12 +42,24 @@ export default function SelectCountry (props: SelectCountryProps) {
     countries.data.forEach((country) => {
       const continentIndex = continent.findIndex(item => item.code === country.continent)
       if (continentIndex !== -1) {
-        const children = country.zones.map(zone => ({ ...zone, children: [], code: country.code + '_____' + zone.code }))
-        continent[continentIndex].children.push({ ...country, children, zones: [] } as any)
+        let zoneDisabledCount = 0
+        const children = country.zones.map(zone => {
+          const code = country.code + '_____' + zone.code
+          const zoneDisabled = disabled?.includes(code)
+          if (zoneDisabled) zoneDisabledCount++
+          return { ...zone, children: [], code, disabled: zoneDisabled, isLeaf: true }
+        })
+        const countryDisabled = country.zones.length && zoneDisabledCount === country.zones.length
+        continent[continentIndex].children.push({ ...country, children, zones: [], disabled: disabled?.includes(country.code) || countryDisabled } as any)
       }
     })
+    continent = continent.map(item => {
+      const len = item.children.length
+      const disabledLen = item.children.filter(item => (item as any).disabled).length
+      return { ...item, disabled: len && disabledLen === len }
+    })
     setTree(continent)
-  }, [countries.data])
+  }, [countries.data, disabled])
 
   return (
     <SLoading loading={countries.loading}>

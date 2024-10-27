@@ -30,7 +30,6 @@ export interface BaseShippingZoneFeeCondition {
 export interface BaseShippingZoneFee {
   id: number
   name: string
-  note: string
   weight_unit: string
   type: ShippingZoneFeeType
   currency_code: string
@@ -38,6 +37,8 @@ export interface BaseShippingZoneFee {
   rule?: ShippingZoneFeeRule
   remark?: string
 }
+
+export interface BaseCode { country_code: string, zone_codes: string[] }
 
 export interface BaseShippingZone {
   name: string

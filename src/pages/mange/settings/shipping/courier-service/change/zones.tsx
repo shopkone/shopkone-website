@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { IconPencil, IconPlus, IconTrash, IconWorld } from '@tabler/icons-react'
 import { useMemoizedFn } from 'ahooks'
@@ -40,6 +40,7 @@ export default function Zones (props: ZonesProps) {
   }
 
   const onUpdateFee = (item: { fee?: BaseShippingZoneFee, zoneId: number }) => {
+    setExpands([])
     const { fee, zoneId } = item
     if (!fee) return
     const zone = value.find(i => i.id === zoneId)
@@ -122,6 +123,17 @@ export default function Zones (props: ZonesProps) {
     setExpands(expands?.includes(item.id) ? expands.filter(i => i !== item.id) : [...expands || [], item.id])
   }
 
+  const disabledList = useMemo(() => {
+    const disabledItems: string[] = []
+    value.forEach((zone: BaseShippingZone) => {
+      if (zone.id === openInfo.data?.id) {
+        return
+      }
+      disabledItems.push(...zone.codes)
+    })
+    return disabledItems
+  }, [value, openInfo.data?.id])
+
   const getZoneName = useMemoizedFn((codes: string[]) => {
     const names = new Map<string, { country: string, zones: string[] }>()
 
@@ -171,9 +183,9 @@ export default function Zones (props: ZonesProps) {
             return (
               <div key={item.name}>
                 <div style={{ marginBottom: 8 }}>
-                  <Flex align={'center'} gap={12}>
+                  <Flex justify={'space-between'} align={'center'} gap={12}>
                     <div className={styles.name}>{item.name}</div>
-                    <Flex style={{ marginTop: -2 }} align={'center'}>
+                    <Flex style={{ marginTop: -2, position: 'relative', bottom: -23 }} align={'center'}>
                       <Button
                         onClick={() => {
                           openInfo.edit(item)
@@ -203,7 +215,7 @@ export default function Zones (props: ZonesProps) {
                     </SRender>
                   </div>
                   <SRender render={!expands?.includes(item.id) && width > 400}>
-                    <span onClick={() => { onExpand(item) }} className={styles.expand}>
+                    <span onClick={() => { onExpand(item) }} style={{ marginLeft: 0 }} className={styles.expand}>
                       {t('展示全部')}
                     </span>
                   </SRender>
@@ -253,6 +265,7 @@ export default function Zones (props: ZonesProps) {
       </SRender>
 
       <ZoneModal
+        disabled={disabledList}
         olds={value}
         confirm={onConfirm}
         openInfo={openInfo}

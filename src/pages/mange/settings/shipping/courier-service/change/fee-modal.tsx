@@ -64,7 +64,6 @@ export default function FeeModal (props: FeeModalProps) {
       const item: BaseShippingZoneFee = {
         id: genId(),
         name: '',
-        note: '',
         weight_unit: 'kg',
         type: ShippingZoneFeeType.Fixed,
         currency_code: 'USD',

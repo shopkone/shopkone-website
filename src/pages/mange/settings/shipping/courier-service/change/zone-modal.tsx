@@ -13,10 +13,11 @@ export interface ZoneModalProps {
   openInfo: UseOpenType<BaseShippingZone>
   confirm?: (value: BaseShippingZone) => void
   olds: BaseShippingZone[]
+  disabled: string[]
 }
 
 export default function ZoneModal (props: ZoneModalProps) {
-  const { openInfo, confirm, olds } = props
+  const { openInfo, confirm, olds, disabled } = props
   const { t } = useTranslation('settings', { keyPrefix: 'shipping' })
   const [selectedZoneIds, setSelectedZoneIds] = useState<string[]>([])
   const [form] = Form.useForm()
@@ -83,7 +84,7 @@ export default function ZoneModal (props: ZoneModalProps) {
           </Form.Item>
 
           <Form.Item label={t('国家/地区')}>
-            <SelectCountry height={400} value={selectedZoneIds} onChange={setSelectedZoneIds} />
+            <SelectCountry disabled={disabled} height={400} value={selectedZoneIds} onChange={setSelectedZoneIds} />
           </Form.Item>
 
         </Form>

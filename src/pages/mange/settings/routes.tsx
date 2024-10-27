@@ -34,6 +34,7 @@ export const SettingsRoutes: RouteObject[] = [
     ]
   },
   { element: <ShippingCourierServiceChange />, path: '/settings/shipping/courier-service/change' },
+  { element: <ShippingCourierServiceChange />, path: '/settings/shipping/courier-service/change/:id' },
   { element: <Files />, path: '/settings/files/:groupId' },
   { element: <Files />, path: '/settings/files' }
 ]

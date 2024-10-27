@@ -1,8 +1,12 @@
+import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { IconArrowRight, IconChevronRight, IconMapPin, IconTruckDelivery, IconWorld } from '@tabler/icons-react'
+import { useRequest } from 'ahooks'
 import { Button, Empty, Flex } from 'antd'
 
+import { ShippingType } from '@/api/shipping/base'
+import { ShippingListApi } from '@/api/shipping/list'
 import SCard from '@/components/s-card'
 import SLocation from '@/components/s-location'
 import SRender from '@/components/s-render'
@@ -16,6 +20,12 @@ export default function CourierService () {
   const locations = useShippingState().locations
   const defaultLocation = locations?.find(item => item.default)
   const { t } = useTranslation('settings', { keyPrefix: 'shipping' })
+  const setLoading = useShippingState(state => state.setLoading)
+  const list = useRequest(ShippingListApi)
+
+  useEffect(() => {
+    setLoading(list.loading)
+  }, [list.loading])
 
   return (
     <Flex vertical gap={16}>
@@ -27,6 +37,7 @@ export default function CourierService () {
         title={t('默认地点')}
       >
         <SLocation
+          hideLoading
           hideTag
           value={defaultLocation ? [defaultLocation] : []}
         />
@@ -84,7 +95,7 @@ export default function CourierService () {
         <div style={{ marginTop: 16 }} className={styles.table}>
           <Flex align={'center'} justify={'space-between'} className={styles.title}>
             {t('自定义运费方案')}
-            <Button onClick={() => { nav('courier-service/change') }} size={'small'} type={'link'}>
+            <Button onClick={() => { nav(`courier-service/change?type=${ShippingType.CustomerExpressDelivery}`) }} size={'small'} type={'link'}>
               {t('添加自定义运费方案')}
             </Button>
           </Flex>
@@ -102,7 +113,7 @@ export default function CourierService () {
             style={{ paddingBottom: 24 }}
           >
             <Flex justify={'center'}>
-              <Button onClick={() => { nav('/settings/shipping/courier-service/change') }} type={'primary'}>
+              <Button onClick={() => { nav(`courier-service/change?type=${ShippingType.CustomerExpressDelivery}`) }} type={'primary'}>
                 {t('添加自定义运费方案')}
               </Button>
             </Flex>
