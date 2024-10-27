@@ -27,6 +27,7 @@ export default function Change () {
   const type: ShippingType = Number(new URLSearchParams(window.location.search).get('type') || 0)
   const [isChange, setIsChange] = useState(false)
   const init = useRef<any>()
+  const isGeneral = type === ShippingType.GeneralExpressDelivery
 
   const onOk = async () => {
     await form.validateFields()
@@ -123,21 +124,26 @@ export default function Change () {
         <Flex gap={16} vertical>
           <SRender render={type === ShippingType.CustomerExpressDelivery}>
             <SCard title={t('方案名称')}>
-              <Form.Item name={'name'} className={'mb0'} extra={t('该名称不会展示给客户查看')}>
+              <Form.Item
+                rules={[{ required: !isGeneral, message: t('请输入方案名称') }]}
+                name={'name'}
+                className={'mb0'}
+                extra={t('该名称不会展示给客户查看')}
+              >
                 <Input autoComplete={'off'} />
               </Form.Item>
             </SCard>
           </SRender>
 
-          <Form.Item className={'mb0'} name={'product_ids'}>
+          <Form.Item rules={[{ required: !isGeneral, message: t('请选择商品') }]} className={'mb0'} name={'product_ids'}>
             <Products />
           </Form.Item>
 
-          <Form.Item className={'mb0'} name={'location_ids'}>
+          <Form.Item rules={[{ required: !isGeneral, message: t('请选择发货地点') }]} className={'mb0'} name={'location_ids'}>
             <Locations locations={locations.data || []} />
           </Form.Item>
 
-          <Form.Item className={'mb0'} name={'zones'}>
+          <Form.Item rules={[{ required: true, message: t('请添加发货区域') }]} className={'mb0'} name={'zones'}>
             <Zones />
           </Form.Item>
         </Flex>

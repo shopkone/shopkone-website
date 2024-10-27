@@ -66,15 +66,17 @@
     }
   }
 
-  .shopkone-form-item-has-error .shopkone-input-affix-wrapper{
-    border-color: var(--color--error);
-    outline-color: var(--color--error);
-    &:hover, &:focus {
+  .shopkone-form-item-has-error {
+    .shopkone-input-affix-wrapper, .shopkone-card-bordered{
       border-color: var(--color--error);
       outline-color: var(--color--error);
-    }
-    .shopkone-input-prefix, .shopkone-input-suffix {
-      color: var(--color-text-primary);
+      &:hover, &:focus {
+        border-color: var(--color--error);
+        outline-color: var(--color--error);
+      }
+      .shopkone-input-prefix, .shopkone-input-suffix {
+        color: var(--color-text-primary);
+      }
     }
   }
 }
