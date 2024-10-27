@@ -74,7 +74,6 @@ export default function FeeCondition (props: FeeConditionProps) {
         err[`${item.id}_next_weight`] = t('续重必须大于 0')
       }
     })
-    console.log(err)
     setErrMsg(err)
     return err
   }
