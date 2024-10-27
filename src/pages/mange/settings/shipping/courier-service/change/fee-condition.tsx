@@ -1,10 +1,10 @@
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { IconTrash } from '@tabler/icons-react'
 import { Button, Flex, Form } from 'antd'
 
 import { useCurrencyList } from '@/api/base/currency-list'
-import { ShippingZoneFeeRule, ShippingZoneFeeType } from '@/api/shipping/base'
+import { BaseShippingZoneFeeCondition, ShippingZoneFeeRule, ShippingZoneFeeType } from '@/api/shipping/base'
 import IconButton from '@/components/icon-button'
 import SInputNumber from '@/components/s-input-number'
 import SRender from '@/components/s-render'
@@ -95,8 +95,7 @@ export default function FeeCondition () {
                   const conditions = getConditions()
                   const next = conditions[name + 1]
                   const isLast = !next
-                  console.log(name)
-                  if (isLast && value === undefined) {
+                  if (isLast && !value) {
                     await Promise.resolve(); return
                   }
                   if (value === undefined) {
@@ -115,7 +114,7 @@ export default function FeeCondition () {
                 money={isPriceRange}
                 prefix={isPriceRange ? currency?.symbol : undefined}
                 suffix={rangeSuffix}
-                placeholder={getConditions()?.[name + 1] ? undefined : t('无限制')}
+                placeholder={getConditions()?.[name + 1] ? undefined : t('无上限')}
                 onChange={(v) => {
                   const conditions = getConditions()
                   if (conditions[name + 1]) {
@@ -255,6 +254,17 @@ export default function FeeCondition () {
       hidden: type !== ShippingZoneFeeType.Fixed
     }
   ]
+
+  useEffect(() => {
+    if (rule === ShippingZoneFeeRule.ProductCount) {
+      form.setFieldValue(
+        'conditions',
+        getConditions().map((item: BaseShippingZoneFeeCondition) => {
+          return { ...item, min: Math.round(item.min), max: item.max ? Math.round(item.max) : undefined }
+        })
+      )
+    }
+  }, [rule])
 
   if (getConditions()?.length === 1 && type === ShippingZoneFeeType.Fixed && !rule) {
     return (

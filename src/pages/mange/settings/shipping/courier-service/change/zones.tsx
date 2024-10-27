@@ -52,33 +52,50 @@ export default function Zones (props: ZonesProps) {
   const getConditionText = useMemoizedFn((row: BaseShippingZoneFee, condition: BaseShippingZoneFeeCondition) => {
     const { max, min } = condition
     const currencySymbol = currencyList.data?.find(i => i.code === row.currency_code)?.symbol || ''
+    if (!min && !max) return t('全部订单')
     if (row.rule === ShippingZoneFeeRule.OrderPrice) {
-      return t('订单总价') + ` ${formatPrice(min, currencySymbol)} ~ ${formatPrice(max, currencySymbol)}`
+      let text = `${formatPrice(min, currencySymbol)} ~ ${formatPrice(max, currencySymbol)}`
+      text = !max ? t('x以上', { x: formatPrice(min, currencySymbol) }) : text
+      return t('订单总价：') + text
     }
     if (row.rule === ShippingZoneFeeRule.OrderWeight) {
-      return t('商品') + [min, max].map(i => ` ${i}${row.weight_unit}`).join(' ~ ')
+      let text = `${min} ~ ${max}${row.weight_unit}`
+      text = !max ? t('x以上', { x: `${min}${row.weight_unit}` }) : text
+      return t('包裹重量：') + text
     }
     if (row.rule === ShippingZoneFeeRule.ProductCount) {
-      return t('商品') + [min, max].map(i => ` ${i}${t('件')}`).join(' ~ ')
+      let text = `${min} ~ ${max} ${t('件')}`
+      text = !max ? t('x以上', { x: `${min}${t('件')}` }) : text
+      return t('商品件数：') + text
     }
     if (row.rule === ShippingZoneFeeRule.ProductPrice) {
-      return t('商品总价') + ` ${formatPrice(min, currencySymbol)} ~ ${formatPrice(max, currencySymbol)}`
+      let text = `${formatPrice(min, currencySymbol)} ~ ${formatPrice(max, currencySymbol)}`
+      text = !max ? t('x以上', { x: formatPrice(min, currencySymbol) }) : text
+      return t('商品总价：') + text
     }
-    return '-'
+    return t('全部订单')
   })
 
   const getFeeText = useMemoizedFn((row: BaseShippingZoneFee, condition: BaseShippingZoneFeeCondition) => {
     const { first, first_fee, next, next_fee, fixed } = condition
     const currencySymbol = currencyList.data?.find(i => i.code === row.currency_code)?.symbol || ''
     if (row.type === ShippingZoneFeeType.Fixed) {
-      return `${t('价格', { x: formatPrice(fixed, currencySymbol) })}`
+      if (!fixed) return t('免费')
+      return formatPrice(fixed, currencySymbol)
     }
     if (row.type === ShippingZoneFeeType.Weight) {
+      if (!first_fee && !next_fee) return t('免费')
       const firstText = `${t('首重x', { x: `${first} ${row.weight_unit}`, money: formatPrice(first_fee, currencySymbol) })}`
       const secondText = `${t('续重x', { money: formatPrice(next_fee, currencySymbol), x: `${next} ${row.weight_unit}` })}`
       return firstText + secondText
     }
-    return '-'
+    if (row.type === ShippingZoneFeeType.Count) {
+      if (!first_fee && !next_fee) return t('免费')
+      const firstText = `${t('首件x', { x: `${first} ${t('件')}`, money: formatPrice(first_fee, currencySymbol) })}`
+      const secondText = `${t('续件x', { money: formatPrice(next_fee, currencySymbol), x: `${next} ${t('件')}` })}`
+      return firstText + secondText
+    }
+    return t('免费')
   })
 
   const onUpdateFee = (item: { fee?: BaseShippingZoneFee, zoneId: number }) => {
@@ -112,7 +129,7 @@ export default function Zones (props: ZonesProps) {
       lock: true
     },
     {
-      title: t('适用条件'),
+      title: t('适用订单'),
       code: 'fees',
       name: 'fees',
       render: (_, row: BaseShippingZoneFee) => {
@@ -242,7 +259,7 @@ export default function Zones (props: ZonesProps) {
   })
 
   return (
-    <SCard title={t('收货地点')}>
+    <SCard title={t('收货区域')}>
       <SRender render={!value.length}>
         <Empty
           image={<IconWorld size={64} color={'#eee'} />}

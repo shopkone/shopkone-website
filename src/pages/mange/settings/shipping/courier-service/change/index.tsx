@@ -31,7 +31,6 @@ export default function Change () {
   const onOk = async () => {
     await form.validateFields()
     const values = form.getFieldsValue()
-    if (!values.zones?.length) return
     values.zones = values.zones.map((item: BaseShippingZone) => {
       const codes: BaseCode[] = []
       item.codes.forEach(code => {
@@ -64,7 +63,6 @@ export default function Change () {
       return
     }
     const isSame = isEqualHandle(values, init.current)
-    console.log({ isSame, values, init: init.current })
     setIsChange(!isSame)
   }
 
