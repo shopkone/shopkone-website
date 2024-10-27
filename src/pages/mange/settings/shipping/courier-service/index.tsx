@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { IconArrowRight, IconChevronRight, IconMapPin, IconTruckDelivery, IconWorld } from '@tabler/icons-react'
@@ -20,9 +21,14 @@ export default function CourierService () {
   const defaultLocation = locations?.find(item => item.default)
   const { t } = useTranslation('settings', { keyPrefix: 'shipping' })
   const list = useRequest(ShippingListApi)
+  const setLoading = useShippingState(state => state.setLoading)
 
   const customerList = list.data?.filter(item => item.type === ShippingType.CustomerExpressDelivery)
   const generalList = list.data?.filter(item => item.type === ShippingType.GeneralExpressDelivery)
+
+  useEffect(() => {
+    setLoading(list.loading)
+  }, [list.loading])
 
   return (
     <Flex vertical gap={16}>
@@ -61,9 +67,9 @@ export default function CourierService () {
       </SCard>
 
       <SCard
-        loading={list.loading}
         title={t('运费方案')}
         tips={t('设置店铺可配送的区域，以及顾客在结算时可选择的运费方案。')}
+        style={{ display: list?.loading ? 'none' : undefined }}
       >
         <div className={styles.table}>
           <div className={styles.title}>{t('通用运费方案')}</div>

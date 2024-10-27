@@ -2,12 +2,13 @@ import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { IconPencil, IconPlus, IconTrash, IconWorld } from '@tabler/icons-react'
 import { useMemoizedFn } from 'ahooks'
-import { Button, Card, Empty, Flex, Tooltip } from 'antd'
+import { Button, Empty, Flex, Tooltip } from 'antd'
 import classNames from 'classnames'
 
 import { useCountries } from '@/api/base/countries'
 import { BaseShippingZone, BaseShippingZoneFee } from '@/api/shipping/base'
 import IconButton from '@/components/icon-button'
+import SCard from '@/components/s-card'
 import SRender from '@/components/s-render'
 import STable, { STableProps } from '@/components/s-table'
 import { useOpen } from '@/hooks/useOpen'
@@ -162,7 +163,7 @@ export default function Zones (props: ZonesProps) {
   })
 
   return (
-    <Card title={t('收货地点')}>
+    <SCard title={t('收货地点')}>
       <SRender render={!value.length}>
         <Empty
           image={<IconWorld size={64} color={'#eee'} />}
@@ -272,6 +273,6 @@ export default function Zones (props: ZonesProps) {
       />
 
       <FeeModal olds={value?.find(i => i.id === feeOpenInfo?.data?.zoneId)?.fees || []} onConfirm={onUpdateFee} openInfo={feeOpenInfo} />
-    </Card>
+    </SCard>
   )
 }

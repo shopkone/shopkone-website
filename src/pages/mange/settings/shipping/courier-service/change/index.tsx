@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import { useRequest } from 'ahooks'
-import { Card, Flex, Form, Input } from 'antd'
+import { Flex, Form, Input } from 'antd'
 import cloneDeep from 'lodash/cloneDeep'
 
 import { LocationListApi } from '@/api/location/list'
@@ -10,6 +10,7 @@ import { BaseCode, BaseShippingZone, ShippingType } from '@/api/shipping/base'
 import { CreateShippingApi } from '@/api/shipping/create'
 import { ShippingInfoApi } from '@/api/shipping/info'
 import Page from '@/components/page'
+import SCard from '@/components/s-card'
 import SRender from '@/components/s-render'
 import Locations from '@/pages/mange/settings/shipping/courier-service/change/locations'
 import Products from '@/pages/mange/settings/shipping/courier-service/change/products'
@@ -81,6 +82,8 @@ export default function Change () {
     return t('添加自定义运费方案')
   }, [type, id])
 
+  const loading = locations.loading || info.loading
+
   useEffect(() => {
     if (id) {
       info.runAsync({ id: Number(id) }).then(res => {
@@ -112,20 +115,20 @@ export default function Change () {
       onCancel={onCancel}
       onOk={onOk}
       isChange={isChange}
-      loading={locations.loading || info.loading}
       bottom={64}
       back={'/settings/shipping'}
       width={700}
       title={title}
+      loading={loading}
     >
       <Form onValuesChange={onValuesChange} form={form}>
         <Flex gap={16} vertical>
           <SRender render={type === ShippingType.CustomerExpressDelivery}>
-            <Card title={t('方案名称')}>
+            <SCard title={t('方案名称')}>
               <Form.Item name={'name'} className={'mb0'} extra={t('该名称不会展示给客户查看')}>
                 <Input autoComplete={'off'} />
               </Form.Item>
-            </Card>
+            </SCard>
           </SRender>
 
           <Form.Item className={'mb0'} name={'product_ids'}>

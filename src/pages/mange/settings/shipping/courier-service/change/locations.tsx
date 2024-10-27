@@ -1,9 +1,10 @@
 import { useTranslation } from 'react-i18next'
 import { IconMapPin } from '@tabler/icons-react'
-import { Button, Card, Empty } from 'antd'
+import { Button, Empty } from 'antd'
 
 import { LocationListRes } from '@/api/location/list'
 import { ShippingType } from '@/api/shipping/base'
+import SCard from '@/components/s-card'
 import SLocation from '@/components/s-location'
 import SRender from '@/components/s-render'
 import { useOpen } from '@/hooks/useOpen'
@@ -22,7 +23,7 @@ export default function Locations (props: LocationsProps) {
   const type: ShippingType = Number(new URLSearchParams(window.location.search).get('type') || 0)
 
   return (
-    <Card
+    <SCard
       extra={
         <SRender render={value?.length}>
           <Button type={'link'} size={'small'} onClick={() => { openInfo.edit(value) }}>
@@ -59,6 +60,6 @@ export default function Locations (props: LocationsProps) {
 
       <LocationModal openInfo={openInfo} locations={locations} onConfirm={onChange} />
 
-    </Card>
+    </SCard>
   )
 }
