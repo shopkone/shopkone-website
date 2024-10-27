@@ -9,6 +9,7 @@ import { BaseCode, BaseShippingZone, ShippingType } from '@/api/shipping/base'
 import { CreateShippingApi } from '@/api/shipping/create'
 import { ShippingInfoApi } from '@/api/shipping/info'
 import Page from '@/components/page'
+import SRender from '@/components/s-render'
 import Locations from '@/pages/mange/settings/shipping/courier-service/change/locations'
 import Products from '@/pages/mange/settings/shipping/courier-service/change/products'
 import Zones from '@/pages/mange/settings/shipping/courier-service/change/zones'
@@ -95,11 +96,13 @@ export default function Change () {
     >
       <Form form={form}>
         <Flex gap={16} vertical>
-          <Card title={t('方案名称')}>
-            <Form.Item name={'name'} className={'mb0'} extra={t('该名称不会展示给客户查看')}>
-              <Input autoComplete={'off'} />
-            </Form.Item>
-          </Card>
+          <SRender render={type === ShippingType.CustomerExpressDelivery}>
+            <Card title={t('方案名称')}>
+              <Form.Item name={'name'} className={'mb0'} extra={t('该名称不会展示给客户查看')}>
+                <Input autoComplete={'off'} />
+              </Form.Item>
+            </Card>
+          </SRender>
 
           <Form.Item className={'mb0'} name={'product_ids'}>
             <Products />

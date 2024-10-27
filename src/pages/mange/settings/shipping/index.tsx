@@ -37,7 +37,7 @@ export default function Shipping () {
   }, [locationList.data])
 
   return (
-    <Page loading={locationList.loading || countries.loading || shippingState.loading} bottom={64} width={700}>
+    <Page loading={locationList.loading || countries.loading} bottom={64} width={700}>
       <Flex gap={4} className={styles.tabs}>
         {
             tabs.map(tab => (

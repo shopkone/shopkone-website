@@ -3,6 +3,7 @@ import { IconMapPin } from '@tabler/icons-react'
 import { Button, Card, Empty } from 'antd'
 
 import { LocationListRes } from '@/api/location/list'
+import { ShippingType } from '@/api/shipping/base'
 import SLocation from '@/components/s-location'
 import SRender from '@/components/s-render'
 import { useOpen } from '@/hooks/useOpen'
@@ -18,6 +19,7 @@ export default function Locations (props: LocationsProps) {
   const { onChange, value = [], locations } = props
   const { t } = useTranslation('settings', { keyPrefix: 'shipping' })
   const openInfo = useOpen<number[]>([])
+  const type: ShippingType = Number(new URLSearchParams(window.location.search).get('type') || 0)
 
   return (
     <Card
@@ -30,7 +32,7 @@ export default function Locations (props: LocationsProps) {
       }
       title={t('发货地点')}
     >
-      <SRender render={!value?.length}>
+      <SRender render={!value?.length && type === ShippingType.CustomerExpressDelivery}>
         <Empty
           image={<IconMapPin size={64} color={'#eee'} />}
           description={t('暂无数据')}
@@ -42,8 +44,17 @@ export default function Locations (props: LocationsProps) {
         </Empty>
       </SRender>
 
-      <SRender render={value?.length}>
-        <SLocation hideTag value={locations.filter(item => value.includes(item.id))} />
+      <SRender render={value?.length || type === ShippingType.GeneralExpressDelivery}>
+        <SRender render={type !== ShippingType.CustomerExpressDelivery} className={'tips'} style={{ marginBottom: 6 }}>
+          {t('后续新增的地点将会被自动添加为发货地点')}
+        </SRender>
+        <SLocation
+          hideTag value={
+          type === ShippingType.CustomerExpressDelivery
+            ? locations.filter(item => value.includes(item.id))
+            : locations
+        }
+        />
       </SRender>
 
       <LocationModal openInfo={openInfo} locations={locations} onConfirm={onChange} />

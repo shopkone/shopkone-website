@@ -118,6 +118,14 @@ export default function Products (props: ProductsProps) {
       title={'商品'}
       className={'fit-width'}
     >
+      <SRender render={type === ShippingType.GeneralExpressDelivery}>
+        <Flex vertical gap={8}>
+          <div>{t('以下商品将被自动添加到通用物流方案')}</div>
+          <div className={'secondary'}>{t('1. 所有不在自定义物流方案中的商品')}</div>
+          <div className={'secondary'}>{t('2. 新增商品默认被自动添加')}</div>
+        </Flex>
+      </SRender>
+
       <SRender render={!value?.length && type === ShippingType.CustomerExpressDelivery}>
         <Empty
           image={<IconTag size={64} color={'#eee'} />}
