@@ -11,6 +11,7 @@ import { CreateShippingApi } from '@/api/shipping/create'
 import { ShippingInfoApi } from '@/api/shipping/info'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
+import { sMessage } from '@/components/s-message'
 import SRender from '@/components/s-render'
 import Locations from '@/pages/mange/settings/shipping/courier-service/change/locations'
 import Products from '@/pages/mange/settings/shipping/courier-service/change/products'
@@ -30,7 +31,13 @@ export default function Change () {
   const isGeneral = type === ShippingType.GeneralExpressDelivery
 
   const onOk = async () => {
-    await form.validateFields()
+    await form.validateFields().catch(err => {
+      const msg = err.errorFields?.[0]?.errors?.[0]
+      if (msg) {
+        sMessage.warning(msg)
+      }
+      throw new Error(err)
+    })
     const values = form.getFieldsValue()
     values.zones = values.zones.map((item: BaseShippingZone) => {
       const codes: BaseCode[] = []
