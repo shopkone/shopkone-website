@@ -187,7 +187,7 @@ export default function SelectProduct (props: SelectProductProps) {
           <Flex align={'center'} gap={12}>
             <Checkbox
               onChange={onSelectAll}
-              checked={isAllSelect}
+              checked={isAllSelect ? !!selected?.length : false}
               indeterminate={!isAllSelect && !!selected.length}
             />
             <SRender render={selected.length}>

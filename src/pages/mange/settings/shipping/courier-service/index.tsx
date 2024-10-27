@@ -95,13 +95,13 @@ export default function CourierService () {
                   <Flex align={'center'} className={styles.item}>
                     <div className={styles.left}>
                       <div className={styles.name}>{t('通用方案')}</div>
-                      <div>{t('x商品', { x: item.product_count })}</div>
+                      <div>{t('全部商品')}</div>
                     </div>
                     <div className={styles.right}>
                       <div className={styles.name}>{t('适用范围')}</div>
                       <Flex align={'center'}>
                         <div><IconMapPin size={16} style={{ position: 'relative', top: 2, marginRight: 4 }} /></div>
-                        <div>{t('x发货地点', { x: item.location_count })}</div>
+                        <div>{t('x发货地点', { x: locations?.length || 0 })}</div>
                         <div style={{ position: 'relative', top: 3, marginLeft: 12, marginRight: 12 }}><IconArrowRight size={15} /></div>
                         <div style={{ position: 'relative', top: 2, marginRight: 4 }}><IconWorld size={16} /></div>
                         <div>{t('x送达地区', { x: item.zone_count })}</div>

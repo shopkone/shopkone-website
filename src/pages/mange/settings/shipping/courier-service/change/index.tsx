@@ -1,8 +1,9 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import { useRequest } from 'ahooks'
 import { Card, Flex, Form, Input } from 'antd'
+import cloneDeep from 'lodash/cloneDeep'
 
 import { LocationListApi } from '@/api/location/list'
 import { BaseCode, BaseShippingZone, ShippingType } from '@/api/shipping/base'
@@ -13,6 +14,7 @@ import SRender from '@/components/s-render'
 import Locations from '@/pages/mange/settings/shipping/courier-service/change/locations'
 import Products from '@/pages/mange/settings/shipping/courier-service/change/products'
 import Zones from '@/pages/mange/settings/shipping/courier-service/change/zones'
+import { isEqualHandle } from '@/utils/is-equal-handle'
 
 export default function Change () {
   const { t } = useTranslation('settings', { keyPrefix: 'shipping' })
@@ -22,6 +24,8 @@ export default function Change () {
   const info = useRequest(ShippingInfoApi, { manual: true })
   const { id } = useParams()
   const type: ShippingType = Number(new URLSearchParams(window.location.search).get('type') || 0)
+  const [isChange, setIsChange] = useState(false)
+  const init = useRef<any>()
 
   const onOk = async () => {
     await form.validateFields()
@@ -45,6 +49,22 @@ export default function Change () {
       return { ...item, codes }
     })
     await create.runAsync({ ...values, type })
+  }
+
+  const onCancel = () => {
+    form.setFieldsValue(init.current)
+    setIsChange(false)
+  }
+
+  const onValuesChange = () => {
+    const values = form.getFieldsValue()
+    if (!init.current) {
+      init.current = cloneDeep(values)
+      return
+    }
+    const isSame = isEqualHandle(values, init.current)
+    console.log({ isSame, values, init: init.current })
+    setIsChange(!isSame)
   }
 
   const title = useMemo(() => {
@@ -80,21 +100,25 @@ export default function Change () {
           return { ...item, codes }
         })
         form.setFieldsValue({ ...res, zones })
+        onValuesChange()
       })
+    } else {
+      onValuesChange()
     }
   }, [id])
 
   return (
     <Page
+      onCancel={onCancel}
       onOk={onOk}
-      isChange={true}
+      isChange={isChange}
       loading={locations.loading || info.loading}
       bottom={64}
       back={'/settings/shipping'}
       width={700}
       title={title}
     >
-      <Form form={form}>
+      <Form onValuesChange={onValuesChange} form={form}>
         <Flex gap={16} vertical>
           <SRender render={type === ShippingType.CustomerExpressDelivery}>
             <Card title={t('方案名称')}>
