@@ -1,25 +1,18 @@
-import React, { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { IconTrash } from '@tabler/icons-react'
 import { Button, Flex, Form } from 'antd'
 
 import { useCurrencyList } from '@/api/base/currency-list'
-import { BaseShippingZoneFeeCondition, ShippingZoneFeeRule, ShippingZoneFeeType } from '@/api/shipping/base'
+import { ShippingZoneFeeRule, ShippingZoneFeeType } from '@/api/shipping/base'
 import IconButton from '@/components/icon-button'
 import SInputNumber from '@/components/s-input-number'
 import SRender from '@/components/s-render'
 import STable, { STableProps } from '@/components/s-table'
-import { genId } from '@/utils/random'
 
-import styles from './index.module.less'
+const loop = () => {}
 
-export interface FeeConditionProps {
-  value?: BaseShippingZoneFeeCondition[]
-  onChange?: (value: BaseShippingZoneFeeCondition[]) => void
-}
-
-export default function FeeCondition (props: FeeConditionProps) {
-  const { value, onChange } = props
+export default function FeeCondition () {
   const { t } = useTranslation('settings', { keyPrefix: 'shipping' })
   const currencyList = useCurrencyList()
   const form = Form.useFormInstance()
@@ -28,8 +21,11 @@ export default function FeeCondition (props: FeeConditionProps) {
   const currency_code = Form.useWatch('currency_code', form)
   const weight_unit = Form.useWatch('weight_unit', form)
   const currency = currencyList?.data?.find(item => item.code === currency_code)
+  const addRef = useRef<(value: any) => void>(loop)
+  const removeRef = useRef<(index: number) => void>(loop)
+  const [forceUpdate, setForceUpdate] = useState(0)
 
-  const [errMsg, setErrMsg] = useState<Record<string, string>>()
+  const getConditions = () => form.getFieldValue('conditions') || []
 
   const options = [
     { label: t('按订单总价'), value: ShippingZoneFeeRule.OrderPrice },
@@ -43,54 +39,26 @@ export default function FeeCondition (props: FeeConditionProps) {
   const isPriceRange = rule === ShippingZoneFeeRule.OrderPrice || rule === ShippingZoneFeeRule.ProductPrice
   const isCountRange = rule === ShippingZoneFeeRule.ProductCount
 
-  const onUpdateItem = (row: BaseShippingZoneFeeCondition, key: keyof BaseShippingZoneFeeCondition, v: any) => {
-    row[key] = v
-    onChange?.(value?.map(item => ({ ...item, currency_code })) || [])
-    onCheckErr()
-  }
-
-  const onRemoveItem = (id: number) => {
-    onChange?.(value?.filter(i => i.id !== id) || [])
-  }
-
-  const onCheckErr = () => {
-    const values = form.getFieldsValue()
-    const conditions: BaseShippingZoneFeeCondition[] = values.conditions || []
-    const err: Record<string, string> = {}
-    conditions.forEach((item, index) => {
-      if (item.max && item.min > item.max) {
-        err[`${item.id}_max`] = t('结束区间必须大于起始区间')
-      }
-      if (type === ShippingZoneFeeType.Count && !item.first) {
-        err[`${item.id}_first_count`] = t('首件数量必须大于 0')
-      }
-      if (type === ShippingZoneFeeType.Count && !item.next) {
-        err[`${item.id}_next_count`] = t('续件数量必须大于 0')
-      }
-      if (type === ShippingZoneFeeType.Weight && !item.first) {
-        err[`${item.id}_first_weight`] = t('首重必须大于 0')
-      }
-      if (type === ShippingZoneFeeType.Weight && !item.next) {
-        err[`${item.id}_next_weight`] = t('续重必须大于 0')
-      }
+  const onUpdate = () => {
+    setTimeout(() => {
+      setForceUpdate(forceUpdate + 1)
     })
-    setErrMsg(err)
-    return err
+  }
+
+  const onRemoveItem = (name: number) => {
+    removeRef?.current(name)
+    onUpdate()
   }
 
   const onAdd = () => {
-    onChange?.([...(value || []), {
-      id: genId(),
-      min: 0,
-      fixed: 0,
-      first: 0,
-      first_fee: 0,
-      next: 0,
-      next_fee: 0
-    }])
+    const conditions = getConditions()
+    const last = conditions[conditions?.length - 1]
+    const item = { min: last?.max, fixed: 0, first: 0, first_fee: 0, next: 0, next_fee: 0 }
+    addRef.current(item)
     setTimeout(() => {
       document.getElementById('form_id_scroll_handle_to_bottom')?.scrollTo({ left: 0, top: 1000 })
     })
+    onUpdate()
   }
 
   const rangeSuffix = useMemo(() => {
@@ -105,34 +73,60 @@ export default function FeeCondition (props: FeeConditionProps) {
   const columns: STableProps['columns'] = [
     {
       title: options.find(item => item.value === rule)?.label,
-      code: 'march_rule',
-      name: 'march_rule',
-      render: (_, row: BaseShippingZoneFeeCondition) => {
+      code: 'name',
+      name: 'name',
+      render: (name: number) => {
         return (
-          <div>
-            <Flex gap={8} align={'center'}>
+          <Flex gap={8} align={'center'}>
+            <Form.Item className={'mb0'} name={[name, 'min']}>
               <SInputNumber
+                disabled={name !== 0}
                 required
-                value={row.min}
                 uint={isCountRange}
                 money={isPriceRange}
                 prefix={isPriceRange ? currency?.symbol : undefined}
                 suffix={rangeSuffix}
-                onChange={v => { onUpdateItem(row, 'min', v) }}
               />
-              <div>-</div>
+            </Form.Item>
+            -
+            <Form.Item
+              rules={[{
+                validator: async (rule, value) => {
+                  const conditions = getConditions()
+                  const next = conditions[name + 1]
+                  const isLast = !next
+                  console.log(name)
+                  if (isLast && value === undefined) {
+                    await Promise.resolve(); return
+                  }
+                  if (value === undefined) {
+                    await Promise.reject(t('请填写结束区间')); return
+                  }
+                  if (value <= conditions[name].min) {
+                    await Promise.reject(t('结束区间不能小于开始区间'))
+                  }
+                }
+              }]}
+              name={[name, 'max']}
+              className={'mb0'}
+            >
               <SInputNumber
-                value={row.max}
                 uint={isCountRange}
                 money={isPriceRange}
                 prefix={isPriceRange ? currency?.symbol : undefined}
                 suffix={rangeSuffix}
-                placeholder={t('无限制')}
-                onChange={v => { onUpdateItem(row, 'max', v) }}
+                placeholder={getConditions()?.[name + 1] ? undefined : t('无限制')}
+                onChange={(v) => {
+                  const conditions = getConditions()
+                  if (conditions[name + 1]) {
+                    conditions[name + 1].min = v
+                    form.setFieldValue('conditions', [...conditions])
+                  }
+                  form.validateFields({ dirty: true })
+                }}
               />
-            </Flex>
-            <div className={styles.err}>{errMsg?.[`${row.id}_max`]}</div>
-          </div>
+            </Form.Item>
+          </Flex>
         )
       },
       width: 250,
@@ -140,98 +134,118 @@ export default function FeeCondition (props: FeeConditionProps) {
     },
     {
       title: t('运费'),
-      code: 'fixed',
-      name: 'fixed',
-      render: (fixed: number, row: BaseShippingZoneFeeCondition) => (
-        <SInputNumber
-          onChange={v => { onUpdateItem(row, 'fixed', v) }}
-          value={fixed}
-          money
-        />
+      code: 'name',
+      name: 'name',
+      render: (name: number) => (
+        <Form.Item name={[name, 'fixed']} className={'mb0'}>
+          <SInputNumber money />
+        </Form.Item>
       ),
       width: 150,
       hidden: type !== ShippingZoneFeeType.Fixed
     },
     {
       title: isCount ? t('首件') : t('首重'),
-      code: 'first',
-      name: 'first',
-      render: (first: number, row: BaseShippingZoneFeeCondition) => (
-        <div>
+      code: 'name',
+      name: 'name',
+      render: (name: number) => (
+        <Form.Item
+          rules={[{
+            validator: async (rule, value) => {
+              if (value === undefined) {
+                await Promise.reject(isCount ? t('请输入首重') : t('请输入首件'))
+                return
+              }
+              if (value <= 0) {
+                await Promise.reject(isCount ? t('首重必须大于0') : t('首件必须大于0'))
+              }
+            }
+          }]}
+          name={[name, 'first']}
+          className={'mb0'}
+        >
           <SInputNumber
             required
-            onChange={v => { onUpdateItem(row, 'first', v) }}
-            value={first}
             suffix={isCount ? t('件') : weight_unit}
           />
-          <div className={styles.err}>{errMsg?.[`${row.id}_first_${isCount ? 'count' : 'weight'}`]}</div>
-        </div>
+        </Form.Item>
       ),
       width: 150,
       hidden: type === ShippingZoneFeeType.Fixed
     },
     {
       title: isCount ? t('首件费用') : t('首重费用'),
-      code: 'first_fee',
-      name: 'first_fee',
-      render: (first_fee: number, row: BaseShippingZoneFeeCondition) => (
-        <SInputNumber
-          onChange={v => { onUpdateItem(row, 'first_fee', v) }}
-          value={first_fee}
-          money
-          prefix={currency?.symbol}
-        />
+      code: 'name',
+      name: 'name',
+      render: (name: number) => (
+        <Form.Item name={[name, 'first_fee']} className={'mb0'}>
+          <SInputNumber
+            money
+            prefix={currency?.symbol}
+          />
+        </Form.Item>
       ),
       width: 150,
       hidden: type === ShippingZoneFeeType.Fixed
     },
     {
       title: isCount ? t('续件') : t('续重'),
-      code: 'next',
-      name: 'next',
-      render: (next: number, row: BaseShippingZoneFeeCondition) => (
-        <div>
+      code: 'name',
+      name: 'name',
+      render: (name: number) => (
+        <Form.Item
+          rules={[{
+            validator: async (rule, value) => {
+              if (value === undefined) {
+                await Promise.reject(isCount ? t('请输入续重') : t('请输入续件'))
+                return
+              }
+              if (value <= 0) {
+                await Promise.reject(isCount ? t('续重必须大于0') : t('续件必须大于0'))
+              }
+            }
+          }]}
+          name={[name, 'next']}
+          className={'mb0'}
+        >
           <SInputNumber
             required
-            onChange={v => { onUpdateItem(row, 'next', v) }}
-            value={next}
             suffix={isCount ? t('件') : weight_unit}
           />
-          <div className={styles.err}>{errMsg?.[`${row.id}_next_${isCount ? 'count' : 'weight'}`]}</div>
-        </div>
+        </Form.Item>
       ),
       width: 150,
       hidden: type === ShippingZoneFeeType.Fixed
     },
     {
       title: isCount ? t('续件费用') : t('续重费用'),
-      code: 'next_fee',
-      name: 'next_fee',
-      render: (next_fee: number, row: BaseShippingZoneFeeCondition) => (
-        <SInputNumber
-          onChange={v => { onUpdateItem(row, 'next_fee', v) }}
-          value={next_fee}
-          money
-          prefix={currency?.symbol}
-        />
+      code: 'name',
+      name: 'name',
+      render: (name: number) => (
+        <Form.Item name={[name, 'next_fee']} className={'mb0'}>
+          <SInputNumber
+            money
+            prefix={currency?.symbol}
+          />
+        </Form.Item>
       ),
       width: 150,
       hidden: type === ShippingZoneFeeType.Fixed
     },
     {
       title: '',
-      code: 'id',
-      name: 'id',
-      width: 80,
+      code: 'name',
+      name: 'name',
+      width: 60,
       align: 'center',
-      render: (id: number) => (
+      render: (name: number) => (
         <Flex justify={'center'}>
-          <IconButton onClick={() => { onRemoveItem(id) }} size={24} type={'text'}>
+          <IconButton onClick={() => { onRemoveItem(name) }} size={24} type={'text'}>
             <IconTrash size={15} />
           </IconButton>
         </Flex>
       ),
-      hidden: value?.length === 1
+      hidden: getConditions()?.length <= 1
     },
     {
       title: '',
@@ -242,30 +256,42 @@ export default function FeeCondition (props: FeeConditionProps) {
     }
   ]
 
-  if (value?.length === 1 && type === ShippingZoneFeeType.Fixed && !rule) {
+  if (getConditions()?.length === 1 && type === ShippingZoneFeeType.Fixed && !rule) {
     return (
       <Flex
-        align={'center'} style={{
-          marginBottom: 16,
-          width: 400
-        }}
+        align={'center'} style={{ marginBottom: 16, width: 400 }}
       >
         <div style={{ flexShrink: 0 }}>{t('运费价格：')}</div>
-        <SInputNumber required onChange={v => { onUpdateItem(value[0], 'fixed', v) }} value={value[0].fixed} money />
+        <SInputNumber
+          onChange={v => { form.setFieldValue('conditions', [{ ...(getConditions()?.[0] || {}), fixed: v }]) }}
+          required
+          value={getConditions()[0].fixed}
+          money
+        />
       </Flex>
     )
   }
 
   return (
     <div>
-      <STable
-        init
-        borderless
-        className={'table-border'}
-        data={value || []}
-        columns={columns}
-      />
-      <SRender render={rule ? (value?.length || 0) < 20 : null}>
+      <Form.List name={'conditions'}>
+        {
+          (fields, { add, remove }) => {
+            addRef.current = add
+            removeRef.current = remove
+            return (
+              <STable
+                init
+                borderless
+                className={'table-border'}
+                data={fields || []}
+                columns={columns}
+              />
+            )
+          }
+        }
+      </Form.List>
+      <SRender render={rule ? (getConditions()?.length || 0) < 20 : null}>
         <Button style={{ marginTop: 16 }} onClick={onAdd}>{t('添加区间')}</Button>
       </SRender>
     </div>

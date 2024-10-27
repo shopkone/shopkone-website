@@ -167,9 +167,7 @@ export default function FeeModal (props: FeeModalProps) {
           </Form.Item>
         </Flex>
 
-        <Form.Item name={'conditions'}>
-          <FeeCondition />
-        </Form.Item>
+        <FeeCondition />
 
         <SRender render={!rule}>
           <Checkbox

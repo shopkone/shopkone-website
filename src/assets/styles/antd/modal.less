@@ -65,5 +65,17 @@
       top: -1px;
     }
   }
+
+  .shopkone-form-item-has-error .shopkone-input-affix-wrapper{
+    border-color: var(--color--error);
+    outline-color: var(--color--error);
+    &:hover, &:focus {
+      border-color: var(--color--error);
+      outline-color: var(--color--error);
+    }
+    .shopkone-input-prefix, .shopkone-input-suffix {
+      color: var(--color-text-primary);
+    }
+  }
 }
 
