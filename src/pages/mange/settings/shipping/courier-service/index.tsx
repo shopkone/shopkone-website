@@ -23,6 +23,9 @@ export default function CourierService () {
   const setLoading = useShippingState(state => state.setLoading)
   const list = useRequest(ShippingListApi)
 
+  const customerList = list.data?.filter(item => item.type === ShippingType.CustomerExpressDelivery)
+  const generalList = list.data?.filter(item => item.type === ShippingType.GeneralExpressDelivery)
+
   useEffect(() => {
     setLoading(list.loading)
   }, [list.loading])
@@ -69,55 +72,114 @@ export default function CourierService () {
       >
         <div className={styles.table}>
           <div className={styles.title}>{t('通用运费方案')}</div>
-          <Flex vertical>
-            <Flex align={'center'} className={styles.item}>
-              <div className={styles.left}>
-                <div className={styles.name}>{t('通用方案')}</div>
-                <div>{t('x商品', { count: 0 })}</div>
-              </div>
-              <div className={styles.right}>
-                <div className={styles.name}>{t('适用范围')}</div>
-                <Flex align={'center'}>
-                  <div><IconMapPin size={16} style={{ position: 'relative', top: 2, marginRight: 4 }} /></div>
-                  <div>{t('x发货地点', { count: 2 })}</div>
-                  <div style={{ position: 'relative', top: 3, marginLeft: 12, marginRight: 12 }}><IconArrowRight size={15} /></div>
-                  <div style={{ position: 'relative', top: 2, marginRight: 4 }}><IconWorld size={16} /></div>
-                  <div>{t('x送达地区', { count: 2 })}</div>
+          <SRender render={!generalList?.length}>
+            <Empty
+              image={
+                <div style={{ paddingTop: 32 }}>
+                  <IconTruckDelivery size={64} color={'#ddd'} />
+                </div>
+              }
+              description={(
+                <div className={'secondary'}>
+                  {t('添加运费以便客户完成结账')}
+                </div>
+              )}
+              style={{ paddingBottom: 24 }}
+            >
+              <Flex justify={'center'}>
+                <Button onClick={() => { nav(`courier-service/change?type=${ShippingType.GeneralExpressDelivery}`) }} type={'primary'}>
+                  {t('添加通用运费方案')}
+                </Button>
+              </Flex>
+            </Empty>
+          </SRender>
+          <SRender render={generalList?.length}>
+            {
+              generalList?.map(item => (
+                <Flex onClick={() => { nav(`courier-service/change/${item.id}?type=${item.type}`) }} vertical key={item.id}>
+                  <Flex align={'center'} className={styles.item}>
+                    <div className={styles.left}>
+                      <div className={styles.name}>{t('通用方案')}</div>
+                      <div>{t('x商品', { x: item.product_count })}</div>
+                    </div>
+                    <div className={styles.right}>
+                      <div className={styles.name}>{t('适用范围')}</div>
+                      <Flex align={'center'}>
+                        <div><IconMapPin size={16} style={{ position: 'relative', top: 2, marginRight: 4 }} /></div>
+                        <div>{t('x发货地点', { x: item.location_count })}</div>
+                        <div style={{ position: 'relative', top: 3, marginLeft: 12, marginRight: 12 }}><IconArrowRight size={15} /></div>
+                        <div style={{ position: 'relative', top: 2, marginRight: 4 }}><IconWorld size={16} /></div>
+                        <div>{t('x送达地区', { x: item.zone_count })}</div>
+                      </Flex>
+                    </div>
+                    <div className={styles['right-icon']}>
+                      <IconChevronRight size={16} />
+                    </div>
+                  </Flex>
                 </Flex>
-              </div>
-              <div className={styles['right-icon']}>
-                <IconChevronRight size={16} />
-              </div>
-            </Flex>
-          </Flex>
+              ))
+            }
+          </SRender>
         </div>
 
         <div style={{ marginTop: 16 }} className={styles.table}>
           <Flex align={'center'} justify={'space-between'} className={styles.title}>
             {t('自定义运费方案')}
-            <Button onClick={() => { nav(`courier-service/change?type=${ShippingType.CustomerExpressDelivery}`) }} size={'small'} type={'link'}>
-              {t('添加自定义运费方案')}
-            </Button>
-          </Flex>
-          <Empty
-            image={
-              <div style={{ paddingTop: 32 }}>
-                <IconTruckDelivery size={64} color={'#ddd'} />
-              </div>
-            }
-            description={(
-              <div className={'secondary'}>
-                {t('单独为商品设置不同的运费')}
-              </div>
-            )}
-            style={{ paddingBottom: 24 }}
-          >
-            <Flex justify={'center'}>
-              <Button onClick={() => { nav(`courier-service/change?type=${ShippingType.CustomerExpressDelivery}`) }} type={'primary'}>
+            <SRender render={customerList?.length}>
+              <Button onClick={() => { nav(`courier-service/change?type=${ShippingType.CustomerExpressDelivery}`) }} size={'small'} type={'link'}>
                 {t('添加自定义运费方案')}
               </Button>
-            </Flex>
-          </Empty>
+            </SRender>
+          </Flex>
+          <SRender render={!customerList?.length}>
+            <Empty
+              image={
+                <div style={{ paddingTop: 32 }}>
+                  <IconTruckDelivery size={64} color={'#ddd'} />
+                </div>
+              }
+              description={(
+                <div className={'secondary'}>
+                  {t('单独为商品设置不同的运费')}
+                </div>
+              )}
+              style={{ paddingBottom: 24 }}
+            >
+              <Flex justify={'center'}>
+                <Button onClick={() => { nav(`courier-service/change?type=${ShippingType.CustomerExpressDelivery}`) }} type={'primary'}>
+                  {t('添加自定义运费方案')}
+                </Button>
+              </Flex>
+            </Empty>
+          </SRender>
+
+          <SRender render={customerList?.length}>
+            {
+              customerList?.map(item => (
+                <Flex onClick={() => { nav(`courier-service/change/${item.id}?type=${item.type}`) }} vertical key={item.id}>
+                  <Flex align={'center'} className={styles.item}>
+                    <div className={styles.left}>
+                      <div className={styles.name}>{item.name}</div>
+                      <div>{t('x商品', { x: item.product_count })}</div>
+                    </div>
+                    <div className={styles.right}>
+                      <div className={styles.name}>{t('适用范围')}</div>
+                      <Flex align={'center'}>
+                        <div><IconMapPin size={16} style={{ position: 'relative', top: 2, marginRight: 4 }} /></div>
+                        <div>{t('x发货地点', { x: item.location_count })}</div>
+                        <div style={{ position: 'relative', top: 3, marginLeft: 12, marginRight: 12 }}><IconArrowRight size={15} /></div>
+                        <div style={{ position: 'relative', top: 2, marginRight: 4 }}><IconWorld size={16} /></div>
+                        <div>{t('x送达地区', { x: item.zone_count })}</div>
+                      </Flex>
+                    </div>
+                    <div className={styles['right-icon']}>
+                      <IconChevronRight size={16} />
+                    </div>
+                  </Flex>
+                </Flex>
+              ))
+            }
+          </SRender>
         </div>
       </SCard>
     </Flex>

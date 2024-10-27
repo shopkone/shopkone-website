@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import { useRequest } from 'ahooks'
@@ -46,6 +46,20 @@ export default function Change () {
     await create.runAsync({ ...values, type })
   }
 
+  const title = useMemo(() => {
+    if (type === ShippingType.GeneralExpressDelivery) {
+      if (id) {
+        return t('编辑通用运费方案')
+      } else {
+        return t('添加通用运费方案')
+      }
+    }
+    if (id) {
+      return t('编辑自定义运费方案')
+    }
+    return t('添加自定义运费方案')
+  }, [type, id])
+
   useEffect(() => {
     if (id) {
       info.runAsync({ id: Number(id) }).then(res => {
@@ -77,7 +91,7 @@ export default function Change () {
       bottom={64}
       back={'/settings/shipping'}
       width={700}
-      title={t('添加自定义运费方案')}
+      title={title}
     >
       <Form form={form}>
         <Flex gap={16} vertical>

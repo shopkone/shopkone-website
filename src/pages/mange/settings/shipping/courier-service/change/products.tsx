@@ -5,6 +5,7 @@ import { Button, Empty, Flex } from 'antd'
 
 import { FileType } from '@/api/file/add-file-record'
 import { ProductListByIdsRes, useProductListByIds } from '@/api/product/list-by-ids'
+import { ShippingType } from '@/api/shipping/base'
 import FileImage from '@/components/file-image'
 import IconButton from '@/components/icon-button'
 import SCard from '@/components/s-card'
@@ -28,6 +29,7 @@ export default function Products (props: ProductsProps) {
   const [select, setSelect] = useState<number[]>([])
   const [page, setPage] = useState({ current: 1, pageSize: 20 })
   const { t } = useTranslation('settings', { keyPrefix: 'shipping' })
+  const type: ShippingType = Number(new URLSearchParams(window.location.search).get('type') || 0)
 
   const pageValue = useMemo(() => {
     if (!value) return []
@@ -116,7 +118,7 @@ export default function Products (props: ProductsProps) {
       title={'商品'}
       className={'fit-width'}
     >
-      <SRender render={!value?.length}>
+      <SRender render={!value?.length && type === ShippingType.CustomerExpressDelivery}>
         <Empty
           image={<IconTag size={64} color={'#eee'} />}
           description={t('暂无数据')}
@@ -128,7 +130,10 @@ export default function Products (props: ProductsProps) {
         </Empty>
       </SRender>
 
-      <SRender render={value?.length}>
+      <SRender render={value?.length ? type === ShippingType.CustomerExpressDelivery : null}>
+        <div className={'tips'} style={{ marginBottom: 8 }}>
+          {t('已选商品', { x: value?.length })}
+        </div>
         <STable
           borderless
           className={'table-border'}

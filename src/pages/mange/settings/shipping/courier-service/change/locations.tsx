@@ -22,9 +22,11 @@ export default function Locations (props: LocationsProps) {
   return (
     <Card
       extra={
-        <Button type={'link'} size={'small'} onClick={() => { openInfo.edit(value) }}>
-          {t('选择地点')}
-        </Button>
+        <SRender render={value?.length}>
+          <Button type={'link'} size={'small'} onClick={() => { openInfo.edit(value) }}>
+            {t('选择地点')}
+          </Button>
+        </SRender>
       }
       title={t('发货地点')}
     >
