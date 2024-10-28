@@ -49,6 +49,15 @@ export default function Zones (props: ZonesProps) {
     }
   })
 
+  const removeFee = useMemoizedFn((zone: BaseShippingZone, fee: BaseShippingZoneFee) => {
+    onChange?.(value?.map(item => {
+      if (item.id === zone.id) {
+        return { ...item, fees: item.fees?.filter(i => i.id !== fee.id) }
+      }
+      return item
+    }))
+  })
+
   const getConditionText = useMemoizedFn((row: BaseShippingZoneFee, condition: BaseShippingZoneFeeCondition) => {
     const { max, min } = condition
     const currencySymbol = currencyList.data?.find(i => i.code === row.currency_code)?.symbol || ''
@@ -159,7 +168,7 @@ export default function Zones (props: ZonesProps) {
           return (
             <Button
               onClick={() => { feeOpenInfo.edit({ zoneId: item.id }) }}
-              style={{ position: 'relative', left: -42 }}
+              style={{ position: 'relative', left: -32 }}
               type={'link'}
               size={'small'}
             >
@@ -205,7 +214,7 @@ export default function Zones (props: ZonesProps) {
             <IconButton onClick={() => { feeOpenInfo.edit({ fee: row, zoneId: item.id }) }} type={'text'} size={24}>
               <IconPencil size={16} />
             </IconButton>
-            <IconButton type={'text'} size={24}>
+            <IconButton onClick={() => { removeFee(item, row) }} type={'text'} size={24}>
               <IconTrash size={15} />
             </IconButton>
           </Flex>
@@ -218,6 +227,11 @@ export default function Zones (props: ZonesProps) {
 
   const onExpand = (item: BaseShippingZone) => {
     setExpands(expands?.includes(item.id) ? expands.filter(i => i !== item.id) : [...expands || [], item.id])
+  }
+
+  const onRemoveZone = (item: BaseShippingZone) => {
+    setExpands(expands?.filter(i => i !== item.id))
+    onChange?.(value?.filter(i => i.id !== item.id))
   }
 
   const disabledList = useMemo(() => {
@@ -290,7 +304,7 @@ export default function Zones (props: ZonesProps) {
                       >
                         {t('编辑区域')}
                       </Button>
-                      <Button type={'link'} size={'small'} danger>
+                      <Button onClick={() => { onRemoveZone(item) }} type={'link'} size={'small'} danger>
                         {t('删除区域')}
                       </Button>
                     </Flex>

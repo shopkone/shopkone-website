@@ -2,7 +2,6 @@ import { memo, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { IconChevronLeft, IconChevronRight, IconDots } from '@tabler/icons-react'
 import { useMemoizedFn } from 'ahooks'
-import { Timeout } from 'ahooks/es/useRequest/src/types'
 import { BaseTable, BaseTableProps, features, useTablePipeline } from 'ali-react-table'
 import { Checkbox, Flex, Pagination, PaginationProps } from 'antd'
 import classNames from 'classnames'
@@ -11,6 +10,7 @@ import IconButton from '@/components/icon-button'
 import SLoading from '@/components/s-loading'
 import SRender from '@/components/s-render'
 import Empty, { EmptyProps } from '@/components/s-table/empty'
+import { sum } from '@/utils'
 
 import styles from './index.module.less'
 
@@ -66,8 +66,8 @@ function STable (props: STableProps) {
     ...rest
   } = props
 
-  const timer = useRef<Timeout>()
   const { t } = useTranslation('common', { keyPrefix: 'table' })
+  const offsetRef = useRef(0)
 
   const columns = useMemo(() => {
     if (!rowSelection?.value?.length) return cols
@@ -134,9 +134,9 @@ function STable (props: STableProps) {
 
   useEffect(() => {
     return () => {
-      if (timer.current) {
-        clearTimeout(timer.current)
-        timer.current = undefined
+      const main = document?.getElementById('shopkone-main')
+      if (main) {
+        main.onmousemove = null
       }
     }
   }, [])
@@ -189,21 +189,27 @@ function STable (props: STableProps) {
             onMouseDown: onRowClick
               ? (e) => {
                   if (isCheckboxDom(e)) return
-                  timer.current = setTimeout(() => {
-                    clearTimeout(timer.current)
-                    timer.current = undefined
-                  }, 300)
+                  offsetRef.current = 0
+                  const main = document?.getElementById('shopkone-main')
+                  if (main) {
+                    main.onmousemove = (e) => {
+                      offsetRef.current = sum(Math.abs(e.offsetY), Math.abs(e.offsetX), offsetRef.current) || 0
+                      console.log(offsetRef.current)
+                    }
+                  }
                 }
               : undefined,
             onMouseUp: onRowClick
               ? (e) => {
                   if (isCheckboxDom(e)) return
-                  if (!timer.current) {
-                    clearTimeout(timer.current)
-                    timer.current = undefined
-                    return
+                  const main = document?.getElementById('shopkone-main')
+                  if (main) {
+                    main.onmousemove = null
                   }
-                  onRowClick?.(row, rowIndex)
+                  if (offsetRef?.current < 500) {
+                    onRowClick?.(row, rowIndex)
+                  }
+                  offsetRef.current = 0
                 }
               : undefined,
             className: rowClassName?.(row)

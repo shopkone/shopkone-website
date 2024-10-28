@@ -26,7 +26,6 @@ export default function Products (props: ProductsProps) {
   const { value, onChange } = props
   const selectInfo = useOpen<number[]>([])
   const products = useProductListByIds()
-  const [select, setSelect] = useState<number[]>([])
   const [page, setPage] = useState({ current: 1, pageSize: 20 })
   const { t } = useTranslation('settings', { keyPrefix: 'shipping' })
   const type: ShippingType = Number(new URLSearchParams(window.location.search).get('type') || 0)
@@ -145,10 +144,6 @@ export default function Products (props: ProductsProps) {
         <STable
           borderless
           className={'table-border'}
-          rowSelection={{
-            value: select,
-            onChange: setSelect
-          }}
           loading={products.loading}
           init={!!products?.data}
           columns={columns}
