@@ -20,6 +20,7 @@ export interface STableProps<T=any> extends Omit<BaseTableProps, omit> {
   columns: BaseTableProps['columns']
   data: BaseTableProps['dataSource']
   width?: number
+  hasHeader?: boolean
   rowKey?: string
   style?: React.CSSProperties
   init?: boolean

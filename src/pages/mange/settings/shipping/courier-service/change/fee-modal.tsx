@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Checkbox, Flex, Form, Input, Radio } from 'antd'
 
@@ -23,6 +23,7 @@ export default function FeeModal (props: FeeModalProps) {
   const [form] = Form.useForm()
   const { t } = useTranslation('settings', { keyPrefix: 'shipping' })
   const currency = useCurrencyList()
+  const tempFix = useRef(0)
 
   const rule = Form.useWatch('rule', form)
   const type: ShippingZoneFeeType = Form.useWatch('type', form)
@@ -52,12 +53,17 @@ export default function FeeModal (props: FeeModalProps) {
   const onOk = async () => {
     await form.validateFields()
     const values = form.getFieldsValue()
-    onConfirm({ fee: { ...values, id: openInfo?.data?.fee?.id || genId() }, zoneId: openInfo.data?.zoneId || 0 })
+    const fee = { ...values, id: openInfo?.data?.fee?.id || genId() }
+    if (!fee.conditions) {
+      fee.conditions = [{ id: genId(), fixed: tempFix.current, first: 0, first_fee: 0, max: 0, min: 0, next: 0, next_fee: 0 }]
+    }
+    onConfirm({ fee, zoneId: openInfo.data?.zoneId || 0 })
     openInfo.close()
   }
 
   useEffect(() => {
     if (!openInfo.open) return
+    tempFix.current = 0
     if (openInfo.data?.fee) {
       form.setFieldsValue(openInfo.data?.fee)
     } else {
@@ -167,7 +173,12 @@ export default function FeeModal (props: FeeModalProps) {
           </Form.Item>
         </Flex>
 
-        <FeeCondition />
+        <FeeCondition
+          onChangeFix={v => {
+            tempFix.current = v
+            console.log({ v })
+          }}
+        />
 
         <SRender render={!rule}>
           <Checkbox

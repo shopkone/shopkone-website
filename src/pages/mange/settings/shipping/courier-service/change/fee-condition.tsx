@@ -10,9 +10,15 @@ import SInputNumber from '@/components/s-input-number'
 import SRender from '@/components/s-render'
 import STable, { STableProps } from '@/components/s-table'
 
+import styles from './index.module.less'
+
 const loop = () => {}
 
-export default function FeeCondition () {
+export interface FeeConditionProps {
+  onChangeFix: (value: number) => void
+}
+
+export default function FeeCondition (props: FeeConditionProps) {
   const { t } = useTranslation('settings', { keyPrefix: 'shipping' })
   const currencyList = useCurrencyList()
   const form = Form.useFormInstance()
@@ -38,6 +44,8 @@ export default function FeeCondition () {
 
   const isPriceRange = rule === ShippingZoneFeeRule.OrderPrice || rule === ShippingZoneFeeRule.ProductPrice
   const isCountRange = rule === ShippingZoneFeeRule.ProductCount
+
+  const onlyFee = getConditions()?.length === 1 && type === ShippingZoneFeeType.Fixed && !rule
 
   const onUpdate = () => {
     setTimeout(() => {
@@ -136,11 +144,18 @@ export default function FeeCondition () {
       code: 'name',
       name: 'name',
       render: (name: number) => (
-        <Form.Item name={[name, 'fixed']} className={'mb0'}>
-          <SInputNumber money />
-        </Form.Item>
+        (
+          <Flex className={'fit-width'} align={'center'} style={onlyFee ? { marginLeft: -12, marginBottom: 12 } : undefined}>
+            <SRender render={onlyFee}>
+              <div>{t('运费价格：')}</div>
+            </SRender>
+            <Form.Item name={[name, 'fixed']} className={'mb0 flex1'}>
+              <SInputNumber className={'fit-width'} money />
+            </Form.Item>
+          </Flex>
+        )
       ),
-      width: 150,
+      width: onlyFee ? 228 : 150,
       hidden: type !== ShippingZoneFeeType.Fixed
     },
     {
@@ -266,24 +281,8 @@ export default function FeeCondition () {
     }
   }, [rule])
 
-  if (getConditions()?.length === 1 && type === ShippingZoneFeeType.Fixed && !rule) {
-    return (
-      <Flex
-        align={'center'} style={{ marginBottom: 16, width: 400 }}
-      >
-        <div style={{ flexShrink: 0 }}>{t('运费价格：')}</div>
-        <SInputNumber
-          onChange={v => { form.setFieldValue('conditions', [{ ...(getConditions()?.[0] || {}), fixed: v }]) }}
-          required
-          value={getConditions()[0].fixed}
-          money
-        />
-      </Flex>
-    )
-  }
-
   return (
-    <div>
+    <div className={styles.conditions}>
       <Form.List name={'conditions'}>
         {
           (fields, { add, remove }) => {
@@ -291,9 +290,10 @@ export default function FeeCondition () {
             removeRef.current = remove
             return (
               <STable
+                hasHeader={!onlyFee}
                 init
                 borderless
-                className={'table-border'}
+                className={onlyFee ? '' : 'table-border'}
                 data={fields || []}
                 columns={columns}
               />
