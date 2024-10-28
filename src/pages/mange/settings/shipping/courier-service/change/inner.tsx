@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { useRequest } from 'ahooks'
 import { Flex, Form, Input } from 'antd'
 import cloneDeep from 'lodash/cloneDeep'
@@ -9,6 +9,7 @@ import { LocationListApi } from '@/api/location/list'
 import { BaseCode, BaseShippingZone, ShippingType } from '@/api/shipping/base'
 import { CreateShippingApi } from '@/api/shipping/create'
 import { ShippingInfoApi } from '@/api/shipping/info'
+import { ShippingUpdateApi } from '@/api/shipping/update'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
 import { sMessage } from '@/components/s-message'
@@ -28,13 +29,13 @@ export default function CourierServiceInner (props: CourierServiceInnerProps) {
   const locations = useRequest(async () => await LocationListApi({ active: true }))
   const [form] = Form.useForm()
   const create = useRequest(CreateShippingApi, { manual: true })
+  const update = useRequest(ShippingUpdateApi, { manual: true })
   const info = useRequest(ShippingInfoApi, { manual: true })
   const { id } = useParams()
   const type: ShippingType = Number(new URLSearchParams(window.location.search).get('type') || 0)
   const [isChange, setIsChange] = useState(false)
   const init = useRef<any>()
   const isGeneral = type === ShippingType.GeneralExpressDelivery
-  const nav = useNavigate()
 
   const onOk = async () => {
     await form.validateFields().catch(err => {
@@ -69,9 +70,15 @@ export default function CourierServiceInner (props: CourierServiceInnerProps) {
       })
       return { ...item, codes }
     })
-    const ret = await create.runAsync({ ...values, type })
-    onFresh(ret.id)
-    sMessage.success(t('方案添加成功'))
+    if (id) {
+      await update.runAsync({ ...values, id: Number(id), type: Number(type) })
+      onFresh(Number(id))
+      sMessage.success(t('方案编辑成功'))
+    } else {
+      const ret = await create.runAsync({ ...values, type })
+      onFresh(ret.id)
+      sMessage.success(t('方案添加成功'))
+    }
   }
 
   const onCancel = () => {
