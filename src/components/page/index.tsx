@@ -28,7 +28,7 @@ export interface PageProps {
 }
 
 export default function Page (props: PageProps) {
-  const { loadingHiddenBg, children, width, header, footer, title, back, isChange, bottom, onOk, onCancel, loading = false, resetLoading = false, okText } = props
+  const { loadingHiddenBg, children, width, header, footer, title, back, isChange, bottom = 64, onOk, onCancel, loading = false, resetLoading = false, okText } = props
   const nav = useNavigate()
   const [confirmLoading, setConfirmLoading] = useState(false)
   const setIsChange = useLayoutState(state => state.setChange)

@@ -20,15 +20,16 @@ export interface SLocationProps {
   style?: (item: LocationListRes, index: number) => React.CSSProperties
   prefix?: (item: LocationListRes, index: number) => React.ReactNode
   hideLoading?: boolean
+  borderless?: boolean
 }
 
 export default function SLocation (props: SLocationProps) {
-  const { onClick, extra, value, hideTag, hideLogo, style, prefix, hideLoading } = props
+  const { onClick, extra, value, hideTag, hideLogo, style, prefix, hideLoading, borderless } = props
   const countries = useCountries()
 
   return (
     <SLoading loading={countries.loading ? !hideLoading : false}>
-      <div className={styles.container}>
+      <div className={styles.container} style={{ border: borderless ? 'none' : undefined }}>
         {
           value?.map((item, index) => (
             <Flex
