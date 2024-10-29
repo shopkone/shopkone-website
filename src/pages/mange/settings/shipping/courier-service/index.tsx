@@ -157,7 +157,7 @@ export default function CourierService () {
           <SRender render={customerList?.length}>
             {
               customerList?.map(item => (
-                <Flex onClick={() => { nav(`courier-service/change/${item.id}?type=${item.type}`) }} vertical key={item.id}>
+                <Flex className={styles.itemWrap} onClick={() => { nav(`courier-service/change/${item.id}?type=${item.type}`) }} vertical key={item.id}>
                   <Flex align={'center'} className={styles.item}>
                     <div className={styles.left}>
                       <div className={styles.name}>{item.name}</div>
