@@ -39,18 +39,31 @@ export default function LocationModal (props: LocationModalProps) {
 
   return (
     <SModal onOk={onOk} onCancel={openInfo.close} open={openInfo.open} width={700} title={t('选择地点')}>
-      <div style={{ height: 400, padding: 16 }}>
+      <div style={{
+        minHeight: 400,
+        maxHeight: 600,
+        padding: 16,
+        overflowY: 'auto',
+        overflowX: 'hidden'
+      }}
+      >
         <SLocation
-          hideLogo
           value={locations || []}
-          prefix={item => (
-            <div style={{ marginRight: 4, marginLeft: 4 }}>
+          extra={item => (
+            <div style={{
+              marginRight: 4,
+              marginLeft: 4
+            }}
+            >
               <Checkbox checked={selectedIds.includes(item.id)} />
             </div>
           )}
-          onClick={item => { onSelect(item.id) }}
+          onClick={item => {
+            onSelect(item.id)
+          }}
           style={(item) => ({ background: selectedIds.includes(item.id) ? '#f8f8f8' : undefined })}
         />
+        <div style={{ height: 64 }} />
       </div>
     </SModal>
   )

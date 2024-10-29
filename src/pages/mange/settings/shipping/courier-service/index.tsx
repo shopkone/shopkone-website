@@ -5,37 +5,56 @@ import { IconArrowRight, IconChevronRight, IconMapPin, IconTruckDelivery, IconWo
 import { useRequest } from 'ahooks'
 import { Button, Empty, Flex } from 'antd'
 
+import { LocationListApi } from '@/api/location/list'
 import { ShippingType } from '@/api/shipping/base'
 import { ShippingListApi } from '@/api/shipping/list'
 import SCard from '@/components/s-card'
 import SLocation from '@/components/s-location'
 import SRender from '@/components/s-render'
 import Status from '@/components/status'
+import { useOpen } from '@/hooks/useOpen'
+import DefaultChanger from '@/pages/mange/settings/shipping/courier-service/default-changer'
+import OrderChanger from '@/pages/mange/settings/shipping/courier-service/order-changer'
 import { useShippingState } from '@/pages/mange/settings/shipping/state'
 
 import styles from './index.module.less'
 
 export default function CourierService () {
   const nav = useNavigate()
+  const fetchLocations = useRequest(async () => await LocationListApi({ active: true }), { manual: true })
   const locations = useShippingState().locations
+  const setLocations = useShippingState(state => state.setLocations)
   const defaultLocation = locations?.find(item => item.default)
   const { t } = useTranslation('settings', { keyPrefix: 'shipping' })
   const list = useRequest(ShippingListApi)
   const setLoading = useShippingState(state => state.setLoading)
+  const openInfo = useOpen<number>()
+  const orderOpenInfo = useOpen()
 
   const customerList = list.data?.filter(item => item.type === ShippingType.CustomerExpressDelivery)
   const generalList = list.data?.filter(item => item.type === ShippingType.GeneralExpressDelivery)
 
   useEffect(() => {
-    setLoading(list.loading)
-  }, [list.loading])
+    setLoading(list.loading || fetchLocations.loading)
+  }, [list.loading, fetchLocations.loading])
+
+  useEffect(() => {
+    if (!fetchLocations.data) return
+    setLocations(fetchLocations.data)
+  }, [fetchLocations.data])
 
   return (
     <Flex vertical gap={16}>
       <SCard
         tips={t('当订单无法通过发货点路由寻找到库存满足发货地点时，将默认分配至该地点。')}
         extra={(
-          <Button size={'small'} type={'link'}>{t('更改默认地点')}</Button>
+          <Button
+            onClick={() => { openInfo.edit(defaultLocation?.id) }}
+            size={'small'}
+            type={'link'}
+          >
+            {t('更改默认地点')}
+          </Button>
         )}
         title={t('默认地点')}
       >
@@ -47,11 +66,19 @@ export default function CourierService () {
       </SCard>
 
       <SCard
-        extra={<Button size={'small'} type={'link'}>{t('编辑')}</Button>}
+        extra={
+          <Button
+            onClick={() => { orderOpenInfo.edit() }}
+            size={'small'}
+            type={'link'}
+          >
+            {t('编辑')}
+          </Button>
+      }
         title={t('发货点路由')}
         tips={t('当新订单产生时，将根据此路由规则，自动为订单分配库存满足发货地点。')}
       >
-        <Flex gap={8}>
+        <Flex gap={8} wrap={'wrap'}>
           {t('当前顺序：')}
           {
             locations?.map((item, index) => (
@@ -182,6 +209,10 @@ export default function CourierService () {
             }
           </SRender>
         </div>
+
+        <DefaultChanger onFresh={fetchLocations.refresh} openInfo={openInfo} locations={locations} />
+
+        <OrderChanger locations={locations} openInfo={orderOpenInfo} onFresh={fetchLocations.refresh} />
       </SCard>
     </Flex>
   )

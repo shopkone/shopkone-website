@@ -11,6 +11,7 @@ export interface LocationListRes {
   address: AddressType
   active: boolean
   default: boolean
+  order: number
 }
 
 export const LocationListApi = async (params?: LocationListReq): Promise<LocationListRes[]> => {

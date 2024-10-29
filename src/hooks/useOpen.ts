@@ -7,7 +7,7 @@ export interface UseOpenType<T=undefined> {
   open: boolean
 }
 
-export const useOpen = <T>(initData?: T): UseOpenType<T> => {
+export const useOpen = <T = any>(initData?: T): UseOpenType<T> => {
   const [data, setData] = useState<T | undefined>(initData)
   const [open, setOpen] = useState(false)
 

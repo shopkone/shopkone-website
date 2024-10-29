@@ -37,7 +37,7 @@ export interface CountriesRes {
   postal_code_config: AddressFormatting
 }
 
-export const CountriesApi = async () =>
+const CountriesApi = async () =>
   await api<CountriesRes[]>('/base/countries')
 
 export const useCountries = () => {

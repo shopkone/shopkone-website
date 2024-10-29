@@ -1,0 +1,30 @@
+.dragging {
+  position: relative;
+  overflow: hidden;
+  &:before {
+    content: '';
+    display: block;
+    z-index: 1;
+    position: absolute;
+    inset: 0;
+    background-color: #f0f0f0;
+  }
+}
+
+.item {
+  background-color: #fff;
+  border-radius: 12px;
+}
+
+.draggingItem {
+  background-color: #fff;
+  border-radius: 12px;
+  cursor: grabbing;
+  .btn {
+    cursor: grabbing !important;
+  }
+}
+
+.btn {
+  cursor: grab !important;
+}

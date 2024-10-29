@@ -68,7 +68,7 @@ export default function EditLocationModal (props: EditLocationModalProps) {
           </div>
         </Flex>
 
-        <Flex vertical gap={8}>
+        <Flex style={{ minHeight: 200 }} vertical gap={8}>
           {
             locationList?.map(item => (
               <div key={item.id}>
