@@ -9,11 +9,12 @@ import cloneDeep from 'lodash/cloneDeep'
 import { useCountries } from '@/api/base/countries'
 import { useCurrencyList } from '@/api/base/currency-list'
 import { LocalDeliveryInfoApi } from '@/api/localDelivery/info'
-import { LocalDeliveryStatus } from '@/api/localDelivery/update'
+import { LocalDeliveryStatus, UpdateLocalDeliveryApi } from '@/api/localDelivery/update'
 import { LocationListApi } from '@/api/location/list'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
 import SLocation from '@/components/s-location'
+import { sMessage } from '@/components/s-message'
 import SRender from '@/components/s-render'
 import SSelect from '@/components/s-select'
 import Fees from '@/pages/mange/settings/shipping/local-delivery/local-change/fees'
@@ -27,6 +28,7 @@ export default function LocalChange () {
   const id = Number(useParams().id || 0)
   const locations = useRequest(async () => await LocationListApi({ active: true }))
   const info = useRequest(LocalDeliveryInfoApi, { manual: true })
+  const update = useRequest(UpdateLocalDeliveryApi, { manual: true })
   const currentLocation = locations.data?.find(item => info?.data?.location_id === item.id)
   const currencyList = useCurrencyList()
   const countries = useCountries()
@@ -45,6 +47,18 @@ export default function LocalChange () {
   }
 
   const onOk = async () => {
+    await form.validateFields()
+    const values = form.getFieldsValue()
+    const status = values.status ? LocalDeliveryStatus.Open : LocalDeliveryStatus.Close
+    const areas = values?.status ? values.areas : []
+    await update.runAsync({
+      id: Number(id),
+      ...values,
+      areas,
+      status
+    })
+    sMessage.success(t('本地配送更新成功'))
+    info.refresh()
   }
 
   const onValuesChange = () => {
