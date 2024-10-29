@@ -46,18 +46,29 @@ export default function Fees (props: FeesProps) {
             <Form.Item label={t('配送费用')} className={'fit-width'}>
               <SInputNumber onChange={(v) => { onChangeHandle(item.id, 'fee', v) }} money />
             </Form.Item>
-            <div style={{ marginTop: 6 }}>
-              <IconButton onClick={() => { onRemoveItem(item.id) }} size={24} type={'text'}>
-                <IconTrash size={15} />
-              </IconButton>
-            </div>
+            <SRender render={value.length !== 1}>
+              <div style={{ marginTop: 6 }}>
+                <IconButton
+                  onClick={() => {
+                    onRemoveItem(item.id)
+                  }} size={24} type={'text'}
+                >
+                  <IconTrash size={15} />
+                </IconButton>
+              </div>
+            </SRender>
           </Flex>
         ))
       }
       <SRender render={value?.length !== 4}>
         <Button
           onClick={onAddItem}
-          style={{ position: 'relative', top: -12, left: -6, marginBottom: 4 }}
+          style={{
+            position: 'relative',
+            top: -12,
+            left: -6,
+            marginBottom: 4
+          }}
           type={'link'}
           size={'small'}
         >

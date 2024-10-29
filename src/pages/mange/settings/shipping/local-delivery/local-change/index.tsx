@@ -9,7 +9,7 @@ import cloneDeep from 'lodash/cloneDeep'
 import { useCountries } from '@/api/base/countries'
 import { useCurrencyList } from '@/api/base/currency-list'
 import { LocalDeliveryInfoApi } from '@/api/localDelivery/info'
-import { LocalDeliveryStatus, UpdateLocalDeliveryApi } from '@/api/localDelivery/update'
+import { BaseLocalDeliverArea, LocalDeliveryStatus, UpdateLocalDeliveryApi } from '@/api/localDelivery/update'
 import { LocationListApi } from '@/api/location/list'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
@@ -38,7 +38,11 @@ export default function LocalChange () {
   const init = useRef<any>()
 
   const getItem = () => {
-    return { id: genId(), name: '', fees: [{ condition: undefined, fee: undefined, id: genId() }] }
+    return {
+      id: genId(),
+      name: t('本地配送'),
+      fees: [{ condition: undefined, fee: undefined, id: genId() }]
+    }
   }
 
   const onCancel = () => {
@@ -47,9 +51,19 @@ export default function LocalChange () {
   }
 
   const onOk = async () => {
-    await form.validateFields()
+    await form.validateFields().catch(err => {
+      const msg = err.errorFields?.[0]?.errors?.[0]
+      if (msg) {
+        sMessage.warning(msg)
+      }
+      throw new Error(err)
+    })
     const values = form.getFieldsValue()
     const status = values.status ? LocalDeliveryStatus.Open : LocalDeliveryStatus.Close
+    values.areas = values.areas?.map((item: BaseLocalDeliverArea) => ({
+      ...item,
+      fees: item.fees.map((fee) => ({ ...fee, condition: fee.condition || 0, fee: fee.fee || 0 }))
+    }))
     const areas = values?.status ? values.areas : []
     await update.runAsync({
       id: Number(id),
@@ -85,7 +99,7 @@ export default function LocalChange () {
 
   useEffect(() => {
     if (isOpen) {
-      if (!info.data?.areas?.length) {
+      if (!info.data?.areas?.length && info?.data?.id) {
         form.setFieldValue('areas', [getItem()])
         form.setFieldValue('currency_code', 'USD')
         onValuesChange()
@@ -150,10 +164,20 @@ export default function LocalChange () {
                              </SRender>
                            </Flex>
                            <div className={styles.inner}>
-                             <Form.Item extra={t('该名称不会展示给客户查看')} label={t('区域名称')} name={[name, 'name']}>
+                             <Form.Item
+                               extra={t('该名称不会展示给客户查看')}
+                               rules={[{ required: true }]}
+                               required={false}
+                               label={t('区域名称')}
+                               name={[name, 'name']}
+                             >
                                <Input autoComplete={'off'} />
                              </Form.Item>
-                             <Form.Item extra={t('邮政编码提示')} label={t('邮政编码')} name={[name, 'postal_code']}>
+                             <Form.Item
+                               rules={[{ required: true, message: t('请填写至少1个邮件编码') }]}
+                               required={false}
+                               extra={t('邮政编码提示')} label={t('邮政编码')} name={[name, 'postal_code']}
+                             >
                                <Input.TextArea autoSize={{ minRows: 5 }} />
                              </Form.Item>
                              <Form.Item className={'mb0'} name={[name, 'fees']}>
