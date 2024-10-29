@@ -138,28 +138,6 @@ export default function Zones (props: ZonesProps) {
       lock: true
     },
     {
-      title: t('适用订单'),
-      code: 'fees',
-      name: 'fees',
-      render: (_, row: BaseShippingZoneFee) => {
-        if (!row.id) {
-          return null
-        }
-        return (
-          <Flex vertical gap={8}>
-            {
-              row.conditions?.map(condition => (
-                <div key={condition.id}>
-                  {getConditionText(row, condition)}
-                </div>
-              ))
-            }
-          </Flex>
-        )
-      },
-      width: 190
-    },
-    {
       title: t('运费'),
       name: 'fees',
       code: 'fees',
@@ -181,15 +159,17 @@ export default function Zones (props: ZonesProps) {
           <Flex gap={8} vertical>
             {
               row.conditions?.map(condition => (
-                <div key={condition.id}>
-                  {getFeeText(row, condition)}
-                </div>
+                <Flex gap={2} align={'center'} key={condition.id}>
+                  <div>{getConditionText(row, condition)}</div>
+                  <div>|</div>
+                  <div>{getFeeText(row, condition)}</div>
+                </Flex>
               ))
             }
           </Flex>
         )
       },
-      width: 260
+      width: 430
     },
     {
       title: t('货到付款'),
