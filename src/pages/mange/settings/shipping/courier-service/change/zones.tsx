@@ -146,7 +146,7 @@ export default function Zones (props: ZonesProps) {
           return (
             <Button
               onClick={() => { feeOpenInfo.edit({ zoneId: item.id }) }}
-              style={{ position: 'relative', left: -32 }}
+              style={{ position: 'relative', left: 170 }}
               type={'link'}
               size={'small'}
             >
