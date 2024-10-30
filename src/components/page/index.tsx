@@ -84,7 +84,7 @@ export default function Page (props: PageProps) {
         minHeight: '110%'
       }}
     >
-      <SRender render={title || header}>
+      <SRender render={title || header || back}>
         <Flex justify={'space-between'} gap={24} className={styles.title}>
           <Flex style={{ minWidth: 0 }} flex={1} gap={8}>
             <SRender render={!!back}>

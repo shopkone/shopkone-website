@@ -5,11 +5,11 @@ import { useRequest } from 'ahooks'
 
 import { LocalDeliveryListApi } from '@/api/localDelivery/list'
 import { LocalDeliveryStatus } from '@/api/localDelivery/update'
-import SCard from '@/components/s-card'
 import SLocation from '@/components/s-location'
-import SRender from '@/components/s-render'
 import Status from '@/components/status'
 import { useShippingState } from '@/pages/mange/settings/shipping/state'
+
+import styles from './index.module.less'
 
 export default function LocalDelivery () {
   const { t } = useTranslation('settings', { keyPrefix: 'shipping' })
@@ -31,21 +31,20 @@ export default function LocalDelivery () {
 
   return (
     <div style={{ minHeight: 400 }}>
-      <SRender render={!!data?.length}>
-        <SCard>
-          <SLocation
-            hideLoading
-            hideTag
-            value={data as any || []}
-            extra={(item) => {
-              return list?.data?.find(i => i.location_id === item.id)?.status === LocalDeliveryStatus.Open
-                ? <Status type={'success'}>{t('服务启用')}</Status>
-                : <Status>{t('服务停用')}</Status>
-            }}
-            onClick={(i) => { toChange(i.id) }}
-          />
-        </SCard>
-      </SRender>
+      <div style={{ background: '#fff', borderRadius: 16 }}>
+        <SLocation
+          hideLoading
+          hideTag
+          value={data as any || []}
+          extra={(item) => {
+            return list?.data?.find(i => i.location_id === item.id)?.status === LocalDeliveryStatus.Open
+              ? <Status type={'success'}>{t('服务启用')}</Status>
+              : <Status>{t('服务停用')}</Status>
+          }}
+          onClick={(i) => { toChange(i.id) }}
+          className={styles.locationItem}
+        />
+      </div>
     </div>
   )
 }
