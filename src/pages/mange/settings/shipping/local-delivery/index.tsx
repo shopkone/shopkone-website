@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { useRequest } from 'ahooks'
 
 import { LocalDeliveryListApi } from '@/api/localDelivery/list'
+import { LocalDeliveryStatus } from '@/api/localDelivery/update'
 import SCard from '@/components/s-card'
 import SLocation from '@/components/s-location'
 import SRender from '@/components/s-render'
@@ -36,7 +37,11 @@ export default function LocalDelivery () {
             hideLoading
             hideTag
             value={data as any || []}
-            extra={() => <Status>{t('服务停用')}</Status>}
+            extra={(item) => {
+              return list?.data?.find(i => i.location_id === item.id)?.status === LocalDeliveryStatus.Open
+                ? <Status type={'success'}>{t('服务启用')}</Status>
+                : <Status>{t('服务停用')}</Status>
+            }}
             onClick={(i) => { toChange(i.id) }}
           />
         </SCard>

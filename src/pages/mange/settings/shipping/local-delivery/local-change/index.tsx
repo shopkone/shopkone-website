@@ -46,7 +46,8 @@ export default function LocalChange () {
   }
 
   const onCancel = () => {
-    form.resetFields()
+    console.log(init.current)
+    form.setFieldsValue(init.current)
     setIsChange(false)
   }
 
@@ -73,11 +74,12 @@ export default function LocalChange () {
     })
     sMessage.success(t('本地配送更新成功'))
     info.refresh()
+    setIsChange(false)
   }
 
-  const onValuesChange = () => {
-    const values = form.getFieldsValue()
-    if (!init.current) {
+  const onValuesChange = (force?: boolean) => {
+    const values = form.getFieldsValue(true)
+    if (!init.current || force === true) {
       init.current = cloneDeep(values)
       return
     }
@@ -86,24 +88,25 @@ export default function LocalChange () {
   }
 
   useEffect(() => {
-    if (id) {
-      info.runAsync({ id }).then(res => {
-        form.setFieldsValue({
-          ...res,
-          status: res.status === LocalDeliveryStatus.Open
-        })
-        onValuesChange()
-      })
-    }
+    if (!id) return
+    info.run({ id })
   }, [id])
 
   useEffect(() => {
-    if (isOpen) {
-      if (!info.data?.areas?.length && info?.data?.id) {
-        form.setFieldValue('areas', [getItem()])
-        form.setFieldValue('currency_code', 'USD')
-        onValuesChange()
-      }
+    if (!info.data) return
+    form.setFieldsValue({
+      ...info.data,
+      status: info.data.status === LocalDeliveryStatus.Open
+    })
+    onValuesChange(true)
+  }, [info.data])
+
+  useEffect(() => {
+    if (!isOpen) return
+    if (!info.data?.areas?.length && info?.data?.id && init.current) {
+      form.setFieldValue('areas', [getItem()])
+      form.setFieldValue('currency_code', 'USD')
+      onValuesChange()
     }
   }, [isOpen])
 
