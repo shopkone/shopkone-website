@@ -84,26 +84,26 @@ export default function Page (props: PageProps) {
         minHeight: '110%'
       }}
     >
-      <SLoading loading={loading} foreShow={!loadingHiddenBg}>
-        <SRender render={title || header}>
-          <Flex justify={'space-between'} gap={24} className={styles.title}>
-            <Flex style={{ minWidth: 0 }} flex={1} gap={8}>
-              <SRender render={!!back}>
-                <Button style={{ position: 'relative', top: 1 }} onClick={() => { nav(back || '') }} type={'text'} className={styles['back-icon']}>
-                  <IconArrowLeft size={20} />
-                </Button>
-              </SRender>
-              <SRender render={!!title}>
-                <Typography.Text style={{ fontSize: 20, flex: 1, lineHeight: '28px', position: 'relative', top: 1 }}>
-                  {title}
-                </Typography.Text>
-              </SRender>
-            </Flex>
-            <div className={styles.header}>
-              {header}
-            </div>
+      <SRender render={title || header}>
+        <Flex justify={'space-between'} gap={24} className={styles.title}>
+          <Flex style={{ minWidth: 0 }} flex={1} gap={8}>
+            <SRender render={!!back}>
+              <Button style={{ position: 'relative', top: 1 }} onClick={() => { nav(back || '') }} type={'text'} className={styles['back-icon']}>
+                <IconArrowLeft size={20} />
+              </Button>
+            </SRender>
+            <SRender render={!!title}>
+              <Typography.Text style={{ fontSize: 20, flex: 1, lineHeight: '28px', position: 'relative', top: 1 }}>
+                {title}
+              </Typography.Text>
+            </SRender>
           </Flex>
-        </SRender>
+          <div className={styles.header}>
+            {header}
+          </div>
+        </Flex>
+      </SRender>
+      <SLoading loading={loading} foreShow={!loadingHiddenBg}>
         {children}
         <Flex gap={12} align={'center'} className={styles.footer}>
           {footer}

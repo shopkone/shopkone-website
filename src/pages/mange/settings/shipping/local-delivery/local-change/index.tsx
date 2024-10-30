@@ -155,63 +155,63 @@ export default function LocalChange () {
             <SCard title={t('设置配送区域')}>
               <Form.List name={'areas'}>
                 {
-                 (fields, { add, remove }) => (
-                   <div>
-                     {
-                       fields.map(({ name }) => (
-                         <div key={name}>
-                           <Flex align={'center'} justify={'space-between'} className={styles.title}>
-                             <div>{t('配送区域x', { x: fields.length === 1 ? '' : name + 1 })}</div>
-                             <SRender render={fields.length > 1}>
-                               <Button onClick={() => { remove(name) }} danger size={'small'} type={'link'}>{t('删除')}</Button>
-                             </SRender>
-                           </Flex>
-                           <div className={styles.inner}>
-                             <Form.Item
-                               extra={t('该名称不会展示给客户查看')}
-                               rules={[{ required: true }]}
-                               required={false}
-                               label={t('区域名称')}
-                               name={[name, 'name']}
-                             >
-                               <Input autoComplete={'off'} />
-                             </Form.Item>
-                             <Form.Item
-                               rules={[{ required: true, message: t('请填写至少1个邮件编码') }]}
-                               required={false}
-                               extra={t('邮政编码提示')} label={t('邮政编码')} name={[name, 'postal_code']}
-                             >
-                               <Input.TextArea autoSize={{ minRows: 5 }} />
-                             </Form.Item>
-                             <Form.Item className={'mb0'} name={[name, 'fees']}>
-                               <Fees />
-                             </Form.Item>
-                             <Form.Item label={t('配送信息')} name={[name, 'note']}>
-                               <Input.TextArea placeholder={t('将在结账页面和订单确认通知中显示')} autoSize={{ minRows: 3, maxRows: 3 }} />
-                             </Form.Item>
-                           </div>
-                           <SRender render={name !== 4}>
-                             <div className={'line'} />
-                           </SRender>
-                         </div>
-                       ))
-                     }
-                     <SRender render={fields.length < 5}>
-                       <Button
-                         onClick={() => {
-                           add(getItem())
-                           setTimeout(() => {
-                             document.getElementById('shopkone-main')?.scrollTo({ left: 0, top: fields.length * 2000, behavior: 'smooth' })
-                           })
-                         }}
-                       >
-                         <IconPlus size={13} />
-                         {t('添加配送区域')}
-                       </Button>
-                     </SRender>
-                   </div>
-                 )
-               }
+                    (fields, { add, remove }) => (
+                      <div>
+                        {
+                          fields.map(({ name }) => (
+                            <div key={name}>
+                              <Flex align={'center'} justify={'space-between'} className={styles.title}>
+                                <div>{t('配送区域x', { x: fields.length === 1 ? '' : name + 1 })}</div>
+                                <SRender render={fields.length > 1}>
+                                  <Button onClick={() => { remove(name) }} danger size={'small'} type={'link'}>{t('删除')}</Button>
+                                </SRender>
+                              </Flex>
+                              <div className={styles.inner}>
+                                <Form.Item
+                                  extra={t('该名称不会展示给客户查看')}
+                                  rules={[{ required: true }]}
+                                  required={false}
+                                  label={t('区域名称')}
+                                  name={[name, 'name']}
+                                >
+                                  <Input autoComplete={'off'} />
+                                </Form.Item>
+                                <Form.Item
+                                  rules={[{ required: true, message: t('请填写至少1个邮件编码') }]}
+                                  required={false}
+                                  extra={t('邮政编码提示')} label={t('邮政编码')} name={[name, 'postal_code']}
+                                >
+                                  <Input.TextArea autoSize={{ minRows: 5 }} />
+                                </Form.Item>
+                                <Form.Item className={'mb0'} name={[name, 'fees']}>
+                                  <Fees />
+                                </Form.Item>
+                                <Form.Item label={t('配送信息')} name={[name, 'note']}>
+                                  <Input.TextArea placeholder={t('将在结账页面和订单确认通知中显示')} autoSize={{ minRows: 3, maxRows: 3 }} />
+                                </Form.Item>
+                              </div>
+                              <SRender render={name !== 4}>
+                                <div className={'line'} />
+                              </SRender>
+                            </div>
+                          ))
+                        }
+                        <SRender render={fields.length < 5}>
+                          <Button
+                            onClick={() => {
+                              add(getItem())
+                              setTimeout(() => {
+                                document.getElementById('shopkone-main')?.scrollTo({ left: 0, top: fields.length * 2000, behavior: 'smooth' })
+                              })
+                            }}
+                          >
+                            <IconPlus size={13} />
+                            {t('添加配送区域')}
+                          </Button>
+                        </SRender>
+                      </div>
+                    )
+                  }
               </Form.List>
             </SCard>
           </SRender>
