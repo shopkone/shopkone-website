@@ -183,12 +183,10 @@ export default function LocalChange () {
                                 >
                                   <Input.TextArea autoSize={{ minRows: 5 }} />
                                 </Form.Item>
-                                <Form.Item className={'mb0'} name={[name, 'fees']}>
-                                  <Fees />
-                                </Form.Item>
                                 <Form.Item label={t('配送信息')} name={[name, 'note']}>
                                   <Input.TextArea placeholder={t('将在结账页面和订单确认通知中显示')} autoSize={{ minRows: 3, maxRows: 3 }} />
                                 </Form.Item>
+                                <Fees name={name} />
                               </div>
                               <SRender render={name !== 4}>
                                 <div className={'line'} />
