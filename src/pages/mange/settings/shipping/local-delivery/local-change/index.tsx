@@ -41,7 +41,7 @@ export default function LocalChange () {
     return {
       id: genId(),
       name: t('本地配送'),
-      fees: [{ condition: undefined, fee: undefined, id: genId() }]
+      fees: [{ condition: 0, fee: 0, id: genId() }]
     }
   }
 
@@ -62,7 +62,7 @@ export default function LocalChange () {
     const status = values.status ? LocalDeliveryStatus.Open : LocalDeliveryStatus.Close
     values.areas = values.areas?.map((item: BaseLocalDeliverArea) => ({
       ...item,
-      fees: item.fees.map((fee) => ({ ...fee, condition: fee.condition || 0, fee: fee.fee || 0 }))
+      fees: item?.fees?.map((fee) => ({ ...fee, condition: fee.condition || 0, fee: fee.fee || 0 }))
     }))
     const areas = values?.status ? values.areas : []
     await update.runAsync({
@@ -152,7 +152,7 @@ export default function LocalChange () {
             <SCard title={t('设置配送区域')}>
               <Form.List name={'areas'}>
                 {
-                 (fields, { add }) => (
+                 (fields, { add, remove }) => (
                    <div>
                      {
                        fields.map(({ name }) => (
@@ -160,7 +160,7 @@ export default function LocalChange () {
                            <Flex align={'center'} justify={'space-between'} className={styles.title}>
                              <div>{t('配送区域x', { x: fields.length === 1 ? '' : name + 1 })}</div>
                              <SRender render={fields.length > 1}>
-                               <Button danger size={'small'} type={'link'}>{t('删除')}</Button>
+                               <Button onClick={() => { remove(name) }} danger size={'small'} type={'link'}>{t('删除')}</Button>
                              </SRender>
                            </Flex>
                            <div className={styles.inner}>
