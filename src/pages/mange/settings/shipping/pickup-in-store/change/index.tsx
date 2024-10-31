@@ -145,7 +145,7 @@ export default function Change () {
 
               <div style={{ paddingTop: 16 }} className={styles.title}>{t('当地营业时间')}</div>
               <div className={styles.container}>
-                <Form.Item style={{ width: 385 }} label={t('所在时区')}>
+                <Form.Item name={'timezone'} style={{ width: 385 }} label={t('所在时区')}>
                   <SSelect
                     showSearch
                     optionFilterProp={'label'}

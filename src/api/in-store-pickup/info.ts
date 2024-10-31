@@ -22,6 +22,7 @@ export interface BaseInStorePickUp {
   has_pickup_eta: boolean
   start: number
   end: number
+  timezone: string
 }
 
 export interface BaseInStorePickUpBusinessHours {
