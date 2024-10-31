@@ -35,6 +35,7 @@ export default function Change () {
   const [form] = Form.useForm()
   const [isChange, setIsChange] = useState(false)
   const init = useRef<any>()
+  const [weekError, setWeekError] = useState<Array<string | undefined>>([])
 
   const has_pickup_eta = Form.useWatch('has_pickup_eta', form)
   const isOpen = Form.useWatch('status', form)
@@ -62,6 +63,11 @@ export default function Change () {
 
   const onOk = async () => {
     const values = form.getFieldsValue(true)
+    if (weekError.filter(Boolean)?.length) {
+      console.log(weekError)
+      sMessage.warning(weekError.filter(Boolean)[0])
+      return
+    }
     const status = values.status ? LocalDeliveryStatus.Open : LocalDeliveryStatus.Close
     await update.runAsync({
       id: Number(id),
@@ -139,16 +145,15 @@ export default function Change () {
 
               <div style={{ paddingTop: 16 }} className={styles.title}>{t('当地营业时间')}</div>
               <div className={styles.container}>
-                <Form.Item style={{ width: 363 }} label={t('所在时区')}>
+                <Form.Item style={{ width: 385 }} label={t('所在时区')}>
                   <SSelect
-                    style={{ marginLeft: 24 }}
                     showSearch
                     optionFilterProp={'label'}
                     options={timezones.data?.map(item => ({ value: item.olson_name, label: item.description }))}
                   />
                 </Form.Item>
                 <Form.Item className={'mb0'} name={'weeks'}>
-                  <Weeks />
+                  <Weeks setErr={setWeekError} err={weekError} />
                 </Form.Item>
               </div>
             </SCard>

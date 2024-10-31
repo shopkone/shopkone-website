@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { IconTrash } from '@tabler/icons-react'
 import { Button, Flex, Form, Radio } from 'antd'
@@ -8,13 +9,17 @@ import SRender from '@/components/s-render'
 import SSelect from '@/components/s-select'
 import { getTimeOptions } from '@/pages/mange/settings/shipping/pickup-in-store/change/time-options'
 
+import styles from './index.module.less'
+
 export interface WeeksProps {
   value?: BaseInStorePickUpBusinessHours[]
   onChange?: (value: WeeksProps['value']) => void
+  err: Array<string | undefined>
+  setErr: (err: Array<string | undefined>) => void
 }
 
 export default function Weeks (props: WeeksProps) {
-  const { value, onChange } = props
+  const { value, onChange, err, setErr } = props
   const { t } = useTranslation('settings', { keyPrefix: 'shipping' })
   const form = Form.useFormInstance()
   const is_unified = Form.useWatch('is_unified', form)
@@ -25,6 +30,10 @@ export default function Weeks (props: WeeksProps) {
 
   const onSetClose = (id: number) => {
     onChange?.(value?.map(i => i.id === id ? { ...i, is_open: false } : i))
+  }
+
+  const onUpdate = (id: number, v: number, type: 'start' | 'end') => {
+    onChange?.(value?.map(i => i.id === id ? { ...i, [type]: v } : i))
   }
 
   const WeekdayOptions = [
@@ -40,6 +49,19 @@ export default function Weeks (props: WeeksProps) {
   const business = value?.filter(i => i.is_open)
   const relexed = value?.filter(i => !i.is_open)
 
+  useEffect(() => {
+    const weekErr = value?.map(week => {
+      const start = week.start
+      const end = week.end
+      if (!week.is_open) return undefined
+      if (start > end) {
+        return t('结束时间不能小于开始时间')
+      }
+      return undefined
+    })
+    setErr(weekErr || [])
+  }, [value])
+
   return (
     <div>
       <div>{t('营业时间')}</div>
@@ -49,10 +71,19 @@ export default function Weeks (props: WeeksProps) {
       <SRender render={is_unified}>
         <Flex gap={12} align={'center'} style={{ width: 370, marginLeft: 20 }}>
           <Form.Item className={'mb0 flex1'} name={'start'}>
-            <SSelect options={getTimeOptions()} />
+            <SSelect onChange={async () => await form.validateFields(['end', 'start'], { recursive: true })} options={getTimeOptions()} />
           </Form.Item>
           <div>-</div>
-          <Form.Item className={'mb0 flex1'} name={'end'}>
+          <Form.Item
+            rules={[{
+              validator: async (rule, value) => {
+                if (value <= form.getFieldValue('start')) {
+                  await Promise.reject(t('结束时间不能小于开始时间'))
+                }
+              }
+            }]}
+            className={'mb0 flex1'} name={'end'}
+          >
             <SSelect options={getTimeOptions()} />
           </Form.Item>
         </Flex>
@@ -70,9 +101,14 @@ export default function Weeks (props: WeeksProps) {
                   {WeekdayOptions?.find(item => (week.week === item.value))?.label}
                 </div>
                 <Flex gap={12} align={'center'} style={{ width: 310 }}>
-                  <SSelect value={week.start} options={getTimeOptions()} />
+                  <SSelect onChange={v => { onUpdate(week.id, v, 'start') }} value={week.start} options={getTimeOptions()} />
                   <div>-</div>
-                  <SSelect value={week.end} options={getTimeOptions()} />
+                  <div className={'fit-width'}>
+                    <SSelect onChange={v => { onUpdate(week.id, v, 'end') }} value={week.end} options={getTimeOptions()} />
+                    <div className={styles.err}>
+                      {err[week.week]}
+                    </div>
+                  </div>
                 </Flex>
                 <IconButton onClick={() => { onSetClose(week.id) }} size={24} type={'text'}>
                   <IconTrash size={14} />
