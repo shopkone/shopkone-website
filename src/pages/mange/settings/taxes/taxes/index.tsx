@@ -1,34 +1,84 @@
-import { useTranslation } from 'react-i18next'
-import { Button, Card, Checkbox, Form } from 'antd'
+import { Trans, useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
+import { IconPencil, IconTrash } from '@tabler/icons-react'
+import { useRequest } from 'ahooks'
+import { Card, Checkbox, Flex, Form, Switch } from 'antd'
 
+import { useCountries } from '@/api/base/countries'
+import { TaxListApi, TaxStatus } from '@/api/tax/list'
+import IconButton from '@/components/icon-button'
 import Page from '@/components/page'
 import STable, { STableProps } from '@/components/s-table'
 
 export default function Taxes () {
-  const { t } = useTranslation('product')
+  const { t } = useTranslation('settings', { keyPrefix: 'tax' })
+  const nav = useNavigate()
+  const list = useRequest(TaxListApi)
+  const countries = useCountries()
+
+  const toDelivery = () => {
+    nav('/settings/shipping')
+  }
 
   const columns: STableProps['columns'] = [
-    { title: t('国家 / 地区'), code: 'region', name: 'region' },
-    { title: t('地区数量'), code: 'region', name: 'region' },
-    { title: t('销售税率'), code: 'region', name: 'region' },
-    { title: t('运输税率'), code: 'region', name: 'region' }
+    {
+      title: t('征收'),
+      code: 'status',
+      name: 'status',
+      render: (status: TaxStatus) => (
+        <Switch checked={status === TaxStatus.Active} />
+      ),
+      width: 80,
+      lock: true
+    },
+    {
+      title: t('国家/地区'),
+      code: 'country_code',
+      name: 'country_code',
+      render: (code: string) => {
+        return (
+          countries?.data?.find((c) => c.code === code)?.name || '--'
+        )
+      }
+    },
+    {
+      title: '',
+      code: 'region',
+      name: 'region',
+      width: 100,
+      render: () => (
+        <Flex align={'center'} gap={16}>
+          <IconButton type={'text'} size={24}>
+            <IconPencil size={15} />
+          </IconButton>
+          <IconButton type={'text'} size={24}>
+            <IconTrash size={15} />
+          </IconButton>
+        </Flex>
+      )
+    }
   ]
   return (
-    <Page width={800} title={t('税务')}>
-      <Card
-        extra={
-          <Button size={'small'} type={'link'}>{t('选择地区')}</Button>
-        }
-        title={t('区域设置')}
-      >
+    <Page
+      loading={list.loading || countries.loading}
+      width={700}
+      title={t('税费设置')}
+    >
+      <Card title={t('收税地区')}>
         <div className={'tips'} style={{ marginBottom: 12 }}>
-          {t('在您希望收税的区域创建一个运输区域。然后，在此列表中找到该区域并选择它以管理其税务设置。如果您不确定自己是否有责任，请咨询税务专业人士。')}
+          <Trans
+            i18nKey={t('收税地区提示')}
+            components={{
+              a1: <a onClick={toDelivery} />,
+              a2: <a href={'https://example.com'} target={'_blank'} rel={'noreferrer'} />
+            }}
+          />
         </div>
         <STable
           init
           className={'table-border'}
           columns={columns}
-          data={[]}
+          data={list?.data || []}
           borderless
         />
       </Card>

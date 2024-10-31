@@ -77,7 +77,7 @@ function STable (props: STableProps) {
           ...col,
           title: (
             <Flex align={'center'} justify={'space-between'} className={styles.header}>
-              <span style={{ position: 'relative', top: 1 }}>{t('已选中', { selected: rowSelection?.value?.length } || 0)}</span>
+              <span style={{ position: 'relative', top: 1, whiteSpace: 'nowrap', overflow: 'visible' }}>{t('已选中', { selected: rowSelection?.value?.length } || 0)}</span>
             </Flex>
           )
         }
