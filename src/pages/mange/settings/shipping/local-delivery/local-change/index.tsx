@@ -46,7 +46,6 @@ export default function LocalChange () {
   }
 
   const onCancel = () => {
-    console.log(init.current)
     form.setFieldsValue(init.current)
     setIsChange(false)
   }
@@ -161,7 +160,7 @@ export default function LocalChange () {
                           fields.map(({ name }) => (
                             <div key={name}>
                               <Flex align={'center'} justify={'space-between'} className={styles.title}>
-                                <div>{t('配送区域x', { x: fields.length === 1 ? '' : name + 1 })}</div>
+                                <div style={{ marginLeft: 4 }}>{t('配送区域x', { x: fields.length === 1 ? '' : name + 1 })}</div>
                                 <SRender render={fields.length > 1}>
                                   <Button onClick={() => { remove(name) }} danger size={'small'} type={'link'}>{t('删除')}</Button>
                                 </SRender>

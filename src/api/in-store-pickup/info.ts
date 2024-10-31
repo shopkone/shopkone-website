@@ -19,6 +19,9 @@ export interface BaseInStorePickUp {
   pickup_eta_unit: InStorePickupTimeUnit
   weeks: BaseInStorePickUpBusinessHours[]
   location_id: number
+  has_pickup_eta: boolean
+  start: number
+  end: number
 }
 
 export interface BaseInStorePickUpBusinessHours {
