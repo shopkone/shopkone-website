@@ -1,3 +1,4 @@
+import { ReactNode } from 'react'
 import { IconMapPin } from '@tabler/icons-react'
 import { Flex, Typography } from 'antd'
 import classNames from 'classnames'
@@ -22,10 +23,11 @@ export interface SLocationProps {
   prefix?: (item: LocationListRes, index: number) => React.ReactNode
   hideLoading?: boolean
   borderless?: boolean
+  renderTitle?: (title: ReactNode, item: LocationListRes) => React.ReactNode
 }
 
 export default function SLocation (props: SLocationProps) {
-  const { onClick, extra, value, hideTag, hideLogo, style, prefix, className, hideLoading, borderless } = props
+  const { onClick, extra, value, hideTag, hideLogo, style, prefix, className, hideLoading, borderless, renderTitle } = props
   const countries = useCountries()
 
   return (
@@ -49,9 +51,18 @@ export default function SLocation (props: SLocationProps) {
               </SRender>
               <div className={'flex1'}>
                 <Flex align={'center'} gap={8} className={styles.title}>
-                  <Typography.Text ellipsis={{ tooltip: true }} style={{ maxWidth: 500 }}>
-                    {item?.name || '-'}
-                  </Typography.Text>
+                  <SRender render={renderTitle}>
+                    {renderTitle?.(
+                      <Typography.Text ellipsis={{ tooltip: true }} style={{ maxWidth: 400 }}>
+                        {item?.name || '-'}
+                      </Typography.Text>
+                      , item)}
+                  </SRender>
+                  <SRender render={!renderTitle}>
+                    <Typography.Text ellipsis={{ tooltip: true }} style={{ maxWidth: 500 }}>
+                      {item?.name || '-'}
+                    </Typography.Text>
+                  </SRender>
                   <SRender render={!hideTag}>
                     <SRender render={item.default}>
                       <Status type={'info'}>

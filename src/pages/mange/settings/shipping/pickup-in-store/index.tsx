@@ -1,7 +1,9 @@
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
+import { IconChevronRight } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
+import { Flex } from 'antd'
 
 import { InStorePickUpListApi } from '@/api/in-store-pickup/list'
 import { LocalDeliveryStatus } from '@/api/localDelivery/update'
@@ -36,15 +38,21 @@ export default function PickupInStore () {
           hideLoading
           hideTag
           value={data as any || []}
-          extra={(item) => {
-            return list?.data?.find(i => i.location_id === item.id)?.status === LocalDeliveryStatus.Open
-              ? <Status type={'success'}>{t('服务启用')}</Status>
-              : <Status>{t('服务停用')}</Status>
-          }}
+          renderTitle={(node, item) => (
+            <Flex align={'center'} gap={8}>
+              {node}
+              {
+                list?.data?.find(i => i.location_id === item.id)?.status === LocalDeliveryStatus.Open
+                  ? <Status type={'success'}>{t('服务启用')}</Status>
+                  : <Status>{t('服务停用')}</Status>
+              }
+            </Flex>
+          )}
           onClick={(i) => {
             toChange(i.id)
           }}
           className={styles.locationItem}
+          extra={() => <IconChevronRight style={{ marginRight: 8 }} size={16} />}
         />
       </div>
     </div>

@@ -49,14 +49,14 @@ export default function Status (props: StatusProps) {
         {...rest}
         align={'center'}
         style={{
-          borderRadius: 8,
+          borderRadius: 6,
           background: color[type].bg,
           border: `1px solid ${color[type].border}`,
-          fontSize: 12,
-          padding: '0 8px',
+          fontSize: 11,
+          padding: '0 6px',
           color: color[type].color,
-          height: 20,
-          lineHeight: '20px',
+          height: 18,
+          lineHeight: '18px',
           ...rest.style
         }}
       >
