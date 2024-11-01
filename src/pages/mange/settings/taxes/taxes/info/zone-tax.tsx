@@ -1,7 +1,9 @@
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button, Form, Input } from 'antd'
 
 import { ZoneListOut } from '@/api/base/countries'
+import { BaseTaxZone } from '@/api/tax/info'
 import SInputNumber from '@/components/s-input-number'
 import SRender from '@/components/s-render'
 import SSelect from '@/components/s-select'
@@ -14,31 +16,57 @@ export interface ZoneTaxProps {
 
 export default function ZoneTax (props: ZoneTaxProps) {
   const { zones } = props
-
+  const form = Form.useFormInstance()
   const options = zones.map(zone => ({
     label: zone.name,
     value: zone.code
   }))
+  const [update, setUpdate] = useState(0)
 
   const { t } = useTranslation('settings', { keyPrefix: 'tax' })
+
+  const onUpdate = () => {
+    setUpdate(update + 1)
+  }
 
   const columns: STableProps['columns'] = [
     {
       title: t('区域'),
       name: 'name',
       code: 'name',
-      render: (name: number, row: ZoneListOut) => (
-        <Form.Item className={'mb0'} name={[name, 'zone']}>
-          <SSelect placeholder={t('选择区域')} allowClear options={options} />
-        </Form.Item>
-      )
+      render: (name: number) => {
+        const zones: BaseTaxZone[] = form.getFieldValue('zones')
+        const opt = options?.filter(opt => !zones.find(i => i.zone_code === opt.value))
+        console.log(opt)
+        return (
+          <Form.Item
+            rules={[{ required: true, message: t('请选择区域') }]}
+            className={'mb0'}
+            name={[name, 'zone_code']}
+          >
+            <SSelect
+              onFocus={onUpdate}
+              showSearch
+              optionFilterProp={'label'}
+              placeholder={t('选择区域')}
+              allowClear
+              optionLabelProp={'label'}
+              options={opt}
+            />
+          </Form.Item>
+        )
+      }
     },
     {
       title: t('税名'),
       name: 'name',
       code: 'name',
       render: (name: number, row: ZoneListOut) => (
-        <Form.Item className={'mb0'} name={[name, 'name']}>
+        <Form.Item
+          rules={[{ required: true, message: t('请输入税名') }]}
+          className={'mb0'}
+          name={[name, 'name']}
+        >
           <Input autoComplete={'off'} />
         </Form.Item>
       )

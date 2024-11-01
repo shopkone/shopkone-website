@@ -41,6 +41,12 @@ export default function TaxInfo () {
     setIsChange(false)
   }
 
+  const onOk = async () => {
+    await form.validateFields()
+    const values = form.getFieldsValue()
+    console.log(values)
+  }
+
   useEffect(() => {
     if (!id) return
     info.run({ id })
@@ -55,6 +61,7 @@ export default function TaxInfo () {
 
   return (
     <Page
+      onOk={onOk}
       onCancel={onCancel}
       isChange={isChange}
       title={countries?.data?.find(c => c.code === info?.data?.country_code)?.name || '--'}
