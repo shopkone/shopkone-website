@@ -174,7 +174,7 @@ export default function CourierService () {
               style={{ paddingBottom: 24 }}
             >
               <Flex justify={'center'}>
-                <Button onClick={() => { nav(`courier-service/change?type=${ShippingType.CustomerExpressDelivery}`) }} type={'primary'}>
+                <Button onClick={() => { nav(`courier-service/change?type=${ShippingType.CustomerExpressDelivery}`) }} >
                   {t('添加自定义运费方案')}
                 </Button>
               </Flex>

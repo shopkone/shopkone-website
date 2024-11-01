@@ -1,6 +1,6 @@
 import { Trans, useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
-import { IconPencil, IconTrash } from '@tabler/icons-react'
+import { IconTrash } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
 import { Card, Checkbox, Flex, Form, Switch } from 'antd'
 
@@ -49,13 +49,10 @@ export default function Taxes () {
       title: '',
       code: 'id',
       name: 'id',
-      width: 100,
+      width: 60,
       align: 'center',
       render: (id: number) => (
         <Flex style={{ justifyContent: 'center' }} onMouseUp={e => { e.stopPropagation() }} className={styles.default} align={'center'} gap={16}>
-          <IconButton onClick={() => { nav(`info/${id}`) }} type={'text'} size={24}>
-            <IconPencil size={15} />
-          </IconButton>
           <IconButton type={'text'} size={24}>
             <IconTrash size={15} />
           </IconButton>
