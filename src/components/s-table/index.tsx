@@ -194,7 +194,6 @@ function STable (props: STableProps) {
                   if (main) {
                     main.onmousemove = (e) => {
                       offsetRef.current = sum(Math.abs(e.offsetY), Math.abs(e.offsetX), offsetRef.current) || 0
-                      console.log(offsetRef.current)
                     }
                   }
                 }

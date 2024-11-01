@@ -44,7 +44,7 @@ export default function LocalDelivery () {
               {
                 list?.data?.find(i => i.location_id === item.id)?.status === LocalDeliveryStatus.Open
                   ? <Status type={'success'}>{t('服务启用')}</Status>
-                  : <Status>{t('服务停用')}</Status>
+                  : <Status >{t('服务停用')}</Status>
               }
             </Flex>
           )}

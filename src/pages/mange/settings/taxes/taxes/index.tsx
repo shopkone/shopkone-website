@@ -5,10 +5,12 @@ import { useRequest } from 'ahooks'
 import { Card, Checkbox, Flex, Form, Switch } from 'antd'
 
 import { useCountries } from '@/api/base/countries'
-import { TaxListApi, TaxStatus } from '@/api/tax/list'
+import { TaxListApi, TaxListRes, TaxStatus } from '@/api/tax/list'
 import IconButton from '@/components/icon-button'
 import Page from '@/components/page'
 import STable, { STableProps } from '@/components/s-table'
+
+import styles from './index.module.less'
 
 export default function Taxes () {
   const { t } = useTranslation('settings', { keyPrefix: 'tax' })
@@ -26,7 +28,9 @@ export default function Taxes () {
       code: 'status',
       name: 'status',
       render: (status: TaxStatus) => (
-        <Switch checked={status === TaxStatus.Active} />
+        <div onMouseUp={e => { e.stopPropagation() }} className={styles.default}>
+          <Switch checked={status === TaxStatus.Active} />
+        </div>
       ),
       width: 80,
       lock: true
@@ -35,7 +39,7 @@ export default function Taxes () {
       title: t('国家/地区'),
       code: 'country_code',
       name: 'country_code',
-      render: (code: string) => {
+      render: (code: string, row: TaxListRes) => {
         return (
           countries?.data?.find((c) => c.code === code)?.name || '--'
         )
@@ -43,12 +47,13 @@ export default function Taxes () {
     },
     {
       title: '',
-      code: 'region',
-      name: 'region',
+      code: 'id',
+      name: 'id',
       width: 100,
-      render: () => (
-        <Flex align={'center'} gap={16}>
-          <IconButton type={'text'} size={24}>
+      align: 'center',
+      render: (id: number) => (
+        <Flex style={{ justifyContent: 'center' }} onMouseUp={e => { e.stopPropagation() }} className={styles.default} align={'center'} gap={16}>
+          <IconButton onClick={() => { nav(`info/${id}`) }} type={'text'} size={24}>
             <IconPencil size={15} />
           </IconButton>
           <IconButton type={'text'} size={24}>
@@ -75,6 +80,7 @@ export default function Taxes () {
           />
         </div>
         <STable
+          onRowClick={(record) => { nav(`info/${record.id}`) }}
           init
           className={'table-border'}
           columns={columns}
