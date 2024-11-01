@@ -28,7 +28,7 @@ export default function Signup () {
 
       <div className={styles.title}>{t('注册 Shopkone')}</div>
 
-      <Form style={{ flex: 1 }} layout={'vertical'} form={form} colon={false}>
+      <Form style={{ flex: 1, display: 'flex', flexDirection: 'column' }} layout={'vertical'} form={form} colon={false}>
 
         <Suspense fallback={<SLoading />}>
           <Outlet />
