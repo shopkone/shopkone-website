@@ -99,6 +99,7 @@ export default function Taxes () {
           </Checkbox>
         </Form.Item>
       </Card>
+
     </Page>
   )
 }

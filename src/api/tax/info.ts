@@ -1,5 +1,35 @@
 import { api } from '@/api/api'
-import { TaxStatus } from '@/api/tax/list'
+
+export enum TaxStatus {
+  Active = 1,
+  Inactive = 2
+}
+
+export enum CustomerTaxType {
+  CustomerTaxTypeCollection = 1,
+  CustomerTaxTypeDelivery = 2
+}
+
+export interface BaseTaxZone {
+  id: number
+  name: string
+  zone_code: string
+  tax_rate: number
+}
+
+export interface BaseCustomerTaxZone {
+  id: number
+  name: string
+  area_code: string
+  tax_rate: number
+}
+
+export interface BaseCustomerTax {
+  id: number
+  collection_id: number
+  zones: BaseCustomerTaxZone[]
+  type: CustomerTaxType
+}
 
 export interface BaseTax {
   id: number
@@ -9,13 +39,7 @@ export interface BaseTax {
   status: TaxStatus
   country_code: string
   zones: BaseTaxZone[]
-}
-
-export interface BaseTaxZone {
-  id: number
-  name: string
-  zone_code: string
-  tax_rate: number
+  customers: BaseCustomerTax[]
 }
 
 export interface TaxInfoReq {

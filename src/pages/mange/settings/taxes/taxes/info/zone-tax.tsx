@@ -108,7 +108,7 @@ export default function ZoneTax (props: ZoneTaxProps) {
                 />
               </SRender>
               <Button
-                onClick={() => { add({ id: genId(), name: 'tax', tax_rate: 0 }) }}
+                onClick={() => { add({ id: genId(), name: 'VAT', tax_rate: 0 }) }}
                 type={'link'}
                 size={'small'}
                 style={{ marginLeft: -8, marginTop: 8 }}

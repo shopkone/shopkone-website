@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
-import { IconTax } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
-import { Button, Checkbox, Empty, Flex, Form, Input } from 'antd'
+import { Checkbox, Flex, Form, Input } from 'antd'
 import cloneDeep from 'lodash/cloneDeep'
 
 import { useCountries } from '@/api/base/countries'
@@ -12,7 +11,7 @@ import Page from '@/components/page'
 import SCard from '@/components/s-card'
 import SInputNumber from '@/components/s-input-number'
 import SRender from '@/components/s-render'
-import AddModal from '@/pages/mange/settings/taxes/taxes/info/add-modal'
+import CustomersTax from '@/pages/mange/settings/taxes/taxes/info/customers-tax'
 import ZoneTax from '@/pages/mange/settings/taxes/taxes/info/zone-tax'
 import { isEqualHandle } from '@/utils/is-equal-handle'
 
@@ -25,6 +24,7 @@ export default function TaxInfo () {
   const [isChange, setIsChange] = useState(false)
   const init = useRef<any>()
   const hasNote = Form.useWatch('has_note', form)
+  const currentCountry = countries?.data?.find(c => c.code === info?.data?.country_code)
 
   const onValuesChange = (force?: boolean) => {
     const values = form.getFieldsValue()
@@ -64,7 +64,7 @@ export default function TaxInfo () {
       onOk={onOk}
       onCancel={onCancel}
       isChange={isChange}
-      title={countries?.data?.find(c => c.code === info?.data?.country_code)?.name || '--'}
+      title={currentCountry?.name || '--'}
       loading={info.loading || countries.loading}
       width={700}
       back={'/settings/taxes'}
@@ -75,7 +75,7 @@ export default function TaxInfo () {
             <Form.Item name={'tax_rate'} style={{ width: 300 }}>
               <SInputNumber suffix={'%'} />
             </Form.Item>
-            <ZoneTax zones={countries?.data?.find(c => c.code === info?.data?.country_code)?.zones || []} />
+            <ZoneTax zones={currentCountry?.zones || []} />
             <div className={'line'} />
             <Form.Item valuePropName={'checked'} name={'has_note'} className={'mb0'}>
               <Checkbox>{t('在结账时允许消费者查看消费税说明')}</Checkbox>
@@ -86,33 +86,10 @@ export default function TaxInfo () {
               </Form.Item>
             </SRender>
           </SCard>
-          <SCard
-            tips={t('发货到指定区域时，为特定产品系列自定义基于区域的税率或运费。')}
-            title={t('自定义税费')}
-            extra={<Button type={'link'} size={'small'}>{t('添加自定义税费')}</Button>}
-          >
-            <Empty
-              image={
-                <div style={{ paddingTop: 24 }}>
-                  <IconTax size={64} color={'#ddd'} />
-                </div>
-             }
-              description={(
-                <div className={'secondary'}>
-                  {t('发货到指定区域时，为特定产品系列自定义基于区域的税率或运费。')}
-                </div>
-             )}
-              style={{ paddingBottom: 32, marginTop: -12 }}
-            >
-              <Button>
-                {t('添加自定义税费')}
-              </Button>
-            </Empty>
-          </SCard>
+          <CustomersTax country={currentCountry} />
         </Flex>
       </Form>
 
-      <AddModal />
     </Page>
   )
 }
