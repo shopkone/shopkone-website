@@ -5,20 +5,32 @@ import { Flex, Form, Input, Radio } from 'antd'
 
 import { CountriesRes } from '@/api/base/countries'
 import { CollectionOptionsApi } from '@/api/collection/options'
-import { BaseCustomerTax, CustomerTaxType } from '@/api/tax/info'
+import { CustomerTaxType } from '@/api/tax/info'
 import SInputNumber from '@/components/s-input-number'
 import SModal from '@/components/s-modal'
 import SRender from '@/components/s-render'
 import SSelect from '@/components/s-select'
 import { UseOpenType } from '@/hooks/useOpen'
+import { genId } from '@/utils/random'
+
+export interface AddModalData {
+  id: number
+  type: CustomerTaxType
+  collection_id?: number
+  area_code: string
+  name: string
+  tax_rate: number
+  zone_id: number
+}
 
 export interface AddModalProps {
-  openInfo: UseOpenType<BaseCustomerTax>
+  openInfo: UseOpenType<AddModalData>
   country?: CountriesRes
+  onConfirm: (tax: AddModalData) => void
 }
 
 export default function AddModal (props: AddModalProps) {
-  const { openInfo, country } = props
+  const { openInfo, country, onConfirm } = props
   const { t } = useTranslation('settings', { keyPrefix: 'tax' })
   const [form] = Form.useForm()
   const collectionOptions = useRequest(CollectionOptionsApi)
@@ -36,21 +48,32 @@ export default function AddModal (props: AddModalProps) {
     return [{ label: country.name, value: country.code }, ...zones]
   }, [country])
 
+  const onOk = async () => {
+    await form.validateFields()
+    const values = form.getFieldsValue()
+    onConfirm(values)
+    openInfo.close()
+  }
+
   useEffect(() => {
     if (!openInfo.open) return
     if (openInfo.data) {
       form.setFieldsValue(openInfo.data)
     } else {
-      form.setFieldsValue({
+      const item: AddModalData = {
         type: CustomerTaxType.CustomerTaxTypeCollection,
         area_code: countryOptions?.[0]?.value,
-        name: 'VAT'
-      })
+        name: 'VAT',
+        id: genId(),
+        tax_rate: 0,
+        zone_id: genId()
+      }
+      form.setFieldsValue(item)
     }
   }, [openInfo.open])
 
   return (
-    <SModal onCancel={openInfo.close} title={t('添加自定义税费')} width={500} open={openInfo.open}>
+    <SModal onOk={onOk} onCancel={openInfo.close} title={t('添加自定义税费')} width={500} open={openInfo.open}>
       <Form form={form} style={{ padding: 16, minHeight: 400 }} layout={'vertical'}>
         <Form.Item name={'type'} label={t('适用内容')}>
           <Radio.Group options={options} />

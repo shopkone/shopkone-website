@@ -94,14 +94,14 @@ export default function Zones (props: ZonesProps) {
     }
     if (row.type === ShippingZoneFeeType.Weight) {
       if (!first_fee && !next_fee) return t('免费')
-      const firstText = `${t('首重x', { x: `${first} ${row.weight_unit}`, money: formatPrice(first_fee, currencySymbol) })}`
-      const secondText = `${t('续重x', { money: formatPrice(next_fee, currencySymbol), x: `${next} ${row.weight_unit}` })}`
+      const firstText = `${t('首重x', { x: `${first}${row.weight_unit}`, money: formatPrice(first_fee, currencySymbol) })}`
+      const secondText = `${t('续重x', { money: formatPrice(next_fee, currencySymbol), x: `${next}${row.weight_unit}` })}`
       return firstText + secondText
     }
     if (row.type === ShippingZoneFeeType.Count) {
       if (!first_fee && !next_fee) return t('免费')
-      const firstText = `${t('首件x', { x: `${first} ${t('件')}`, money: formatPrice(first_fee, currencySymbol) })}`
-      const secondText = `${t('续件x', { money: formatPrice(next_fee, currencySymbol), x: `${next} ${t('件')}` })}`
+      const firstText = `${t('首件x', { x: `${first}${t('件')}`, money: formatPrice(first_fee, currencySymbol) })}`
+      const secondText = `${t('续件x', { money: formatPrice(next_fee, currencySymbol), x: `${next}${t('件')}` })}`
       return firstText + secondText
     }
     return t('免费')
@@ -161,8 +161,7 @@ export default function Zones (props: ZonesProps) {
               row.conditions?.map(condition => (
                 <Flex gap={2} align={'center'} key={condition.id}>
                   <div>{getConditionText(row, condition)}</div>
-                  <div>|</div>
-                  <div>{getFeeText(row, condition)}</div>
+                  <div style={{ marginLeft: 16 }}>{getFeeText(row, condition)}</div>
                 </Flex>
               ))
             }
