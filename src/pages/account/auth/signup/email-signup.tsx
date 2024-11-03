@@ -137,7 +137,7 @@ export default function EmailSignup () {
       </Form.Item>
       <SRender render={sendEmail} className={styles.tips}>
         <Flex align={'center'} gap={4}>
-          <IconCircleCheckFilled color={'#3fedb8'} size={16} />
+          <IconCircleCheckFilled color={'#00de5a'} size={16} />
           {t('验证码已发送至邮箱', { email: sendEmail })}
         </Flex>
       </SRender>
