@@ -47,6 +47,7 @@ export default function CustomerItem (props: CustomerItemProps) {
       render: (name: number) => {
         const zones: BaseCustomerTaxZone[] | undefined = getCustomer()?.zones
         const options = countryOptions?.filter(i => !zones?.find(ii => ii.area_code === i.value))
+        console.log(options)
         return (
           <Form.Item
             rules={[{ required: true, message: t('请选择区域') }]}
