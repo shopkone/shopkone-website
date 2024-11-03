@@ -1,13 +1,14 @@
 import { Trans, useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
-import { IconTrash } from '@tabler/icons-react'
+import { IconTax, IconTrash } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
-import { Card, Checkbox, Flex, Form, Switch } from 'antd'
+import { Card, Checkbox, Empty, Flex, Form, Switch } from 'antd'
 
 import { useCountries } from '@/api/base/countries'
 import { TaxListApi, TaxListRes, TaxStatus } from '@/api/tax/list'
 import IconButton from '@/components/icon-button'
 import Page from '@/components/page'
+import SRender from '@/components/s-render'
 import STable, { STableProps } from '@/components/s-table'
 
 import styles from './index.module.less'
@@ -76,14 +77,31 @@ export default function Taxes () {
             }}
           />
         </div>
-        <STable
-          onRowClick={(record) => { nav(`info/${record.id}`) }}
-          init
-          className={'table-border'}
-          columns={columns}
-          data={list?.data || []}
-          borderless
-        />
+        <SRender render={list?.data?.length}>
+          <STable
+            onRowClick={(record) => { nav(`info/${record.id}`) }}
+            init
+            className={'table-border'}
+            columns={columns}
+            data={list?.data || []}
+            borderless
+          />
+        </SRender>
+        <SRender render={!list?.data?.length && !list.loading}>
+          <Empty
+            image={
+              <div style={{ paddingTop: 32 }}>
+                <IconTax size={64} color={'#ddd'} />
+              </div>
+            }
+            description={(
+              <div className={'secondary'}>
+                {t('空白收税地区提示')}
+              </div>
+            )}
+            style={{ paddingBottom: 24 }}
+          />
+        </SRender>
       </Card>
 
       <Card style={{ marginTop: 16 }} title={t('全球设置')}>
