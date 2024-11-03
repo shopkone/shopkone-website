@@ -1,8 +1,9 @@
-import { Card, Form, Input } from 'antd'
+import {  Form, Input } from 'antd'
+import SCard from '@/components/s-card'
 
 export default function BaseInfo () {
   return (
-    <Card style={{ width: 612, flex: 1 }} bordered>
+    <SCard  style={{ width: 612, flex: 1 }} bordered>
       <div>
         <Form.Item name={'title'} label={'Title'}>
           <Input autoComplete={'off'} placeholder={'My Store gift card'} />
@@ -14,6 +15,6 @@ export default function BaseInfo () {
           asd
         </Form.Item>
       </div>
-    </Card>
+    </SCard>
   )
 }

@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
-import { Card, Form } from 'antd'
+import { Form } from 'antd'
 import dayjs from 'dayjs'
+import SCard from '@/components/s-card'
 
 import SDatePicker from '@/components/s-date-picker'
 import SSelect from '@/components/s-select'
@@ -18,7 +19,7 @@ export default function Status () {
   const status: VariantStatus = Form.useWatch('status', form)
 
   return (
-    <Card style={{ height: status === VariantStatus.Draft ? 170 : 100 }} className={styles.container}>
+    <SCard  style={{ height: status === VariantStatus.Draft ? 170 : 100 }} className={styles.container}>
       <Form.Item name={'status'} label={t('状态')}>
         <SSelect options={statusOptions} style={{ width: '100%' }} />
       </Form.Item>
@@ -42,6 +43,6 @@ export default function Status () {
           </Form.Item>
         )
       }
-    </Card>
+    </SCard>
   )
 }

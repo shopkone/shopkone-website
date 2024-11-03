@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
-import { Card, Checkbox, Flex, Form, Radio } from 'antd'
+import { Checkbox, Flex, Form, Radio } from 'antd'
+import SCard from '@/components/s-card'
 
 import Page from '@/components/page'
 import Seo from '@/components/seo'
@@ -30,7 +31,7 @@ export default function ProductChange () {
           </Flex>
           <Flex vertical gap={16} style={{ width: 320 }}>
             <Status />
-            <Card title={t('库存管理')}>
+            <SCard  title={t('库存管理')}>
               <Form.Item style={{ marginBottom: 8 }} name={'variant_type'}>
                 <Checkbox>{t('需要图片')}</Checkbox>
               </Form.Item>
@@ -40,7 +41,7 @@ export default function ProductChange () {
               <Form.Item name={'inventory_policy'} style={{ marginBottom: 0, marginTop: -12 }}>
                 <Radio.Group className={styles.group} options={tackOptions} />
               </Form.Item>
-            </Card>
+            </SCard>
             <Seo />
           </Flex>
         </Flex>

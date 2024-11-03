@@ -2,13 +2,13 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { IconTax, IconTrash } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
-import { Button, Card, Checkbox, Empty, Flex, Form, Switch } from 'antd'
+import { Button, Checkbox, Empty, Flex, Form, Switch } from 'antd'
+import SCard from '@/components/s-card'
 
 import { useCountries } from '@/api/base/countries'
 import { TaxListApi, TaxListRes, TaxStatus } from '@/api/tax/list'
 import IconButton from '@/components/icon-button'
 import Page from '@/components/page'
-import SCard from '@/components/s-card'
 import SRender from '@/components/s-render'
 import STable, { STableProps } from '@/components/s-table'
 import SelectCountry from '@/components/select-country'
@@ -107,7 +107,7 @@ export default function Taxes () {
         </SRender>
       </SCard>
 
-      <Card style={{ marginTop: 16 }} title={t('全球设置')}>
+      <SCard  style={{ marginTop: 16 }} title={t('全球设置')}>
         <Form.Item
           extra={
             <div className={'tips'} style={{ marginTop: -8, marginLeft: 24 }}>
@@ -119,7 +119,7 @@ export default function Taxes () {
             {t('对运输收取销售税')}
           </Checkbox>
         </Form.Item>
-      </Card>
+      </SCard>
 
       <SelectCountry onlyCountry height={400} />
     </Page>

@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom'
-import { Button, Card, Flex } from 'antd'
+import { Button, Flex } from 'antd'
+import SCard from '@/components/s-card'
 
 import Page from '@/components/page'
 import STable, { STableProps } from '@/components/s-table'
@@ -16,7 +17,7 @@ export default function Staff () {
   ]
   return (
     <Page title={'Staff'}>
-      <Card>
+      <SCard >
         <STable
           empty={{
             title: 'Invite staff to join the store',
@@ -31,7 +32,7 @@ export default function Staff () {
           columns={columns}
           data={[]}
         />
-      </Card>
+      </SCard>
     </Page>
   )
 }

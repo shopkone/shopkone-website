@@ -1,4 +1,5 @@
-import { Card, Checkbox, Flex, Form, Input } from 'antd'
+import { Checkbox, Flex, Form, Input } from 'antd'
+import SCard from '@/components/s-card'
 
 import Page from '@/components/page'
 
@@ -8,17 +9,17 @@ export default function Change () {
       <Form layout={'vertical'}>
         <Flex gap={16}>
           <Flex vertical gap={16} flex={1}>
-            <Card title={'Staff permissions'} className={'fit-width'}>
+            <SCard  title={'Staff permissions'} className={'fit-width'}>
               1q23
-            </Card>
+            </SCard>
 
-            <Card title={'App permissions'} className={'fit-width'}>
+            <SCard  title={'App permissions'} className={'fit-width'}>
               <Checkbox>Manage and install all applications</Checkbox>
-            </Card>
+            </SCard>
           </Flex>
 
           <Flex style={{ width: 350 }}>
-            <Card className={'fit-width'} title={'Staff info'}>
+            <SCard  className={'fit-width'} title={'Staff info'}>
               <Form.Item label={'Name'}>
                 <Input />
               </Form.Item>
@@ -31,7 +32,7 @@ export default function Change () {
               <Form.Item label={'Remarks'}>
                 <Input.TextArea autoSize={{ minRows: 5 }} />
               </Form.Item>
-            </Card>
+            </SCard>
           </Flex>
         </Flex>
       </Form>

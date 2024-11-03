@@ -1,10 +1,11 @@
-import { Card, DatePicker, Flex, Form, Input, Radio } from 'antd'
+import {  DatePicker, Flex, Form, Input, Radio } from 'antd'
 
 import Page from '@/components/page'
 import SInputNumber from '@/components/s-input-number'
 import SSelect from '@/components/s-select'
 
 import styles from './index.module.less'
+import SCard from '@/components/s-card'
 
 export default function Change () {
   const expirationDateOptions = [
@@ -17,15 +18,15 @@ export default function Change () {
       <Form layout={'vertical'}>
         <Flex gap={16}>
           <Flex flex={1} vertical gap={16}>
-            <Card title={'Gift card details'}>
+            <SCard  title={'Gift card details'}>
               <Form.Item label={'Gift card code'}>
                 <Input />
               </Form.Item>
               <Form.Item className={'mb0'} label={'Initial value'}>
                 <SInputNumber />
               </Form.Item>
-            </Card>
-            <Card title={'Expiration date'}>
+            </SCard>
+            <SCard  title={'Expiration date'}>
               <Flex vertical gap={16} style={{ marginTop: 8 }}>
                 <div className={'tips'}>
                   Countries have different laws for gift card expiry dates. Check the laws for your country before
@@ -41,19 +42,19 @@ export default function Change () {
                   <DatePicker className={'fit-width'} />
                 </Form.Item>
               </Flex>
-            </Card>
+            </SCard>
           </Flex>
 
           <Flex style={{ width: 300 }} vertical gap={16}>
-            <Card title={'Issued customer'}>
+            <SCard  title={'Issued customer'}>
               <SSelect className={'fit-width'} />
-            </Card>
-            <Card title={'Notes'}>
+            </SCard>
+            <SCard  title={'Notes'}>
               <div className={'tips'} style={{ marginBottom: 12 }}>
                 These notes are private and won't be shared with the customer.
               </div>
               <Input.TextArea style={{ marginBottom: 16 }} maxLength={5000} showCount autoSize={{ minRows: 4 }} />
-            </Card>
+            </SCard>
           </Flex>
         </Flex>
       </Form>

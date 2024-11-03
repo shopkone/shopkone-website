@@ -1,14 +1,15 @@
 import { useNavigate } from 'react-router-dom'
-import { Button, Card, Flex } from 'antd'
+import { Button, Flex } from 'antd'
 
 import Page from '@/components/page'
 import STable from '@/components/s-table'
+import SCard from '@/components/s-card'
 
 export default function GiftCard () {
   const nav = useNavigate()
   return (
     <Page title={'Gift cards'}>
-      <Card>
+      <SCard >
         <STable
           init
           columns={[]}
@@ -24,7 +25,7 @@ export default function GiftCard () {
             )
           }}
         />
-      </Card>
+      </SCard>
     </Page>
   )
 }
