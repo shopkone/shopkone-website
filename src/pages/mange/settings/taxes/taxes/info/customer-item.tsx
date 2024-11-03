@@ -9,6 +9,8 @@ import IconButton from '@/components/icon-button'
 import SInputNumber from '@/components/s-input-number'
 import SRender from '@/components/s-render'
 import STable, { STableProps } from '@/components/s-table'
+import { UseOpenType } from '@/hooks/useOpen'
+import { AddModalData } from '@/pages/mange/settings/taxes/taxes/info/add-modal'
 import { genId } from '@/utils/random'
 
 import styles from './index.module.less'
@@ -22,10 +24,11 @@ export interface CustomerItemProps {
   onUpdate: () => void
   collections: CollectionOptionsRes[]
   countryOptions: Array<{ label: string, value: string }>
+  openInfo: UseOpenType<AddModalData>
 }
 
 export default function CustomerItem (props: CustomerItemProps) {
-  const { fields, add, name: tableName, onUpdate, collections, countryOptions, remove, remove1 } = props
+  const { fields, add, name: tableName, onUpdate, collections, countryOptions, remove, remove1, openInfo } = props
   const { t } = useTranslation('settings', { keyPrefix: 'tax' })
   const form = Form.useFormInstance()
   const getCustomer = (): BaseCustomerTax | undefined => form.getFieldValue('customers')?.[tableName]
@@ -37,6 +40,23 @@ export default function CustomerItem (props: CustomerItemProps) {
     }
     if (!customer.collection_id) return '--'
     return collections?.find(i => customer?.collection_id === i.value)?.label
+  }
+
+  const onEdit = () => {
+    const customer = getCustomer()
+    if (!customer) return
+    const zone: BaseCustomerTaxZone = customer.zones?.[0]
+    if (!zone) return
+    const item: AddModalData = {
+      id: customer.id,
+      collection_id: customer.collection_id,
+      type: customer.type,
+      name: zone.name,
+      tax_rate: zone.tax_rate,
+      zone_id: zone.id,
+      area_code: zone.area_code
+    }
+    openInfo.edit(item)
   }
 
   const columns: STableProps['columns'] = [
@@ -118,7 +138,12 @@ export default function CustomerItem (props: CustomerItemProps) {
       <Flex className={styles.title} align={'center'} justify={'space-between'}>
         {getTitle()}
         <Flex gap={8} align={'center'}>
-          <Button onClick={() => { remove(tableName) }} type={'link'} size={'small'}>{t('编辑')}</Button>
+          <Button
+            onClick={onEdit}
+            type={'link'} size={'small'}
+          >
+            {t('编辑')}
+          </Button>
           <Button danger onClick={() => { remove(tableName) }} type={'link'} size={'small'}>{t('删除')}</Button>
         </Flex>
       </Flex>

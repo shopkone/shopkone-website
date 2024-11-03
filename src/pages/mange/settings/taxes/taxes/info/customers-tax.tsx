@@ -61,6 +61,7 @@ export default function CustomersTax (props: CustomersTaxProps) {
                       {
                         (fields1, { add: add1, remove: remove1 }) => (
                           <CustomerItem
+                            openInfo={openInfo}
                             remove1={remove1}
                             countryOptions={countryOptions || []}
                             onUpdate={onUpdate}
