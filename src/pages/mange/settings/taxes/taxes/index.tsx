@@ -1,13 +1,14 @@
-import { Trans, useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { IconTax, IconTrash } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
-import { Card, Checkbox, Empty, Flex, Form, Switch } from 'antd'
+import { Button, Card, Checkbox, Empty, Flex, Form, Switch } from 'antd'
 
 import { useCountries } from '@/api/base/countries'
 import { TaxListApi, TaxListRes, TaxStatus } from '@/api/tax/list'
 import IconButton from '@/components/icon-button'
 import Page from '@/components/page'
+import SCard from '@/components/s-card'
 import SRender from '@/components/s-render'
 import STable, { STableProps } from '@/components/s-table'
 
@@ -18,10 +19,6 @@ export default function Taxes () {
   const nav = useNavigate()
   const list = useRequest(TaxListApi)
   const countries = useCountries()
-
-  const toDelivery = () => {
-    nav('/settings/shipping')
-  }
 
   const columns: STableProps['columns'] = [
     {
@@ -67,16 +64,19 @@ export default function Taxes () {
       width={700}
       title={t('税费设置')}
     >
-      <Card title={t('收税地区')}>
-        <div className={'tips'} style={{ marginBottom: 12 }}>
-          <Trans
-            i18nKey={t('收税地区提示')}
-            components={{
-              a1: <a onClick={toDelivery} />,
-              a2: <a href={'https://example.com'} target={'_blank'} rel={'noreferrer'} />
-            }}
-          />
-        </div>
+      <SCard
+        extra={
+          <SRender render={list?.data?.length}>
+            <Button type={'link'} size={'small'}>
+              {t('添加收税地区')}
+            </Button>
+          </SRender>
+        }
+        title={t('收税地区')}
+      >
+        <SRender render={list?.data?.length} className={'tips'} style={{ marginBottom: 12 }}>
+          {t('收税地区提示')}
+        </SRender>
         <SRender render={list?.data?.length}>
           <STable
             onRowClick={(record) => { nav(`info/${record.id}`) }}
@@ -90,19 +90,21 @@ export default function Taxes () {
         <SRender render={!list?.data?.length && !list.loading}>
           <Empty
             image={
-              <div style={{ paddingTop: 32 }}>
+              <div style={{ paddingTop: 20 }}>
                 <IconTax size={64} color={'#ddd'} />
               </div>
             }
             description={(
               <div className={'secondary'}>
-                {t('空白收税地区提示')}
+                {t('收税地区提示')}
               </div>
             )}
             style={{ paddingBottom: 24 }}
-          />
+          >
+            <Button type={'primary'}>{t('添加收税地区')}</Button>
+          </Empty>
         </SRender>
-      </Card>
+      </SCard>
 
       <Card style={{ marginTop: 16 }} title={t('全球设置')}>
         <Form.Item
