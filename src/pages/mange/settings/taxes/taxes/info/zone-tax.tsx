@@ -1,9 +1,11 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Button, Form, Input } from 'antd'
+import { IconTrash } from '@tabler/icons-react'
+import { Button, Flex, Form, Input } from 'antd'
 
 import { ZoneListOut } from '@/api/base/countries'
-import { BaseTaxZone } from '@/api/tax/info'
+import { BaseCustomerTaxZone, BaseTaxZone } from '@/api/tax/info'
+import IconButton from '@/components/icon-button'
 import SInputNumber from '@/components/s-input-number'
 import SRender from '@/components/s-render'
 import SSelect from '@/components/s-select'
@@ -22,6 +24,7 @@ export default function ZoneTax (props: ZoneTaxProps) {
     value: zone.code
   }))
   const [update, setUpdate] = useState(0)
+  const removeRef = useRef((index: number) => {})
 
   const { t } = useTranslation('settings', { keyPrefix: 'tax' })
 
@@ -79,8 +82,28 @@ export default function ZoneTax (props: ZoneTaxProps) {
           <SInputNumber required min={0} suffix={'%'} precision={4} />
         </Form.Item>
       )
+    },
+    {
+      title: '',
+      name: 'name',
+      code: 'name',
+      render: (name: number) => {
+        const zones: BaseCustomerTaxZone[] | undefined = form.getFieldValue('zones')
+        if (zones?.length === 1) return null
+        return (
+          <Flex justify={'center'}>
+            <IconButton onClick={() => { removeRef?.current?.(name); onUpdate() }} type={'text'} size={24}>
+              <IconTrash size={15} onClick={() => { }} />
+            </IconButton>
+          </Flex>
+        )
+      },
+      align: 'center',
+      width: form.getFieldValue('zones')?.length === 1 ? 0 : 50
     }
   ]
+
+  console.log(form.getFieldValue('zones')?.length)
 
   if (!zones?.length) return null
 
@@ -94,28 +117,31 @@ export default function ZoneTax (props: ZoneTaxProps) {
 
       <Form.List name={'zones'}>
         {
-          (fields, { add }) => (
-            <div>
-              <SRender render={fields?.length}>
-                <STable
-                  borderless
-                  className={'table-border'}
-                  data={fields}
-                  style={{ marginTop: 8 }}
-                  columns={columns}
-                  init
-                />
-              </SRender>
-              <Button
-                onClick={() => { add({ id: genId(), name: 'VAT', tax_rate: 0 }) }}
-                type={'link'}
-                size={'small'}
-                style={{ marginLeft: -8, marginTop: 8 }}
-              >
-                {t('添加区域')}
-              </Button>
-            </div>
-          )
+          (fields, { add, remove }) => {
+            removeRef.current = remove
+            return (
+              <div>
+                <SRender render={fields?.length}>
+                  <STable
+                    borderless
+                    className={'table-border'}
+                    data={fields}
+                    style={{ marginTop: 8 }}
+                    columns={columns}
+                    init
+                  />
+                </SRender>
+                <Button
+                  onClick={() => { add({ id: genId(), name: 'VAT', tax_rate: 0 }); onUpdate() }}
+                  type={'link'}
+                  size={'small'}
+                  style={{ marginLeft: -8, marginTop: 8 }}
+                >
+                  {t('添加区域')}
+                </Button>
+              </div>
+            )
+          }
         }
       </Form.List>
     </div>

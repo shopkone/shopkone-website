@@ -52,7 +52,7 @@ export default function CustomersTax (props: CustomersTaxProps) {
     >
       <Form.List name={'customers'}>
         {
-          (fields, { add }) => {
+          (fields, { add, remove }) => {
             addRef.current = add
             return (
               <Flex vertical gap={20}>
@@ -60,14 +60,16 @@ export default function CustomersTax (props: CustomersTaxProps) {
                   fields.map((field, index) => (
                     <Form.List key={field.key} name={[index, 'zones']}>
                       {
-                        (fields1, { add: add1 }) => (
+                        (fields1, { add: add1, remove: remove1 }) => (
                           <CustomerItem
+                            remove1={remove1}
                             countryOptions={countryOptions || []}
                             onUpdate={onUpdate}
                             collections={collectionOptions.data || []}
                             name={field.name}
                             fields={fields1}
                             add={add1}
+                            remove={remove}
                           />
                         )
                       }

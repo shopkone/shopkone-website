@@ -1,9 +1,11 @@
 import { useTranslation } from 'react-i18next'
-import { Button, Form, FormListFieldData, Input } from 'antd'
+import { IconTrash } from '@tabler/icons-react'
+import { Button, Flex, Form, FormListFieldData, Input } from 'antd'
 
 import { ZoneListOut } from '@/api/base/countries'
 import { CollectionOptionsRes } from '@/api/collection/options'
 import { BaseCustomerTax, BaseCustomerTaxZone, CustomerTaxType } from '@/api/tax/info'
+import IconButton from '@/components/icon-button'
 import SInputNumber from '@/components/s-input-number'
 import SSelect from '@/components/s-select'
 import STable, { STableProps } from '@/components/s-table'
@@ -14,6 +16,8 @@ import styles from './index.module.less'
 export interface CustomerItemProps {
   fields: FormListFieldData[]
   add: (value: any) => void
+  remove: (index: number) => void
+  remove1: (index: number) => void
   name: number
   onUpdate: () => void
   collections: CollectionOptionsRes[]
@@ -21,7 +25,7 @@ export interface CustomerItemProps {
 }
 
 export default function CustomerItem (props: CustomerItemProps) {
-  const { fields, add, name: tableName, onUpdate, collections, countryOptions } = props
+  const { fields, add, name: tableName, onUpdate, collections, countryOptions, remove, remove1 } = props
   const { t } = useTranslation('settings', { keyPrefix: 'tax' })
   const form = Form.useFormInstance()
   const getCustomer = (): BaseCustomerTax | undefined => form.getFieldValue('customers')?.[tableName]
@@ -86,12 +90,33 @@ export default function CustomerItem (props: CustomerItemProps) {
           <SInputNumber required min={0} suffix={'%'} precision={4} />
         </Form.Item>
       )
+    },
+    {
+      title: '',
+      name: 'name',
+      code: 'name',
+      render: (name: number) => {
+        const zones: BaseCustomerTaxZone[] | undefined = getCustomer()?.zones
+        if (zones?.length === 1) return null
+        return (
+          <Flex justify={'center'}>
+            <IconButton type={'text'} size={24}>
+              <IconTrash size={15} onClick={() => { remove1(name) }} />
+            </IconButton>
+          </Flex>
+        )
+      },
+      align: 'center',
+      width: getCustomer()?.zones?.length === 1 ? 0 : 50
     }
   ]
 
   return (
     <div className={styles.item}>
-      <div className={styles.title}>{getTitle()}</div>
+      <Flex className={styles.title} align={'center'} justify={'space-between'}>
+        {getTitle()}
+        <Button danger onClick={() => { remove(tableName) }} type={'link'} size={'small'}>{t('删除')}</Button>
+      </Flex>
       <STable
         init
         data={fields}
