@@ -291,7 +291,6 @@ export default function Files () {
             loading={list.loading}
             empty={{
               title: params.group_id
-              // ? `${t('在')} ${groupList?.data?.find(item => item.id === params.group_id)?.name} ${t('组中没有文件')}`
                 ? t('分组没文件', { name: groupList?.data?.find(item => item.id === params.group_id)?.name })
                 : t('上传和管理您的文件'),
               actions: (
