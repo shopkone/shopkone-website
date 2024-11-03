@@ -11,6 +11,7 @@ import Page from '@/components/page'
 import SCard from '@/components/s-card'
 import SRender from '@/components/s-render'
 import STable, { STableProps } from '@/components/s-table'
+import SelectCountry from '@/components/select-country'
 
 import styles from './index.module.less'
 
@@ -120,6 +121,7 @@ export default function Taxes () {
         </Form.Item>
       </Card>
 
+      <SelectCountry onlyCountry height={400} />
     </Page>
   )
 }

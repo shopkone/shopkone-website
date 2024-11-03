@@ -1,8 +1,9 @@
 import { useTranslation } from 'react-i18next'
 import { useRequest } from 'ahooks'
-import { Card, Form, Input, Select } from 'antd'
+import { Form, Input, Select } from 'antd'
 
 import { CollectionOptionsApi } from '@/api/collection/options'
+import SCard from '@/components/s-card'
 import SSelect from '@/components/s-select'
 import SelectCategory from '@/pages/mange/product/product/product-change/product-organization/select-category'
 
@@ -11,7 +12,7 @@ export default function ProductOrganization () {
   const { t } = useTranslation('product', { keyPrefix: 'product' })
 
   return (
-    <Card title={t('商品设置')}>
+    <SCard title={t('商品设置')}>
       <Form.Item name={'category'} label={t('分类')}>
         <SelectCategory />
       </Form.Item>
@@ -31,6 +32,6 @@ export default function ProductOrganization () {
           suffixIcon={null}
         />
       </Form.Item>
-    </Card>
+    </SCard>
   )
 }
