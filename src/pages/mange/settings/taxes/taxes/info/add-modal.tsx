@@ -1,11 +1,9 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useRequest } from 'ahooks'
 import { Flex, Form, Input, Radio } from 'antd'
 
-import { CountriesRes } from '@/api/base/countries'
-import { CollectionOptionsApi } from '@/api/collection/options'
-import { CustomerTaxType } from '@/api/tax/info'
+import { CollectionOptionsRes } from '@/api/collection/options'
+import { BaseCustomerTax, CustomerTaxType } from '@/api/tax/info'
 import SInputNumber from '@/components/s-input-number'
 import SModal from '@/components/s-modal'
 import SRender from '@/components/s-render'
@@ -25,28 +23,39 @@ export interface AddModalData {
 
 export interface AddModalProps {
   openInfo: UseOpenType<AddModalData>
-  country?: CountriesRes
   onConfirm: (tax: AddModalData) => void
+  collections: CollectionOptionsRes[]
+  countryOptions: Array<{ label: string, value: string }>
 }
 
 export default function AddModal (props: AddModalProps) {
-  const { openInfo, country, onConfirm } = props
+  const { openInfo, onConfirm, collections, countryOptions } = props
   const { t } = useTranslation('settings', { keyPrefix: 'tax' })
   const [form] = Form.useForm()
-  const collectionOptions = useRequest(CollectionOptionsApi)
+  const warpForm = Form.useFormInstance()
+  const getCustomers = (): BaseCustomerTax[] | undefined => warpForm.getFieldValue('customers')
+  const existCollectionIds = getCustomers()?.map(i => {
+    if (i.type === CustomerTaxType.CustomerTaxTypeCollection) {
+      return i.collection_id
+    }
+    return 0
+  }).filter(Boolean)
+
+  const collectionOptions = collections?.map(i => {
+    if (existCollectionIds?.includes(i.value)) {
+      return { ...i, disabled: true }
+    }
+    return i
+  })
+
+  const hasShipping = !!getCustomers()?.find(i => i.type === CustomerTaxType.CustomerTaxTypeDelivery)
 
   const type: CustomerTaxType = Form.useWatch('type', form)
 
   const options = [
     { label: t('商品系列'), value: CustomerTaxType.CustomerTaxTypeCollection },
-    { label: t('运费'), value: CustomerTaxType.CustomerTaxTypeDelivery }
+    { label: t('运费'), value: CustomerTaxType.CustomerTaxTypeDelivery, disabled: hasShipping }
   ]
-
-  const countryOptions = useMemo(() => {
-    if (!country?.name) return []
-    const zones = country?.zones?.map(zone => ({ label: zone.name, value: zone.code }))
-    return [{ label: country.name, value: country.code }, ...zones]
-  }, [country])
 
   const onOk = async () => {
     await form.validateFields()
@@ -57,6 +66,7 @@ export default function AddModal (props: AddModalProps) {
 
   useEffect(() => {
     if (!openInfo.open) return
+
     if (openInfo.data) {
       form.setFieldsValue(openInfo.data)
     } else {
@@ -66,7 +76,8 @@ export default function AddModal (props: AddModalProps) {
         name: 'VAT',
         id: genId(),
         tax_rate: 0,
-        zone_id: genId()
+        zone_id: genId(),
+        collection_id: undefined
       }
       form.setFieldsValue(item)
     }
@@ -85,7 +96,7 @@ export default function AddModal (props: AddModalProps) {
             label={t('商品系列')}
             required={false}
           >
-            <SSelect optionFilterProp={'label'} showSearch options={collectionOptions.data} />
+            <SSelect optionFilterProp={'label'} showSearch options={collectionOptions} />
           </Form.Item>
         </SRender>
         <Form.Item name={'area_code'} label={t('适用地区')}>

@@ -1,9 +1,11 @@
-import { useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { IconTax } from '@tabler/icons-react'
+import { useRequest } from 'ahooks'
 import { Button, Empty, Flex, Form } from 'antd'
 
 import { CountriesRes } from '@/api/base/countries'
+import { CollectionOptionsApi } from '@/api/collection/options'
 import { BaseCustomerTax } from '@/api/tax/info'
 import SCard from '@/components/s-card'
 import SRender from '@/components/s-render'
@@ -22,6 +24,12 @@ export default function CustomersTax (props: CustomersTaxProps) {
   const addRef = useRef((item: any) => {})
   const [update, setUpdate] = useState(0)
   const form = Form.useFormInstance()
+  const collectionOptions = useRequest(CollectionOptionsApi)
+  const countryOptions = useMemo(() => {
+    if (!country?.name) return []
+    const zones = country?.zones?.map(zone => ({ label: zone.name, value: zone.code }))
+    return [{ label: country.name, value: country.code }, ...zones]
+  }, [country])
 
   const onUpdate = () => {
     setUpdate(update + 1)
@@ -77,7 +85,14 @@ export default function CustomersTax (props: CustomersTaxProps) {
                     <Form.List key={field.key} name={[index, 'zones']}>
                       {
                         (fields1, { add: add1 }) => (
-                          <CustomerItem fields={fields1} add={add1} />
+                          <CustomerItem
+                            countryOptions={countryOptions || []}
+                            onUpdate={onUpdate}
+                            collections={collectionOptions.data || []}
+                            name={field.name}
+                            fields={fields1}
+                            add={add1}
+                          />
                         )
                       }
                     </Form.List>
@@ -89,7 +104,12 @@ export default function CustomersTax (props: CustomersTaxProps) {
         }
       </Form.List>
 
-      <AddModal onConfirm={onConfirm} country={country} openInfo={openInfo} />
+      <AddModal
+        collections={collectionOptions.data || []}
+        onConfirm={onConfirm}
+        countryOptions={countryOptions}
+        openInfo={openInfo}
+      />
     </SCard>
   )
 }

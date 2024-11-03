@@ -2,19 +2,38 @@ import { useTranslation } from 'react-i18next'
 import { Button, Form, FormListFieldData, Input } from 'antd'
 
 import { ZoneListOut } from '@/api/base/countries'
+import { CollectionOptionsRes } from '@/api/collection/options'
+import { BaseCustomerTax, BaseCustomerTaxZone, CustomerTaxType } from '@/api/tax/info'
 import SInputNumber from '@/components/s-input-number'
 import SSelect from '@/components/s-select'
 import STable, { STableProps } from '@/components/s-table'
 import { genId } from '@/utils/random'
 
+import styles from './index.module.less'
+
 export interface CustomerItemProps {
   fields: FormListFieldData[]
   add: (value: any) => void
+  name: number
+  onUpdate: () => void
+  collections: CollectionOptionsRes[]
+  countryOptions: Array<{ label: string, value: string }>
 }
 
 export default function CustomerItem (props: CustomerItemProps) {
-  const { fields, add } = props
+  const { fields, add, name: tableName, onUpdate, collections, countryOptions } = props
   const { t } = useTranslation('settings', { keyPrefix: 'tax' })
+  const form = Form.useFormInstance()
+  const getCustomer = (): BaseCustomerTax | undefined => form.getFieldValue('customers')?.[tableName]
+  const getTitle = () => {
+    const customer = getCustomer()
+    if (!customer) return '--'
+    if (customer?.type === CustomerTaxType.CustomerTaxTypeDelivery) {
+      return t('运费')
+    }
+    if (!customer.collection_id) return '--'
+    return collections?.find(i => customer?.collection_id === i.value)?.label
+  }
 
   const columns: STableProps['columns'] = [
     {
@@ -22,6 +41,8 @@ export default function CustomerItem (props: CustomerItemProps) {
       name: 'name',
       code: 'name',
       render: (name: number) => {
+        const zones: BaseCustomerTaxZone[] | undefined = getCustomer()?.zones
+        const options = countryOptions?.filter(i => !zones?.find(ii => ii.area_code === i.value))
         return (
           <Form.Item
             rules={[{ required: true, message: t('请选择区域') }]}
@@ -29,6 +50,8 @@ export default function CustomerItem (props: CustomerItemProps) {
             name={[name, 'area_code']}
           >
             <SSelect
+              options={options}
+              onFocus={onUpdate}
               showSearch
               optionFilterProp={'label'}
               placeholder={t('选择区域')}
@@ -66,8 +89,8 @@ export default function CustomerItem (props: CustomerItemProps) {
   ]
 
   return (
-    <div style={{ border: '1px solid #000' }}>
-      {123}
+    <div className={styles.item}>
+      <div className={styles.title}>{getTitle()}</div>
       <STable
         init
         data={fields}
@@ -75,18 +98,12 @@ export default function CustomerItem (props: CustomerItemProps) {
       />
       <Button
         onClick={() => {
-          add({
-            id: genId(),
-            name: 'VAT',
-            tax_rate: 0
-          })
+          add({ id: genId(), name: 'VAT', tax_rate: 0 })
+          onUpdate()
         }}
         type={'link'}
         size={'small'}
-        style={{
-          marginLeft: -8,
-          marginTop: 8
-        }}
+        className={styles.itemAdd}
       >
         {t('添加区域')}
       </Button>
