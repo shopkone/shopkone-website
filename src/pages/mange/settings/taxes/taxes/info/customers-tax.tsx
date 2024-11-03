@@ -21,7 +21,6 @@ export default function CustomersTax (props: CustomersTaxProps) {
   const { t } = useTranslation('settings', { keyPrefix: 'tax' })
   const addRef = useRef((item: any) => {})
   const [update, setUpdate] = useState(0)
-  const form = Form.useFormInstance()
   const collectionOptions = useRequest(CollectionOptionsApi)
   const countryOptions = useMemo(() => {
     if (!country?.name) return []

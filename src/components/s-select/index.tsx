@@ -1,7 +1,8 @@
 import { useState } from 'react'
-import { IconChevronDown, IconSearch } from '@tabler/icons-react'
+import { IconChevronDown, IconSearch, IconX } from '@tabler/icons-react'
 import { Select, SelectProps } from 'antd'
 
+import IconButton from '@/components/icon-button'
 import SLoading from '@/components/s-loading'
 import SRender from '@/components/s-render'
 
@@ -28,6 +29,20 @@ export default function SSelect (props: SelectProps) {
           </SRender>
         </>
       }
+      removeIcon={(
+        <div style={{ position: 'relative', left: -8, top: -6, background: '#fdfdfd', width: 20 }}>
+          <IconButton size={20} type={'text'}>
+            <IconX color={'#333'} size={14} />
+          </IconButton>
+        </div>
+      )}
+      clearIcon={(
+        <div style={{ position: 'relative', left: -8, top: -6, background: '#fdfdfd', width: 20 }}>
+          <IconButton size={20} type={'text'}>
+            <IconX color={'#333'} size={14} />
+          </IconButton>
+        </div>
+      )}
       {...props}
       virtual={false}
       labelRender={(props.showSearch && focus) ? props.value : props.labelRender}

@@ -39,7 +39,7 @@ export default function ZoneTax (props: ZoneTaxProps) {
       code: 'name',
       render: (name: number) => {
         const zones: BaseTaxZone[] = form.getFieldValue('zones')
-        const opt = options?.filter(opt => !zones.find(i => i.zone_code === opt.value))
+        const opt = options?.filter(opt => !zones.find(i => i.zone_code === opt.value) || opt.value === zones?.[name]?.zone_code)
         return (
           <Form.Item
             rules={[{ required: true, message: t('请选择区域') }]}
@@ -102,8 +102,6 @@ export default function ZoneTax (props: ZoneTaxProps) {
       width: form.getFieldValue('zones')?.length === 1 ? 0 : 50
     }
   ]
-
-  console.log(form.getFieldValue('zones')?.length)
 
   if (!zones?.length) return null
 

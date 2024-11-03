@@ -1,13 +1,13 @@
 import { useTranslation } from 'react-i18next'
 import { IconTrash } from '@tabler/icons-react'
-import { Button, Flex, Form, FormListFieldData, Input } from 'antd'
+import { Button, Flex, Form, FormListFieldData, Input, Select } from 'antd'
 
 import { ZoneListOut } from '@/api/base/countries'
 import { CollectionOptionsRes } from '@/api/collection/options'
 import { BaseCustomerTax, BaseCustomerTaxZone, CustomerTaxType } from '@/api/tax/info'
 import IconButton from '@/components/icon-button'
 import SInputNumber from '@/components/s-input-number'
-import SSelect from '@/components/s-select'
+import SRender from '@/components/s-render'
 import STable, { STableProps } from '@/components/s-table'
 import { genId } from '@/utils/random'
 
@@ -46,25 +46,26 @@ export default function CustomerItem (props: CustomerItemProps) {
       code: 'name',
       render: (name: number) => {
         const zones: BaseCustomerTaxZone[] | undefined = getCustomer()?.zones
-        const options = countryOptions?.filter(i => !zones?.find(ii => ii.area_code === i.value))
-        console.log(options)
+        const options = countryOptions?.filter(i => !zones?.find(ii => ii.area_code === i.value) || i.value === zones?.[name]?.area_code)
         return (
-          <Form.Item
-            rules={[{ required: true, message: t('请选择区域') }]}
-            className={'mb0'}
-            name={[name, 'area_code']}
-          >
-            <SSelect
-              options={options}
-              onBlur={onUpdate}
-              onFocus={onUpdate}
-              showSearch
-              optionFilterProp={'label'}
-              placeholder={t('选择区域')}
-              allowClear
-              optionLabelProp={'label'}
-            />
-          </Form.Item>
+          <SRender render={options?.length}>
+            <Form.Item
+              rules={[{ required: true, message: t('请选择区域') }]}
+              className={'mb0'}
+              name={[name, 'area_code']}
+            >
+              <Select
+                options={options}
+                onBlur={onUpdate}
+                onFocus={onUpdate}
+                showSearch
+                optionFilterProp={'label'}
+                placeholder={t('选择区域')}
+                allowClear
+                optionLabelProp={'label'}
+              />
+            </Form.Item>
+          </SRender>
         )
       }
     },
