@@ -1,14 +1,12 @@
 import { useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { IconTax } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
-import { Button, Empty, Flex, Form } from 'antd'
+import { Button, Flex, Form } from 'antd'
 
 import { CountriesRes } from '@/api/base/countries'
 import { CollectionOptionsApi } from '@/api/collection/options'
 import { BaseCustomerTax } from '@/api/tax/info'
 import SCard from '@/components/s-card'
-import SRender from '@/components/s-render'
 import { useOpen } from '@/hooks/useOpen'
 import AddModal, { AddModalData } from '@/pages/mange/settings/taxes/taxes/info/add-modal'
 import CustomerItem from '@/pages/mange/settings/taxes/taxes/info/customer-item'
@@ -50,30 +48,8 @@ export default function CustomersTax (props: CustomersTaxProps) {
     <SCard
       tips={t('发货到指定区域时，为特定产品系列自定义基于区域的税率或运费。')}
       title={t('自定义税费')}
-      extra={!form.getFieldValue('customers')?.length
-        ? null
-        : <Button type={'link'} size={'small'} onClick={() => { openInfo.edit() }}>{t('添加自定义税费')}</Button>}
+      extra={<Button type={'link'} size={'small'} onClick={() => { openInfo.edit() }}>{t('添加自定义税费')}</Button>}
     >
-      <SRender render={!form.getFieldValue('customers')?.length}>
-        <Empty
-          image={
-            <div style={{ paddingTop: 24 }}>
-              <IconTax size={64} color={'#ddd'} />
-            </div>
-          }
-          description={(
-            <div className={'secondary'}>
-              {t('发货到指定区域时，为特定产品系列自定义基于区域的税率或运费。')}
-            </div>
-          )}
-          style={{ paddingBottom: 32, marginTop: -12 }}
-        >
-          <Button onClick={() => { openInfo.edit() }}>
-            {t('添加自定义税费')}
-          </Button>
-        </Empty>
-      </SRender>
-
       <Form.List name={'customers'}>
         {
           (fields, { add }) => {

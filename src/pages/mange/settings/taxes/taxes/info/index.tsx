@@ -7,6 +7,7 @@ import cloneDeep from 'lodash/cloneDeep'
 
 import { useCountries } from '@/api/base/countries'
 import { TaxInfoApi } from '@/api/tax/info'
+import { TaxUpdateApi } from '@/api/tax/update'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
 import SInputNumber from '@/components/s-input-number'
@@ -25,6 +26,7 @@ export default function TaxInfo () {
   const init = useRef<any>()
   const hasNote = Form.useWatch('has_note', form)
   const currentCountry = countries?.data?.find(c => c.code === info?.data?.country_code)
+  const update = useRequest(TaxUpdateApi, { manual: true })
 
   const onValuesChange = (force?: boolean) => {
     const values = form.getFieldsValue()
@@ -44,7 +46,7 @@ export default function TaxInfo () {
   const onOk = async () => {
     await form.validateFields()
     const values = form.getFieldsValue()
-    console.log(values)
+    await update.runAsync({ id: Number(id), ...values })
   }
 
   useEffect(() => {

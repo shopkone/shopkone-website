@@ -59,7 +59,7 @@ export default function AddModal (props: AddModalProps) {
 
   const onOk = async () => {
     await form.validateFields()
-    const values = form.getFieldsValue()
+    const values = form.getFieldsValue(true)
     onConfirm(values)
     openInfo.close()
   }

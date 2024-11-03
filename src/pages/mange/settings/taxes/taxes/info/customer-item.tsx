@@ -51,6 +51,7 @@ export default function CustomerItem (props: CustomerItemProps) {
           >
             <SSelect
               options={options}
+              onBlur={onUpdate}
               onFocus={onUpdate}
               showSearch
               optionFilterProp={'label'}
