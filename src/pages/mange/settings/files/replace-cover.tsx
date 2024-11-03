@@ -42,7 +42,7 @@ export default function ReplaceCover (props: ReplaceCoverProps) {
     >
       <Tooltip title={t('替换封面1')}>
         <Button
-          onMouseDown={e => { e.stopPropagation() }}
+          onMouseUp={e => { e.stopPropagation() }}
           className={styles.actionsIcon}
           type={'text'}
           size={'small'}

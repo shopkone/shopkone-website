@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
-import { IconCopy } from '@tabler/icons-react'
+import { IconCopy, IconDownload } from '@tabler/icons-react'
 import { useDebounceFn, useMemoizedFn, useRequest } from 'ahooks'
 import { Button, Flex, Tooltip, Typography } from 'antd'
 import dayjs from 'dayjs'
@@ -136,7 +136,7 @@ export default function Files () {
       title: t('引用'), // 'References'
       code: 'references',
       name: 'references',
-      width: 100
+      width: 80
     },
     {
       title: t('组名'), // 'Group name'
@@ -150,18 +150,38 @@ export default function Files () {
       hidden: !groupList?.data?.length
     },
     {
-      title: t('链接'), // 'Link'
+      title: '',
       code: 'src',
       name: 'src',
-      width: 60,
+      width: 80,
       render: (src: string) => (
-        <div style={{ display: 'inline-block' }}>
-          <Tooltip placement={'top'} title={t('复制链接')}> {/* 'Copy link' */}
-            <IconButton type={'text'} onMouseDown={e => { e.stopPropagation() }} onClick={(e) => { e.stopPropagation(); onCopy(src) }} size={26}>
-              <IconCopy size={14} />
-            </IconButton>
-          </Tooltip>
-        </div>
+        <Flex onMouseUp={e => { e.stopPropagation() }} align={'center'} gap={12}>
+          <div style={{ display: 'inline-block' }}>
+            <Tooltip placement={'top'} title={t('下载素材')}> {/* 'Copy link' */}
+              <IconButton
+                href={src}
+                type={'text'}
+                size={26}
+              >
+                <IconDownload size={14} />
+              </IconButton>
+            </Tooltip>
+          </div>
+
+          <div style={{ display: 'inline-block' }}>
+            <Tooltip placement={'top'} title={t('复制链接')}> {/* 'Copy link' */}
+              <IconButton
+                type={'text'}
+                onClick={(e) => {
+                  onCopy(src)
+                }}
+                size={26}
+              >
+                <IconCopy size={14} />
+              </IconButton>
+            </Tooltip>
+          </div>
+        </Flex>
       )
     }
   ]
@@ -237,6 +257,7 @@ export default function Files () {
             onChange={(v) => { setParams({ ...params, ...(v || {}), page: 1 }) }}
           />
           <STable
+            rowClassName={() => styles.row}
             onRowClick={(row: FileListRes) => {
               fileInfoOpen.edit(row.id)
             }}

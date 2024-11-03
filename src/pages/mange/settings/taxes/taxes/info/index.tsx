@@ -68,11 +68,12 @@ export default function TaxInfo () {
 
   return (
     <Page
+      loadingHiddenBg
       onOk={onOk}
       onCancel={onCancel}
       isChange={isChange}
       title={currentCountry?.name || '--'}
-      loading={info.loading || countries.loading}
+      loading={!info.data || countries.loading}
       width={700}
       back={'/settings/taxes'}
     >

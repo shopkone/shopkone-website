@@ -109,7 +109,7 @@ export default function Group (props: GroupProps) {
         <div className={styles.sideBottom}>
           <Button onClick={() => { open.edit() }} block>
             <IconPlus size={14} />
-            {t('添加分组1')}
+            <div>{t('添加分组1')}</div>
           </Button>
         </div>
       </SCard>
