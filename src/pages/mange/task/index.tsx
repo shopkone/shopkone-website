@@ -63,7 +63,7 @@ export default function Task () {
 
   const SuccessRender = useMemoizedFn(() => (
     <Flex align={'center'} gap={6}>
-      <IconCircleCheckFilled color={'#00de5a'} size={18} />
+      <IconCircleCheckFilled color={'#2e7d32'} size={18} />
       <div>{t('已完成', { count: successTotal })}</div>
     </Flex>
   ))
