@@ -13,7 +13,7 @@ export const sMessage = ({
         style={{ position: 'relative', top: 4, marginRight: 8 }}
         theme={'filled'}
         size={18}
-        fill={'#32a645'}
+        fill={'#3fedb8'}
       />
     ),
     content,

@@ -366,7 +366,7 @@ function SelectFiles (props: SelectFilesProps) {
                             <div style={{ marginTop: -1 }} className={'secondary'}>{item.suffix}</div>
                           </SRender>
                           <SRender render={item.uuid ? !item.errMsg : null}>
-                            <div style={{ marginTop: -1, color: '#32a645' }}>{t('上传中')}</div>
+                            <div style={{ marginTop: -1, color: '#3fedb8' }}>{t('上传中')}</div>
                           </SRender>
                           <SRender render={item.uuid ? item.errMsg : null}>
                             <Typography.Text ellipsis={{ tooltip: true }} style={{ marginTop: -1, color: '#f54a45', width: 120 }}>

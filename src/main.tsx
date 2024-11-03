@@ -24,7 +24,7 @@ if (dom) {
             colorText: '#1f2329',
             motionDurationMid: '0.1s',
             motionDurationSlow: '0.1s',
-            colorPrimary: '#3370ff'
+            colorPrimary: '#165cfa'
           }
         }}
         locale={zh_CN}

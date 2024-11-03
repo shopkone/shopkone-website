@@ -81,7 +81,7 @@ export default function Seo (props: SeoProps) {
             {
               editing
                 ? (
-                  <div style={{ color: '#3370ff' }}>{t('完成')}</div>
+                  <div style={{ color: '#165cfa' }}>{t('完成')}</div>
                   )
                 : (
                   <div>{t('编辑')}</div>

@@ -82,7 +82,7 @@ export default function UploadTask (props: UploadTaskProps) {
                 </Tooltip>
               </SRender>
               <SRender render={task.status === 'done'}>
-                <IconCircleCheckFilled color={'#32a645'} size={18} />
+                <IconCircleCheckFilled color={'#3fedb8'} size={18} />
               </SRender>
             </Flex>
           </Flex>

@@ -73,7 +73,7 @@ const FileItem = (props: FileItemProps, ref: React.Ref<HTMLDivElement>) => {
         </div>
       </SRender>
       <SRender render={item?.type === FileType.Video} style={{ position: 'absolute', right: -4, bottom: 4 }}>
-        <Tag style={{ fontWeight: 'bolder', background: '#d9e4ff', color: '#3370ff', borderColor: '#3370ffa0', borderRadius: 4 }}>
+        <Tag style={{ fontWeight: 'bolder', background: '#d9e4ff', color: '#165cfa', borderColor: '#165cfaa0', borderRadius: 4 }}>
           <div>{t('视频1')}</div>
         </Tag>
       </SRender>
