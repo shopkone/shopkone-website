@@ -115,7 +115,10 @@ export default function CustomerItem (props: CustomerItemProps) {
     <div className={styles.item}>
       <Flex className={styles.title} align={'center'} justify={'space-between'}>
         {getTitle()}
-        <Button danger onClick={() => { remove(tableName) }} type={'link'} size={'small'}>{t('删除')}</Button>
+        <Flex gap={8} align={'center'}>
+          <Button onClick={() => { remove(tableName) }} type={'link'} size={'small'}>{t('编辑')}</Button>
+          <Button danger onClick={() => { remove(tableName) }} type={'link'} size={'small'}>{t('删除')}</Button>
+        </Flex>
       </Flex>
       <STable
         init

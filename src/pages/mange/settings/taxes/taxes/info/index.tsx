@@ -11,6 +11,7 @@ import { TaxUpdateApi } from '@/api/tax/update'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
 import SInputNumber from '@/components/s-input-number'
+import { sMessage } from '@/components/s-message'
 import SRender from '@/components/s-render'
 import CustomersTax from '@/pages/mange/settings/taxes/taxes/info/customers-tax'
 import ZoneTax from '@/pages/mange/settings/taxes/taxes/info/zone-tax'
@@ -46,7 +47,11 @@ export default function TaxInfo () {
   const onOk = async () => {
     await form.validateFields()
     const values = form.getFieldsValue()
-    await update.runAsync({ id: Number(id), ...values })
+    const ret = await update.runAsync({ id: Number(id), ...values })
+    form.setFieldsValue(ret)
+    setIsChange(false)
+    sMessage.success(t('更新成功'))
+    onValuesChange(true)
   }
 
   useEffect(() => {
