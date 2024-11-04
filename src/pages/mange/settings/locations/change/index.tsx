@@ -149,6 +149,7 @@ export default function Change () {
 
   return (
     <Page
+      loading={!address?.country || info.loading}
       onOk={onSubmit}
       onCancel={onCancel}
       isChange={isChange}
@@ -180,7 +181,6 @@ export default function Change () {
     >
       <Form initialValues={{ name: '', fulfillment_details: false }} onValuesChange={onValuesChange} layout={'vertical'} form={form}>
         <SCard
-          loading={info.loading}
           tips={t('为此位置指定一个简短名称，以便于识别。您将在订单和产品等区域看到此名称。')}
           style={{ marginBottom: 16 }}
           title={t('名称')}
@@ -191,10 +191,10 @@ export default function Change () {
         </SCard>
 
         <Form.Item name={'address'} className={'mb0'}>
-          <Address getFormInstance={form => { addressForm.current = form }} hasName loading={!address?.country || info.loading} hasEmail />
+          <Address getFormInstance={form => { addressForm.current = form }} hasName hasEmail />
         </Form.Item>
 
-        <SCard style={{ marginTop: 16 }} title={t('履行详情')} loading={info.loading}>
+        <SCard style={{ marginTop: 16 }} title={t('履行详情')}>
           <Form.Item
             className={'mb0'}
             extra={
