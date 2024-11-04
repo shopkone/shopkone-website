@@ -1,14 +1,12 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { IconChevronRight } from '@tabler/icons-react'
-import { useMemoizedFn } from 'ahooks'
-import { Checkbox, Flex } from 'antd'
+import { IconSearch } from '@tabler/icons-react'
+import { Input, TreeSelect } from 'antd'
 
 import { CountriesRes, useCountries } from '@/api/base/countries'
-import IconButton from '@/components/icon-button'
 import SLoading from '@/components/s-loading'
-import SRender from '@/components/s-render'
-import CountryItem from '@/components/select-country/country-item'
+
+import styles from './index.module.less'
 
 interface CountryTree {
   code: string
@@ -25,14 +23,16 @@ export interface SelectCountryProps {
 }
 
 export default function SelectCountry (props: SelectCountryProps) {
-  const { height, disabled, onlyCountry, onChange, value } = props
+  const { onChange, value = [], height, disabled, onlyCountry } = props
   const countries = useCountries()
+  const [tree, setTree] = useState<CountryTree[]>([])
   const { t } = useTranslation('common', { keyPrefix: 'selectCountry' })
-  const [expands, setExpands] = useState<string[]>([])
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [searchKey, setSearchKey] = useState('')
 
-  const continents = useMemo(() => {
-    if (!countries.data) return []
-    const list: CountryTree[] = [
+  useEffect(() => {
+    if (!countries.data) return
+    let continent: CountryTree[] = [
       { code: 'Europe', name: t('欧洲'), children: [] },
       { code: 'Asia', name: t('亚洲'), children: [] },
       { code: 'Africa', name: t('非洲'), children: [] },
@@ -40,49 +40,74 @@ export default function SelectCountry (props: SelectCountryProps) {
       { code: 'South America', name: t('南美洲'), children: [] },
       { code: 'Oceania', name: t('大洋洲'), children: [] }
     ]
-    return list.map((item) => {
-      item.children = countries?.data?.filter(country => country.continent === item.code) || []
-      return item
+    countries.data.forEach((country) => {
+      const continentIndex = continent.findIndex(item => item.code === country.continent)
+      if (continentIndex !== -1) {
+        let zoneDisabledCount = 0
+        const children = country.zones.map(zone => {
+          const code = country.code + '_____' + zone.code
+          const zoneDisabled = disabled?.includes(code)
+          if (zoneDisabled) zoneDisabledCount++
+          return { ...zone, children: [], code, disabled: zoneDisabled, isLeaf: true }
+        })
+        const countryDisabled = country.zones.length && zoneDisabledCount === country.zones.length
+        continent[continentIndex].children.push({ ...country, children: onlyCountry ? [] : children, zones: [], disabled: disabled?.includes(country.code) || countryDisabled } as any)
+      }
     })
-  }, [countries.data])
-
-  const onExpand = useMemoizedFn((code: string) => {
-    if (expands.includes(code)) {
-      setExpands(expands.filter(item => item !== code))
-    } else {
-      setExpands([...expands, code])
-    }
-  })
-
-  console.log(continents)
+    continent = continent.map(item => {
+      const len = item.children.length
+      const disabledLen = item.children.filter(item => (item as any).disabled).length
+      return { ...item, disabled: len && disabledLen === len }
+    })
+    setTree(continent)
+  }, [countries.data, disabled])
 
   return (
     <SLoading loading={countries.loading}>
-      <Flex vertical style={{ height }}>
-        <Flex gap={8} style={{ overflowY: 'auto', flex: 1 }} vertical>
+      <div className={styles.container}>
+        <div style={{ padding: '0 12px' }}>
+          <Input
+            prefix={<IconSearch size={14} style={{ position: 'relative', top: 1 }} />}
+            placeholder={t('搜索国家/地区')}
+            allowClear
+            value={searchKey}
+            onChange={e => { setSearchKey(e.target.value) }}
+          />
+        </div>
+        <div ref={containerRef}>
           {
-            continents?.map(continent => (
-              <div style={{ userSelect: 'none' }} key={continent.code}>
-                <Flex align={'center'} gap={8}>
-                  <IconButton onClick={() => { onExpand(continent.code) }} size={20} type={'text'}>
-                    <IconChevronRight size={15} />
-                  </IconButton>
-                  <Checkbox>{continent.name}</Checkbox>
-                </Flex>
-                <SRender render={expands.includes(continent.code)}>
-                  <Flex style={{ marginTop: 8 }} gap={8} vertical>
-                    {
-                      continent.children.map(country => (
-                        <CountryItem country={country} key={country.code} />
-                      ))
-                    }
-                  </Flex>
-                </SRender>
-              </div>
-            ))
+            containerRef?.current
+              ? (
+                <TreeSelect
+                  value={value}
+                  onChange={onChange}
+                  searchValue={searchKey}
+                  getPopupContainer={() => containerRef.current as any}
+                  variant={'borderless'}
+                  className={styles.select}
+                  virtual={false}
+                  listItemHeight={32}
+                  popupClassName={styles.tree}
+                  treeCheckable
+                  showSearch
+                  treeNodeFilterProp={'name'}
+                  listHeight={height}
+                  open
+                  fieldNames={{
+                    label: 'name',
+                    value: 'code'
+                  }}
+                  dropdownStyle={{
+                    width: 560,
+                    height
+                  }}
+                  treeData={tree}
+                />
+                )
+              : null
           }
-        </Flex>
-      </Flex>
+        </div>
+      </div>
     </SLoading>
   )
 }
