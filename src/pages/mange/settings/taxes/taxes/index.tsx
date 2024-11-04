@@ -1,17 +1,24 @@
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { IconTax, IconTrash } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
 import { Button, Checkbox, Empty, Flex, Form, Switch } from 'antd'
-import SCard from '@/components/s-card'
 
 import { useCountries } from '@/api/base/countries'
+import { TaxActiveApi } from '@/api/tax/active'
 import { TaxListApi, TaxListRes, TaxStatus } from '@/api/tax/list'
+import { TaxRemoveApi } from '@/api/tax/remove'
 import IconButton from '@/components/icon-button'
 import Page from '@/components/page'
+import SCard from '@/components/s-card'
+import SLoading from '@/components/s-loading'
+import { sMessage } from '@/components/s-message'
+import { useModal } from '@/components/s-modal'
 import SRender from '@/components/s-render'
 import STable, { STableProps } from '@/components/s-table'
-import SelectCountry from '@/components/select-country'
+import { useOpen } from '@/hooks/useOpen'
+import AddCountryModal from '@/pages/mange/settings/taxes/taxes/add-country-modal'
 
 import styles from './index.module.less'
 
@@ -20,20 +27,29 @@ export default function Taxes () {
   const nav = useNavigate()
   const list = useRequest(TaxListApi)
   const countries = useCountries()
+  const openInfo = useOpen()
+  const batchRemove = useRequest(TaxRemoveApi, { manual: true })
+  const [selected, setSelected] = useState<number[]>([])
+  const onActive = useRequest(TaxActiveApi, { manual: true })
+  const modal = useModal()
+
+  const onBatchRemove = async (id?: number) => {
+    modal.confirm({
+      title: t('确认删除x个收税地区吗？', { x: id ? 1 : selected.length }),
+      content: t('删除后配置的内容将被清空。'),
+      onOk: async () => {
+        const ids = id ? [id] : selected
+        await batchRemove.runAsync({ ids })
+        list.refresh()
+        setSelected([])
+        sMessage.success(t('收税地区删除成功'))
+      },
+      okText: t('删除'),
+      okButtonProps: { danger: true }
+    })
+  }
 
   const columns: STableProps['columns'] = [
-    {
-      title: t('征收'),
-      code: 'status',
-      name: 'status',
-      render: (status: TaxStatus) => (
-        <div onMouseUp={e => { e.stopPropagation() }} className={styles.default}>
-          <Switch checked={status === TaxStatus.Active} />
-        </div>
-      ),
-      width: 80,
-      lock: true
-    },
     {
       title: t('国家/地区'),
       code: 'country_code',
@@ -42,7 +58,29 @@ export default function Taxes () {
         return (
           countries?.data?.find((c) => c.code === code)?.name || '--'
         )
-      }
+      },
+      lock: true
+    },
+    {
+      title: t('征收'),
+      code: 'status',
+      name: 'status',
+      render: (status: TaxStatus, row: TaxListRes) => (
+        <div style={{ position: 'relative', top: 4 }} onMouseUp={e => { e.stopPropagation() }} className={styles.default}>
+          <SLoading size={16} loading={onActive.params[0]?.id === row.id && onActive.loading}>
+            <Switch
+              onChange={async (v) => {
+                const ret = await onActive.runAsync({ id: row.id, active: !!v })
+                list.mutate(ret.list)
+                sMessage.success(t('征收状态更新成功'))
+              }}
+              size={'small'}
+              checked={status === TaxStatus.Active}
+            />
+          </SLoading>
+        </div>
+      ),
+      width: 80
     },
     {
       title: '',
@@ -52,7 +90,7 @@ export default function Taxes () {
       align: 'center',
       render: (id: number) => (
         <Flex style={{ justifyContent: 'center' }} onMouseUp={e => { e.stopPropagation() }} className={styles.default} align={'center'} gap={16}>
-          <IconButton type={'text'} size={24}>
+          <IconButton onClick={async () => { await onBatchRemove(id) }} type={'text'} size={24}>
             <IconTrash size={15} />
           </IconButton>
         </Flex>
@@ -68,7 +106,7 @@ export default function Taxes () {
       <SCard
         extra={
           <SRender render={list?.data?.length}>
-            <Button type={'link'} size={'small'}>
+            <Button onClick={() => { openInfo.edit() }} type={'link'} size={'small'}>
               {t('添加收税地区')}
             </Button>
           </SRender>
@@ -80,6 +118,12 @@ export default function Taxes () {
         </SRender>
         <SRender render={list?.data?.length}>
           <STable
+            actions={
+              <Button onClick={() => { onBatchRemove() }} size={'small'} danger>
+                {t('删除')}
+              </Button>
+            }
+            rowSelection={{ value: selected, onChange: setSelected, width: 40 }}
             onRowClick={(record) => { nav(`info/${record.id}`) }}
             init
             className={'table-border'}
@@ -102,12 +146,12 @@ export default function Taxes () {
             )}
             style={{ paddingBottom: 24 }}
           >
-            <Button type={'primary'}>{t('添加收税地区')}</Button>
+            <Button onClick={() => { openInfo.edit() }} type={'primary'}>{t('添加收税地区')}</Button>
           </Empty>
         </SRender>
       </SCard>
 
-      <SCard  style={{ marginTop: 16 }} title={t('全球设置')}>
+      <SCard style={{ marginTop: 16 }} title={t('全球设置')}>
         <Form.Item
           extra={
             <div className={'tips'} style={{ marginTop: -8, marginLeft: 24 }}>
@@ -121,7 +165,11 @@ export default function Taxes () {
         </Form.Item>
       </SCard>
 
-      <SelectCountry onlyCountry height={400} />
+      <AddCountryModal
+        onOk={() => { list.refresh() }}
+        openInfo={openInfo}
+        disabled={list?.data?.map(i => i.country_code) || []}
+      />
     </Page>
   )
 }

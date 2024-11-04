@@ -17,10 +17,11 @@ export interface SelectCountryProps {
   height: number
   disabled?: string[]
   onlyCountry?: boolean
+  borderless?: boolean
 }
 
 export default function SelectCountry (props: SelectCountryProps) {
-  const { onChange, value = [], height, disabled, onlyCountry } = props
+  const { onChange, value = [], height, disabled, onlyCountry, borderless } = props
   const countries = useCountries()
   const { t } = useTranslation('common', { keyPrefix: 'selectCountry' })
   const [searchKey, setSearchKey] = useState('')
@@ -38,7 +39,7 @@ export default function SelectCountry (props: SelectCountryProps) {
     const { code, name, zones } = country
     const zoneList = zones.map(zone => getZones(zone, country.code))
     const d = zones?.length ? zoneList.every(zone => zone.disabled) : disabled?.includes(code)
-    return { key: code, title: name, children: onlyCountry ? [] : zoneList, disabled: d }
+    return { key: code, title: name, children: onlyCountry ? [] : zoneList, disabled: onlyCountry ? disabled?.includes(code) : d }
   })
 
   const tree: TreeDataNode[] = useMemo(() => {
@@ -82,7 +83,7 @@ export default function SelectCountry (props: SelectCountryProps) {
 
   return (
     <SLoading loading={countries.loading || (!filteredTree?.length && !searchKey)}>
-      <div className={styles.container}>
+      <div className={styles.container} style={{ border: borderless ? 'none' : undefined }}>
         <div style={{ padding: '0 12px' }}>
           <Input
             prefix={<IconSearch size={14} style={{ position: 'relative', top: 1 }} />}

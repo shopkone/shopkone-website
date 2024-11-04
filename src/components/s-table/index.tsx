@@ -76,14 +76,14 @@ function STable (props: STableProps) {
         return {
           ...col,
           title: (
-            <Flex align={'center'} justify={'space-between'} className={styles.header}>
-              <span style={{ position: 'relative', top: 1, whiteSpace: 'nowrap', overflow: 'visible' }}>{t('已选中', { selected: rowSelection?.value?.length } || 0)}</span>
+            <Flex align={'center'} gap={20} className={styles.header}>
+              <div className={styles.headerInner}>
+                {t('已选中', { selected: rowSelection?.value?.length } || 0)}
+              </div>
+              <div className={styles.action}>{actions}</div>
             </Flex>
           )
         }
-      }
-      if (index === cols.length - 1) {
-        return { ...col, title: <div className={styles.action}>{actions}</div> }
       }
       return { ...col, title: '' }
     })
@@ -97,7 +97,7 @@ function STable (props: STableProps) {
     if (rowSelection) {
       p = p.use(
         features.multiSelect({
-          checkboxColumn: { width: rowSelection?.width || 30, lock: true },
+          checkboxColumn: { width: rowSelection?.width || 40, lock: true },
           highlightRowWhenSelected: true,
           checkboxPlacement: 'start',
           value: rowSelection?.value as any,
