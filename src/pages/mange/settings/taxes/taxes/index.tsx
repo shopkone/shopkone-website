@@ -3,12 +3,13 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { IconTax, IconTrash } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
-import { Button, Checkbox, Empty, Flex, Form, Switch } from 'antd'
+import { Button, Empty, Flex, Switch } from 'antd'
 
 import { useCountries } from '@/api/base/countries'
 import { TaxActiveApi } from '@/api/tax/active'
 import { TaxListApi, TaxListRes, TaxStatus } from '@/api/tax/list'
 import { TaxRemoveApi } from '@/api/tax/remove'
+import { ShopTaxSwitchShippingApi } from '@/api/tax/taxShipping'
 import IconButton from '@/components/icon-button'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
@@ -26,6 +27,7 @@ export default function Taxes () {
   const { t } = useTranslation('settings', { keyPrefix: 'tax' })
   const nav = useNavigate()
   const list = useRequest(TaxListApi)
+  const shippingTax = useRequest(ShopTaxSwitchShippingApi)
   const countries = useCountries()
   const openInfo = useOpen()
   const batchRemove = useRequest(TaxRemoveApi, { manual: true })
@@ -99,7 +101,7 @@ export default function Taxes () {
   ]
   return (
     <Page
-      loading={list.loading || countries.loading}
+      loading={list.loading || countries.loading || shippingTax.loading}
       width={700}
       title={t('税费设置')}
     >
@@ -154,22 +156,19 @@ export default function Taxes () {
       <SCard
         style={{ marginTop: 16 }}
       >
-        <Form.Item
-          className={'mb0'}
-          extra={
-            <div className={'tips'} style={{ marginTop: -4, marginLeft: 24 }}>
-              {t('对运费收的税包含在运费中')}
-            </div>
-          }
-        >
-          <Checkbox>
-            {t('所有价格均含税')}
-          </Checkbox>
-        </Form.Item>
+        <Flex align={'center'} gap={8}>
+          {t('所有价格均含税')}
+          <Switch size={'small'} checked={!!shippingTax.data?.tax_shipping} />
+        </Flex>
+        <div className={'tips'} style={{ marginTop: 8 }}>
+          {t('对运费收的税包含在运费中')}
+        </div>
       </SCard>
 
       <AddCountryModal
-        onOk={() => { list.refresh() }}
+        onOk={() => {
+          list.refresh()
+        }}
         openInfo={openInfo}
         disabled={list?.data?.map(i => i.country_code) || []}
       />
