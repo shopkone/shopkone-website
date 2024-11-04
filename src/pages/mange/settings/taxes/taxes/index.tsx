@@ -151,16 +151,19 @@ export default function Taxes () {
         </SRender>
       </SCard>
 
-      <SCard style={{ marginTop: 16 }} title={t('全球设置')}>
+      <SCard
+        style={{ marginTop: 16 }}
+      >
         <Form.Item
+          className={'mb0'}
           extra={
-            <div className={'tips'} style={{ marginTop: -8, marginLeft: 24 }}>
-              {t('自动计算适用于加拿大、欧盟和美国')}
+            <div className={'tips'} style={{ marginTop: -4, marginLeft: 24 }}>
+              {t('对运费收的税包含在运费中')}
             </div>
           }
         >
           <Checkbox>
-            {t('对运输收取销售税')}
+            {t('所有价格均含税')}
           </Checkbox>
         </Form.Item>
       </SCard>
