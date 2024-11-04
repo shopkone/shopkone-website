@@ -26,17 +26,19 @@ export default function SelectCountry (props: SelectCountryProps) {
   const getZones = useMemoizedFn((zone: ZoneListOut, countryCode: string) => {
     const { code, name } = zone
     const realCode = `${countryCode}_____${code}`
-    return { key: realCode, title: name, children: [] }
+    return { key: realCode, title: name, children: [], isLeaf: true, disabled: disabled?.includes(realCode) }
   })
 
   const getCountry = useMemoizedFn((country: CountriesRes): TreeDataNode => {
     const { code, name, zones } = country
-    return { key: code, title: name, children: onlyCountry ? [] : zones.map(zone => getZones(zone, country.code)) }
+    const zoneList = zones.map(zone => getZones(zone, country.code))
+    const d = zones?.length ? zoneList.every(zone => zone.disabled) : disabled?.includes(code)
+    return { key: code, title: name, children: onlyCountry ? [] : zoneList, disabled: d }
   })
 
   const tree: TreeDataNode[] = useMemo(() => {
     if (!countries.data) return []
-    const continents: TreeDataNode[] = [
+    let continents: TreeDataNode[] = [
       { key: 'Europe', title: t('欧洲'), children: [] },
       { key: 'Asia', title: t('亚洲'), children: [] },
       { key: 'Africa', title: t('非洲'), children: [] },
@@ -44,9 +46,12 @@ export default function SelectCountry (props: SelectCountryProps) {
       { key: 'South America', title: t('南美洲'), children: [] },
       { key: 'Oceania', title: t('大洋洲'), children: [] }
     ]
-    return continents.map(continent => {
-      return { ...continent, children: countries?.data?.filter(i => i.continent === continent.key).map(country => getCountry(country)) }
+    continents = continents.map(continent => {
+      const children = countries?.data?.filter(i => i.continent === continent.key).map(country => getCountry(country))
+      const d = children?.every(country => country.disabled)
+      return { ...continent, children, disabled: d }
     })
+    return continents
   }, [countries.data, disabled, value, onlyCountry])
 
   return (
@@ -63,13 +68,12 @@ export default function SelectCountry (props: SelectCountryProps) {
         </div>
         <div className={styles.tree} style={{ height }}>
           <Tree
+            blockNode
             multiple
-            selectable
             checkedKeys={value}
-            selectedKeys={value}
+            selectable={false}
             checkable
             onCheck={(v) => { onChange?.(v as string[]) }}
-            onSelect={(v) => { onChange?.(v as string[]) }}
             treeData={tree}
           />
         </div>
