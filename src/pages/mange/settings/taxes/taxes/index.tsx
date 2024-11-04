@@ -9,7 +9,8 @@ import { useCountries } from '@/api/base/countries'
 import { TaxActiveApi } from '@/api/tax/active'
 import { TaxListApi, TaxListRes, TaxStatus } from '@/api/tax/list'
 import { TaxRemoveApi } from '@/api/tax/remove'
-import { ShopTaxSwitchShippingApi } from '@/api/tax/taxShipping'
+import { ShopTaxSwitchShippingApi } from '@/api/tax/tax-shipping'
+import { ShopTaxSwitchShippingUpdateApi } from '@/api/tax/tax-shipping-update'
 import IconButton from '@/components/icon-button'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
@@ -28,6 +29,7 @@ export default function Taxes () {
   const nav = useNavigate()
   const list = useRequest(TaxListApi)
   const shippingTax = useRequest(ShopTaxSwitchShippingApi)
+  const updateShippingTax = useRequest(ShopTaxSwitchShippingUpdateApi, { manual: true })
   const countries = useCountries()
   const openInfo = useOpen()
   const batchRemove = useRequest(TaxRemoveApi, { manual: true })
@@ -157,10 +159,21 @@ export default function Taxes () {
         style={{ marginTop: 16 }}
       >
         <Flex align={'center'} gap={8}>
+          <SLoading size={18} loading={updateShippingTax.loading}>
+            <Switch
+              onChange={e => {
+                updateShippingTax.runAsync({ tax_shipping: e }).then(res => {
+                  sMessage.success(t('设置成功'))
+                  shippingTax.mutate({ tax_shipping: e })
+                })
+              }}
+              size={'small'}
+              checked={!!shippingTax.data?.tax_shipping}
+            />
+          </SLoading>
           {t('所有价格均含税')}
-          <Switch size={'small'} checked={!!shippingTax.data?.tax_shipping} />
         </Flex>
-        <div className={'tips'} style={{ marginTop: 8 }}>
+        <div className={'tips'} style={{ marginTop: 8, marginLeft: 36 }}>
           {t('对运费收的税包含在运费中')}
         </div>
       </SCard>
