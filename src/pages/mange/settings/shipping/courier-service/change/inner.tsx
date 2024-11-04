@@ -56,9 +56,6 @@ export default function CourierServiceInner (props: CourierServiceInnerProps) {
     values.zones = values.zones.map((item: BaseShippingZone) => {
       const codes: BaseCode[] = []
       item.codes.forEach(code => {
-        if (['Europe', 'Asia', 'Africa', 'North America', 'South America', 'Oceania'].includes(code)) {
-          return
-        }
         if (code.includes('_____')) {
           const [countryCode, zoneCode] = code.split('_____') || ['', '']
           const find = codes.find(c => c.country_code === countryCode)

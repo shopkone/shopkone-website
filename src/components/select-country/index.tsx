@@ -1,13 +1,15 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { IconSearch } from '@tabler/icons-react'
-import { useMemoizedFn } from 'ahooks'
+import { useDebounceFn, useMemoizedFn } from 'ahooks'
 import { Input, Tree, TreeDataNode } from 'antd'
 
 import { CountriesRes, useCountries, ZoneListOut } from '@/api/base/countries'
 import SLoading from '@/components/s-loading'
 
 import styles from './index.module.less'
+// @ts-expect-error
+import Handle from './search-handle?worker'
 
 export interface SelectCountryProps {
   onChange?: (value: string[]) => void
@@ -22,6 +24,9 @@ export default function SelectCountry (props: SelectCountryProps) {
   const countries = useCountries()
   const { t } = useTranslation('common', { keyPrefix: 'selectCountry' })
   const [searchKey, setSearchKey] = useState('')
+  const [expandedKeys, setExpandedKeys] = useState<string[]>([])
+  const workerRef = useRef<Worker>()
+  const [filteredTree, setFilteredTree] = useState<TreeDataNode[]>([])
 
   const getZones = useMemoizedFn((zone: ZoneListOut, countryCode: string) => {
     const { code, name } = zone
@@ -54,8 +59,29 @@ export default function SelectCountry (props: SelectCountryProps) {
     return continents
   }, [countries.data, disabled, value, onlyCountry])
 
+  const onFilter = useDebounceFn(() => {
+    workerRef?.current?.postMessage({ searchKey, tree })
+  }, { wait: 300 }).run
+
+  useEffect(() => {
+    workerRef.current = new Handle()
+    if (!workerRef.current) return
+    workerRef.current.onmessage = (e: MessageEvent) => {
+      const { tree, expands } = e.data
+      setExpandedKeys(expands)
+      setFilteredTree(tree)
+    }
+    return () => {
+      workerRef.current?.terminate()
+    }
+  }, [])
+
+  useEffect(() => {
+    onFilter()
+  }, [searchKey])
+
   return (
-    <SLoading loading={countries.loading}>
+    <SLoading loading={countries.loading || (!filteredTree?.length && !searchKey)}>
       <div className={styles.container}>
         <div style={{ padding: '0 12px' }}>
           <Input
@@ -68,13 +94,25 @@ export default function SelectCountry (props: SelectCountryProps) {
         </div>
         <div className={styles.tree} style={{ height }}>
           <Tree
+            filterTreeNode={node => {
+              if (!searchKey) return false
+              if (typeof node.title !== 'string') return false
+              return node.title.toUpperCase().includes(searchKey.toUpperCase())
+            }}
+            expandedKeys={expandedKeys}
+            onExpand={setExpandedKeys as any}
             blockNode
             multiple
             checkedKeys={value}
             selectable={false}
             checkable
-            onCheck={(v) => { onChange?.(v as string[]) }}
-            treeData={tree}
+            onCheck={(v, info) => {
+              const ret = (v as string[]).filter(i => {
+                return !info.checkedNodes.find(ii => ii.key === i)?.children?.length
+              })
+              onChange?.(ret)
+            }}
+            treeData={filteredTree}
           />
         </div>
       </div>
