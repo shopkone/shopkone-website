@@ -50,7 +50,9 @@ export default function Locations (props: LocationsProps) {
           {t('后续新增的地点将会被自动添加为发货地点')}
         </SRender>
         <SLocation
-          hideTag value={
+          hideTag
+          hideLoading
+          value={
           type === ShippingType.CustomerExpressDelivery
             ? locations.filter(item => value.includes(item.id))
             : locations

@@ -304,7 +304,7 @@ export default function Zones (props: ZonesProps) {
                       </span>
                     </SRender>
                   </div>
-                  <SRender render={!expands?.includes(item.id) && width > 400}>
+                  <SRender render={!expands?.includes(item.id) && width > 500}>
                     <span onClick={() => { onExpand(item) }} style={{ marginLeft: 0 }} className={styles.expand}>
                       {t('展示全部')}
                     </span>

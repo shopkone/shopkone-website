@@ -84,7 +84,7 @@ export default function ZoneModal (props: ZoneModalProps) {
           </Form.Item>
 
           <Form.Item label={t('国家/地区')}>
-            <SelectCountry disabled={disabled} height={400} value={selectedZoneIds} onChange={setSelectedZoneIds} />
+            <SelectCountry disabled={disabled} height={420} value={selectedZoneIds} onChange={setSelectedZoneIds} />
           </Form.Item>
 
         </Form>
