@@ -45,71 +45,76 @@ export default function Markets () {
       title={t('市场')}
       width={700}
     >
-      <SCard
-        extra={
-          <SSelect
-            value={1}
-            labelRender={(info) => `${t('日期范围')} ${info.label}`}
-            options={options}
-            size={'small'}
-            dropdownStyle={{ width: 150 }}
-          />
-        }
-        title={t('预览')}
-      >
-        <div className={styles.container}>
-          {
-            list?.data?.map((item) => (
-              <Flex
-                onClick={() => { nav(`change/${item.id}`) }}
-                align={'center'}
-                gap={80}
-                justify={'space-between'}
-                className={styles.item} key={item.id}
-              >
-                <Flex style={{ width: 180 }} align={'center'} gap={12}>
-                  <SRender
-                    render={item.country_codes?.length === 1}
-                    className={styles.icon}
-                    style={{
-                      backgroundImage: `url(${countries?.data?.find(c => c.code === item.country_codes[0])?.flag?.src})`,
-                      flexShrink: 0
-                    }}
-                  />
-                  <SRender style={{ flexShrink: 0 }} render={item.country_codes?.length !== 1}>
-                    <RandomGradientBackground>{item?.name}</RandomGradientBackground>
-                  </SRender>
-                  <Flex align={'flex-start'} vertical>
-                    <Typography.Text style={{ width: 180 }} ellipsis={{ tooltip: true }} className={styles.name}>
-                      {item.is_main ? getCountry(item.name)?.name : item.name}
-                    </Typography.Text>
-                    <SRender className={'tips'} render={item.is_main}>
-                      {t('主要市场')}
-                    </SRender>
-                  </Flex>
-                </Flex>
-
-                <Flex align={'center'} justify={'space-between'} gap={18} flex={1}>
-                  <Flex vertical gap={2}>
-                    <div>0%</div>
-                    <div className={'secondary'}>{t('总销售额份额')}</div>
-                  </Flex>
-                  <Flex gap={2} vertical>
-                    <div>$0</div>
-                    <div className={'secondary'}>{t('销售额')}</div>
-                  </Flex>
-                  <Flex gap={2} vertical>
-                    <div>0%</div>
-                    <div className={'secondary'}>{t('转化率')}</div>
-                  </Flex>
-
-                  <IconChevronRight size={16} />
-                </Flex>
-              </Flex>
-            ))
+      <div style={{ minHeight: 400 }}>
+        <SCard
+          extra={
+            <SSelect
+              value={1}
+              labelRender={(info) => `${t('日期范围')} ${info.label}`}
+              options={options}
+              size={'small'}
+              dropdownStyle={{ width: 150 }}
+            />
           }
-        </div>
-      </SCard>
+          title={t('预览')}
+        >
+          <div className={styles.container}>
+            {
+              list?.data?.map((item) => (
+                <Flex
+                  onClick={() => { nav(`change/${item.id}`) }}
+                  align={'center'}
+                  gap={80}
+                  justify={'space-between'}
+                  className={styles.item} key={item.id}
+                >
+                  <Flex style={{ width: 180 }} align={'center'} gap={12}>
+                    <SRender
+                      render={item.country_codes?.length === 1}
+                      className={styles.icon}
+                      style={{
+                        backgroundImage: `url(${countries?.data?.find(c => c.code === item.country_codes[0])?.flag?.src})`,
+                        flexShrink: 0
+                      }}
+                    />
+                    <SRender style={{ flexShrink: 0 }} render={item.country_codes?.length !== 1}>
+                      <RandomGradientBackground>{item?.name}</RandomGradientBackground>
+                    </SRender>
+                    <Flex align={'flex-start'} vertical>
+                      <Typography.Text style={{ width: 180 }} ellipsis={{ tooltip: true }} className={styles.name}>
+                        {item.is_main ? getCountry(item.name)?.name : item.name}
+                      </Typography.Text>
+                      <SRender className={'tips'} render={item.is_main}>
+                        {t('主要市场')}
+                      </SRender>
+                      <SRender className={'tips'} render={!item.is_main}>
+                        {t('包含x个国家', { x: item.country_codes.length })}
+                      </SRender>
+                    </Flex>
+                  </Flex>
+
+                  <Flex align={'center'} justify={'space-between'} gap={18} flex={1}>
+                    <Flex vertical gap={2}>
+                      <div>0%</div>
+                      <div className={'secondary'}>{t('总销售额份额')}</div>
+                    </Flex>
+                    <Flex gap={2} vertical>
+                      <div>$0</div>
+                      <div className={'secondary'}>{t('销售额')}</div>
+                    </Flex>
+                    <Flex gap={2} vertical>
+                      <div>0%</div>
+                      <div className={'secondary'}>{t('转化率')}</div>
+                    </Flex>
+
+                    <IconChevronRight size={16} />
+                  </Flex>
+                </Flex>
+              ))
+            }
+          </div>
+        </SCard>
+      </div>
     </Page>
   )
 }

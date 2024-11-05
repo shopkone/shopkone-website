@@ -83,7 +83,7 @@ export default function MarketChange () {
           </Flex>
         </SCard>
 
-        <SCard title={t('市场设置')}>
+        <SCard tips={t('仅管理你的商店在此市场中的客户体验')} title={t('市场设置')}>
           <div className={styles.container}>
             <Flex align={'center'} justify={'space-between'} className={styles.item}>
               <Flex gap={16} align={'center'} justify={'space-between'}>
@@ -156,22 +156,22 @@ export default function MarketChange () {
           title={t('市场数据')}
         >
           <Flex flex={1}>
-            <Flex flex={1} gap={2} vertical>
+            <Flex align={'center'} flex={1} gap={2} vertical>
               <div>0%</div>
               <div className={'secondary'}>{t('总销售额份额')}</div>
             </Flex>
-
-            <Flex flex={1} gap={2} vertical>
+            <div className={styles.line} />
+            <Flex align={'center'} flex={1} gap={2} vertical>
               <div>0%</div>
               <div className={'secondary'}>{t('销售额')}</div>
             </Flex>
-
-            <Flex flex={1} gap={2} vertical>
+            <div className={styles.line} />
+            <Flex align={'center'} flex={1} gap={2} vertical>
               <div>0%</div>
               <div className={'secondary'}>{t('转化率')}</div>
             </Flex>
-
-            <Flex flex={1} gap={2} vertical>
+            <div className={styles.line} />
+            <Flex align={'center'} flex={1} gap={2} vertical>
               <div>0%</div>
               <div className={'secondary'}>{t('客单价')}</div>
             </Flex>
@@ -179,7 +179,7 @@ export default function MarketChange () {
         </SCard>
       </Flex>
 
-      <MarketEditModal openInfo={openEdit} />
+      <MarketEditModal onFinished={info.refresh} openInfo={openEdit} />
     </Page>
   )
 }
