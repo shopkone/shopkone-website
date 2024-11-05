@@ -26,7 +26,7 @@ export default function Locations () {
         </SRender>
       }
       title={t('位置')}
-      width={800}
+      width={700}
     >
       <SCard
         tips={list?.data?.length ? t('管理您销售产品、发货和存货的地点。') : ''}

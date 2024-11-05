@@ -123,7 +123,8 @@ function STable (props: STableProps) {
 
   const isCheckboxDom = useMemoizedFn((e: any) => {
     const className = (e?.target)?.className?.split?.(' ') || []
-    if (className?.[0] === 'art-table-cell' && className?.[1] === 'first') {
+    const chldren = (e?.target)?.children?.[0]?.className?.split?.(' ') || []
+    if (chldren?.[0] === 'shopkone-checkbox-wrapper') {
       return true
     }
     if (className?.[0] === 'shopkone-checkbox-input') {

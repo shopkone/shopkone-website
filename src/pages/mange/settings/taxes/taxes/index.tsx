@@ -53,6 +53,8 @@ export default function Taxes () {
     })
   }
 
+  const showMoreAction = (list?.data?.length || 0) > 10
+
   const columns: STableProps['columns'] = [
     {
       title: t('国家/地区'),
@@ -127,7 +129,7 @@ export default function Taxes () {
                 {t('删除')}
               </Button>
             }
-            rowSelection={{ value: selected, onChange: setSelected, width: 40 }}
+            rowSelection={showMoreAction ? { value: selected, onChange: setSelected, width: 40 } : undefined}
             onRowClick={(record) => { nav(`info/${record.id}`) }}
             init
             className={'table-border'}
