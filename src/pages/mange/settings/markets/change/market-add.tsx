@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { useRequest } from 'ahooks'
-import { Form } from 'antd'
+import { Flex, Form } from 'antd'
 
 import { MarketCreateApi } from '@/api/market/create'
 import Page from '@/components/page'
@@ -11,6 +11,8 @@ import { sMessage } from '@/components/s-message'
 import { useModal } from '@/components/s-modal'
 import MarketsEdit from '@/pages/mange/settings/markets/change/markets-edit'
 import { isEqualHandle } from '@/utils/is-equal-handle'
+
+import styles from './index.module.less'
 
 export default function MarketAdd () {
   const create = useRequest(MarketCreateApi, { manual: true })
@@ -44,7 +46,27 @@ export default function MarketAdd () {
     const ret = await create.runAsync(values)
     if (ret.remove_names?.length) {
       modal.confirm({
-        title: 'asd'
+        title: t('x个市场将被删除', { x: ret.remove_names.length }),
+        content: (
+          <div>
+            <div>{t('删除提示')}</div>
+            <div style={{ marginTop: 4 }}>
+              {
+                ret.remove_names.map(name => (
+                  <Flex align={'center'} gap={6} key={name}>
+                    <div className={styles.dot} />
+                    <div>{name}</div>
+                  </Flex>
+                ))
+              }
+            </div>
+          </div>
+        ),
+        onOk: async () => {
+          const ret = await create.runAsync({ ...values, force: true })
+          sMessage.success(t('市场添加成功'))
+          nav(`/settings/markets/change/${ret.id}`)
+        }
       })
       return
     }

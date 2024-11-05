@@ -71,7 +71,7 @@ export default function MarketChange () {
     >
       <Flex gap={16} vertical>
         <SCard title={t('包含的国家/地区')}>
-          <Flex gap={12}>
+          <Flex wrap={'wrap'} gap={12}>
             {
               countryList?.map(c => (
                 <Flex align={'center'} gap={8} key={c.code} className={styles.country}>
