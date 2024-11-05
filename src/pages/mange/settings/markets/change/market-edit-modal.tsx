@@ -17,6 +17,7 @@ export default function MarketEditModal (props: MarketEditModalProps) {
 
   return (
     <SModal
+      okText={t('更新')}
       onCancel={openInfo.close}
       title={t('编辑市场')}
       width={600}

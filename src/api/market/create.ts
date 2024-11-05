@@ -7,8 +7,9 @@ export interface MarketCreateReq {
 
 export interface MarketCreateRes {
   id: number
+  remove_names: string[]
 }
 
 export const MarketCreateApi = async (params: MarketCreateReq) => {
-  return await api<MarketCreateRes>('/market/create', params)
+  return await api<MarketCreateRes>('/market/create', params, [8002])
 }

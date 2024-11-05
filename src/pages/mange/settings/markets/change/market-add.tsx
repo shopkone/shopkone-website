@@ -8,6 +8,7 @@ import { MarketCreateApi } from '@/api/market/create'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
 import { sMessage } from '@/components/s-message'
+import { useModal } from '@/components/s-modal'
 import MarketsEdit from '@/pages/mange/settings/markets/change/markets-edit'
 import { isEqualHandle } from '@/utils/is-equal-handle'
 
@@ -18,6 +19,7 @@ export default function MarketAdd () {
   const [form] = Form.useForm()
   const [isChange, setIsChange] = useState(false)
   const nav = useNavigate()
+  const modal = useModal()
 
   const onValuesChange = () => {
     const values = form.getFieldsValue()
@@ -40,6 +42,12 @@ export default function MarketAdd () {
     })
     const values = form.getFieldsValue()
     const ret = await create.runAsync(values)
+    if (ret.remove_names?.length) {
+      modal.confirm({
+        title: 'asd'
+      })
+      return
+    }
     sMessage.success(t('市场添加成功'))
     nav(`/settings/markets/change/${ret.id}`)
   }

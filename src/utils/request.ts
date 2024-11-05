@@ -19,6 +19,10 @@ service.interceptors.request.use(
 
 service.interceptors.response.use(
   res => {
+    // @ts-expect-error
+    if (res.config.__hideErrorCodes?.includes(res.data.code)) {
+      return res?.data?.data
+    }
     if (res.data.code < 10000 && res.data.code !== 0) {
       window.__info_modal({ content: res.data.message })
       return Promise.reject(res.data)
