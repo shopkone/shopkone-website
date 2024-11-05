@@ -120,6 +120,7 @@ export default function Taxes () {
   ]
   return (
     <Page
+      loadingHiddenBg
       loading={list.loading || countries.loading || shippingTax.loading}
       width={700}
       title={t('税费设置')}

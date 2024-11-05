@@ -46,6 +46,7 @@ export default function MarketChange () {
 
   return (
     <Page
+      loadingHiddenBg
       header={
         <Flex align={'center'} gap={12}>
           <Button onClick={() => { openEdit.edit(info.data) }} type={'text'}>
@@ -57,7 +58,7 @@ export default function MarketChange () {
           </Button>
         </Flex>
       }
-      loading={info.loading || countries.loading}
+      loading={!info.data?.id || countries.loading}
       back={'/settings/markets'}
       width={700}
       title={

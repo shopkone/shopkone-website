@@ -40,7 +40,7 @@ export default function SLoading (props: SLoadingProps) {
       <Spin
         rootClassName={styles.animation}
         spinning={loading}
-        delay={0}
+        delay={0.01}
         indicator={
           <div><IconLoader2 className={styles.loading} size={size} /></div>
         }

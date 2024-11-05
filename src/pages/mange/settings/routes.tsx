@@ -20,6 +20,7 @@ const Files = lazy(async () => await import('./files'))
 const Markets = lazy(async () => await import('./markets'))
 const MarketChange = lazy(async () => await import('./markets/change'))
 const MarketAdd = lazy(async () => await import('./markets/change/market-add'))
+const Languages = lazy(async () => await import('./languages'))
 
 export const SettingsRoutes: RouteObject[] = [
   { element: <General />, path: '/settings/general' },
@@ -54,5 +55,7 @@ export const SettingsRoutes: RouteObject[] = [
 
   { element: <Markets />, path: '/settings/markets' },
   { element: <MarketChange />, path: '/settings/markets/change/:id' },
-  { element: <MarketAdd />, path: '/settings/markets/add' }
+  { element: <MarketAdd />, path: '/settings/markets/add' },
+
+  { element: <Languages />, path: '/settings/languages' }
 ]
