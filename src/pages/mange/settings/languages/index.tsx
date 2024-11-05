@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { useRequest } from 'ahooks'
-import { Button, Flex, Switch } from 'antd'
+import { Button, Flex, Switch, Tooltip } from 'antd'
 
 import { useCountries } from '@/api/base/countries'
 import { useLanguageList } from '@/api/base/languages'
@@ -30,6 +30,17 @@ export default function Languages () {
 
   const columns: STableProps['columns'] = [
     {
+      title: '',
+      code: 'id',
+      name: 'id',
+      render: () => (
+        <Tooltip title={t('已启用')}>
+          <Switch size={'small'} />
+        </Tooltip>
+      ),
+      width: 45
+    },
+    {
       title: t('语言'),
       code: 'language',
       name: 'language',
@@ -40,7 +51,8 @@ export default function Languages () {
             <Status type={'info'}>{t('默认')}</Status>
           </SRender>
         </Flex>
-      )
+      ),
+      width: 150
     },
     {
       title: t('对应市场'),
@@ -54,24 +66,28 @@ export default function Languages () {
             ))
           }
         </Flex>
-      )
+      ),
+      width: 200
     },
     {
       title: '',
       code: 'id',
       name: 'id',
       render: () => (
-        <Flex>
-          <Button>asd</Button>
-          <Button>asd</Button>
-          <Switch />
+        <Flex gap={12} align={'center'}>
+          <Button type={'link'} size={'small'}>{t('翻译')}</Button>
+          <Button type={'link'} size={'small'}>{t('配置到市场')}</Button>
         </Flex>
-      )
+      ),
+      width: 120
     }
   ]
 
   return (
     <Page
+      header={
+        <Button type={'primary'}>{t('添加语言')}</Button>
+      }
       loading={list.loading || countries.loading || markets.loading || languages.loading}
       title={t('语言')}
       width={700}
