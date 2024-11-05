@@ -25,10 +25,11 @@ export interface PageProps {
   resetLoading?: boolean
   okText?: ReactNode
   loadingHiddenBg?: boolean
+  autoHeight?: boolean
 }
 
 export default function Page (props: PageProps) {
-  const { loadingHiddenBg, children, width, header, footer, title, back, isChange, bottom = 64, onOk, onCancel, loading = false, resetLoading = false, okText } = props
+  const { autoHeight, loadingHiddenBg, children, width, header, footer, title, back, isChange, bottom = 64, onOk, onCancel, loading = false, resetLoading = false, okText } = props
   const nav = useNavigate()
   const [confirmLoading, setConfirmLoading] = useState(false)
   const setIsChange = useLayoutState(state => state.setChange)
@@ -81,7 +82,7 @@ export default function Page (props: PageProps) {
         paddingBottom: isChange !== undefined ? 60 : bottom,
         maxHeight: loading && loadingHiddenBg ? 500 : undefined,
         overflow: loading && loadingHiddenBg ? 'hidden' : undefined,
-        minHeight: '110%'
+        minHeight: autoHeight ? 'auto' : '110%'
       }}
     >
       <SRender render={title || header || back}>

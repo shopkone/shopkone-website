@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { IconChevronRight } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
-import { Flex } from 'antd'
+import { Button, Flex } from 'antd'
 
 import { useCountries } from '@/api/base/countries'
 import { MarketListApi } from '@/api/market/list'
@@ -30,7 +30,20 @@ export default function Markets () {
   }
 
   return (
-    <Page loading={list.loading || countries.loading} loadingHiddenBg title={t('市场')} width={700}>
+    <Page
+      header={
+        <Flex gap={12} align={'center'}>
+          <Button>{t('偏好设置')}</Button>
+          <Button type={'primary'} style={{ height: 26 }} onClick={() => { nav('add') }}>
+            {t('添加市场')}
+          </Button>
+        </Flex>
+      }
+      loading={list.loading || countries.loading}
+      loadingHiddenBg
+      title={t('市场')}
+      width={700}
+    >
       <SCard
         extra={
           <SSelect

@@ -14,12 +14,14 @@ import { useRequest } from 'ahooks'
 import { Button, Flex } from 'antd'
 
 import { useCountries } from '@/api/base/countries'
-import { MarketInfoApi } from '@/api/market/info'
+import { MarketInfoApi, MarketInfoRes } from '@/api/market/info'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
 import SRender from '@/components/s-render'
 import SSelect from '@/components/s-select'
 import Status from '@/components/status'
+import { useOpen } from '@/hooks/useOpen'
+import MarketEditModal from '@/pages/mange/settings/markets/change/market-edit-modal'
 
 import styles from './index.module.less'
 
@@ -29,6 +31,7 @@ export default function MarketChange () {
   const countries = useCountries()
   const countryList = countries?.data?.filter(c => info?.data?.country_codes?.includes(c.code))
   const { t } = useTranslation('settings', { keyPrefix: 'market' })
+  const openEdit = useOpen<MarketInfoRes>()
 
   const options = [
     { label: t('今天'), value: 1 },
@@ -45,7 +48,9 @@ export default function MarketChange () {
     <Page
       header={
         <Flex align={'center'} gap={12}>
-          <Button type={'text'}>{t('编辑')}</Button>
+          <Button onClick={() => { openEdit.edit(info.data) }} type={'text'}>
+            {t('编辑')}
+          </Button>
           <Button type={'text'}>
             {t('预览')}
             <IconChevronDown size={15} />
@@ -173,6 +178,8 @@ export default function MarketChange () {
           </Flex>
         </SCard>
       </Flex>
+
+      <MarketEditModal openInfo={openEdit} />
     </Page>
   )
 }
