@@ -62,7 +62,22 @@ export default function Taxes () {
       name: 'country_code',
       render: (code: string, row: TaxListRes) => {
         return (
-          countries?.data?.find((c) => c.code === code)?.name || '--'
+          <Flex align={'center'} gap={8}>
+            <div
+              style={{
+                height: 24,
+                width: 36,
+                borderRadius: 4,
+                objectFit: 'cover',
+                background: `url(${countries?.data?.find((c) => c.code === code)?.flag?.src})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center'
+              }}
+            />
+            {
+              countries?.data?.find((c) => c.code === code)?.name || '--'
+            }
+          </Flex>
         )
       },
       lock: true

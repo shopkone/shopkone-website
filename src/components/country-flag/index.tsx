@@ -6,6 +6,7 @@ import SLoading from '@/components/s-loading'
 export interface CountryFlagProps {
   country?: string
   size?: number
+  borderless?: boolean
 }
 
 export default function CountryFlag (props: CountryFlagProps) {
@@ -16,6 +17,7 @@ export default function CountryFlag (props: CountryFlagProps) {
   return (
     <SLoading loading={countries.loading}>
       <FileImage
+        containerStyle={{ border: props.borderless ? 'none' : undefined }}
         size={16}
         type={FileType.Image}
         height={24}

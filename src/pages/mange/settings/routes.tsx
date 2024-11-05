@@ -18,6 +18,7 @@ const ShippingPickupInStore = lazy(async () => await import('./shipping/pickup-i
 const ShippingPickupInStoreChange = lazy(async () => await import('./shipping/pickup-in-store/change'))
 const Files = lazy(async () => await import('./files'))
 const Markets = lazy(async () => await import('./markets'))
+const MarketChange = lazy(async () => await import('./markets/change'))
 
 export const SettingsRoutes: RouteObject[] = [
   { element: <General />, path: '/settings/general' },
@@ -50,5 +51,6 @@ export const SettingsRoutes: RouteObject[] = [
   { element: <Files />, path: '/settings/files/:groupId' },
   { element: <Files />, path: '/settings/files' },
 
-  { element: <Markets />, path: '/settings/markets' }
+  { element: <Markets />, path: '/settings/markets' },
+  { element: <MarketChange />, path: '/settings/markets/change/:id' }
 ]

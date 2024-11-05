@@ -1,16 +1,96 @@
+import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
+import { IconChevronRight } from '@tabler/icons-react'
+import { useRequest } from 'ahooks'
+import { Flex } from 'antd'
+
+import { useCountries } from '@/api/base/countries'
+import { MarketListApi } from '@/api/market/list'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
+import SRender from '@/components/s-render'
 import SSelect from '@/components/s-select'
 
+import styles from './index.module.less'
+
 export default function Markets () {
+  const list = useRequest(MarketListApi)
+  const countries = useCountries()
+  const { t } = useTranslation('settings', { keyPrefix: 'market' })
+  const nav = useNavigate()
+
+  const options = [
+    { label: t('今天'), value: 1 },
+    { label: t('过去7天'), value: 2 },
+    { label: t('过去30天'), value: 3 }
+  ]
+
+  const getCountry = (code: string) => {
+    return countries?.data?.find(c => c.code === code)
+  }
+
   return (
-    <Page title={'市场'} width={700}>
+    <Page loading={list.loading || countries.loading} loadingHiddenBg title={t('市场')} width={700}>
       <SCard
         extra={
-        <SSelect size={'small'}/>
+          <SSelect
+            value={1}
+            labelRender={(info) => `${t('日期范围')} ${info.label}`}
+            options={options}
+            size={'small'}
+            dropdownStyle={{ width: 150 }}
+          />
         }
-        title={'市场列表'}>
-        asd
+        title={t('预览')}
+      >
+        <div className={styles.container}>
+          {
+            list?.data?.map((item) => (
+              <Flex
+                onClick={() => { nav(`change/${item.id}`) }}
+                align={'center'}
+                gap={80}
+                justify={'space-between'}
+                className={styles.item} key={item.id}
+              >
+                <Flex align={'center'} gap={12}>
+                  <SRender
+                    render={item.is_main}
+                    className={styles.icon}
+                    style={{
+                      backgroundImage: `url(${countries?.data?.find(c => c.code === item.country_codes[0])?.flag?.src})`
+                    }}
+                  />
+                  <Flex align={'flex-start'} vertical>
+                    <div className={styles.name}>
+                      {item.is_main ? getCountry(item.name)?.name : item.name}
+                    </div>
+                    <SRender className={'tips'} render={item.is_main}>
+                      {t('主要市场')}
+                    </SRender>
+                  </Flex>
+                </Flex>
+
+                <Flex align={'center'} justify={'space-between'} gap={18} flex={1}>
+                  <Flex vertical gap={2}>
+                    <div>0%</div>
+                    <div className={'secondary'}>{t('总销售额份额')}</div>
+                  </Flex>
+                  <Flex gap={2} vertical>
+                    <div>$0</div>
+                    <div className={'secondary'}>{t('销售额')}</div>
+                  </Flex>
+                  <Flex gap={2} vertical>
+                    <div>0%</div>
+                    <div className={'secondary'}>{t('转化率')}</div>
+                  </Flex>
+
+                  <IconChevronRight size={16} />
+                </Flex>
+              </Flex>
+            ))
+          }
+        </div>
       </SCard>
     </Page>
   )
