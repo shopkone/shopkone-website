@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Form } from 'antd'
 
@@ -15,16 +16,20 @@ export default function MarketEditModal (props: MarketEditModalProps) {
   const [form] = Form.useForm()
   const { t } = useTranslation('settings', { keyPrefix: 'market' })
 
+  useEffect(() => {
+    if (!openInfo.open) return
+    form.setFieldsValue(openInfo.data)
+  }, [openInfo.open])
+
   return (
     <SModal
       okText={t('更新')}
       onCancel={openInfo.close}
       title={t('编辑市场')}
-      width={600}
       open={openInfo.open}
     >
       <div style={{ padding: 16 }}>
-        <MarketsEdit form={form} height={420} noClassName />
+        <MarketsEdit data={openInfo?.data} form={form} height={420} noClassName />
       </div>
     </SModal>
   )

@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { IconChevronRight } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
-import { Button, Flex } from 'antd'
+import { Button, Flex, Typography } from 'antd'
 
 import { useCountries } from '@/api/base/countries'
 import { MarketListApi } from '@/api/market/list'
@@ -10,6 +10,7 @@ import Page from '@/components/page'
 import SCard from '@/components/s-card'
 import SRender from '@/components/s-render'
 import SSelect from '@/components/s-select'
+import RandomGradientBackground from '@/pages/mange/settings/markets/random-bg'
 
 import styles from './index.module.less'
 
@@ -66,18 +67,22 @@ export default function Markets () {
                 justify={'space-between'}
                 className={styles.item} key={item.id}
               >
-                <Flex align={'center'} gap={12}>
+                <Flex style={{ width: 180 }} align={'center'} gap={12}>
                   <SRender
-                    render={item.is_main}
+                    render={item.country_codes?.length === 1}
                     className={styles.icon}
                     style={{
-                      backgroundImage: `url(${countries?.data?.find(c => c.code === item.country_codes[0])?.flag?.src})`
+                      backgroundImage: `url(${countries?.data?.find(c => c.code === item.country_codes[0])?.flag?.src})`,
+                      flexShrink: 0
                     }}
                   />
+                  <SRender style={{ flexShrink: 0 }} render={item.country_codes?.length !== 1}>
+                    <RandomGradientBackground>{item?.name}</RandomGradientBackground>
+                  </SRender>
                   <Flex align={'flex-start'} vertical>
-                    <div className={styles.name}>
+                    <Typography.Text style={{ width: 180 }} ellipsis={{ tooltip: true }} className={styles.name}>
                       {item.is_main ? getCountry(item.name)?.name : item.name}
-                    </div>
+                    </Typography.Text>
                     <SRender className={'tips'} render={item.is_main}>
                       {t('主要市场')}
                     </SRender>
