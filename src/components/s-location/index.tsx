@@ -46,7 +46,7 @@ export default function SLocation (props: SLocationProps) {
               {prefix?.(item, index)}
               <SRender render={!hideLogo}>
                 <Flex align={'center'} justify={'center'} className={styles.mapPin}>
-                  <IconMapPin size={20} />
+                  <IconMapPin size={16} />
                 </Flex>
               </SRender>
               <div className={'flex1'}>
@@ -82,7 +82,7 @@ export default function SLocation (props: SLocationProps) {
                   </SRender>
                 </Flex>
                 <Typography.Text ellipsis={{ tooltip: true }} style={{ width: 500 }}>
-                  {formatInfo(countries, item.address)}
+                  {formatInfo(countries, item.address)}123
                 </Typography.Text>
               </div>
               {extra?.(item, index)}

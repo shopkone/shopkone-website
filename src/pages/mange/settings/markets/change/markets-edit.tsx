@@ -8,21 +8,31 @@ export interface MarketsEditProps {
   noClassName?: boolean
   height?: number
   form: FormInstance
+  onValuesChange?: (values: any) => void
 }
 
 export default function MarketsEdit (props: MarketsEditProps) {
-  const { noClassName, height: h, form } = props
+  const { noClassName, height: h, form, onValuesChange } = props
   const { t } = useTranslation('settings', { keyPrefix: 'market' })
 
   const height = h || window.innerHeight - 370
 
   return (
-    <Form form={form} className={noClassName ? '' : styles.form} layout={'vertical'}>
-      <Form.Item label={t('市场名称')}>
+    <Form onValuesChange={onValuesChange} form={form} className={noClassName ? '' : styles.form} layout={'vertical'}>
+      <Form.Item
+        name={'name'}
+        required={false}
+        rules={[{ required: true, message: t('请输入市场名称') }]}
+        label={t('市场名称')}
+      >
         <Input autoComplete={'off'} />
       </Form.Item>
 
-      <Form.Item name={'country_codes'} label={t('选择市场包含的国家/地区')}>
+      <Form.Item
+        required={false}
+        rules={[{ required: true, message: t('请选择国家/地区') }]}
+        name={'country_codes'} label={t('选择市场包含的国家/地区')}
+      >
         <SelectCountry height={height} onlyCountry />
       </Form.Item>
     </Form>
