@@ -3,7 +3,6 @@ import { useRequest } from 'ahooks'
 import { Button, Flex, Switch, Tooltip } from 'antd'
 
 import { useCountries } from '@/api/base/countries'
-import { useLanguageList } from '@/api/base/languages'
 import { LanguageListApi, LanguageListRes } from '@/api/languages/list'
 import { MarketOptionsApi } from '@/api/market/options'
 import Page from '@/components/page'
@@ -11,6 +10,9 @@ import SCard from '@/components/s-card'
 import SRender from '@/components/s-render'
 import STable, { STableProps } from '@/components/s-table'
 import Status from '@/components/status'
+import { useOpen } from '@/hooks/useOpen'
+import AddLanguage from '@/pages/mange/settings/languages/add-language'
+import { renderText } from '@/utils/render-text'
 
 export default function Languages () {
   const { t } = useTranslation('settings', { keyPrefix: 'language' })
@@ -19,7 +21,8 @@ export default function Languages () {
   const list = useRequest(LanguageListApi)
   const markets = useRequest(MarketOptionsApi)
   const countries = useCountries()
-  const languages = useLanguageList()
+
+  const openInfo = useOpen<string[]>([])
 
   const getName = (marketId: number) => {
     const market = markets?.data?.find(m => m.value === marketId)
@@ -61,9 +64,13 @@ export default function Languages () {
       render: (market_ids: number[]) => (
         <Flex>
           {
-            market_ids?.map((market_id) => (
-              getName(market_id)
-            ))
+            renderText(
+              market_ids?.length
+                ? market_ids?.map((market_id) => (
+                  getName(market_id)
+                ))
+                : ''
+            )
           }
         </Flex>
       ),
@@ -86,9 +93,15 @@ export default function Languages () {
   return (
     <Page
       header={
-        <Button type={'primary'}>{t('添加语言')}</Button>
+        <Button
+          onClick={() => { openInfo.edit(list?.data?.map(i => i.language)) }}
+          style={{ position: 'relative', top: 2 }}
+          type={'primary'}
+        >
+          {t('添加语言')}
+        </Button>
       }
-      loading={list.loading || countries.loading || markets.loading || languages.loading}
+      loading={list.loading || countries.loading || markets.loading}
       title={t('语言')}
       width={700}
     >
@@ -97,6 +110,8 @@ export default function Languages () {
       >
         <STable borderless className={'table-border'} init data={list?.data || []} columns={columns} />
       </SCard>
+
+      <AddLanguage onFresh={list.refresh} openInfo={openInfo} />
     </Page>
   )
 }

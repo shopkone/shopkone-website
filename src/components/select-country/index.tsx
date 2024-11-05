@@ -6,6 +6,7 @@ import { Input, Tree, TreeDataNode } from 'antd'
 
 import { CountriesRes, useCountries, ZoneListOut } from '@/api/base/countries'
 import SLoading from '@/components/s-loading'
+import useBoxShadow from '@/hooks/use-boxshadow'
 
 import styles from './index.module.less'
 // @ts-expect-error
@@ -28,7 +29,8 @@ export default function SelectCountry (props: SelectCountryProps) {
   const [expandedKeys, setExpandedKeys] = useState<string[]>([])
   const workerRef = useRef<Worker>()
   const [filteredTree, setFilteredTree] = useState<TreeDataNode[]>([])
-
+  const ref = useRef<HTMLDivElement>(null)
+  const boxStyle = useBoxShadow(ref)
   const getZones = useMemoizedFn((zone: ZoneListOut, countryCode: string) => {
     const { code, name } = zone
     const realCode = `${countryCode}_____${code}`
@@ -84,7 +86,7 @@ export default function SelectCountry (props: SelectCountryProps) {
   return (
     <SLoading loading={countries.loading || (!filteredTree?.length && !searchKey)}>
       <div className={styles.container} style={{ border: borderless ? 'none' : undefined }}>
-        <div style={{ padding: '0 12px' }}>
+        <div style={{ padding: '12px', ...boxStyle, zIndex: 2, position: 'relative' }}>
           <Input
             prefix={<IconSearch size={14} style={{ position: 'relative', top: 1 }} />}
             placeholder={t('搜索国家/地区')}
@@ -94,6 +96,7 @@ export default function SelectCountry (props: SelectCountryProps) {
           />
         </div>
         <div className={styles.tree} style={{ height }}>
+          <div ref={ref} />
           <Tree
             filterTreeNode={node => {
               if (!searchKey) return false
