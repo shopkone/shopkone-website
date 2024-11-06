@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { IconLanguage, IconTrash, IconWorld } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
-import { Button, Flex, Switch, Tooltip } from 'antd'
+import { Button, Flex, Switch, Tooltip, Typography } from 'antd'
 
 import { useCountries } from '@/api/base/countries'
 import { LanguageListApi, LanguageListRes } from '@/api/languages/list'
@@ -80,17 +80,17 @@ export default function Languages () {
       code: 'market_ids',
       name: 'market_ids',
       render: (market_ids: number[]) => (
-        <Flex>
+        <Typography.Text ellipsis={{ tooltip: true }}>
           {
             renderText(
               market_ids?.length
                 ? market_ids?.map((market_id) => (
                   getName(market_id)
-                ))
+                )).join('、')
                 : ''
             )
           }
-        </Flex>
+        </Typography.Text>
       ),
       width: 200
     },
@@ -149,6 +149,7 @@ export default function Languages () {
       <AddLanguage onFresh={list.refresh} openInfo={openInfo} />
 
       <MarketModal
+        languages={list.data || []}
         onFresh={list.refresh}
         openInfo={marketInfo}
         marketOptions={markets?.data || []}

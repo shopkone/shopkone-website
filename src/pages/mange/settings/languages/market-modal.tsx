@@ -4,6 +4,7 @@ import { useRequest } from 'ahooks'
 import { Checkbox, Flex } from 'antd'
 
 import { useCountries } from '@/api/base/countries'
+import { LanguageListRes } from '@/api/languages/list'
 import { LanguageBindItem, MarketBindLangApi } from '@/api/market/bing-lang'
 import { MarketOptionsRes } from '@/api/market/options'
 import { sMessage } from '@/components/s-message'
@@ -15,10 +16,11 @@ export interface MarketModalProps {
   openInfo: UseOpenType<{ marketIds: number[], languageId: number }>
   marketOptions: MarketOptionsRes[]
   onFresh: () => void
+  languages: LanguageListRes[]
 }
 
 export default function MarketModal (props: MarketModalProps) {
-  const { openInfo, marketOptions, onFresh } = props
+  const { openInfo, marketOptions, onFresh, languages } = props
   const { t } = useTranslation('settings', { keyPrefix: 'language' })
   const bindApi = useRequest(MarketBindLangApi, { manual: true })
   const [value, setValue] = useState<number[]>([])
@@ -46,7 +48,12 @@ export default function MarketModal (props: MarketModalProps) {
     return countries?.data?.find(c => c.code === market?.label)?.name
   }
 
+  const getDisabled = (id: number) => {
+    return true
+  }
+
   const onChange = (id: number) => {
+    if (getDisabled(id)) return
     setValue(value => {
       if (value.includes(id)) return value.filter(i => i !== id)
       return [...value, id]
@@ -78,7 +85,11 @@ export default function MarketModal (props: MarketModalProps) {
           {
               marketOptions?.map(i => (
                 <div onClick={() => { onChange(i.value) }} className={styles.item} key={i.value}>
-                  <Checkbox onChange={() => { onChange(i.value) }} checked={value.includes(i.value)}>
+                  <Checkbox
+                    disabled={getDisabled(i.value)}
+                    onChange={() => { onChange(i.value) }}
+                    checked={value.includes(i.value)}
+                  >
                     {getName(i.value)}
                   </Checkbox>
                 </div>
