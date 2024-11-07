@@ -9,12 +9,14 @@ import SCard from '@/components/s-card'
 import SRender from '@/components/s-render'
 import STable, { STableProps } from '@/components/s-table'
 import Status from '@/components/status'
+import { useOpen } from '@/hooks/useOpen'
 import ConnectDomain from '@/pages/mange/settings/domains/connect-domain'
 
 export default function Domains () {
   const { t } = useTranslation('settings', { keyPrefix: 'domains' })
 
   const list = useRequest(DomainListApi)
+  const openInfo = useOpen<string>()
 
   const domainListColumns: STableProps['columns'] = [
     {
@@ -69,7 +71,7 @@ export default function Domains () {
       <Flex vertical gap={16}>
         <SCard
           extra={
-            <Button type={'link'} size={'small'}>{t('连接已有域名')}</Button>
+            <Button onClick={() => { openInfo.edit() }} type={'link'} size={'small'}>{t('连接已有域名')}</Button>
           }
           title={t('域名列表')}
         >
@@ -140,7 +142,7 @@ export default function Domains () {
         </SCard>
       </Flex>
 
-      <ConnectDomain />
+      <ConnectDomain onFresh={() => { openInfo.close(); list.refresh() }} openInfo={openInfo} />
     </Page>
   )
 }
