@@ -10,7 +10,6 @@
     "style": "stylelint ./src/*/**.less --fix"
   },
   "dependencies": {
-    "@ant-design/icons": "^5.3.6",
     "@dnd-kit/core": "^6.1.0",
     "@dnd-kit/sortable": "^8.0.0",
     "@icon-park/react": "^1.4.2",

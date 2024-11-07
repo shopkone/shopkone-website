@@ -136,7 +136,8 @@ export default function Languages () {
           {t('添加语言')}
         </Button>
       }
-      loading={list.loading || countries.loading || markets.loading}
+      loadingHiddenBg
+      loading={list.loading || countries.loading || markets.loading || !list?.data?.length}
       title={t('语言')}
       width={700}
     >

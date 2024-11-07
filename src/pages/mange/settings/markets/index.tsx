@@ -88,7 +88,15 @@ export default function Markets () {
                         {t('主要市场')}
                       </SRender>
                       <SRender className={'tips'} render={!item.is_main}>
-                        {t('包含x个国家', { x: item.country_codes.length })}
+                        {
+                          item?.country_codes?.length === 1
+                            ? (
+                              <div>{getCountry(item.country_codes[0])?.name}</div>
+                              )
+                            : (
+                                t('包含x个国家', { x: item.country_codes.length })
+                              )
+                        }
                       </SRender>
                     </Flex>
                   </Flex>

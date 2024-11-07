@@ -58,7 +58,7 @@ function STable (props: STableProps) {
     loading = false,
     empty,
     borderless,
-    init = false,
+    init = true,
     page,
     actions,
     onRowClick,

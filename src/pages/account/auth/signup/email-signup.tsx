@@ -1,13 +1,13 @@
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { LoadingOutlined } from '@ant-design/icons'
 import { IconCircleCheckFilled } from '@tabler/icons-react'
 import { useCountDown, useMemoizedFn, useRequest } from 'ahooks'
-import { Button, ButtonProps, Flex, Form, Input, Progress, Spin } from 'antd'
+import { Button, ButtonProps, Flex, Form, Input, Progress } from 'antd'
 
 import { LoginApi } from '@/api/account/login'
 import { RegisterApi } from '@/api/account/register'
 import { SendCodeApi } from '@/api/account/send-code'
+import SLoading from '@/components/s-loading'
 import SRender from '@/components/s-render'
 import styles from '@/pages/account/index.module.less'
 import { setStorage, STORAGE_KEY } from '@/utils/storage-key'
@@ -124,9 +124,7 @@ export default function EmailSignup () {
                   （{Math.round(count / 1000)}s）
                 </SRender>
               </SRender>
-              <SRender render={send.loading}>
-                <Spin spinning={send.loading} indicator={<LoadingOutlined />} />
-              </SRender>
+              <SLoading loading={send.loading} size={24} />
             </Button>
           }
           maxLength={6}
