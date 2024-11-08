@@ -5,7 +5,6 @@ export interface LanguageListRes {
   language: string
   is_default: boolean
   markets: Array<{ market_id: number, is_default: boolean }>
-  is_active: boolean
 }
 
 export const LanguageListApi = async () => {

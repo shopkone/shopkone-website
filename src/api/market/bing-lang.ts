@@ -3,6 +3,7 @@ import { api } from '@/api/api'
 export interface LanguageBindItem {
   market_id: number
   language_id: number
+  is_default: number
 }
 
 export interface MarketBindLanReq {

@@ -2,21 +2,22 @@ import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import { useRequest } from 'ahooks'
-import { Button, Checkbox, Flex, Form, Input, Radio, Tooltip } from 'antd'
+import { Flex, Form, Input, Radio, Tooltip } from 'antd'
 import cloneDeep from 'lodash/cloneDeep'
+import isEqual from 'lodash/isEqual'
 
 import { useCountries } from '@/api/base/countries'
 import { DomainListApi, DomainStatus } from '@/api/domain/list'
 import { MarketUpDomainApi } from '@/api/domain/update'
-import { LanguageListApi, LanguageListRes } from '@/api/languages/list'
+import { LanguageListApi } from '@/api/languages/list'
+import { MarketBindLangApi } from '@/api/market/bing-lang'
 import { MarketInfoApi } from '@/api/market/info'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
 import { sMessage } from '@/components/s-message'
 import SRender from '@/components/s-render'
 import SSelect from '@/components/s-select'
-import STable, { STableProps } from '@/components/s-table'
-import Status from '@/components/status'
+import LanguagesItems from '@/pages/mange/settings/markets/languages/languages-items'
 import { isEqualHandle } from '@/utils/is-equal-handle'
 
 import styles from './index.module.less'
@@ -25,67 +26,25 @@ export default function MarketLanguages () {
   const { t } = useTranslation('settings', { keyPrefix: 'market' })
   const id = Number(useParams().id || 0)
   const languages = useRequest(LanguageListApi)
-  const languageList = languages?.data?.filter(i => i.is_active) || []
   const domainList = useRequest(async () => await DomainListApi({ status: [DomainStatus.ConnectSuccess] }))
   const info = useRequest(MarketInfoApi, { manual: true })
-  const { t: languageT } = useTranslation('language')
   const countries = useCountries()
   const countryList = countries?.data?.filter(c => info?.data?.country_codes?.includes(c.code))
   const [form] = Form.useForm()
   const mainDomain = domainList?.data?.find(d => d.is_main)
   const otherDomains = domainList?.data?.filter(d => !d.is_main)
   const update = useRequest(MarketUpDomainApi, { manual: true })
+  const bindLanguages = useRequest(MarketBindLangApi, { manual: true })
   const init = useRef<any>()
   const [isChange, setIsChange] = useState(false)
+  const [defaultLanguageId, setDefaultLangugaeId] = useState(0)
 
   const domain_type = Form.useWatch('domain_type', form)
-  const subDomainID = Form.useWatch('sub_domain_id', form)
-  const domainPrefix = Form.useWatch('domain_suffix', form)
-
-  const [selectedLanguages, setSelectedLanguages] = useState<number[]>([])
-
-  const columns: STableProps['columns'] = [
-    {
-      title: <div style={{ marginLeft: 32 }}>{t('语言')}</div>,
-      name: 'language',
-      code: 'language',
-      render: (language: string, row: LanguageListRes) => (
-        <Flex gap={16} align={'center'}>
-          <Tooltip title={languageList?.length === 1 ? t('至少启用一个语言') : undefined}>
-            <Checkbox disabled={languageList?.length === 1} checked={selectedLanguages.includes(row.id)} />
-          </Tooltip>
-          <Flex gap={8} align={'center'}>
-            {languageT(language)}
-            <SRender render={row.markets?.find(i => i.market_id === id)?.is_default}>
-              <Status type={'info'}>{t('默认')}</Status>
-            </SRender>
-          </Flex>
-        </Flex>
-      )
-    },
-    {
-      title: t('URL名称'),
-      name: 'language',
-      code: 'language',
-      render: (language: string) => {
-        if (domain_type === 1) {
-          return mainDomain?.domain
-        }
-        if (domain_type === 2) {
-          return `${subDomainID ? domainList?.data?.find(d => d.id === subDomainID)?.domain : ''}`
-        }
-        if (domain_type === 3) {
-          return `${mainDomain?.domain}/${language}-${domainPrefix || ''}`
-        }
-      }
-    }
-  ]
 
   const onValuesChange = (force?: boolean) => {
     const values = form.getFieldsValue(true)
-    if (!init.current || force === true) {
+    if (!init.current || force === true || !init.current?.language_ids?.length) {
       init.current = cloneDeep(values)
-      console.log(init.current, 'init.current')
       return
     }
     const isSame = isEqualHandle(values, init.current)
@@ -98,9 +57,26 @@ export default function MarketLanguages () {
   }
 
   const onOk = async () => {
-    await form.validateFields()
+    await form.validateFields().catch(err => {
+      const msg = err.errorFields?.[0]?.errors?.[0]
+      if (msg) {
+        sMessage.warning(msg)
+      }
+      throw new Error(err)
+    })
     const values = form.getFieldsValue()
+    // 语言是否更新
+    if (!isEqual(values?.language_ids, init?.current?.language_ids)) {
+      const bind = values?.language_ids?.filter((i: number) => {
+        return !init?.current?.language_ids?.includes(i)
+      })?.map((i: number) => ({ market_id: id, language_id: i, is_default: i === 88 })) || []
+      const unBind = init?.current?.language_ids?.filter((i: number) => {
+        return !values?.language_ids?.includes(i)
+      })?.map((i: number) => ({ market_id: id, language_id: i })) || []
+      await bindLanguages.runAsync({ un_bind: unBind, bind })
+    }
     await update.runAsync({ id: Number(id), ...values })
+    await languages.refreshAsync()
     info.refresh()
     setIsChange(false)
     sMessage.success(t('更新成功'))
@@ -125,18 +101,12 @@ export default function MarketLanguages () {
     onValuesChange(true)
   }, [info.data])
 
-  useEffect(() => {
-    if (!languageList?.length || !info?.data) return
-    const selected = languageList?.filter(i => i.markets?.map(i => i.market_id)?.includes(id))
-    setSelectedLanguages(selected?.map(i => i.id))
-  }, [languageList?.length, info?.data])
-
   return (
     <Page
       onOk={onOk}
       isChange={isChange}
       onCancel={onCancel}
-      loading={!info.data?.id || !countries?.data?.length || !domainList.data?.length || !languages.data?.length}
+      loading={!info.data?.id || !countries?.data?.length || !domainList.data?.length || !languages.data?.length || languages?.loading || info?.loading}
       loadingHiddenBg
       back={`/settings/markets/change/${id}`}
       title={
@@ -158,12 +128,12 @@ export default function MarketLanguages () {
       }
       width={700}
     >
-      <Flex vertical gap={16}>
-        <SCard
-          tips={t('你可以在域名设置上管理主域名及子域名')}
-          title={t('域名')}
-        >
-          <Form onValuesChange={onValuesChange} form={form}>
+      <Form onValuesChange={onValuesChange} form={form}>
+        <Flex vertical gap={16}>
+          <SCard
+            tips={t('你可以在域名设置上管理主域名及子域名')}
+            title={t('域名')}
+          >
             <Form.Item name={'domain_type'} style={{ marginBottom: 12 }}>
               <Radio.Group options={[{ value: 1, label: t('使用主域名') }]} />
             </Form.Item>
@@ -211,27 +181,23 @@ export default function MarketLanguages () {
                 </Form.Item>
               </SRender>
             </SRender>
+          </SCard>
 
-          </Form>
-        </SCard>
-
-        <SCard
-          tips={t('选择要在此市场中为客户提供的语言，你可以在商店语言上管理这些内容')}
-          title={t('语言')}
-          extra={
-            <SRender render={languageList?.length !== 1}>
-              <Button type={'link'} size={'small'}>{t('切换默认语言')}</Button>
-            </SRender>
-          }
-        >
-          <STable
-            borderless
-            className={'table-border'}
-            columns={columns}
-            data={languageList}
-          />
-        </SCard>
-      </Flex>
+          <Form.Item
+            rules={[{ required: true, message: t('至少选择一种语言') }]}
+            className={'mb0'}
+            name={'language_ids'}
+          >
+            <LanguagesItems
+              defaultLanguageId={defaultLanguageId}
+              setDefaultLangugaeId={setDefaultLangugaeId}
+              languages={languages.data || []}
+              mainDomain={mainDomain}
+              domainList={domainList?.data || []}
+            />
+          </Form.Item>
+        </Flex>
+      </Form>
     </Page>
   )
 }

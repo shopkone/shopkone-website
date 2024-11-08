@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { IconDots, IconLanguage, IconWorld } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
-import { Button, Flex, Popover, Switch, Tooltip, Typography } from 'antd'
+import { Button, Flex, Popover, Tooltip, Typography } from 'antd'
 
 import { useCountries } from '@/api/base/countries'
 import { LanguageListApi, LanguageListRes } from '@/api/languages/list'
@@ -57,9 +57,7 @@ export default function Languages () {
       code: 'is_active',
       name: 'is_active',
       render: (is_active: boolean) => (
-        <Tooltip title={t('已启用')}>
-          <Switch checked={is_active} size={'small'} />
-        </Tooltip>
+        123
       ),
       width: 45
     },
@@ -134,13 +132,15 @@ export default function Languages () {
               </Flex>
             }
           >
-            <IconButton
-              style={{ backgroundColor: openMore === id ? '#cccccc' : undefined }}
-              size={24}
-              type={'text'}
-            >
-              <IconDots size={15} />
-            </IconButton>
+            <SRender render={!row.is_default}>
+              <IconButton
+                style={{ backgroundColor: openMore === id ? '#cccccc' : undefined }}
+                size={24}
+                type={'text'}
+              >
+                <IconDots size={15} />
+              </IconButton>
+            </SRender>
           </Popover>
         </Flex>
       ),

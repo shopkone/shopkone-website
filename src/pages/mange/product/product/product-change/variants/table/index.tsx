@@ -62,11 +62,18 @@ export default function Table (props: TableProps) {
   const renderTable = useMemo(() => {
     if (!ColumnSettings) return false
     if (!columns?.length) return false
+    if (!variants?.length || variants?.length === 1) return true
+    console.log(groupName && !groupVariants?.length, 'groupName && !groupVariants?.length')
     if (groupName && !groupVariants?.length) return false
+    console.log(variants?.length && !groupVariants?.length, 'variants?.length && !groupVariants?.length')
     if (variants?.length && !groupVariants?.length) return false
+    console.log(variants?.length && !groupVariants?.length, 'variants?.length && !groupVariants?.length')
     if (groupName && !groupVariants?.[0]?.children?.length) return false
+    console.log(variants?.[0]?.name?.length > 1 && !groupName, 'variants?.[0]?.name?.length > 1 && !groupName')
     if (variants?.[0]?.name?.length > 1 && !groupName) return false
+    console.log(Number(variants?.[0]?.name?.length || 0) !== options.length, 'Number(variants?.[0]?.name?.length || 0) !== options.length')
     if (Number(variants?.[0]?.name?.length || 0) !== options.length) return false
+    console.log(id && !variants?.length, 'id && !variants?.length')
     if (id && !variants?.length) return false
     return true
   }, [groupVariants, groupName, columns, variants, ColumnSettings, locationId, options])
