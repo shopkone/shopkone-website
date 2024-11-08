@@ -7,6 +7,10 @@ export enum DomainStatus {
   Disconnect // 连接断开
 }
 
+export interface DomainListReq {
+  status?: DomainStatus[]
+}
+
 export interface DomainListRes {
   id: number
   status: DomainStatus
@@ -15,6 +19,6 @@ export interface DomainListRes {
   domain: string
 }
 
-export const DomainListApi = async () => {
-  return await api<DomainListRes[]>('/domain/list')
+export const DomainListApi = async (params: DomainListReq) => {
+  return await api<DomainListRes[]>('/domain/list', params)
 }

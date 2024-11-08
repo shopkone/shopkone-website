@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import {
   IconChevronDown,
   IconChevronRight,
@@ -32,6 +32,7 @@ export default function MarketChange () {
   const countryList = countries?.data?.filter(c => info?.data?.country_codes?.includes(c.code))
   const { t } = useTranslation('settings', { keyPrefix: 'market' })
   const openEdit = useOpen<MarketInfoRes>()
+  const nav = useNavigate()
 
   const options = [
     { label: t('今天'), value: 1 },
@@ -86,7 +87,12 @@ export default function MarketChange () {
 
         <SCard tips={t('仅管理你的商店在此市场中的客户体验')} title={t('市场设置')}>
           <div className={styles.container}>
-            <Flex align={'center'} justify={'space-between'} className={styles.item}>
+            <Flex
+              onClick={() => { nav(`/settings/markets/languages/${id}`) }}
+              align={'center'}
+              justify={'space-between'}
+              className={styles.item}
+            >
               <Flex gap={16} align={'center'} justify={'space-between'}>
                 <IconLanguage size={18} />
                 <Flex vertical gap={2}>

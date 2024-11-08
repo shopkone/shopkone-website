@@ -65,7 +65,13 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
   const paymentTerms = getPaymentTerms(t)
 
   const onOk = async () => {
-    await form.validateFields()
+    await form.validateFields().catch(err => {
+      const msg = err.errorFields?.[0]?.errors?.[0]
+      if (msg) {
+        sMessage.warning(msg)
+      }
+      throw new Error(err)
+    })
     const { estimated_arrival, ...rest } = form.getFieldsValue()
     const values = {
       ...rest,
@@ -337,7 +343,7 @@ export default function PurchaseChangeInner (props: PurchaseChangeInnerProps) {
           </Flex>
         </SCard>
 
-        <Form.Item name={'purchase_items'}>
+        <Form.Item rules={[{ required: true, message: t('请选择商品') }]} name={'purchase_items'}>
           <Products status={info?.data?.status} infoMode={isReadMode} />
         </Form.Item>
 

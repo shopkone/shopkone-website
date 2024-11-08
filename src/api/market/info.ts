@@ -9,6 +9,9 @@ export interface MarketInfoRes {
   is_main: boolean
   name: string
   country_codes: string[]
+  domain_type: number
+  domain_suffix: string
+  sub_domain_id: number
 }
 
 export const MarketInfoApi = async (params: MarketInfoReq) => {
