@@ -13,7 +13,8 @@ export default function IconButton (props: IconButtonProps) {
       style={{
         padding: 0,
         width: size,
-        height: size
+        height: size,
+        ...rest.style
       }}
     >
       <Flex align={'center'} justify={'center'}>{children}</Flex>

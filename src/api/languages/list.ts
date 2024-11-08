@@ -4,7 +4,7 @@ export interface LanguageListRes {
   id: number
   language: string
   is_default: boolean
-  market_ids: number[]
+  markets: Array<{ market_id: number, is_default: boolean }>
   is_active: boolean
 }
 

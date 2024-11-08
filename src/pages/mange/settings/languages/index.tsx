@@ -1,7 +1,8 @@
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { IconLanguage, IconTrash, IconWorld } from '@tabler/icons-react'
+import { IconDots, IconLanguage, IconWorld } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
-import { Button, Flex, Switch, Tooltip, Typography } from 'antd'
+import { Button, Flex, Popover, Switch, Tooltip, Typography } from 'antd'
 
 import { useCountries } from '@/api/base/countries'
 import { LanguageListApi, LanguageListRes } from '@/api/languages/list'
@@ -26,6 +27,7 @@ export default function Languages () {
   const markets = useRequest(MarketOptionsApi)
   const countries = useCountries()
   const modal = useModal()
+  const [openMore, setOpenMore] = useState<number>(0)
 
   const openInfo = useOpen<string[]>([])
   const marketInfo = useOpen<{ marketIds: number[], languageId: number }>()
@@ -77,15 +79,15 @@ export default function Languages () {
     },
     {
       title: t('对应市场'),
-      code: 'market_ids',
+      code: 'markets',
       name: 'market_ids',
-      render: (market_ids: number[]) => (
+      render: (markets: LanguageListRes['markets']) => (
         <Typography.Text ellipsis={{ tooltip: true }}>
           {
             renderText(
-              market_ids?.length
-                ? market_ids?.map((market_id) => (
-                  getName(market_id)
+              markets?.length
+                ? markets?.map((market) => (
+                  getName(market.market_id)
                 )).join('、')
                 : ''
             )
@@ -108,17 +110,38 @@ export default function Languages () {
           <Tooltip title={t('配置到市场')}>
             <IconButton
               onClick={() => {
-                marketInfo.edit({ languageId: row.id, marketIds: row.market_ids })
+                marketInfo.edit({ languageId: row.id, marketIds: row.markets?.map(i => i.market_id) })
               }} size={24} type={'text'}
             >
               <IconWorld size={15} />
             </IconButton>
           </Tooltip>
-          <SRender render={(list?.data?.length || 0) > 0}>
-            <IconButton onClick={async () => { await onRemove(id) }} size={24} type={'text'}>
-              <IconTrash size={15} />
+          <Popover
+            open={openMore === id}
+            onOpenChange={() => { setOpenMore(openMore ? 0 : id) }}
+            overlayInnerStyle={{ minWidth: 100 }}
+            placement={'bottom'}
+            trigger={'click'}
+            arrow={false}
+            content={
+              <Flex onClick={() => { setOpenMore(0) }} vertical>
+                <Button type={'text'}>
+                  <Flex justify={'flex-start'} flex={1}>{t('设置为默认语言')}</Flex>
+                </Button>
+                <Button style={{ fontWeight: 550 }} type={'text'} danger onClick={async () => { await onRemove(id) }} >
+                  <Flex justify={'flex-start'} flex={1}>{t('删除语言')}</Flex>
+                </Button>
+              </Flex>
+            }
+          >
+            <IconButton
+              style={{ backgroundColor: openMore === id ? '#cccccc' : undefined }}
+              size={24}
+              type={'text'}
+            >
+              <IconDots size={15} />
             </IconButton>
-          </SRender>
+          </Popover>
         </Flex>
       ),
       width: (list?.data?.length || 0) > 0 ? 100 : 80

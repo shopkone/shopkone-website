@@ -56,7 +56,9 @@ export default function MarketLanguages () {
           </Tooltip>
           <Flex gap={8} align={'center'}>
             {languageT(language)}
-            <Status type={'info'}>{t('默认')}</Status>
+            <SRender render={row.markets?.find(i => i.market_id === id)?.is_default}>
+              <Status type={'info'}>{t('默认')}</Status>
+            </SRender>
           </Flex>
         </Flex>
       )
@@ -80,9 +82,10 @@ export default function MarketLanguages () {
   ]
 
   const onValuesChange = (force?: boolean) => {
-    const values = form.getFieldsValue()
+    const values = form.getFieldsValue(true)
     if (!init.current || force === true) {
       init.current = cloneDeep(values)
+      console.log(init.current, 'init.current')
       return
     }
     const isSame = isEqualHandle(values, init.current)
@@ -118,15 +121,15 @@ export default function MarketLanguages () {
 
   useEffect(() => {
     if (!info.data) return
-    onValuesChange(true)
     form.setFieldsValue(info.data)
+    onValuesChange(true)
   }, [info.data])
 
   useEffect(() => {
     if (!languageList?.length || !info?.data) return
-    const selected = languageList?.filter(i => i.market_ids?.includes(id))
+    const selected = languageList?.filter(i => i.markets?.map(i => i.market_id)?.includes(id))
     setSelectedLanguages(selected?.map(i => i.id))
-  }, [languageList, info?.data])
+  }, [languageList?.length, info?.data])
 
   return (
     <Page
@@ -164,42 +167,51 @@ export default function MarketLanguages () {
             <Form.Item name={'domain_type'} style={{ marginBottom: 12 }}>
               <Radio.Group options={[{ value: 1, label: t('使用主域名') }]} />
             </Form.Item>
-            <SRender render={domain_type === 1} style={{ marginLeft: 24, marginTop: -12, marginBottom: 12 }}>
+            <SRender render={domain_type === 1} style={{ marginLeft: 24, marginTop: -12, marginBottom: info?.data?.is_main ? 0 : 12 }}>
               {mainDomain?.domain}
             </SRender>
 
-            <Form.Item
-              name={'domain_type'}
-              extra={<div style={{ marginLeft: 24, marginTop: -4 }}>{t('子域名提示')}</div>}
-              style={{ marginBottom: 12 }}
-            >
-              <Radio.Group options={[{ value: 2, label: t('使用子域名'), disabled: otherDomains?.length === 0 }]} />
-            </Form.Item>
-            <Form.Item name={'sub_domain_id'} style={{ marginLeft: 24, marginTop: -8, marginBottom: 12, display: domain_type === 2 ? 'block' : 'none' }}>
-              <SSelect options={otherDomains?.map(i => ({ label: i.domain, value: i.id }))} />
-            </Form.Item>
+            <SRender render={!info?.data?.is_main}>
+              <Form.Item
+                name={'domain_type'}
+                extra={<div style={{ marginLeft: 24, marginTop: -4 }}>{t('子域名提示')}</div>}
+                style={{ marginBottom: 12 }}
+              >
+                <Radio.Group options={[{ value: 2, label: t('使用子域名'), disabled: otherDomains?.length === 0 }]} />
+              </Form.Item>
+              <SRender render={domain_type === 2}>
+                <Form.Item name={'sub_domain_id'} style={{ marginLeft: 24, marginTop: -8, marginBottom: 12 }}>
+                  <SSelect options={otherDomains?.map(i => ({ label: i.domain, value: i.id }))} />
+                </Form.Item>
+              </SRender>
+            </SRender>
 
-            <Form.Item
-              name={'domain_type'}
-              extra={<div style={{ marginLeft: 24, marginTop: -4 }}>{t('子文件夹提示')}</div>}
-              style={{ marginBottom: 12 }}
-            >
-              <Radio.Group options={[{ value: 3, label: t('设置子文件夹') }]} />
-            </Form.Item>
-            <Form.Item
-              name={'domain_suffix'}
-              rules={[
-                {
-                  required: true,
-                  message: t('请输入子文件夹')
-                }, {
-                  pattern: /^[a-zA-Z]+$/,
-                  message: t('后缀只能包含字母')
-                }]}
-              style={{ marginLeft: 24, marginTop: -8, marginBottom: 12, display: domain_type === 3 ? 'block' : 'none' }}
-            >
-              <Input autoComplete={'off'} prefix={'/'} />
-            </Form.Item>
+            <SRender render={!info?.data?.is_main}>
+              <Form.Item
+                name={'domain_type'}
+                extra={<div style={{ marginLeft: 24, marginTop: -4 }}>{t('子文件夹提示')}</div>}
+                style={{ marginBottom: 12 }}
+              >
+                <Radio.Group options={[{ value: 3, label: t('设置子文件夹') }]} />
+              </Form.Item>
+              <SRender render={domain_type === 3}>
+                <Form.Item
+                  name={'domain_suffix'}
+                  rules={[
+                    {
+                      required: true,
+                      message: t('请输入后缀')
+                    }, {
+                      pattern: /^[a-zA-Z]+$/,
+                      message: t('后缀只能包含字母')
+                    }]}
+                  style={{ marginLeft: 24, marginTop: -8, marginBottom: 12 }}
+                >
+                  <Input autoComplete={'off'} prefix={'/'} />
+                </Form.Item>
+              </SRender>
+            </SRender>
+
           </Form>
         </SCard>
 
