@@ -32,8 +32,8 @@ export default function Languages () {
   const openInfo = useOpen<string[]>([])
   const marketInfo = useOpen<{ marketIds: number[], languageId: number }>()
 
-  const getName = (marketId: number) => {
-    const market = markets?.data?.find(m => m.value === marketId)
+  const getName = (marketName: string) => {
+    const market = markets?.data?.find(m => m.label === marketName)
     if (!market) return '--'
     if (!market.is_main) return market?.label
     return countries?.data?.find(c => c.code === market?.label)?.name
@@ -79,15 +79,15 @@ export default function Languages () {
     },
     {
       title: t('对应市场'),
-      code: 'markets',
-      name: 'market_ids',
-      render: (markets: LanguageListRes['markets']) => (
+      code: 'market_names',
+      name: 'market_names',
+      render: (market_names: string[]) => (
         <Typography.Text ellipsis={{ tooltip: true }}>
           {
             renderText(
-              markets?.length
-                ? markets?.map((market) => (
-                  getName(market.market_id)
+              market_names?.length
+                ? market_names?.map((name) => (
+                  getName(name)
                 )).join('、')
                 : ''
             )
@@ -107,9 +107,6 @@ export default function Languages () {
               style={{ padding: '0 4px', fontWeight: 400 }}
               type={'text'}
               size={'small'}
-              onClick={() => {
-                marketInfo.edit({ languageId: row.id, marketIds: row.markets?.map(i => i.market_id) })
-              }}
             >
               <IconLanguage size={15} />
             </Button>
@@ -120,7 +117,10 @@ export default function Languages () {
               type={'text'}
               size={'small'}
               onClick={() => {
-                marketInfo.edit({ languageId: row.id, marketIds: row.markets?.map(i => i.market_id) })
+                const currentMarketIds = markets?.data
+                  ?.filter(i => i.language_ids?.includes(row.id))
+                  ?.map(i => i.value) || []
+                marketInfo.edit({ languageId: row.id, marketIds: currentMarketIds })
               }}
             >
               <IconWorld size={15} />
@@ -185,8 +185,10 @@ export default function Languages () {
       <AddLanguage onFresh={list.refresh} openInfo={openInfo} />
 
       <MarketModal
-        languages={list.data || []}
-        onFresh={list.refresh}
+        onFresh={() => {
+          list.refresh()
+          markets.refresh()
+        }}
         openInfo={marketInfo}
         marketOptions={markets?.data || []}
       />

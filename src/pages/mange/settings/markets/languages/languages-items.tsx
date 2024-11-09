@@ -6,6 +6,7 @@ import { Button, Checkbox, Flex, Form, Tooltip } from 'antd'
 
 import { DomainListRes } from '@/api/domain/list'
 import { LanguageListRes } from '@/api/languages/list'
+import { MarketInfoRes } from '@/api/market/info'
 import { MarketOptionsApi } from '@/api/market/options'
 import SCard from '@/components/s-card'
 import SRender from '@/components/s-render'
@@ -22,10 +23,11 @@ export interface LanguagesItemsProps {
   onChange?: (v: number[]) => void
   defaultLanguageId: number
   setDefaultLangugaeId: (v: number) => void
+  info?: MarketInfoRes
 }
 
 export default function LanguagesItems (props: LanguagesItemsProps) {
-  const { languages, mainDomain, domainList, value = [], onChange, defaultLanguageId, setDefaultLangugaeId } = props
+  const { languages, mainDomain, domainList, value = [], onChange, defaultLanguageId, setDefaultLangugaeId, info } = props
   const form = Form.useFormInstance()
   const subDomainID = Form.useWatch('sub_domain_id', form)
   const domainPrefix = Form.useWatch('domain_suffix', form)
@@ -98,28 +100,19 @@ export default function LanguagesItems (props: LanguagesItemsProps) {
   ]
 
   useEffect(() => {
-    if (!languages?.length) return
-    const selected = languages?.filter(i => i.markets?.map(i => i.market_id)?.includes(id))
-    onChange?.(selected?.map(i => i.id))
-  }, [languages])
+    if (!info) return
+    onChange?.(info?.language_ids)
+  }, [info])
 
   useEffect(() => {
+    if (!mainMarket || !value?.length) return
     if (justUseMainConfig) {
       oldValue.current = {
         defaultLanguageId,
         value
       }
-      let defaultMainLanguageID = 0
-      const mainMarketLanguages = languages?.filter(i => {
-        return i.markets.find(ii => {
-          if (ii.market_id === mainMarket?.value && ii.is_default) {
-            defaultMainLanguageID = i.id
-          }
-          return ii.market_id === mainMarket?.value
-        })
-      })
-      setDefaultLangugaeId(defaultMainLanguageID)
-      onChange?.(mainMarketLanguages?.map(i => i.id))
+      setDefaultLangugaeId(mainMarket.default_language_id)
+      onChange?.(mainMarket.language_ids)
       // 如果不是主市场且用了主域名，则使用主域名的配置
     } else {
       if (oldValue.current) {

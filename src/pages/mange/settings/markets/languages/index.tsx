@@ -9,8 +9,8 @@ import { useCountries } from '@/api/base/countries'
 import { DomainListApi, DomainStatus } from '@/api/domain/list'
 import { MarketUpDomainApi } from '@/api/domain/update'
 import { LanguageListApi } from '@/api/languages/list'
-import { LangBindByMarketIdApi } from '@/api/market/bind-by-marketId'
 import { MarketInfoApi } from '@/api/market/info'
+import { UpdateMarketLangApi } from '@/api/market/update-market-lang'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
 import { sMessage } from '@/components/s-message'
@@ -33,9 +33,8 @@ export default function MarketLanguages () {
   const mainDomain = domainList?.data?.find(d => d.is_main)
   const otherDomains = domainList?.data?.filter(d => !d.is_main)
   const update = useRequest(MarketUpDomainApi, { manual: true })
-  const bindLanguages = useRequest(LangBindByMarketIdApi, { manual: true })
+  const updateMarketLang = useRequest(UpdateMarketLangApi, { manual: true })
   const init = useRef<any>()
-  const initDefault = useRef(0)
   const [isChange, setIsChange] = useState(false)
   const [defaultLanguageId, setDefaultLangugaeId] = useState(0)
 
@@ -65,11 +64,10 @@ export default function MarketLanguages () {
       throw new Error(err)
     })
     const values = form.getFieldsValue()
-    await bindLanguages.runAsync({ language_ids: values?.language_ids, market_id: id, default_language_id: defaultLanguageId })
+    await updateMarketLang.runAsync({ language_ids: values?.language_ids, id, default_language_id: defaultLanguageId })
     await update.runAsync({ id: Number(id), ...values })
     await languages.refreshAsync()
     await info.refreshAsync()
-    initDefault.current = defaultLanguageId
     setIsChange(false)
     sMessage.success(t('更新成功'))
   }
@@ -95,15 +93,13 @@ export default function MarketLanguages () {
 
   useEffect(() => {
     if (!languages?.data?.length) return
-    const defaultLang = languages?.data?.find(ii => ii.markets?.find(o => o.market_id === id)?.is_default)?.id
-    setDefaultLangugaeId(defaultLang || 0)
-    initDefault.current = defaultLang || 0
+    setDefaultLangugaeId(info?.data?.default_language_id || 0)
   }, [languages?.loading])
 
   return (
     <Page
       onOk={onOk}
-      isChange={isChange || defaultLanguageId !== initDefault.current}
+      isChange={isChange || defaultLanguageId !== info?.data?.default_language_id}
       onCancel={onCancel}
       loading={!info.data?.id || !countries?.data?.length || !domainList.data?.length || !languages.data?.length || languages?.loading || info?.loading}
       loadingHiddenBg
@@ -188,6 +184,7 @@ export default function MarketLanguages () {
             name={'language_ids'}
           >
             <LanguagesItems
+              info={info.data}
               defaultLanguageId={defaultLanguageId}
               setDefaultLangugaeId={setDefaultLangugaeId}
               languages={languages.data || []}
