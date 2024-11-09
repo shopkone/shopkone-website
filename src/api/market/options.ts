@@ -6,6 +6,7 @@ export interface MarketOptionsRes {
   is_main: boolean
   language_ids: number[]
   default_language_id: number
+  domain_type: number
 }
 
 export const MarketOptionsApi = async () => {

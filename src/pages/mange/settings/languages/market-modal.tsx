@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useRequest } from 'ahooks'
 import { Checkbox, Flex, Tooltip } from 'antd'
+import classNames from 'classnames'
 
 import { useCountries } from '@/api/base/countries'
 import { MarketOptionsRes } from '@/api/market/options'
@@ -42,8 +43,12 @@ export default function MarketModal (props: MarketModalProps) {
   }
 
   const getDisabled = (marketId: number): string => {
-    // 如果只有一个语言且当前为启用，则不允许处理，并返回提示
     const item = marketOptions?.find(m => m.value === marketId)
+    // 如果是主域名，但不是是此次，不想可以处理
+    if (!item?.is_main && item?.domain_type === 1) {
+      return t('使用主域名时，默认使用主市场的语言设置')
+    }
+    // 如果只有一个语言且当前为启用，则不允许处理，并返回提示
     if (item?.language_ids?.length === 1 && item?.language_ids[0] === openInfo.data?.languageId) {
       return t('市场至少包含一种语言')
     }
@@ -52,10 +57,18 @@ export default function MarketModal (props: MarketModalProps) {
 
   const onChange = (id: number) => {
     if (getDisabled(id)) return
-    setValue(value => {
-      if (value.includes(id)) return value.filter(i => i !== id)
-      return [...value, id]
-    })
+    console.log(123)
+    let newValue = value?.includes(id) ? value.filter(i => i !== id) : [...value, id]
+    const item = marketOptions?.find(m => m.value === id)
+    if (item?.is_main) {
+      const mainDomainButNoMainMarketId = marketOptions?.filter(m => !m.is_main && m.domain_type === 1)?.map(i => i.value)
+      if (newValue?.includes(id)) {
+        newValue = [...newValue, ...mainDomainButNoMainMarketId]
+      } else {
+        newValue = newValue.filter(i => !mainDomainButNoMainMarketId?.includes(i)) || []
+      }
+    }
+    setValue([...new Set(newValue)])
   }
 
   useEffect(() => {
@@ -82,23 +95,22 @@ export default function MarketModal (props: MarketModalProps) {
         <Flex vertical>
           {
               marketOptions?.map(i => (
-                <Tooltip key={i.value} title={getDisabled(i.value)} placement={'topLeft'}>
-                  <div
+                <Tooltip key={i.value} title={getDisabled(i.value)}>
+                  <Flex
+                    gap={8}
+                    align={'center'}
                     onClick={() => {
                       onChange(i.value)
                     }}
-                    className={styles.item}
+                    className={classNames(styles.item, { [styles.itemDisabled]: getDisabled(i.value) })}
                   >
                     <Checkbox
+                      onChange={() => { onChange(i.value) }}
                       disabled={!!getDisabled(i.value)}
-                      onChange={() => {
-                        onChange(i.value)
-                      }}
                       checked={value.includes(i.value)}
-                    >
-                      {getName(i.value)}
-                    </Checkbox>
-                  </div>
+                    />
+                    {getName(i.value)}
+                  </Flex>
                 </Tooltip>
               ))
           }

@@ -51,7 +51,7 @@ export default function LanguagesItems (props: LanguagesItemsProps) {
   }
 
   const getCheckBoxTips = () => {
-    if (languages?.length === 1) return t('请至少启用一个语言')
+    if (languages?.length === 1) return t('至少启用一种语言')
     if (justUseMainConfig) return t('使用主域名时，默认使用主市场的语言设置，可前往主市场 变更语言')
   }
 
