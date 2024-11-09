@@ -5,7 +5,7 @@ import { Checkbox, Flex } from 'antd'
 
 import { useCountries } from '@/api/base/countries'
 import { LanguageListRes } from '@/api/languages/list'
-import { LanguageBindItem, MarketBindLangApi } from '@/api/market/bing-lang'
+import { MarketBindLangByLangIdApi } from '@/api/market/bind-by-langId'
 import { MarketOptionsRes } from '@/api/market/options'
 import { sMessage } from '@/components/s-message'
 import SModal from '@/components/s-modal'
@@ -22,20 +22,13 @@ export interface MarketModalProps {
 export default function MarketModal (props: MarketModalProps) {
   const { openInfo, marketOptions, onFresh, languages } = props
   const { t } = useTranslation('settings', { keyPrefix: 'language' })
-  const bindApi = useRequest(MarketBindLangApi, { manual: true })
+  const bindApi = useRequest(MarketBindLangByLangIdApi, { manual: true })
   const [value, setValue] = useState<number[]>([])
   const countries = useCountries()
 
   const onOk = async () => {
     if (!openInfo.data?.languageId) return
-    const oldMarketIds = openInfo.data?.marketIds
-    const bind: LanguageBindItem[] = value.filter(i => !oldMarketIds?.includes(i)).map(i => {
-      return { market_id: i, language_id: openInfo.data?.languageId || 0 }
-    })
-    const unBind: LanguageBindItem[] = oldMarketIds?.filter(i => !value.includes(i))?.map(i => {
-      return { market_id: i, language_id: openInfo.data?.languageId || 0 }
-    })
-    await bindApi.runAsync({ bind, un_bind: unBind })
+    await bindApi.runAsync({ language_id: openInfo.data.languageId, market_ids: value })
     sMessage.success(t('配置成功'))
     onFresh()
     openInfo.close()
@@ -49,7 +42,7 @@ export default function MarketModal (props: MarketModalProps) {
   }
 
   const getDisabled = (id: number) => {
-    return true
+    return false
   }
 
   const onChange = (id: number) => {

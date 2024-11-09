@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { Form, Radio } from 'antd'
-import SCard from '@/components/s-card'
 
+import SCard from '@/components/s-card'
 import { useInventoryPolicyOptions } from '@/constant/product'
 import TrackType from '@/pages/mange/product/product/product-change/variants-settings/track-type'
 import TypeChanger from '@/pages/mange/product/product/product-change/variants-settings/type-changer'
@@ -16,7 +16,7 @@ export default function VariantsSettings () {
   const inventoryTracking = Form.useWatch('inventory_tracking', form)
 
   return (
-    <SCard 
+    <SCard
       className={styles.container}
       style={{ height: inventoryTracking ? 230 : 135 }}
       title={t('款式设置')}
