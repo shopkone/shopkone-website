@@ -68,7 +68,8 @@ export default function MarketLanguages () {
     await bindLanguages.runAsync({ language_ids: values?.language_ids, market_id: id, default_language_id: defaultLanguageId })
     await update.runAsync({ id: Number(id), ...values })
     await languages.refreshAsync()
-    info.refresh()
+    await info.refreshAsync()
+    initDefault.current = defaultLanguageId
     setIsChange(false)
     sMessage.success(t('更新成功'))
   }
@@ -95,7 +96,6 @@ export default function MarketLanguages () {
   useEffect(() => {
     if (!languages?.data?.length) return
     const defaultLang = languages?.data?.find(ii => ii.markets?.find(o => o.market_id === id)?.is_default)?.id
-    console.log({ defaultLang, a: languages?.data })
     setDefaultLangugaeId(defaultLang || 0)
     initDefault.current = defaultLang || 0
   }, [languages?.loading])

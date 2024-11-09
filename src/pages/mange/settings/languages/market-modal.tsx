@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useRequest } from 'ahooks'
-import { Checkbox, Flex } from 'antd'
+import { Checkbox, Flex, Tooltip } from 'antd'
 
 import { useCountries } from '@/api/base/countries'
 import { LanguageListRes } from '@/api/languages/list'
@@ -41,8 +41,13 @@ export default function MarketModal (props: MarketModalProps) {
     return countries?.data?.find(c => c.code === market?.label)?.name
   }
 
-  const getDisabled = (id: number) => {
-    return false
+  const getDisabled = (id: number): string => {
+    // 如果只有一个语言且当前为启用，则不允许处理，并返回提示
+    const language = languages?.filter(i => i.markets?.find(ii => ii.market_id === id))
+    if (language?.length === 1 && openInfo?.data?.languageId === language[0]?.id) {
+      return t('市场至少包含一种语言')
+    }
+    return ''
   }
 
   const onChange = (id: number) => {
@@ -77,17 +82,26 @@ export default function MarketModal (props: MarketModalProps) {
         <Flex vertical>
           {
               marketOptions?.map(i => (
-                <div onClick={() => { onChange(i.value) }} className={styles.item} key={i.value}>
-                  <Checkbox
-                    disabled={getDisabled(i.value)}
-                    onChange={() => { onChange(i.value) }}
-                    checked={value.includes(i.value)}
+                <Tooltip key={i.value} title={getDisabled(i.value)}>
+                  <div
+                    onClick={() => {
+                      onChange(i.value)
+                    }}
+                    className={styles.item}
                   >
-                    {getName(i.value)}
-                  </Checkbox>
-                </div>
+                    <Checkbox
+                      disabled={!!getDisabled(i.value)}
+                      onChange={() => {
+                        onChange(i.value)
+                      }}
+                      checked={value.includes(i.value)}
+                    >
+                      {getName(i.value)}
+                    </Checkbox>
+                  </div>
+                </Tooltip>
               ))
-            }
+          }
         </Flex>
       </div>
     </SModal>

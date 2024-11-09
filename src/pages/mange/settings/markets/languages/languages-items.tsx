@@ -1,10 +1,12 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
+import { useRequest } from 'ahooks'
 import { Button, Checkbox, Flex, Form, Tooltip } from 'antd'
 
 import { DomainListRes } from '@/api/domain/list'
 import { LanguageListRes } from '@/api/languages/list'
+import { MarketOptionsApi } from '@/api/market/options'
 import SCard from '@/components/s-card'
 import SRender from '@/components/s-render'
 import STable, { STableProps } from '@/components/s-table'
@@ -32,6 +34,11 @@ export default function LanguagesItems (props: LanguagesItemsProps) {
   const domain_type = Form.useWatch('domain_type', form)
   const id = Number(useParams().id || 0)
   const openInfo = useOpen<number>()
+  const marketOptions = useRequest(MarketOptionsApi)
+  const mainMarket = marketOptions.data?.find(i => i.is_main)
+  const justUseMainConfig = mainMarket?.value !== id && domain_type === 1
+
+  const oldValue = useRef<{ defaultLanguageId: number, value: number[] }>()
 
   const onChecked = (id: number) => {
     if (value.includes(id)) {
@@ -39,6 +46,11 @@ export default function LanguagesItems (props: LanguagesItemsProps) {
     } else {
       onChange?.([...value, id])
     }
+  }
+
+  const getCheckBoxTips = () => {
+    if (languages?.length === 1) return t('请至少启用一个语言')
+    if (justUseMainConfig) return t('使用主域名时，默认使用主市场的语言设置，可前往主市场 变更语言')
   }
 
   const columns: STableProps['columns'] = [
@@ -49,10 +61,10 @@ export default function LanguagesItems (props: LanguagesItemsProps) {
       render: (language: string, row: LanguageListRes) => (
         <Flex gap={16} align={'center'}>
           <div>
-            <Tooltip title={languages?.length === 1 ? t('至少启用一个语言') : undefined}>
+            <Tooltip title={getCheckBoxTips()}>
               <Checkbox
                 onChange={() => { onChecked(row.id) }}
-                disabled={languages?.length === 1}
+                disabled={languages?.length === 1 || justUseMainConfig}
                 checked={value.includes(row.id)}
               />
             </Tooltip>
@@ -89,12 +101,43 @@ export default function LanguagesItems (props: LanguagesItemsProps) {
     if (!languages?.length) return
     const selected = languages?.filter(i => i.markets?.map(i => i.market_id)?.includes(id))
     onChange?.(selected?.map(i => i.id))
-    console.log(123)
   }, [languages])
+
+  useEffect(() => {
+    if (justUseMainConfig) {
+      oldValue.current = {
+        defaultLanguageId,
+        value
+      }
+      let defaultMainLanguageID = 0
+      const mainMarketLanguages = languages?.filter(i => {
+        return i.markets.find(ii => {
+          if (ii.market_id === mainMarket?.value && ii.is_default) {
+            defaultMainLanguageID = i.id
+          }
+          return ii.market_id === mainMarket?.value
+        })
+      })
+      setDefaultLangugaeId(defaultMainLanguageID)
+      onChange?.(mainMarketLanguages?.map(i => i.id))
+      // 如果不是主市场且用了主域名，则使用主域名的配置
+    } else {
+      if (oldValue.current) {
+        setDefaultLangugaeId(oldValue.current.defaultLanguageId)
+        onChange?.(oldValue.current.value)
+      }
+    }
+  }, [domain_type])
 
   return (
     <SCard
-      tips={t('选择要在此市场中为客户提供的语言，你可以在商店语言上管理这些内容')}
+      tips={
+      justUseMainConfig
+        ? (
+            t('使用主域名时，默认使用主市场的语言设置，可前往主市场 变更语言')
+          )
+        : t('选择要在此市场中为客户提供的语言，你可以在商店语言上管理这些内容')
+      }
       title={t('语言')}
       extra={
         <SRender render={languages?.length !== 1}>
@@ -105,7 +148,8 @@ export default function LanguagesItems (props: LanguagesItemsProps) {
       }
     >
       <STable
-        onRowClick={row => { onChecked(row.id) }}
+        loading={marketOptions.loading}
+        onRowClick={justUseMainConfig ? undefined : row => { onChecked(row.id) }}
         borderless
         className={'table-border'}
         columns={columns}

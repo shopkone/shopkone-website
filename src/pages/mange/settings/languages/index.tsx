@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { IconDots, IconLanguage, IconWorld } from '@tabler/icons-react'
+import { IconDots, IconGripVertical, IconLanguage, IconWorld } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
 import { Button, Flex, Popover, Tooltip, Typography } from 'antd'
 
@@ -57,9 +57,11 @@ export default function Languages () {
       code: 'is_active',
       name: 'is_active',
       render: (is_active: boolean) => (
-        123
+        <IconButton size={24} type={'text'}>
+          <IconGripVertical size={14} />
+        </IconButton>
       ),
-      width: 45
+      width: 28
     },
     {
       title: t('语言'),
@@ -101,23 +103,33 @@ export default function Languages () {
       render: (id: number, row: LanguageListRes) => (
         <Flex gap={16} align={'center'}>
           <Tooltip title={t('翻译')}>
-            <IconButton size={24} type={'text'}>
-              <IconLanguage size={15} />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title={t('配置到市场')}>
-            <IconButton
+            <Button
+              style={{ padding: '0 4px', fontWeight: 400 }}
+              type={'text'}
+              size={'small'}
               onClick={() => {
                 marketInfo.edit({ languageId: row.id, marketIds: row.markets?.map(i => i.market_id) })
-              }} size={24} type={'text'}
+              }}
+            >
+              <IconLanguage size={15} />
+            </Button>
+          </Tooltip>
+          <Tooltip title={t('配置到市场')}>
+            <Button
+              style={{ padding: '0 4px', fontWeight: 400 }}
+              type={'text'}
+              size={'small'}
+              onClick={() => {
+                marketInfo.edit({ languageId: row.id, marketIds: row.markets?.map(i => i.market_id) })
+              }}
             >
               <IconWorld size={15} />
-            </IconButton>
+            </Button>
           </Tooltip>
           <Popover
             open={openMore === id}
             onOpenChange={() => { setOpenMore(openMore ? 0 : id) }}
-            overlayInnerStyle={{ minWidth: 100 }}
+            overlayInnerStyle={{ minWidth: 100, padding: 4 }}
             placement={'bottom'}
             trigger={'click'}
             arrow={false}
