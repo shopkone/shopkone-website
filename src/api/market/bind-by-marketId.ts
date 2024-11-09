@@ -6,5 +6,5 @@ export interface BindByMarketIdReq {
   default_language_id: number
 }
 
-export const BindByMarketIdApi = async (params: BindByMarketIdReq) =>
+export const LangBindByMarketIdApi = async (params: BindByMarketIdReq) =>
   await api('/market/bind-lang-by-market-id', params)

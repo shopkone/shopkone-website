@@ -9,6 +9,8 @@ import SCard from '@/components/s-card'
 import SRender from '@/components/s-render'
 import STable, { STableProps } from '@/components/s-table'
 import Status from '@/components/status'
+import { useOpen } from '@/hooks/useOpen'
+import SelectDefaultModal from '@/pages/mange/settings/markets/languages/select-default-modal'
 
 export interface LanguagesItemsProps {
   languages: LanguageListRes[]
@@ -29,6 +31,7 @@ export default function LanguagesItems (props: LanguagesItemsProps) {
   const { t } = useTranslation('settings', { keyPrefix: 'market' })
   const domain_type = Form.useWatch('domain_type', form)
   const id = Number(useParams().id || 0)
+  const openInfo = useOpen<number>()
 
   const onChecked = (id: number) => {
     if (value.includes(id)) {
@@ -86,9 +89,8 @@ export default function LanguagesItems (props: LanguagesItemsProps) {
     if (!languages?.length) return
     const selected = languages?.filter(i => i.markets?.map(i => i.market_id)?.includes(id))
     onChange?.(selected?.map(i => i.id))
-    const defaultLang = languages?.find(ii => ii.markets?.find(o => o.market_id === id)?.is_default)?.id
-    setDefaultLangugaeId(defaultLang || 0)
-  }, [languages?.length])
+    console.log(123)
+  }, [languages])
 
   return (
     <SCard
@@ -96,7 +98,9 @@ export default function LanguagesItems (props: LanguagesItemsProps) {
       title={t('语言')}
       extra={
         <SRender render={languages?.length !== 1}>
-          <Button type={'link'} size={'small'}>{t('切换默认语言')}</Button>
+          <Button onClick={() => { openInfo.edit(defaultLanguageId) }} type={'link'} size={'small'}>
+            {t('切换默认语言')}
+          </Button>
         </SRender>
       }
     >
@@ -107,6 +111,8 @@ export default function LanguagesItems (props: LanguagesItemsProps) {
         columns={columns}
         data={languages || []}
       />
+
+      <SelectDefaultModal languages={languages} openInfo={openInfo} onConfirm={setDefaultLangugaeId} />
     </SCard>
   )
 }

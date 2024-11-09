@@ -4,13 +4,12 @@ import { useParams } from 'react-router-dom'
 import { useRequest } from 'ahooks'
 import { Flex, Form, Input, Radio, Tooltip } from 'antd'
 import cloneDeep from 'lodash/cloneDeep'
-import isEqual from 'lodash/isEqual'
 
 import { useCountries } from '@/api/base/countries'
 import { DomainListApi, DomainStatus } from '@/api/domain/list'
 import { MarketUpDomainApi } from '@/api/domain/update'
 import { LanguageListApi } from '@/api/languages/list'
-import { MarketBindLangApi } from '@/api/market/bing-lang'
+import { LangBindByMarketIdApi } from '@/api/market/bind-by-marketId'
 import { MarketInfoApi } from '@/api/market/info'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
@@ -34,8 +33,9 @@ export default function MarketLanguages () {
   const mainDomain = domainList?.data?.find(d => d.is_main)
   const otherDomains = domainList?.data?.filter(d => !d.is_main)
   const update = useRequest(MarketUpDomainApi, { manual: true })
-  const bindLanguages = useRequest(MarketBindLangApi, { manual: true })
+  const bindLanguages = useRequest(LangBindByMarketIdApi, { manual: true })
   const init = useRef<any>()
+  const initDefault = useRef(0)
   const [isChange, setIsChange] = useState(false)
   const [defaultLanguageId, setDefaultLangugaeId] = useState(0)
 
@@ -65,16 +65,7 @@ export default function MarketLanguages () {
       throw new Error(err)
     })
     const values = form.getFieldsValue()
-    // 语言是否更新
-    if (!isEqual(values?.language_ids, init?.current?.language_ids)) {
-      const bind = values?.language_ids?.filter((i: number) => {
-        return !init?.current?.language_ids?.includes(i)
-      })?.map((i: number) => ({ market_id: id, language_id: i, is_default: i === 88 })) || []
-      const unBind = init?.current?.language_ids?.filter((i: number) => {
-        return !values?.language_ids?.includes(i)
-      })?.map((i: number) => ({ market_id: id, language_id: i })) || []
-      await bindLanguages.runAsync({ un_bind: unBind, bind })
-    }
+    await bindLanguages.runAsync({ language_ids: values?.language_ids, market_id: id, default_language_id: defaultLanguageId })
     await update.runAsync({ id: Number(id), ...values })
     await languages.refreshAsync()
     info.refresh()
@@ -101,10 +92,18 @@ export default function MarketLanguages () {
     onValuesChange(true)
   }, [info.data])
 
+  useEffect(() => {
+    if (!languages?.data?.length) return
+    const defaultLang = languages?.data?.find(ii => ii.markets?.find(o => o.market_id === id)?.is_default)?.id
+    console.log({ defaultLang, a: languages?.data })
+    setDefaultLangugaeId(defaultLang || 0)
+    initDefault.current = defaultLang || 0
+  }, [languages?.loading])
+
   return (
     <Page
       onOk={onOk}
-      isChange={isChange}
+      isChange={isChange || defaultLanguageId !== initDefault.current}
       onCancel={onCancel}
       loading={!info.data?.id || !countries?.data?.length || !domainList.data?.length || !languages.data?.length || languages?.loading || info?.loading}
       loadingHiddenBg
