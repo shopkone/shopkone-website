@@ -163,7 +163,7 @@ export default function Change () {
                 <Radio.Group options={[{ label: t('自动匹配'), value: CollectionType.Auto }]} />
               </Form.Item>
               <div style={{ marginLeft: 26, marginTop: -4 }} className={'tips'}>
-                {t('符合您设置的条件的现有和未来产品将自动添加到此系列中。')}
+                {t('符合您设置的条件的现有和未来商品将自动添加到此系列中。')}
               </div>
             </SCard>
 

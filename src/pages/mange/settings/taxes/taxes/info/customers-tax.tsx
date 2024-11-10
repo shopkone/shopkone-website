@@ -45,7 +45,7 @@ export default function CustomersTax (props: CustomersTaxProps) {
 
   return (
     <SCard
-      tips={t('发货到指定区域时，为特定产品系列自定义基于区域的税率或运费。')}
+      tips={t('发货到指定区域时，为特定商品系列自定义基于区域的税率或运费。')}
       title={t('自定义税费')}
       extra={<Button type={'link'} size={'small'} onClick={() => { openInfo.edit() }}>{t('添加自定义税费')}</Button>}
     >

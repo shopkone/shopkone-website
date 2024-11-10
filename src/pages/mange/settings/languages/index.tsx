@@ -156,7 +156,7 @@ export default function Languages () {
           </Popover>
         </Flex>
       ),
-      width: (list?.data?.length || 0) > 0 ? 100 : 80
+      width: (list?.data?.length || 0) > 1 ? 100 : 60
     }
   ]
 

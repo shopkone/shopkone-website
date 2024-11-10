@@ -181,7 +181,7 @@ export default function Change () {
     >
       <Form initialValues={{ name: '', fulfillment_details: false }} onValuesChange={onValuesChange} layout={'vertical'} form={form}>
         <SCard
-          tips={t('为此位置指定一个简短名称，以便于识别。您将在订单和产品等区域看到此名称。')}
+          tips={t('为此位置指定一个简短名称，以便于识别。您将在订单和商品等区域看到此名称。')}
           style={{ marginBottom: 16 }}
           title={t('名称')}
         >

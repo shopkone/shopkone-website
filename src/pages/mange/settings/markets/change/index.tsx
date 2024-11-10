@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import {
   IconChevronDown,
   IconChevronRight,
@@ -22,6 +22,7 @@ import SCard from '@/components/s-card'
 import SRender from '@/components/s-render'
 import SSelect from '@/components/s-select'
 import Status from '@/components/status'
+import { useNav } from '@/hooks/use-nav'
 import { useOpen } from '@/hooks/useOpen'
 import MarketEditModal from '@/pages/mange/settings/markets/change/market-edit-modal'
 
@@ -34,7 +35,7 @@ export default function MarketChange () {
   const countryList = countries?.data?.filter(c => info?.data?.country_codes?.includes(c.code))
   const { t } = useTranslation('settings', { keyPrefix: 'market' })
   const openEdit = useOpen<MarketInfoRes>()
-  const nav = useNavigate()
+  const nav = useNav()
   const domainList = useRequest(DomainListApi)
   const languages = useRequest(LanguageListApi)
   const { t: languageT } = useTranslation('language')
@@ -135,11 +136,16 @@ export default function MarketChange () {
               </Flex>
               <IconChevronRight size={16} />
             </Flex>
-            <Flex align={'center'} justify={'space-between'} className={styles.item}>
+            <Flex
+              onClick={() => { nav(`/settings/markets/price-adjust/${id}`) }}
+              align={'center'}
+              justify={'space-between'}
+              className={styles.item}
+            >
               <Flex gap={16} align={'center'} justify={'space-between'}>
                 <IconShoppingBag size={18} />
                 <Flex vertical gap={2}>
-                  <div>{t('产品和定价')}</div>
+                  <div>{t('商品与定价')}</div>
                   <div>{t('美元(USD US$)')}</div>
                 </Flex>
               </Flex>

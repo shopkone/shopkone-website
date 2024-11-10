@@ -155,7 +155,7 @@ export default function Inventory () {
           data={list.data?.list || []}
           empty={{
             title: t('跟踪商品库存'),
-            desc: t('商品启用跟踪库存后，您可以在此查看和调整产品的库存计数。'),
+            desc: t('商品启用跟踪库存后，您可以在此查看和调整商品的库存计数。'),
             actions: (
               <Flex gap={8}>
                 <Button onClick={() => { nav('/products/products') }} type={'primary'}>{t('前往商品')}</Button>

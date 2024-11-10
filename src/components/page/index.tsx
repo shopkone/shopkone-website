@@ -2,10 +2,11 @@ import { ReactNode, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { IconArrowLeft } from '@tabler/icons-react'
-import { Button, Flex, Typography } from 'antd'
+import { Button, Flex, Tooltip, Typography } from 'antd'
 
 import SLoading from '@/components/s-loading'
 import SRender from '@/components/s-render'
+import { usePageBack } from '@/hooks/use-page-back'
 import { useLayoutState } from '@/pages/mange/layout/state'
 
 import styles from './index.module.less'
@@ -38,6 +39,7 @@ export default function Page (props: PageProps) {
   const setResetLoading = useLayoutState(state => state.setResetLoading)
   const setOkText = useLayoutState(state => state.setOkText)
   const { t } = useTranslation('common', { keyPrefix: 'page' })
+  const pageBack = usePageBack()
 
   const onOkHandle = async () => {
     try {
@@ -88,10 +90,12 @@ export default function Page (props: PageProps) {
       <SRender render={title || header || back}>
         <Flex justify={'space-between'} gap={24} className={styles.title}>
           <Flex style={{ minWidth: 0 }} flex={1} gap={8}>
-            <SRender render={!!back}>
-              <Button style={{ position: 'relative', top: 1 }} onClick={() => { nav(back || '') }} type={'text'} className={styles['back-icon']}>
-                <IconArrowLeft size={20} />
-              </Button>
+            <SRender render={!!back || pageBack?.url}>
+              <Tooltip title={pageBack?.title ? t('返回x', { x: pageBack?.title }) : undefined}>
+                <Button style={{ position: 'relative', top: 1 }} onClick={() => { nav(back || pageBack?.url || '') }} type={'text'} className={styles['back-icon']}>
+                  <IconArrowLeft size={20} />
+                </Button>
+              </Tooltip>
             </SRender>
             <SRender render={!!title}>
               <Typography.Text style={{ fontSize: 20, flex: 1, lineHeight: '28px', position: 'relative', top: 1 }}>

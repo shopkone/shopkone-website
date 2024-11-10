@@ -190,9 +190,9 @@ export default function Products (props: ProductsProps) {
           description={(
             <Flex style={{ marginTop: 20 }} vertical gap={12}>
               <div style={{ fontSize: 14, fontWeight: 'bolder' }}>
-                {t('请选择需要转移库存数量的产品')}
+                {t('请选择需要转移库存数量的商品')}
               </div>
-              <div>{t('请选择要转移的产品，最多不超过200种产品')}</div>
+              <div>{t('请选择要转移的商品，最多不超过200种商品')}</div>
               <Flex align={'center'} justify={'center'} style={{ marginTop: 8 }}>
                 <Button onClick={() => { openInfo.edit([]) }} >
                   {t('选择商品')}

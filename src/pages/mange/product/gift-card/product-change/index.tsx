@@ -22,7 +22,7 @@ export default function ProductChange () {
   }
 
   return (
-    <Page isChange back={'/products/gift_cards'} width={950} title={t('创建礼品卡产品')}>
+    <Page isChange back={'/products/gift_cards'} width={950} title={t('创建礼品卡商品')}>
       <Form initialValues={initValues} form={form} className={'fit-width'} layout={'vertical'}>
         <Flex className={'fit-width'} gap={16}>
           <Flex vertical flex={1} gap={16}>

@@ -53,7 +53,7 @@ export default function Status (props: StatusProps) {
           background: color[type].bg,
           border: `1px solid ${color[type].border}`,
           fontSize: 11,
-          padding: '0 6px',
+          padding: '2px 6px',
           color: color[type].color,
           height: 18,
           lineHeight: '18px',

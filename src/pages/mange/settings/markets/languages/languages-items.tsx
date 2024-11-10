@@ -51,12 +51,13 @@ export default function LanguagesItems (props: LanguagesItemsProps) {
   }
 
   const getCheckBoxTips = (row: LanguageListRes) => {
-    if (languages?.length === 1) return t('至少启用一种语言')
+    if (languages?.length === 1) return
     if (justUseMainConfig) return t('使用主域名时，默认使用主市场的语言设置，可前往主市场 变更语言')
     if (row.id === defaultLanguageId) return t('默认语言不可禁用，如需禁用，请切换默认语言')
   }
 
   const onChecked = (id: number) => {
+    if (languages?.length === 1) return
     const item = languages.find(i => i.id === id)
     if (!item) return
     if (getCheckBoxTips(item)) return
@@ -75,7 +76,7 @@ export default function LanguagesItems (props: LanguagesItemsProps) {
       render: (language: string, row: LanguageListRes) => (
         <Tooltip title={getCheckBoxTips(row)}>
           <Flex gap={16} align={'center'}>
-            <div>
+            <div style={{ display: languages?.length === 1 ? 'none' : undefined }}>
               <Checkbox
                 onChange={() => { onChecked(row.id) }}
                 disabled={!!getCheckBoxTips(row)}
@@ -149,7 +150,7 @@ export default function LanguagesItems (props: LanguagesItemsProps) {
     >
       <STable
         loading={marketOptions.loading}
-        onRowClick={justUseMainConfig ? undefined : row => { onChecked(row.id) }}
+        onRowClick={(justUseMainConfig || languages?.length === 1) ? undefined : row => { onChecked(row.id) }}
         borderless
         className={'table-border'}
         columns={columns}
