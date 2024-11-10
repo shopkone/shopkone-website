@@ -100,6 +100,8 @@ export default function MarketLanguages () {
     setDefaultLangugaeId(info?.data?.default_language_id || 0)
   }, [info?.data?.default_language_id])
 
+  console.log({ isChange })
+
   return (
     <Page
       onOk={onOk}
@@ -141,13 +143,15 @@ export default function MarketLanguages () {
             </SRender>
 
             <SRender render={!info?.data?.is_main}>
-              <Form.Item
-                name={'domain_type'}
-                extra={<div style={{ marginLeft: 24, marginTop: -4 }}>{t('子域名提示')}</div>}
-                style={{ marginBottom: 12 }}
-              >
-                <Radio.Group options={[{ value: 2, label: t('使用子域名'), disabled: otherDomains?.length === 0 }]} />
-              </Form.Item>
+              <Tooltip placement={'topLeft'} title={otherDomains?.length === 0 ? t('没有可用的子域名') : undefined}>
+                <Form.Item
+                  name={'domain_type'}
+                  extra={<div style={{ marginLeft: 24, marginTop: -4 }}>{t('子域名提示')}</div>}
+                  style={{ marginBottom: 12 }}
+                >
+                  <Radio.Group options={[{ value: 2, label: t('使用子域名'), disabled: otherDomains?.length === 0 }]} />
+                </Form.Item>
+              </Tooltip>
               <SRender render={domain_type === 2}>
                 <Form.Item name={'sub_domain_id'} style={{ marginLeft: 24, marginTop: -8, marginBottom: 12 }}>
                   <SSelect options={otherDomains?.map(i => ({ label: i.domain, value: i.id }))} />

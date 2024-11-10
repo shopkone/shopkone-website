@@ -59,7 +59,10 @@ export default function MarketChange () {
 
   const langs = useMemo(() => {
     if (!languages?.data?.length || !info?.data?.language_ids?.length) return []
-    return languages?.data?.filter(l => info?.data?.language_ids?.includes(l.id)).map(l => languageT(l.language))
+    const items = languages?.data?.filter(l => info?.data?.language_ids?.includes(l.id) && l.id !== info?.data?.default_language_id) || []
+    const defaultItem = languages?.data?.find(l => l.id === info?.data?.default_language_id)
+    if (!defaultItem) return []
+    return [defaultItem, ...items].map(l => languageT(l.language))
   }, [info.data, languages?.data])
 
   useEffect(() => {
@@ -120,9 +123,11 @@ export default function MarketChange () {
                 <Flex vertical gap={2}>
                   <div>{t('域名和语言')}</div>
                   <Flex align={'center'} gap={8}>
-                    <Typography.Text style={{ lineHeight: '12px', maxWidth: 260 }} ellipsis={{ tooltip: true }}>{domain}</Typography.Text>
+                    <Typography.Text style={{ lineHeight: '12px', maxWidth: 260 }} ellipsis={{ tooltip: { placement: 'topLeft' } }} >
+                      {domain}
+                    </Typography.Text>
                     <div>•</div>
-                    <Typography.Text style={{ lineHeight: '12px', width: 260 }} ellipsis={{ tooltip: true, suffix: t('共x种语言', { x: langs?.length }) }} >
+                    <Typography.Text style={{ lineHeight: '12px', width: 260 }} ellipsis={{ tooltip: { placement: 'topLeft' } }} >
                       {langs?.join('、')}
                     </Typography.Text>
                   </Flex>
