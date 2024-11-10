@@ -68,10 +68,10 @@ export default function MarketLanguages () {
       throw new Error(err)
     })
     const values = form.getFieldsValue()
-    await updateMarketLang.runAsync({ language_ids: values?.language_ids, id, default_language_id: defaultLanguageId })
     await update.runAsync({ id: Number(id), ...values })
-    await languages.refreshAsync()
+    await updateMarketLang.runAsync({ language_ids: values?.language_ids, id, default_language_id: defaultLanguageId })
     await info.refreshAsync()
+    await languages.refreshAsync()
     setIsChange(false)
     sMessage.success(t('更新成功'))
   }

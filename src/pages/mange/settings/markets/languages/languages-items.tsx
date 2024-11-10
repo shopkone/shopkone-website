@@ -27,7 +27,7 @@ export interface LanguagesItemsProps {
 }
 
 export default function LanguagesItems (props: LanguagesItemsProps) {
-  const { languages, mainDomain, domainList, value = [], onChange, defaultLanguageId, setDefaultLanguageId, info } = props
+  const { languages, mainDomain, domainList, value = [], onChange: onChangeHandle, defaultLanguageId, setDefaultLanguageId, info } = props
   const form = Form.useFormInstance()
   const subDomainID = Form.useWatch('sub_domain_id', form)
   const domainPrefix = Form.useWatch('domain_suffix', form)
@@ -42,17 +42,29 @@ export default function LanguagesItems (props: LanguagesItemsProps) {
 
   const oldValue = useRef<{ defaultLanguageId: number, value: number[] }>()
 
+  const onChange = (v: number[]) => {
+    // 如果默认语言没有选中，则选择第一个为默认值
+    if (!v.includes(defaultLanguageId)) {
+      setDefaultLanguageId(v[0])
+    }
+    onChangeHandle?.(v)
+  }
+
+  const getCheckBoxTips = (row: LanguageListRes) => {
+    if (languages?.length === 1) return t('至少启用一种语言')
+    if (justUseMainConfig) return t('使用主域名时，默认使用主市场的语言设置，可前往主市场 变更语言')
+    if (row.id === defaultLanguageId) return t('默认语言不可禁用，如需禁用，请切换默认语言')
+  }
+
   const onChecked = (id: number) => {
+    const item = languages.find(i => i.id === id)
+    if (!item) return
+    if (getCheckBoxTips(item)) return
     if (value.includes(id)) {
       onChange?.(value.filter(i => i !== id))
     } else {
       onChange?.([...value, id])
     }
-  }
-
-  const getCheckBoxTips = () => {
-    if (languages?.length === 1) return t('至少启用一种语言')
-    if (justUseMainConfig) return t('使用主域名时，默认使用主市场的语言设置，可前往主市场 变更语言')
   }
 
   const columns: STableProps['columns'] = [
@@ -61,23 +73,23 @@ export default function LanguagesItems (props: LanguagesItemsProps) {
       name: 'language',
       code: 'language',
       render: (language: string, row: LanguageListRes) => (
-        <Flex gap={16} align={'center'}>
-          <div>
-            <Tooltip title={getCheckBoxTips()}>
+        <Tooltip title={getCheckBoxTips(row)}>
+          <Flex gap={16} align={'center'}>
+            <div>
               <Checkbox
                 onChange={() => { onChecked(row.id) }}
-                disabled={languages?.length === 1 || justUseMainConfig}
+                disabled={!!getCheckBoxTips(row)}
                 checked={value.includes(row.id)}
               />
-            </Tooltip>
-          </div>
-          <Flex gap={8} align={'center'}>
-            {languageT(language)}
-            <SRender render={defaultLanguageId === row.id}>
-              <Status type={'info'}>{t('默认')}</Status>
-            </SRender>
+            </div>
+            <Flex gap={8} align={'center'}>
+              {languageT(language)}
+              <SRender render={defaultLanguageId === row.id}>
+                <Status type={'info'}>{t('默认')}</Status>
+              </SRender>
+            </Flex>
           </Flex>
-        </Flex>
+        </Tooltip>
       )
     },
     {
@@ -147,7 +159,10 @@ export default function LanguagesItems (props: LanguagesItemsProps) {
       <SelectDefaultModal
         languages={languages}
         openInfo={openInfo}
-        onConfirm={setDefaultLanguageId}
+        onConfirm={(langId) => {
+          setDefaultLanguageId(langId)
+          onChange?.(value.includes(langId) ? value : [...value, langId])
+        }}
       />
     </SCard>
   )

@@ -46,7 +46,7 @@ export default function MarketModal (props: MarketModalProps) {
     const item = marketOptions?.find(m => m.value === marketId)
     // 如果是主域名，但不是是此次，不想可以处理
     if (!item?.is_main && item?.domain_type === 1) {
-      return t('使用主域名时，默认使用主市场的语言设置')
+      return t('该市场使用主域名，默认使用主市场的语言设置')
     }
     // 如果只有一个语言且当前为启用，则不允许处理，并返回提示
     if (item?.language_ids?.length === 1 && item?.language_ids[0] === openInfo.data?.languageId) {
