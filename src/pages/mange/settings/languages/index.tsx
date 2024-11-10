@@ -5,6 +5,7 @@ import { useRequest } from 'ahooks'
 import { Button, Flex, Popover, Tooltip, Typography } from 'antd'
 
 import { useCountries } from '@/api/base/countries'
+import { useLanguageList } from '@/api/base/languages'
 import { LanguageListApi, LanguageListRes } from '@/api/languages/list'
 import { MarketOptionsApi } from '@/api/market/options'
 import IconButton from '@/components/icon-button'
@@ -21,14 +22,13 @@ import { renderText } from '@/utils/render-text'
 
 export default function Languages () {
   const { t } = useTranslation('settings', { keyPrefix: 'language' })
-  const { t: languageT } = useTranslation('language')
 
   const list = useRequest(LanguageListApi)
   const markets = useRequest(MarketOptionsApi)
   const countries = useCountries()
   const modal = useModal()
   const [openMore, setOpenMore] = useState<number>(0)
-
+  const languages = useLanguageList()
   const openInfo = useOpen<string[]>([])
   const marketInfo = useOpen<{ marketIds: number[], languageId: number }>()
 
@@ -69,7 +69,7 @@ export default function Languages () {
       name: 'language',
       render: (language: string, row: LanguageListRes) => (
         <Flex align={'center'} gap={12}>
-          {languageT(language)}
+          {languages?.data?.find(i => i.value === language)?.label}
           <SRender render={row.is_default}>
             <Status type={'info'}>{t('默认')}</Status>
           </SRender>

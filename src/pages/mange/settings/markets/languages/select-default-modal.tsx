@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Flex, Radio } from 'antd'
 
+import { useLanguageList } from '@/api/base/languages'
 import { LanguageListRes } from '@/api/languages/list'
 import SModal from '@/components/s-modal'
 import { UseOpenType } from '@/hooks/useOpen'
@@ -16,9 +17,9 @@ export interface SelectDefaultModalProps {
 
 export default function SelectDefaultModal (props: SelectDefaultModalProps) {
   const { openInfo, onConfirm, languages } = props
-  const { t: languageT } = useTranslation('language')
   const { t } = useTranslation('settings', { keyPrefix: 'market' })
   const [value, setValue] = useState(0)
+  const languageList = useLanguageList()
 
   const onConfirmClick = () => {
     onConfirm(value)
@@ -37,7 +38,7 @@ export default function SelectDefaultModal (props: SelectDefaultModalProps) {
         <Radio.Group
           onChange={e => { setValue(e.target.value) }}
           value={value}
-          options={languages?.map(i => ({ value: i.id, label: languageT(i.language) })) || []}
+          options={languages?.map(i => ({ value: i.id, label: languageList?.data?.find(ii => ii.value === i.language)?.label })) || []}
         />
       </Flex>
     </SModal>

@@ -38,6 +38,7 @@ export default function PriceAdjust () {
   const [params, setParams] = useState<ProductListReq>({ page: 1, page_size: 20 })
   const productList = useRequest(ProductListApi, { manual: true })
   const [selected, setSelected] = useState<number[]>([])
+  const isChangeAdjust = priceAdjustment !== info?.data?.price_adjustment
 
   const columns: STableProps['columns'] = [
     {
@@ -94,15 +95,29 @@ export default function PriceAdjust () {
           isSame = true
         }
         return (
-          <Tooltip title={priceAdjustment !== info?.data?.price_adjustment ? t('请保存当前操作后再更改') : undefined}>
+          <Tooltip title={isChangeAdjust ? t('请保存当前编辑后再更改') : undefined}>
             <div>
               <SInputNumber
-                disabled={priceAdjustment !== info?.data?.price_adjustment}
+                disabled={isChangeAdjust}
                 required
-                placeholder={range}
-                value={isSame ? maxPrice : undefined}
+                placeholder={isChangeAdjust ? undefined : range}
+                value={(isSame && !isChangeAdjust) ? maxPrice : undefined}
                 prefix={currency?.symbol}
                 money
+                suffix={
+                  <SRender render={!isChangeAdjust}>
+                    <Button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                      }}
+                      style={{ position: 'relative', left: 8 }}
+                      type={'link'}
+                      size={'small'}
+                    >
+                      {t('重置')}
+                    </Button>
+                  </SRender>
+                }
               />
             </div>
           </Tooltip>

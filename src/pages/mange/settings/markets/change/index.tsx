@@ -14,6 +14,7 @@ import { useRequest } from 'ahooks'
 import { Button, Flex, Typography } from 'antd'
 
 import { useCountries } from '@/api/base/countries'
+import { useLanguageList } from '@/api/base/languages'
 import { DomainListApi } from '@/api/domain/list'
 import { LanguageListApi } from '@/api/languages/list'
 import { MarketInfoApi, MarketInfoRes } from '@/api/market/info'
@@ -38,7 +39,7 @@ export default function MarketChange () {
   const nav = useNav()
   const domainList = useRequest(DomainListApi)
   const languages = useRequest(LanguageListApi)
-  const { t: languageT } = useTranslation('language')
+  const languageList = useLanguageList()
 
   const options = [
     { label: t('今天'), value: 1 },
@@ -63,7 +64,7 @@ export default function MarketChange () {
     const items = languages?.data?.filter(l => info?.data?.language_ids?.includes(l.id) && l.id !== info?.data?.default_language_id) || []
     const defaultItem = languages?.data?.find(l => l.id === info?.data?.default_language_id)
     if (!defaultItem) return []
-    return [defaultItem, ...items].map(l => languageT(l.language))
+    return [defaultItem, ...items].map(l => languageList?.data?.find(i => i.value === l.language)?.label)
   }, [info.data, languages?.data])
 
   useEffect(() => {

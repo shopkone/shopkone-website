@@ -20,7 +20,6 @@ export interface AddLanguageProps {
 
 export default function AddLanguage (props: AddLanguageProps) {
   const languages = useLanguageList()
-  const { t: languageT } = useTranslation('language')
   const { t } = useTranslation('settings', { keyPrefix: 'language' })
   const ref = useRef<HTMLDivElement>(null)
   const boxStyle = useBoxShadow(ref)
@@ -79,10 +78,10 @@ export default function AddLanguage (props: AddLanguageProps) {
         <SLoading loading={languages.loading}>
           <Flex vertical>
             {
-              languages.data?.list?.filter(ii => !props.openInfo?.data?.includes(ii))?.map(i => (
-                <div className={styles.item} key={i} onClick={() => { onChange(i) }}>
-                  <Checkbox checked={value.includes(i)} onChange={() => { onChange(i) }}>
-                    {languageT(i)}
+              languages.data?.filter(ii => !props.openInfo?.data?.includes(ii.value))?.map(i => (
+                <div className={styles.item} key={i.value} onClick={() => { onChange(i.value) }}>
+                  <Checkbox checked={value.includes(i.value)} onChange={() => { onChange(i.value) }}>
+                    {i.label}
                   </Checkbox>
                 </div>
               ))

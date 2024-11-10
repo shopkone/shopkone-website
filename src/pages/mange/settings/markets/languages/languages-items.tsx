@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom'
 import { useRequest } from 'ahooks'
 import { Button, Checkbox, Flex, Form, Tooltip } from 'antd'
 
+import { useLanguageList } from '@/api/base/languages'
 import { DomainListRes } from '@/api/domain/list'
 import { LanguageListRes } from '@/api/languages/list'
 import { MarketInfoRes } from '@/api/market/info'
@@ -31,7 +32,6 @@ export default function LanguagesItems (props: LanguagesItemsProps) {
   const form = Form.useFormInstance()
   const subDomainID = Form.useWatch('sub_domain_id', form)
   const domainPrefix = Form.useWatch('domain_suffix', form)
-  const { t: languageT } = useTranslation('language')
   const { t } = useTranslation('settings', { keyPrefix: 'market' })
   const domain_type = Form.useWatch('domain_type', form)
   const id = Number(useParams().id || 0)
@@ -39,6 +39,7 @@ export default function LanguagesItems (props: LanguagesItemsProps) {
   const marketOptions = useRequest(MarketOptionsApi)
   const mainMarket = marketOptions.data?.find(i => i.is_main)
   const justUseMainConfig = mainMarket?.value !== id && domain_type === 1
+  const languageList = useLanguageList()
 
   const oldValue = useRef<{ defaultLanguageId: number, value: number[] }>()
 
@@ -84,7 +85,7 @@ export default function LanguagesItems (props: LanguagesItemsProps) {
               />
             </div>
             <Flex gap={8} align={'center'}>
-              {languageT(language)}
+              {languageList?.data?.find(i => i.value === language)?.label}
               <SRender render={defaultLanguageId === row.id}>
                 <Status type={'info'}>{t('默认')}</Status>
               </SRender>
