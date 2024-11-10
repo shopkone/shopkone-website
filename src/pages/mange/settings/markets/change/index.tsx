@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
 import {
@@ -11,9 +11,11 @@ import {
   IconTruckDelivery
 } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
-import { Button, Flex } from 'antd'
+import { Button, Flex, Typography } from 'antd'
 
 import { useCountries } from '@/api/base/countries'
+import { DomainListApi } from '@/api/domain/list'
+import { LanguageListApi } from '@/api/languages/list'
 import { MarketInfoApi, MarketInfoRes } from '@/api/market/info'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
@@ -33,12 +35,32 @@ export default function MarketChange () {
   const { t } = useTranslation('settings', { keyPrefix: 'market' })
   const openEdit = useOpen<MarketInfoRes>()
   const nav = useNavigate()
+  const domainList = useRequest(DomainListApi)
+  const languages = useRequest(LanguageListApi)
+  const { t: languageT } = useTranslation('language')
 
   const options = [
     { label: t('今天'), value: 1 },
     { label: t('过去7天'), value: 2 },
     { label: t('过去30天'), value: 3 }
   ]
+
+  const domain = useMemo(() => {
+    if (!domainList?.data?.length || !info?.data?.domain_type) return '--'
+    if (info?.data?.domain_type === 1) {
+      return domainList?.data?.find(i => i.is_main)?.domain
+    }
+    if (info?.data?.domain_type === 2) {
+      return domainList?.data?.find(i => i.id === info?.data?.sub_domain_id)?.domain
+    }
+    const mainDomain = domainList?.data?.find(i => i.is_main)?.domain
+    return `${mainDomain}/${info?.data?.domain_suffix}`
+  }, [info.data, domainList?.data])
+
+  const langs = useMemo(() => {
+    if (!languages?.data?.length || !info?.data?.language_ids?.length) return []
+    return languages?.data?.filter(l => info?.data?.language_ids?.includes(l.id)).map(l => languageT(l.language))
+  }, [info.data, languages?.data])
 
   useEffect(() => {
     if (!id) return
@@ -59,7 +81,7 @@ export default function MarketChange () {
           </Button>
         </Flex>
       }
-      loading={!info.data?.id || countries.loading}
+      loading={!info.data?.id || countries.loading || domainList.loading || languages.loading}
       back={'/settings/markets'}
       width={700}
       title={
@@ -97,7 +119,13 @@ export default function MarketChange () {
                 <IconLanguage size={18} />
                 <Flex vertical gap={2}>
                   <div>{t('域名和语言')}</div>
-                  <div>sdfaa8fsdf2.myshopline.com • 英语</div>
+                  <Flex align={'center'} gap={8}>
+                    <Typography.Text style={{ lineHeight: '12px', maxWidth: 260 }} ellipsis={{ tooltip: true }}>{domain}</Typography.Text>
+                    <div>•</div>
+                    <Typography.Text style={{ lineHeight: '12px', width: 260 }} ellipsis={{ tooltip: true, suffix: t('共x种语言', { x: langs?.length }) }} >
+                      {langs?.join('、')}
+                    </Typography.Text>
+                  </Flex>
                 </Flex>
               </Flex>
               <IconChevronRight size={16} />
