@@ -22,12 +22,12 @@ export interface LanguagesItemsProps {
   value?: number[]
   onChange?: (v: number[]) => void
   defaultLanguageId: number
-  setDefaultLangugaeId: (v: number) => void
+  setDefaultLanguageId: (v: number) => void
   info?: MarketInfoRes
 }
 
 export default function LanguagesItems (props: LanguagesItemsProps) {
-  const { languages, mainDomain, domainList, value = [], onChange, defaultLanguageId, setDefaultLangugaeId, info } = props
+  const { languages, mainDomain, domainList, value = [], onChange, defaultLanguageId, setDefaultLanguageId, info } = props
   const form = Form.useFormInstance()
   const subDomainID = Form.useWatch('sub_domain_id', form)
   const domainPrefix = Form.useWatch('domain_suffix', form)
@@ -107,20 +107,15 @@ export default function LanguagesItems (props: LanguagesItemsProps) {
   useEffect(() => {
     if (!mainMarket || !value?.length) return
     if (justUseMainConfig) {
-      oldValue.current = {
-        defaultLanguageId,
-        value
-      }
-      setDefaultLangugaeId(mainMarket.default_language_id)
-      onChange?.(mainMarket.language_ids)
       // 如果不是主市场且用了主域名，则使用主域名的配置
-    } else {
-      if (oldValue.current) {
-        setDefaultLangugaeId(oldValue.current.defaultLanguageId)
-        onChange?.(oldValue.current.value)
-      }
+      oldValue.current = { defaultLanguageId, value }
+      setDefaultLanguageId(mainMarket.default_language_id)
+      onChange?.(mainMarket.language_ids)
+    } else if (oldValue.current?.defaultLanguageId) {
+      setDefaultLanguageId(oldValue.current.defaultLanguageId)
+      onChange?.(oldValue.current.value)
     }
-  }, [domain_type])
+  }, [justUseMainConfig, mainMarket?.default_language_id])
 
   return (
     <SCard
@@ -149,7 +144,11 @@ export default function LanguagesItems (props: LanguagesItemsProps) {
         data={languages || []}
       />
 
-      <SelectDefaultModal languages={languages} openInfo={openInfo} onConfirm={setDefaultLangugaeId} />
+      <SelectDefaultModal
+        languages={languages}
+        openInfo={openInfo}
+        onConfirm={setDefaultLanguageId}
+      />
     </SCard>
   )
 }

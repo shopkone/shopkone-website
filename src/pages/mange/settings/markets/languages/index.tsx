@@ -46,6 +46,10 @@ export default function MarketLanguages () {
       init.current = cloneDeep(values)
       return
     }
+    console.log({
+      values,
+      init: init.current
+    })
     const isSame = isEqualHandle(values, init.current)
     setIsChange(!isSame)
   }
@@ -94,12 +98,12 @@ export default function MarketLanguages () {
   useEffect(() => {
     if (!languages?.data?.length) return
     setDefaultLangugaeId(info?.data?.default_language_id || 0)
-  }, [languages?.loading])
+  }, [info?.data?.default_language_id])
 
   return (
     <Page
       onOk={onOk}
-      isChange={isChange || defaultLanguageId !== info?.data?.default_language_id}
+      isChange={isChange || (!!defaultLanguageId && defaultLanguageId !== info?.data?.default_language_id)}
       onCancel={onCancel}
       loading={!info.data?.id || !countries?.data?.length || !domainList.data?.length || !languages.data?.length || languages?.loading || info?.loading}
       loadingHiddenBg
@@ -186,7 +190,7 @@ export default function MarketLanguages () {
             <LanguagesItems
               info={info.data}
               defaultLanguageId={defaultLanguageId}
-              setDefaultLangugaeId={setDefaultLangugaeId}
+              setDefaultLanguageId={setDefaultLangugaeId}
               languages={languages.data || []}
               mainDomain={mainDomain}
               domainList={domainList?.data || []}
