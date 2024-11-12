@@ -1,7 +1,11 @@
 import { IconChevronLeft, IconChevronRight, IconChevronsLeft, IconChevronsRight } from '@tabler/icons-react'
 import { DatePicker, DatePickerProps } from 'antd'
 
-export default function SDatePicker (props: DatePickerProps) {
+export interface SDatePickerProps extends Omit<DatePickerProps, 'minDate'> {
+  minDate?: any
+}
+
+export default function SDatePicker (props: SDatePickerProps) {
   return (
     <DatePicker
       inputReadOnly

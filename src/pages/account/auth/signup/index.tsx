@@ -52,7 +52,7 @@ export default function Signup () {
             nav('/auth/login')
           }} size={'small'} className={styles['link-btn']} type={'link'}
         >
-          <Flex style={{ fontSize: 13 }} align={'center'} gap={4}>
+          <Flex style={{ fontSize: 13, marginTop: -2 }} align={'center'} gap={4}>
             <div>{t('直接登录')}</div>
             <ArrowRight className={styles['link-icon']} />
           </Flex>
