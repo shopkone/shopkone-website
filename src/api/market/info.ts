@@ -1,4 +1,5 @@
 import { api } from '@/api/api'
+import { MarketProductItem } from '@/api/market/update-market-price'
 
 export enum AdjustType {
   PriceAdjustmentTypeReduce = 1, // 减少
@@ -21,8 +22,8 @@ export interface MarketInfoRes {
   default_language_id: number
   currency_code: string
   adjust_type: AdjustType
-  price_adjustment: number
-  exclude_product_ids: number[]
+  adjust_percent: number
+  adjust_products: MarketProductItem[]
 }
 
 export const MarketInfoApi = async (params: MarketInfoReq) => {

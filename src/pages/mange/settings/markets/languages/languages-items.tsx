@@ -71,13 +71,13 @@ export default function LanguagesItems (props: LanguagesItemsProps) {
 
   const columns: STableProps['columns'] = [
     {
-      title: <div style={{ marginLeft: 32 }}>{t('语言')}</div>,
+      title: <div style={{ marginLeft: languages?.length === 1 || justUseMainConfig ? 0 : 32 }}>{t('语言')}</div>,
       name: 'language',
       code: 'language',
       render: (language: string, row: LanguageListRes) => (
         <Tooltip title={getCheckBoxTips(row)}>
           <Flex gap={16} align={'center'}>
-            <div style={{ display: languages?.length === 1 ? 'none' : undefined }}>
+            <div style={{ display: languages?.length === 1 || justUseMainConfig ? 'none' : undefined }}>
               <Checkbox
                 onChange={() => { onChecked(row.id) }}
                 disabled={!!getCheckBoxTips(row)}
@@ -142,7 +142,7 @@ export default function LanguagesItems (props: LanguagesItemsProps) {
       }
       title={t('语言')}
       extra={
-        <SRender render={languages?.length !== 1}>
+        <SRender render={languages?.length !== 1 && !justUseMainConfig}>
           <Button onClick={() => { openInfo.edit(defaultLanguageId) }} type={'link'} size={'small'}>
             {t('切换默认语言')}
           </Button>

@@ -12,6 +12,8 @@ export interface ProductListReq extends PageReq {
   collection_id?: number
   status?: VariantStatus
   price_range?: FilterNumberRangeProps['value']
+  exclude_ids?: number[]
+  include_ids?: number[]
 }
 
 export interface ProductListRes {
