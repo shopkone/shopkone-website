@@ -14,6 +14,7 @@ import { useRequest } from 'ahooks'
 import { Button, Flex, Typography } from 'antd'
 
 import { useCountries } from '@/api/base/countries'
+import { useCurrencyList } from '@/api/base/currency-list'
 import { useLanguageList } from '@/api/base/languages'
 import { DomainListApi } from '@/api/domain/list'
 import { LanguageListApi } from '@/api/languages/list'
@@ -40,6 +41,8 @@ export default function MarketChange () {
   const domainList = useRequest(DomainListApi)
   const languages = useRequest(LanguageListApi)
   const languageList = useLanguageList()
+  const currencyList = useCurrencyList()
+  const currency = currencyList?.data?.find(c => c.code === info?.data?.currency_code)
 
   const options = [
     { label: t('今天'), value: 1 },
@@ -86,7 +89,7 @@ export default function MarketChange () {
           </Button>
         </Flex>
       }
-      loading={!info.data?.id || countries.loading || domainList.loading || languages.loading}
+      loading={!info.data?.id || countries.loading || domainList.loading || languages.loading || currencyList?.loading}
       back={'/settings/markets'}
       width={700}
       title={
@@ -147,7 +150,7 @@ export default function MarketChange () {
                 <IconShoppingBag size={18} />
                 <Flex vertical gap={2}>
                   <div>{t('商品与定价')}</div>
-                  <div>{t('美元(USD US$)')}</div>
+                  <div>{currency?.title} {currency?.symbol}</div>
                 </Flex>
               </Flex>
               <IconChevronRight size={16} />

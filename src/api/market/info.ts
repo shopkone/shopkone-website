@@ -14,6 +14,7 @@ export interface MarketInfoRes {
   sub_domain_id: number
   language_ids: number[]
   default_language_id: number
+  currency_code: string
 }
 
 export const MarketInfoApi = async (params: MarketInfoReq) => {
