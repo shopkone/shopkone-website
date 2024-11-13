@@ -12,6 +12,7 @@ import { MarketPriceInfoApi } from '@/api/market/market-price-info'
 import { MarketSimpleApi } from '@/api/market/market-simple'
 import { AdjustType, MarketProductItem, MarketUpdateProductApi } from '@/api/market/update-market-price'
 import { ProductListApi, ProductListReq, ProductListRes } from '@/api/product/list'
+import TransHandle from '@/api/trans-handle'
 import FileImage from '@/components/file-image'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
@@ -64,6 +65,16 @@ export default function PriceAdjust () {
   const loadingHandle = useRef(false)
 
   const currency = currencyList?.data?.find(c => c.code === currencyCode)
+
+  const changeMainTips = (
+    <TransHandle
+      to={'/settings/general'}
+      title={t('商品与定价')}
+      i18nkey={t('更改提示')}
+    >
+      {t('商店结算货币')}
+    </TransHandle>
+  )
 
   const getPrice = (product: ProductListRes) => {
     const adjustProduct = list?.find(i => i.product_id === product.id)
@@ -245,7 +256,7 @@ export default function PriceAdjust () {
           isSame = true
         }
         return (
-          <Tooltip title={marketInfo?.data?.is_main ? t('若要更新主要市场货币，请更改商店结算货币') : isChangeAdjust ? t('请保存当前编辑后再更改') : undefined}>
+          <Tooltip title={(isChangeAdjust && !marketInfo?.data?.is_main) ? t('请保存当前编辑后再更改') : undefined}>
             <div onMouseUp={e => { e.stopPropagation() }}>
               <SInputNumber
                 onChange={(value) => { onUpdateFixed(row.id, value) }}
@@ -336,7 +347,7 @@ export default function PriceAdjust () {
             tips={
             marketInfo?.data?.is_main
               ? (
-                  t('若要更新主要市场货币，请更改商店结算货币')
+                  changeMainTips
                 )
               : (
                   t('管理此市场中的客户将看到的货币，并仅为此市场调整价格。')
@@ -346,12 +357,14 @@ export default function PriceAdjust () {
           >
             <Flex gap={16}>
               <div className={'flex1'}>
-                <Form.Item
-                  name={'currency_code'}
-                  label={t('货币')}
-                >
-                  <SelectCurrency disabled={marketInfo?.data?.is_main} />
-                </Form.Item>
+                <Tooltip placement={'bottomLeft'} title={marketInfo?.data?.is_main ? changeMainTips : undefined}>
+                  <Form.Item
+                    name={'currency_code'}
+                    label={t('货币')}
+                  >
+                    <SelectCurrency disabled={marketInfo?.data?.is_main} />
+                  </Form.Item>
+                </Tooltip>
               </div>
               <SRender render={!marketInfo?.data?.is_main}>
                 <Flex className={'flex1'} gap={4}>
@@ -439,7 +452,7 @@ export default function PriceAdjust () {
                   }}
                 >
                   <SRender render={current === 0}>
-                    <Button onClick={() => { nav('/products/products/change', { title: t('商品与定价') }) }}>
+                    <Button onClick={() => { nav('/products/products', { title: t('商品与定价') }) }}>
                       {t('去添加商品')}
                     </Button>
                   </SRender>
@@ -447,6 +460,11 @@ export default function PriceAdjust () {
               </SRender>
 
               <SRender render={productList.data ? productList?.data?.total : false}>
+                <div style={{ marginLeft: 12, marginBottom: 2 }} className={'tips'}>
+                  <TransHandle i18nkey={t('修改主市场价格提示')} title={t('商品与定价')} to={'/products/products'}>
+                    {t('商品管理页')}
+                  </TransHandle>
+                </div>
                 <STable
                   style={{ padding: '0 8px 8px 8px' }}
                   borderless

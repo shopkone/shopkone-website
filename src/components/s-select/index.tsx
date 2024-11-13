@@ -12,7 +12,8 @@ export default function SSelect (props: SelectProps) {
   return (
     <Select
       onDropdownVisibleChange={visible => { !visible && setFocus(false) }}
-      onClick={e => { !focus && setFocus(true) }}
+      onFocus={(e) => { setFocus(true) }}
+      onBlur={(e) => { setFocus(false) }}
       suffixIcon={
         <>
           <SRender render={!props.loading}>

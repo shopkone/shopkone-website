@@ -11,11 +11,13 @@ import { MarketUpDomainApi } from '@/api/domain/update'
 import { LanguageListApi } from '@/api/languages/list'
 import { MarketInfoApi } from '@/api/market/info'
 import { UpdateMarketLangApi } from '@/api/market/update-market-lang'
+import TransHandle from '@/api/trans-handle'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
 import { sMessage } from '@/components/s-message'
 import SRender from '@/components/s-render'
 import SSelect from '@/components/s-select'
+import { useNav } from '@/hooks/use-nav'
 import LanguagesItems from '@/pages/mange/settings/markets/languages/languages-items'
 import { isEqualHandle } from '@/utils/is-equal-handle'
 
@@ -37,6 +39,7 @@ export default function MarketLanguages () {
   const init = useRef<any>()
   const [isChange, setIsChange] = useState(false)
   const [defaultLanguageId, setDefaultLangugaeId] = useState(0)
+  const nav = useNav()
 
   const domain_type = Form.useWatch('domain_type', form)
 
@@ -46,10 +49,6 @@ export default function MarketLanguages () {
       init.current = cloneDeep(values)
       return
     }
-    console.log({
-      values,
-      init: init.current
-    })
     const isSame = isEqualHandle(values, init.current)
     setIsChange(!isSame)
   }
@@ -100,8 +99,6 @@ export default function MarketLanguages () {
     setDefaultLangugaeId(info?.data?.default_language_id || 0)
   }, [info?.data?.default_language_id])
 
-  console.log({ isChange })
-
   return (
     <Page
       onOk={onOk}
@@ -132,7 +129,15 @@ export default function MarketLanguages () {
       <Form onValuesChange={onValuesChange} form={form}>
         <Flex vertical gap={16}>
           <SCard
-            tips={t('你可以在域名设置上管理主域名及子域名')}
+            tips={
+              <TransHandle
+                to={'/settings/domains'}
+                title={t('域名和语言')}
+                i18nkey={t('你可以在域名设置上管理主域名及子域名')}
+              >
+                {t('域名设置')}
+              </TransHandle>
+            }
             title={t('域名')}
           >
             <Form.Item name={'domain_type'} style={{ marginBottom: 12 }}>

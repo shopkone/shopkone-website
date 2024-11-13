@@ -92,7 +92,7 @@ export default function Page (props: PageProps) {
           <Flex style={{ minWidth: 0 }} flex={1} gap={8}>
             <SRender render={!!back || pageBack?.url}>
               <Tooltip title={pageBack?.title ? t('返回x', { x: pageBack?.title }) : undefined}>
-                <Button style={{ position: 'relative', top: 1 }} onClick={() => { nav(back || pageBack?.url || '') }} type={'text'} className={styles['back-icon']}>
+                <Button style={{ position: 'relative', top: 1 }} onClick={() => { nav(pageBack?.url || back || '') }} type={'text'} className={styles['back-icon']}>
                   <IconArrowLeft size={20} />
                 </Button>
               </Tooltip>

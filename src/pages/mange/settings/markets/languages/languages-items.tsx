@@ -9,6 +9,7 @@ import { DomainListRes } from '@/api/domain/list'
 import { LanguageListRes } from '@/api/languages/list'
 import { MarketInfoRes } from '@/api/market/info'
 import { MarketOptionsApi } from '@/api/market/options'
+import TransHandle from '@/api/trans-handle'
 import SCard from '@/components/s-card'
 import SRender from '@/components/s-render'
 import STable, { STableProps } from '@/components/s-table'
@@ -53,7 +54,6 @@ export default function LanguagesItems (props: LanguagesItemsProps) {
 
   const getCheckBoxTips = (row: LanguageListRes) => {
     if (languages?.length === 1) return
-    if (justUseMainConfig) return t('使用主域名时，默认使用主市场的语言设置，可前往主市场 变更语言')
     if (row.id === defaultLanguageId) return t('默认语言不可禁用，如需禁用，请切换默认语言')
   }
 
@@ -136,9 +136,23 @@ export default function LanguagesItems (props: LanguagesItemsProps) {
       tips={
       justUseMainConfig
         ? (
-            t('使用主域名时，默认使用主市场的语言设置，可前往主市场 变更语言')
+          <TransHandle
+            to={`/settings/markets/change/${mainMarket?.value}`}
+            i18nkey={t('前往主市场')}
+            title={'域名和语言'}
+          >
+            {t('主要市场')}
+          </TransHandle>
           )
-        : t('选择要在此市场中为客户提供的语言，你可以在商店语言上管理这些内容')
+        : (
+          <TransHandle
+            to={'/settings/languages'}
+            i18nkey={t('选择要在此市场中为客户提供的语言，你可以在商店语言上管理这些内容')}
+            title={t('域名和语言')}
+          >
+            {t('商店语言')}
+          </TransHandle>
+          )
       }
       title={t('语言')}
       extra={
