@@ -2,6 +2,8 @@ import { memo, useEffect, useState } from 'react'
 import { useMemoizedFn } from 'ahooks'
 import { Input, InputProps } from 'antd'
 
+import { useCurrencyList } from '@/api/base/currency-list'
+import { useManageState } from '@/pages/mange/state'
 import { roundPrice } from '@/utils/num'
 
 export interface SInputNumberProps extends Omit<InputProps, 'onChange' | 'value'> {
@@ -30,7 +32,9 @@ function SInputNumber (props: SInputNumberProps) {
     required,
     ...rest
   } = props
-
+  const store_currency_code = useManageState(state => state.shopInfo?.store_currency)
+  const currencies = useCurrencyList()
+  const currency = currencies?.data?.find(c => c.code === store_currency_code)
   const [focus, setFocus] = useState(false)
 
   const [num, setNum] = useState<string>()
@@ -79,7 +83,7 @@ function SInputNumber (props: SInputNumberProps) {
       style={{ width: '100%' }}
       autoComplete={'off'}
       onChange={onChangeHandle}
-      prefix={money ? '$' : props.prefix}
+      prefix={money ? currency?.symbol : props.prefix}
       {...rest}
     />
   )

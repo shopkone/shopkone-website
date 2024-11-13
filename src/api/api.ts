@@ -15,6 +15,7 @@ export interface PageRes<T> {
 export interface PageReq {
   page: number
   page_size: number
+  all_total?: number
 }
 
 export { api }

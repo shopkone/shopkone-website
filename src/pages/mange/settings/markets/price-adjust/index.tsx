@@ -1,31 +1,33 @@
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
-import { IconPhoto, IconSearch } from '@tabler/icons-react'
+import { IconPhoto, IconSearch, IconTag } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
-import { Button, Flex, Form, Input, Tooltip } from 'antd'
+import { Button, Empty, Flex, Form, Input, Tooltip } from 'antd'
 import cloneDeep from 'lodash/cloneDeep'
 
-import { useCountries } from '@/api/base/countries'
 import { useCurrencyList } from '@/api/base/currency-list'
 import { FileType } from '@/api/file/add-file-record'
-import { AdjustType, MarketInfoApi } from '@/api/market/info'
-import { MarketListRes } from '@/api/market/list'
-import { MarketProductItem, MarketUpdateProductApi } from '@/api/market/update-market-price'
+import { MarketPriceInfoApi } from '@/api/market/market-price-info'
+import { MarketSimpleApi } from '@/api/market/market-simple'
+import { AdjustType, MarketProductItem, MarketUpdateProductApi } from '@/api/market/update-market-price'
 import { ProductListApi, ProductListReq, ProductListRes } from '@/api/product/list'
 import FileImage from '@/components/file-image'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
 import SInputNumber from '@/components/s-input-number'
+import SLoading from '@/components/s-loading'
 import { sMessage } from '@/components/s-message'
+import { useModal } from '@/components/s-modal'
 import SRender from '@/components/s-render'
 import SSelect from '@/components/s-select'
 import STable, { STableProps } from '@/components/s-table'
 import SelectCurrency from '@/components/select-currency'
 import Status from '@/components/status'
+import { useNav } from '@/hooks/use-nav'
 import { reduce } from '@/utils'
 import { isEqualHandle } from '@/utils/is-equal-handle'
-import { formatPrice } from '@/utils/num'
+import { formatPrice, roundPrice } from '@/utils/num'
 import { genId } from '@/utils/random'
 
 import styles from './index.module.less'
@@ -33,33 +35,46 @@ import styles from './index.module.less'
 export default function PriceAdjust () {
   const { t } = useTranslation('settings', { keyPrefix: 'market' })
   const id = Number(useParams().id || 0)
-  const info = useRequest(MarketInfoApi, { manual: true })
+
+  const [params, setParams] = useState<ProductListReq>({ page: 1, page_size: 20 })
+  const [selected, setSelected] = useState<number[]>([])
+  const [list, setList] = useState<MarketProductItem[]>([])
+  const initRef = useRef(null)
+  const modal = useModal()
+  const nav = useNav()
+
+  const currencyList = useCurrencyList()
+  const priceProduct = useRequest(MarketPriceInfoApi, { manual: true })
+  const productList = useRequest(ProductListApi, { manual: true })
+  const marketInfo = useRequest(MarketSimpleApi, { manual: true })
+  const update = useRequest(MarketUpdateProductApi, { manual: true })
+  const [isChange, setIsChange] = useState(false)
+  const [current, setCurrent] = useState(0)
+
   const [form] = Form.useForm()
   const adjustType = Form.useWatch('adjust_type', form)
   const adjustPercent = Form.useWatch('adjust_percent', form)
   const currencyCode = Form.useWatch('currency_code', form)
-  const currencyList = useCurrencyList()
-  const currency = currencyList?.data?.find(c => c.code === currencyCode)
-  const countries = useCountries()
-  const countryList = countries?.data?.filter(c => info?.data?.country_codes?.includes(c.code))
-  const [params, setParams] = useState<ProductListReq>({ page: 1, page_size: 20 })
-  const productList = useRequest(ProductListApi, { manual: true })
-  const [selected, setSelected] = useState<number[]>([])
+
   const isChangeAdjust =
-    adjustPercent !== info?.data?.adjust_percent ||
-    currencyCode !== info?.data?.currency_code ||
-    adjustType !== info?.data?.adjust_type
-  const [current, setCurrent] = useState(0)
-  const [list, setList] = useState<MarketProductItem[]>([])
+    adjustPercent !== priceProduct?.data?.adjust_percent ||
+    currencyCode !== priceProduct?.data?.currency_code ||
+    adjustType !== priceProduct?.data?.adjust_type
   const exclude_product_ids = list?.filter(i => i.exclude)?.map(i => i.product_id) || []
-  const [isChange, setIsChange] = useState(false)
-  const initRef = useRef(null)
-  const update = useRequest(MarketUpdateProductApi, { manual: true })
+
+  const currency = currencyList?.data?.find(c => c.code === currencyCode)
 
   const getPrice = (product: ProductListRes) => {
     const adjustProduct = list?.find(i => i.product_id === product.id)
     if (typeof adjustProduct?.fixed === 'number') return { prices: [adjustProduct?.fixed], fixed: true }
-    return { prices: product?.variants?.map(i => i.price), fixed: false }
+    return {
+      prices: product?.variants?.map(i => {
+        const price = i.price * (priceProduct?.data?.exchange_rate || 0)
+        const offset = price * adjustPercent * 0.01
+        return roundPrice(price + (adjustType === AdjustType.PriceAdjustmentTypeReduce ? -offset : +offset))
+      }),
+      fixed: false
+    }
   }
 
   const filterAdjustProducts = (items: MarketProductItem[]) => {
@@ -118,7 +133,6 @@ export default function PriceAdjust () {
   }
 
   const onOk = async () => {
-    if (!info?.data?.id) return
     await form.validateFields().catch(err => {
       const msg = err.errorFields?.[0]?.errors?.[0]
       if (msg) {
@@ -127,10 +141,18 @@ export default function PriceAdjust () {
       throw new Error(err)
     })
     const values = form.getFieldsValue(true)
-    await update.runAsync({ ...values, adjust_products: list, market_id: info?.data?.id })
+    await update.runAsync({ ...values, adjust_products: list, market_id: id })
     setIsChange(false)
     sMessage.success(t('更新成功'))
-    info.refresh()
+    priceProduct.refresh()
+  }
+
+  const onModal = async () => {
+    modal.confirm({
+      title: t('确认更改市场货币吗？'),
+      content: t('更改市场货币将删除所有您已经设置的固定价格'),
+      onOk
+    })
   }
 
   console.log({ isChange })
@@ -138,10 +160,11 @@ export default function PriceAdjust () {
   const onCancel = () => {
     form.setFieldsValue(initRef.current)
     setIsChange(false)
-    setList(info?.data?.adjust_products || [])
+    setList(priceProduct?.data?.adjust_products || [])
   }
 
   const onChangeTab = (tab: number) => {
+    if (tab === current) return
     setCurrent(tab)
     const p = cloneDeep({ ...params, page: 1 })
     if (tab === 0) {
@@ -220,13 +243,13 @@ export default function PriceAdjust () {
           isSame = true
         }
         return (
-          <Tooltip title={isChangeAdjust ? t('请保存当前编辑后再更改') : undefined}>
+          <Tooltip title={marketInfo?.data?.is_main ? t('若要更新主要市场货币，请更改商店结算货币') : isChangeAdjust ? t('请保存当前编辑后再更改') : undefined}>
             <div onMouseUp={e => { e.stopPropagation() }}>
               <SInputNumber
                 onChange={(value) => { onUpdateFixed(row.id, value) }}
                 disabled={isChangeAdjust}
                 placeholder={isChangeAdjust ? undefined : range}
-                value={(isSame && !isChangeAdjust) ? maxPrice : undefined}
+                value={((isSame && !isChangeAdjust) || marketInfo?.data?.is_main) ? maxPrice : undefined}
                 prefix={currency?.symbol}
                 money
                 suffix={
@@ -259,75 +282,88 @@ export default function PriceAdjust () {
 
   useEffect(() => {
     if (!id) return
-    info.run({ id })
+    priceProduct.run({ market_id: id })
+    marketInfo.run({ id })
   }, [id])
 
   useEffect(() => {
-    if (!info.data) return
-    setList(info.data.adjust_products)
-    form.setFieldsValue(info.data)
+    if (!priceProduct.data) return
+    setList(priceProduct.data.adjust_products)
+    form.setFieldsValue(priceProduct.data)
     onValuesChange(true)
-  }, [info.data])
+  }, [priceProduct.data])
 
   useEffect(() => {
     productList.run(params)
   }, [params])
 
   useEffect(() => {
-    if (!initRef?.current || !info?.data) return
-    if (currencyCode !== info?.data?.currency_code) {
+    if (!initRef?.current || !priceProduct?.data) return
+    if (currencyCode !== priceProduct?.data?.currency_code) {
       onSetNoFixed()
     }
   }, [currencyCode])
 
+  let isLoading = !priceProduct?.data || !productList?.data
+  isLoading = isLoading || priceProduct.loading || currencyList?.loading
+
+  const isRealChange = isChange || !(isEqualHandle(list, priceProduct.data?.adjust_products)) || list?.length !== priceProduct.data?.adjust_products?.length
+
   return (
     <Page
-      onOk={onOk}
-      isChange={isChange || !(isEqualHandle(list, info.data?.adjust_products)) || list?.length !== info.data?.adjust_products?.length}
+      onOk={priceProduct?.data?.currency_code !== currencyCode ? onModal : onOk}
+      isChange={priceProduct.data ? isRealChange : false}
       onCancel={onCancel}
       loadingHiddenBg
-      loading={!info.data?.id || countries?.loading || info?.loading}
+      loading={isLoading}
       back={`/settings/markets/change/${id}`}
       title={
         <Flex align={'center'} gap={12}>
           {t('商品与定价')}
-          <SRender
-            className={countryList?.length === 1 ? undefined : styles.moreTips}
-            render={info.data?.id ? countries?.data?.length : null}
-            style={{ fontSize: 13, fontWeight: 450 }}
-          >
-            <Tooltip
-              mouseEnterDelay={0.01}
-              title={countryList?.length === 1 ? undefined : countryList?.map(i => i.name).join('、')}
-            >
-              #{info?.data?.is_main ? countryList?.[0]?.name : info?.data?.name}
-            </Tooltip>
-          </SRender>
+          <span className={styles.moreTips}>#{marketInfo?.data?.name || '--'}</span>
         </Flex>
       }
       width={700}
     >
       <Form onValuesChange={onValuesChange} form={form} layout={'vertical'}>
         <Flex vertical gap={16}>
-          <SCard tips={t('管理此市场中的客户将看到的货币，并仅为此市场调整价格。')} title={t('定价')}>
+          <SCard
+            tips={
+            marketInfo?.data?.is_main
+              ? (
+                  t('若要更新主要市场货币，请更改商店结算货币')
+                )
+              : (
+                  t('管理此市场中的客户将看到的货币，并仅为此市场调整价格。')
+                )
+            }
+            title={t('定价')}
+          >
             <Flex gap={16}>
-              <Form.Item name={'currency_code'} className={'flex1'} label={t('货币')}>
-                <SelectCurrency />
-              </Form.Item>
-              <Flex className={'flex1'} gap={4}>
-                <Form.Item name={'adjust_type'} className={'flex1'} label={t('价格调整')}>
-                  <SSelect options={adjustTypeOptions} />
+              <div className={'flex1'}>
+                <Form.Item
+                  name={'currency_code'}
+                  label={t('货币')}
+                >
+                  <SelectCurrency disabled={marketInfo?.data?.is_main} />
                 </Form.Item>
-                <Form.Item name={'adjust_percent'} style={{ marginTop: 23, width: 100 }}>
-                  <SInputNumber
-                    required
-                    precision={5}
-                    style={{ height: 32 }}
-                    prefix={<span style={{ fontSize: 16 }}>{adjustType === 1 ? '-' : '+'}</span>}
-                    suffix={'%'}
-                  />
-                </Form.Item>
-              </Flex>
+              </div>
+              <SRender render={!marketInfo?.data?.is_main}>
+                <Flex className={'flex1'} gap={4}>
+                  <Form.Item name={'adjust_type'} className={'flex1'} label={t('价格调整')}>
+                    <SSelect options={adjustTypeOptions} />
+                  </Form.Item>
+                  <Form.Item name={'adjust_percent'} style={{ marginTop: 23, width: 100 }}>
+                    <SInputNumber
+                      required
+                      precision={5}
+                      style={{ height: 32 }}
+                      prefix={<span style={{ fontSize: 16 }}>{adjustType === 1 ? '-' : '+'}</span>}
+                      suffix={'%'}
+                    />
+                  </Form.Item>
+                </Flex>
+              </SRender>
             </Flex>
           </SCard>
           <SCard styles={{ body: { padding: '8px 4px' } }}>
@@ -340,7 +376,7 @@ export default function PriceAdjust () {
                 type={'text'}
                 size={'small'}
               >
-                {t('全部商品', { x: productList?.data?.total })}
+                {t('全部商品', { x: productList?.data?.page?.all_total })}
               </Button>
               <Button
                 style={{ height: 22 }}
@@ -350,7 +386,7 @@ export default function PriceAdjust () {
                 type={'text'}
                 size={'small'}
               >
-                {t('已包含', { x: reduce(productList?.data?.total, exclude_product_ids?.length) })}
+                {t('已包含', { x: reduce(productList?.data?.page?.all_total, exclude_product_ids?.length) })}
               </Button>
               <Button
                 style={{ height: 22 }}
@@ -364,45 +400,77 @@ export default function PriceAdjust () {
               </Button>
             </Flex>
 
-            <Flex gap={8} style={{ padding: '16px 8px' }}>
-              <Input autoComplete={'off'} placeholder={'搜索商品'} prefix={<IconSearch size={16} />} />
-              <SSelect style={{ minWidth: 100 }} />
-            </Flex>
+            <SRender render={productList?.data?.page?.all_total}>
+              <Flex gap={8} style={{ padding: '16px 8px' }}>
+                <Input autoComplete={'off'} placeholder={'搜索商品'} prefix={<IconSearch size={16} />} />
+                <SSelect style={{ minWidth: 100 }} />
+              </Flex>
+            </SRender>
 
-            <STable
-              style={{ padding: '0 8px 8px 8px' }}
-              borderless
-              className={'table-border'}
-              data={productList.data?.list || []}
-              columns={columns}
-              loading={productList.loading}
-              page={{
-                current: params.page,
-                pageSize: params.page_size,
-                total: productList?.data?.total,
-                onChange: (page, page_size) => {
-                  setParams({ ...params, page, page_size })
+            <SRender
+              style={{ padding: '48px 8px 32px 8px' }}
+              render={!productList?.data?.total && productList.data}
+            >
+              <SLoading loading={productList.loading}>
+                <Empty
+                  image={
+                    <div style={{ paddingTop: 32 }}>
+                      <IconTag size={64} color={'#ddd'} />
+                    </div>
+                  }
+                  description={(
+                    <Flex vertical gap={8} className={'secondary'}>
+                      <div style={{ fontSize: 14 }}>
+                        {current === 0 ? t('店铺未添加商品') : (current === 1 ? t('此市场已排除所有商品') : t('此市场已包含所有商品'))}
+                      </div>
+                      <div className={'secondary'}>
+                        {current === 0 ? undefined : (current === 1 ? t('此市场中的客户将无法购买您的产品') : t('此市场中的客户可以购买您的任何产品'))}
+                      </div>
+                    </Flex>
+                  )}
+                  style={{
+                    paddingBottom: 24,
+                    marginTop: -32
+                  }}
+                >
+                  <SRender render={current === 0}>
+                    <Button onClick={() => { nav('/products/products/change', { title: t('商品与定价') }) }}>
+                      {t('去添加商品')}
+                    </Button>
+                  </SRender>
+                </Empty>
+              </SLoading>
+            </SRender>
+
+            <SRender render={productList.data ? productList?.data?.total : false}>
+              <STable
+                style={{ padding: '0 8px 8px 8px' }}
+                borderless
+                className={'table-border'}
+                data={productList.data?.list || []}
+                columns={columns}
+                loading={productList.loading}
+                page={{
+                  current: params.page,
+                  pageSize: params.page_size,
+                  total: productList?.data?.total,
+                  onChange: (page, page_size) => {
+                    setParams({ ...params, page, page_size })
+                  }
+                }}
+                actions={
+                  <Flex align={'center'}>
+                    <Button onClick={() => { onChangeExclude(selected, false) }} type={'link'} size={'small'} >
+                      {t('包含')}
+                    </Button>
+                    <Button onClick={() => { onChangeExclude(selected, true) }} type={'link'} size={'small'} danger>
+                      {t('排除')}
+                    </Button>
+                  </Flex>
                 }
-              }}
-              onRowClick={(row: MarketListRes) => {
-                if (selected.includes(row.id)) {
-                  setSelected(selected.filter(i => i !== row.id))
-                } else {
-                  setSelected([...selected, row.id])
-                }
-              }}
-              actions={
-                <Flex align={'center'}>
-                  <Button onClick={() => { onChangeExclude(selected, false) }} type={'link'} size={'small'} >
-                    {t('包含')}
-                  </Button>
-                  <Button onClick={() => { onChangeExclude(selected, true) }} type={'link'} size={'small'} danger>
-                    {t('排除')}
-                  </Button>
-                </Flex>
-              }
-              rowSelection={{ onChange: setSelected, value: selected }}
-            />
+                rowSelection={{ onChange: setSelected, value: selected }}
+              />
+            </SRender>
           </SCard>
         </Flex>
       </Form>
