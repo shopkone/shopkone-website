@@ -61,6 +61,7 @@ export default function PriceAdjust () {
     currencyCode !== priceProduct?.data?.currency_code ||
     adjustType !== priceProduct?.data?.adjust_type
   const exclude_product_ids = list?.filter(i => i.exclude)?.map(i => i.product_id) || []
+  const loadingHandle = useRef(false)
 
   const currency = currencyList?.data?.find(c => c.code === currencyCode)
 
@@ -155,8 +156,6 @@ export default function PriceAdjust () {
     })
   }
 
-  console.log({ isChange })
-
   const onCancel = () => {
     form.setFieldsValue(initRef.current)
     setIsChange(false)
@@ -165,7 +164,6 @@ export default function PriceAdjust () {
 
   const onChangeTab = (tab: number) => {
     if (tab === current) return
-    setCurrent(tab)
     const p = cloneDeep({ ...params, page: 1 })
     if (tab === 0) {
       p.include_ids = undefined
@@ -179,8 +177,12 @@ export default function PriceAdjust () {
       p.include_ids = exclude_product_ids
       p.exclude_ids = undefined
     }
+    loadingHandle.current = true
     setParams(p)
     setSelected([])
+    setTimeout(() => {
+      setCurrent(tab)
+    })
   }
 
   const columns: STableProps['columns'] = [
@@ -281,6 +283,7 @@ export default function PriceAdjust () {
   ]
 
   useEffect(() => {
+    loadingHandle.current = false
     if (!id) return
     priceProduct.run({ market_id: id })
     marketInfo.run({ id })
@@ -294,7 +297,9 @@ export default function PriceAdjust () {
   }, [priceProduct.data])
 
   useEffect(() => {
-    productList.run(params)
+    productList.runAsync(params).then(res => {
+      loadingHandle.current = false
+    })
   }, [params])
 
   useEffect(() => {
@@ -407,11 +412,11 @@ export default function PriceAdjust () {
               </Flex>
             </SRender>
 
-            <SRender
-              style={{ padding: '48px 8px 32px 8px' }}
-              render={!productList?.data?.total && productList.data}
-            >
-              <SLoading loading={productList.loading}>
+            <SLoading loading={productList.loading || loadingHandle.current}>
+              <SRender
+                style={{ padding: '48px 8px 32px 8px' }}
+                render={!productList?.data?.total && productList.data}
+              >
                 <Empty
                   image={
                     <div style={{ paddingTop: 32 }}>
@@ -439,38 +444,37 @@ export default function PriceAdjust () {
                     </Button>
                   </SRender>
                 </Empty>
-              </SLoading>
-            </SRender>
+              </SRender>
 
-            <SRender render={productList.data ? productList?.data?.total : false}>
-              <STable
-                style={{ padding: '0 8px 8px 8px' }}
-                borderless
-                className={'table-border'}
-                data={productList.data?.list || []}
-                columns={columns}
-                loading={productList.loading}
-                page={{
-                  current: params.page,
-                  pageSize: params.page_size,
-                  total: productList?.data?.total,
-                  onChange: (page, page_size) => {
-                    setParams({ ...params, page, page_size })
+              <SRender render={productList.data ? productList?.data?.total : false}>
+                <STable
+                  style={{ padding: '0 8px 8px 8px' }}
+                  borderless
+                  className={'table-border'}
+                  data={productList.data?.list || []}
+                  columns={columns}
+                  page={{
+                    current: params.page,
+                    pageSize: params.page_size,
+                    total: productList?.data?.total,
+                    onChange: (page, page_size) => {
+                      setParams({ ...params, page, page_size })
+                    }
+                  }}
+                  actions={
+                    <Flex align={'center'}>
+                      <Button onClick={() => { onChangeExclude(selected, false) }} type={'link'} size={'small'} >
+                        {t('包含')}
+                      </Button>
+                      <Button onClick={() => { onChangeExclude(selected, true) }} type={'link'} size={'small'} danger>
+                        {t('排除')}
+                      </Button>
+                    </Flex>
                   }
-                }}
-                actions={
-                  <Flex align={'center'}>
-                    <Button onClick={() => { onChangeExclude(selected, false) }} type={'link'} size={'small'} >
-                      {t('包含')}
-                    </Button>
-                    <Button onClick={() => { onChangeExclude(selected, true) }} type={'link'} size={'small'} danger>
-                      {t('排除')}
-                    </Button>
-                  </Flex>
-                }
-                rowSelection={{ onChange: setSelected, value: selected }}
-              />
-            </SRender>
+                  rowSelection={{ onChange: setSelected, value: selected }}
+                />
+              </SRender>
+            </SLoading>
           </SCard>
         </Flex>
       </Form>
