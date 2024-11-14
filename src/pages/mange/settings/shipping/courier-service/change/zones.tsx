@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { ReactNode, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { IconPencil, IconPlus, IconTrash, IconWorld } from '@tabler/icons-react'
 import { useMemoizedFn } from 'ahooks'
@@ -28,12 +28,13 @@ import styles from './index.module.less'
 
 export interface ZonesProps {
   value?: BaseShippingZone[]
-  onChange?: (value: BaseShippingZone[]) => void
+  onChange?: (value: BaseShippingZone[]) => void // onChange 是否存在决定了是否是预览模式
+  title?: ReactNode
 }
 
 export default function Zones (props: ZonesProps) {
-  const { onChange, value = [] } = props
   const { t } = useTranslation('settings', { keyPrefix: 'shipping' })
+  const { onChange, value = [], title = t('收货区域') } = props
   const openInfo = useOpen<BaseShippingZone>()
   const feeOpenInfo = useOpen<{ fee?: BaseShippingZoneFee, zoneId: number }>({ zoneId: 0 })
   const countries = useCountries()
@@ -177,11 +178,13 @@ export default function Zones (props: ZonesProps) {
       render: (cod: boolean, row: BaseShippingZoneFee) => {
         if (!row.id) return null
         if (cod) {
-          return t('支持')
+          return <Flex className={'fit-width'} justify={'center'}>{t('支持')}</Flex>
         }
-        return t('不支持')
+        return <Flex className={'fit-width'} justify={'center'}>{t('不支持')}</Flex>
       },
-      width: 80
+      width: 80,
+      lock: !onChange,
+      align: 'center'
     },
     {
       title: '',
@@ -200,7 +203,8 @@ export default function Zones (props: ZonesProps) {
         </SRender>
       ),
       width: 80,
-      lock: true
+      lock: true,
+      hidden: !onChange
     }
   ])
 
@@ -252,8 +256,8 @@ export default function Zones (props: ZonesProps) {
   })
 
   return (
-    <SCard title={t('收货区域')}>
-      <SRender render={!value.length}>
+    <SCard styles={onChange ? undefined : { header: { paddingTop: 0 } }} title={title}>
+      <SRender render={!value.length && onChange}>
         <Empty
           image={<IconWorld size={64} color={'#eee'} />}
           description={t('暂无数据')}
@@ -265,14 +269,14 @@ export default function Zones (props: ZonesProps) {
         </Empty>
       </SRender>
 
-      <SRender style={{ marginTop: 8 }} render={value.length}>
+      <SRender style={{ marginTop: onChange ? 8 : 0 }} render={value.length}>
         {
           value.map((item, index) => {
             const names = getZoneName(item.codes)
             const width = getTextWidth(names.reduce((i, ii) => ii.country + i, ''), 13) + names.length * 14
             return (
               <div key={item.name}>
-                <div style={{ marginBottom: 8 }}>
+                <SRender render={onChange} style={{ marginBottom: 8 }}>
                   <Flex justify={'space-between'} align={'center'} gap={12}>
                     <div className={styles.name}>{item.name}</div>
                     <Flex style={{ marginTop: -2, position: 'relative', bottom: -23 }} align={'center'}>
@@ -309,9 +313,9 @@ export default function Zones (props: ZonesProps) {
                       {t('展示全部')}
                     </span>
                   </SRender>
-                </div>
+                </SRender>
 
-                <SRender render={!item?.fees?.length} className={styles.areaItem}>
+                <SRender render={!item?.fees?.length && onChange} className={styles.areaItem}>
                   <Flex justify={'center'} align={'center'} style={{ padding: 16 }} vertical>
                     {t('请为该区域添加运费')}
 
@@ -325,16 +329,15 @@ export default function Zones (props: ZonesProps) {
                   <STable
                     borderless
                     className={'table-border'}
-                    data={[...item.fees, { id: 0 }]}
+                    data={onChange ? [...item.fees, { id: 0 }] : item.fees}
                     columns={feeColumns(item)}
                     init
                   />
                 </SRender>
-                <div
-                  className={'line'} style={{
-                    margin: '16px 0',
-                    width: '100%'
-                  }}
+                <SRender
+                  render={onChange}
+                  className={'line'}
+                  style={{ margin: '16px 0', width: '100%' }}
                 />
               </div>
             )
@@ -342,7 +345,7 @@ export default function Zones (props: ZonesProps) {
         }
       </SRender>
 
-      <SRender render={value.length}>
+      <SRender render={value.length ? onChange : null}>
         <Button
           style={{ marginTop: 16 }}
           onClick={() => {

@@ -250,7 +250,7 @@ export default function Files () {
     >
       <Flex gap={16}>
         <Group loading={groupList.loading} list={groupList?.data || []} asyncRefresh={groupList.refreshAsync} />
-        <SCard styles={{ body: { padding: '8px 0' } }} style={{ flex: 1 }}>
+        <SCard styles={{ body: { padding: '8px 0' } }} style={{ flex: 1, height: 'fit-content' }}>
           <Filters
             groupName={groupList?.data?.find(item => item.id === params.group_id)?.name}
             value={params}

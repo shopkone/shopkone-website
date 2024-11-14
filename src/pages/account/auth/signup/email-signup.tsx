@@ -92,10 +92,11 @@ export default function EmailSignup () {
   return (
     <div>
       <Form.Item
-        rules={[{ required: true }, {
-          pattern: EMAIL_REG,
-          message: t('请输入有效的邮箱')
-        }]}
+        rules={[{ required: true, message: t('请输入邮箱') },
+          {
+            pattern: EMAIL_REG,
+            message: t('请输入有效的邮箱')
+          }]}
         name={'email'}
       >
         <Input placeholder={t('邮箱')} onPressEnter={registerAccount} size={'large'} />
@@ -108,7 +109,6 @@ export default function EmailSignup () {
             <Button
               disabled={!!count || send.loading}
               onClick={sendCode}
-              className={styles.secondary}
               size={'small'}
               type={'text'}
             >
@@ -116,7 +116,7 @@ export default function EmailSignup () {
                 <SRender render={sendEmail ? !count : false}>
                   {t('重新发送')}
                 </SRender>
-                <SRender render={!sendEmail}>
+                <SRender className={styles.primary} render={!sendEmail}>
                   {t('发送验证码')}
                 </SRender>
                 <SRender render={count}>

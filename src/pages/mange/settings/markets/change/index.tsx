@@ -155,7 +155,12 @@ export default function MarketChange () {
               </Flex>
               <IconChevronRight size={16} />
             </Flex>
-            <Flex align={'center'} justify={'space-between'} className={styles.item}>
+            <Flex
+              onClick={() => { nav(`/settings/markets/shipping/${id}`) }}
+              align={'center'}
+              justify={'space-between'}
+              className={styles.item}
+            >
               <Flex gap={16} align={'center'} justify={'space-between'}>
                 <IconTruckDelivery size={18} />
                 <Flex vertical gap={2}>
@@ -165,7 +170,11 @@ export default function MarketChange () {
               </Flex>
               <IconChevronRight size={16} />
             </Flex>
-            <Flex align={'center'} justify={'space-between'} className={styles.item}>
+            <Flex
+              align={'center'}
+              justify={'space-between'}
+              className={styles.item}
+            >
               <Flex gap={16} align={'center'} justify={'space-between'}>
                 <IconCreditCard size={18} />
                 <Flex vertical gap={2}>
@@ -180,7 +189,12 @@ export default function MarketChange () {
 
         <SCard tips={t('管理影响你的整个商店的国际设置')} title={t('店铺设置')}>
           <div className={styles.container}>
-            <Flex align={'center'} justify={'space-between'} className={styles.item}>
+            <Flex
+              onClick={() => { nav('/settings/taxes', { title: info?.data?.name }) }}
+              align={'center'}
+              justify={'space-between'}
+              className={styles.item}
+            >
               <Flex gap={16} align={'center'} justify={'space-between'}>
                 <IconTax size={18} />
                 <Flex vertical gap={2}>

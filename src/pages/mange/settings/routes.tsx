@@ -22,6 +22,7 @@ const MarketChange = lazy(async () => await import('./markets/change'))
 const MarketAdd = lazy(async () => await import('./markets/change/market-add'))
 const MarketLanguages = lazy(async () => await import('./markets/languages'))
 const MarketPriceAdjust = lazy(async () => await import('./markets/price-adjust'))
+const MarketShipping = lazy(async () => await import('./markets/shipping'))
 const Languages = lazy(async () => await import('./languages'))
 
 export const SettingsRoutes: RouteObject[] = [
@@ -60,6 +61,7 @@ export const SettingsRoutes: RouteObject[] = [
   { element: <MarketAdd />, path: '/settings/markets/add' },
   { element: <MarketLanguages />, path: '/settings/markets/languages/:id' },
   { element: <MarketPriceAdjust />, path: '/settings/markets/price-adjust/:id' },
+  { element: <MarketShipping />, path: '/settings/markets/shipping/:id' },
 
   { element: <Languages />, path: '/settings/languages' }
 ]
