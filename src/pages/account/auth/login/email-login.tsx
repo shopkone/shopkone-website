@@ -33,7 +33,7 @@ export default function EmailLogin () {
   return (
     <div>
       <Form.Item rules={[{ required: true }, { pattern: EMAIL_REG, message: t('请输入有效的邮箱') }]} name={'email'}>
-        <Input onPressEnter={onLogin} size={'large'} placeholder={t('邮箱')} />
+        <Input autoFocus onPressEnter={onLogin} size={'large'} placeholder={t('邮箱')} />
       </Form.Item>
       <Form.Item className={'mb0'} name={'password'}>
         <Input.Password placeholder={t('密码')} onPressEnter={onLogin} autoComplete={'off'} size={'large'} />

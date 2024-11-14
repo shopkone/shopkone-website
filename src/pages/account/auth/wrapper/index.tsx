@@ -43,16 +43,19 @@ export default function Wrapper (props: WrapperProps) {
         </SRender>
       </div>
 
-      <div className={styles.title}>
-        {title}
-      </div>
-
       <Form form={form} className={styles.main}>
-        {children}
+        <div className={styles.title}>
+          {title}
+        </div>
+
+        <div className={'fit-width fit-height'}>
+          {children}
+        </div>
+
       </Form>
 
       <Flex wrap={'wrap'} className={styles.agreenment}>
-        <div style={{ marginTop: 1 }}>{t('协议')}</div>
+        <div >{t('协议')}</div>
         <Button target={'_blank'} href={'https://shoplineapp.cn/about/terms/'} type={'link'} size={'small'}>
           {t('用户协议')}
         </Button>
