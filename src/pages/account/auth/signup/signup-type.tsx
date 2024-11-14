@@ -5,6 +5,7 @@ import { Button, Flex } from 'antd'
 import { ReactComponent as BrandApple } from '@/assets/icon/brand-apple.svg'
 import { ReactComponent as BrandFacebook } from '@/assets/icon/brand-facebook.svg'
 import { ReactComponent as BrandGoogle } from '@/assets/icon/brand-google.svg'
+import styles from '@/pages/account/index.module.less'
 
 export default function SignUpType () {
   const nav = useNavigate()
@@ -13,30 +14,24 @@ export default function SignUpType () {
     <Flex vertical gap={16}>
       <Button onClick={() => { nav('/auth/signup/email') }} size={'large'} block>
         <Flex align={'center'} gap={8}>
-          <IconMailFilled size={16} />
+          <IconMailFilled className={styles.typeIcon} size={18} />
           <div style={{ fontSize: 14 }}>使用电子邮箱继续</div>
         </Flex>
       </Button>
 
       <Button size={'large'} block>
-        <Flex align={'center'} gap={8}>
-          <BrandGoogle style={{ fontSize: 17 }} />
-          <div style={{ fontSize: 14 }}>使用 Google 继续</div>
-        </Flex>
+        <BrandGoogle className={styles.typeIcon} style={{ fontSize: 19 }} />
+        <div style={{ fontSize: 14 }}>使用 Google 继续</div>
       </Button>
 
       <Button size={'large'} block>
-        <Flex align={'center'} gap={8}>
-          <BrandFacebook style={{ fontSize: 15 }} />
-          <div style={{ fontSize: 14 }}>使用 Facebook 继续</div>
-        </Flex>
+        <BrandFacebook className={styles.typeIcon} style={{ fontSize: 17 }} />
+        <div style={{ fontSize: 14 }}>使用 Facebook 继续</div>
       </Button>
 
       <Button size={'large'} block>
-        <Flex align={'center'} gap={8}>
-          <BrandApple style={{ fontSize: 17 }} />
-          <div style={{ fontSize: 14 }}>使用 Apple 继续</div>
-        </Flex>
+        <BrandApple className={styles.typeIcon} style={{ fontSize: 19 }} />
+        <div style={{ fontSize: 14 }}>使用 Apple 继续</div>
       </Button>
     </Flex>
   )
