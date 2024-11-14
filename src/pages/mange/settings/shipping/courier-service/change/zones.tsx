@@ -1,4 +1,4 @@
-import { ReactNode, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { IconPencil, IconPlus, IconTrash, IconWorld } from '@tabler/icons-react'
 import { useMemoizedFn } from 'ahooks'
@@ -29,12 +29,11 @@ import styles from './index.module.less'
 export interface ZonesProps {
   value?: BaseShippingZone[]
   onChange?: (value: BaseShippingZone[]) => void // onChange 是否存在决定了是否是预览模式
-  title?: ReactNode
 }
 
 export default function Zones (props: ZonesProps) {
   const { t } = useTranslation('settings', { keyPrefix: 'shipping' })
-  const { onChange, value = [], title = t('收货区域') } = props
+  const { onChange, value = [] } = props
   const openInfo = useOpen<BaseShippingZone>()
   const feeOpenInfo = useOpen<{ fee?: BaseShippingZoneFee, zoneId: number }>({ zoneId: 0 })
   const countries = useCountries()
@@ -178,13 +177,12 @@ export default function Zones (props: ZonesProps) {
       render: (cod: boolean, row: BaseShippingZoneFee) => {
         if (!row.id) return null
         if (cod) {
-          return <Flex className={'fit-width'} justify={'center'}>{t('支持')}</Flex>
+          return t('支持')
         }
-        return <Flex className={'fit-width'} justify={'center'}>{t('不支持')}</Flex>
+        return t('不支持')
       },
       width: 80,
-      lock: !onChange,
-      align: 'center'
+      hidden: !onChange
     },
     {
       title: '',
@@ -256,7 +254,11 @@ export default function Zones (props: ZonesProps) {
   })
 
   return (
-    <SCard styles={onChange ? undefined : { header: { paddingTop: 0 } }} title={title}>
+    <SCard
+      styles={onChange ? undefined : { header: { padding: 0 }, body: { padding: 0 } }}
+      title={onChange ? t('收货区域') : undefined}
+      bordered={!!onChange}
+    >
       <SRender render={!value.length && onChange}>
         <Empty
           image={<IconWorld size={64} color={'#eee'} />}

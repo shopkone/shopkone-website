@@ -1,0 +1,43 @@
+.expandIcon {
+  transition: transform 0.1s;
+}
+
+.expanded {
+  transform: rotate(180deg);
+}
+
+.collapse {
+  background-color: #fff;
+  border-radius:12px;
+  border: 1px solid var(--color-border);
+  box-shadow:0 0.5px 0 0 #dedede;
+  :global {
+    .shopkone-collapse-extra {
+      display: none;
+    }
+    .shopkone-collapse-content-box {
+      padding: 16px !important;
+    }
+    .shopkone-collapse-item {
+      border-bottom: 1px solid var(--color-border);
+    }
+    .shopkone-collapse-header {
+    }
+    .shopkone-collapse-content-box {
+      background-color: #f7f7f7;
+      border-top: 1px solid var(--color-border);
+    }
+    .shopkone-collapse-item-disabled  {
+      .shopkone-collapse-header {
+        cursor: default;
+        color: var(--color-text-primary);
+      }
+      .shopkone-collapse-expand-icon {
+        display: none !important;
+      }
+      .shopkone-collapse-extra {
+        display: block;
+      }
+    }
+  }
+}

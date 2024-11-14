@@ -19,6 +19,7 @@ import { useLanguageList } from '@/api/base/languages'
 import { DomainListApi } from '@/api/domain/list'
 import { LanguageListApi } from '@/api/languages/list'
 import { MarketInfoApi, MarketInfoRes } from '@/api/market/info'
+import { ShippingZoneListApi } from '@/api/shipping/list-by-contry-codes'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
 import SRender from '@/components/s-render'
@@ -43,6 +44,7 @@ export default function MarketChange () {
   const languageList = useLanguageList()
   const currencyList = useCurrencyList()
   const currency = currencyList?.data?.find(c => c.code === info?.data?.currency_code)
+  const shippingList = useRequest(ShippingZoneListApi, { manual: true })
 
   const options = [
     { label: t('今天'), value: 1 },
@@ -70,10 +72,50 @@ export default function MarketChange () {
     return [defaultItem, ...items].map(l => languageList?.data?.find(i => i.value === l.language)?.label)
   }, [info.data, languages?.data])
 
+  const langsRender = useMemo(() => {
+    if (!langs?.length) return ''
+    if (langs.length > 4) {
+      return t('语言x', { x: langs.filter((_, i) => i < 3)?.join(t('，')), y: langs?.length || 0 })
+    }
+    return langs.join(t('，'))
+  }, [langs])
+
+  const { shippingCount, feeCount, shippingCountry } = useMemo(() => {
+    let shippingCountry: string[] = []
+    if (!info?.data?.id || !shippingList.data) return { shippingCount: 0, feeCount: 0, shippingCountry }
+    let shippingIds: number[] = []
+    let feeCount = 0
+    shippingList.data?.forEach(zone => {
+      shippingCountry.push(...zone.codes?.map(i => i.country_code))
+      shippingIds.push(zone.shipping_id)
+      feeCount = (zone.fees?.length || 0) + feeCount
+    })
+    shippingIds = [...new Set(shippingIds)]
+    shippingCountry = [...new Set(shippingCountry)]
+    return { shippingCount: shippingIds.length, feeCount, shippingCountry }
+  }, [info.data, shippingList?.data?.length])
+
+  const shippingCountryNames = useMemo(() => {
+    const list = shippingCountry?.map(c => {
+      const country = countryList?.find(b => b.code === c)
+      return country?.name
+    })
+    if (!list?.length) return ''
+    if (list?.length > 4) {
+      return t('发货到x', { x: shippingCount, y: list?.filter((_, i) => i < 3)?.join(t('，')) })
+    }
+    return t('发货到', { y: list?.filter((_, i) => i < 3)?.join(t('，')) })
+  }, [shippingCountry])
+
   useEffect(() => {
     if (!id) return
     info.run({ id })
   }, [id])
+
+  useEffect(() => {
+    if (!info.data) return
+    shippingList.run({ country_codes: info.data.country_codes })
+  }, [info.data])
 
   return (
     <Page
@@ -89,7 +131,7 @@ export default function MarketChange () {
           </Button>
         </Flex>
       }
-      loading={!info.data?.id || countries.loading || domainList.loading || languages.loading || currencyList?.loading}
+      loading={!info.data?.id || countries.loading || domainList.loading || languages.loading || currencyList?.loading || !shippingList.data}
       back={'/settings/markets'}
       width={700}
       title={
@@ -133,7 +175,7 @@ export default function MarketChange () {
                     </Typography.Text>
                     <div>•</div>
                     <Typography.Text style={{ lineHeight: '12px', width: 260 }} ellipsis={{ tooltip: { placement: 'topLeft' } }} >
-                      {langs?.join('、')}
+                      {langsRender}
                     </Typography.Text>
                   </Flex>
                 </Flex>
@@ -165,7 +207,16 @@ export default function MarketChange () {
                 <IconTruckDelivery size={18} />
                 <Flex vertical gap={2}>
                   <div>{t('发货')}</div>
-                  <div>{t('1 组方案的 1 项费率 • 发货到美国')}</div>
+                  <Flex gap={8}>
+                    {t('x组方案的y项费率', { x: shippingCount, y: feeCount })}
+                    <div>•</div>
+                    <Typography.Text
+                      style={{ lineHeight: '12px', width: 350, position: 'relative', top: 3 }}
+                      ellipsis={{ tooltip: { placement: 'topLeft' } }}
+                    >
+                      {shippingCountryNames}
+                    </Typography.Text>
+                  </Flex>
                 </Flex>
               </Flex>
               <IconChevronRight size={16} />

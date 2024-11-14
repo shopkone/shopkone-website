@@ -5,9 +5,10 @@ export interface ShippingZoneListByCountriesReq {
   country_codes: string[]
 }
 
-export interface ShippingZoneListByCountriesRes {
-  zones: BaseShippingZone[]
+export interface ShippingZoneListByCountriesRes extends BaseShippingZone {
+  shipping_name: string
+  shipping_id: number
 }
 
 export const ShippingZoneListApi = async (params: ShippingZoneListByCountriesReq) =>
-  await api<ShippingZoneListByCountriesRes>('/shipping/zone/list-by-countries', params)
+  await api<ShippingZoneListByCountriesRes[]>('/shipping/zone/list-by-countries', params)
