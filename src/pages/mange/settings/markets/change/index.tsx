@@ -73,6 +73,7 @@ export default function MarketChange () {
   }, [info.data, languages?.data])
 
   const langsRender = useMemo(() => {
+    console.log({ langs })
     if (!langs?.length) return ''
     if (langs.length > 4) {
       return t('语言x', { x: langs.filter((_, i) => i < 3)?.join(t('，')), y: langs?.length || 0 })
@@ -173,7 +174,9 @@ export default function MarketChange () {
                     <Typography.Text style={{ lineHeight: '12px', maxWidth: 260 }} ellipsis={{ tooltip: { placement: 'topLeft' } }} >
                       {domain}
                     </Typography.Text>
-                    <div>•</div>
+                    <SRender render={langsRender}>
+                      <div>•</div>
+                    </SRender>
                     <Typography.Text style={{ lineHeight: '12px', width: 260 }} ellipsis={{ tooltip: { placement: 'topLeft' } }} >
                       {langsRender}
                     </Typography.Text>
@@ -209,7 +212,9 @@ export default function MarketChange () {
                   <div>{t('发货')}</div>
                   <Flex gap={8}>
                     {t('x组方案的y项费率', { x: shippingCount, y: feeCount })}
-                    <div>•</div>
+                    <SRender render={shippingCount}>
+                      <div>•</div>
+                    </SRender>
                     <Typography.Text
                       style={{ lineHeight: '12px', width: 350, position: 'relative', top: 3 }}
                       ellipsis={{ tooltip: { placement: 'topLeft' } }}

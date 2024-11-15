@@ -38,7 +38,7 @@ export default function MarketShipping () {
   }, [list?.data])
 
   const items = useMemo(() => {
-    if (!zones?.length || !info?.data?.country_codes?.length) return []
+    if (!info?.data?.country_codes?.length) return []
     return info?.data?.country_codes?.map(code => {
       const currentZones = zones?.filter(i => i.codes?.includes(code))
       let feeCount = 0
@@ -116,8 +116,13 @@ export default function MarketShipping () {
       loadingHiddenBg
       back={`/settings/markets/change/${id}`}
       width={700}
-      title={t('发货')}
-      loading={info.loading || list.loading || countries.loading}
+      title={
+        <Flex align={'center'} gap={12}>
+          {t('商品与定价')}
+          <span className={styles.moreTips}>#{info?.data?.name || '--'}</span>
+        </Flex>
+      }
+      loading={info.loading || !list.data || !countries.data}
     >
       <Flex vertical gap={16}>
         <Collapse
