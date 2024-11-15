@@ -35,7 +35,7 @@ export default function Markets () {
       header={
         <Flex gap={12} align={'center'}>
           <Button>{t('偏好设置')}</Button>
-          <Button type={'primary'} style={{ height: 26 }} onClick={() => { nav('add') }}>
+          <Button type={'primary'} onClick={() => { nav('add') }}>
             {t('添加市场')}
           </Button>
         </Flex>
