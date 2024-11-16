@@ -30,7 +30,7 @@ export default function SLoading (props: SLoadingProps) {
         ...style
       }}
     >
-      <IconLoader2 className={styles.loading} color={black ? '#1F2329' : '#1456f0'} size={size} />
+      <IconLoader2 className={styles.loading} color={black ? '#1F2329' : '#165cfa'} size={size} />
       {text ? <span className={styles.lint}>{text}</span> : null}
     </div>
   )
