@@ -141,7 +141,7 @@ export default function SelectVariants (props: SelectVariantsProps) {
 
               <Flex
                 className={styles.down}
-                onMouseDown={e => { e.stopPropagation() }}
+                onMouseUp={e => { e.stopPropagation() }}
                 onClick={() => { setExpanded(expanded.includes(row.id) ? expanded.filter(i => i !== row.id) : [...expanded, row.id]) }}
                 align={'center'}
               >
@@ -164,9 +164,7 @@ export default function SelectVariants (props: SelectVariantsProps) {
                       <IconChevronDown
                         className={styles.downIcon}
                         style={{
-                          transform: expanded.includes(row.id) ? 'rotate(180deg)' : 'rotate(0deg)',
-                          position: 'relative',
-                          top: -1
+                          transform: expanded.includes(row.id) ? 'rotate(180deg)' : 'rotate(0deg)'
                         }}
                         size={14}
                       />
@@ -176,7 +174,7 @@ export default function SelectVariants (props: SelectVariantsProps) {
               </Flex>
             </Flex>
           </SRender>
-          <SRender render={!row.is_parent}>
+          <SRender className={!row.is_parent ? styles.child : ''} render={!row.is_parent}>
             <Flex className={'fit-width'} style={{ marginLeft: 20, cursor: 'pointer', height: 24 }} align={'center'} gap={12}>
               <Checkbox
                 disabled={getIsDisabled(row)}

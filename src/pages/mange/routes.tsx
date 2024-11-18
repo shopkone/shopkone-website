@@ -2,6 +2,7 @@ import { lazy } from 'react'
 import { RouteObject } from 'react-router-dom'
 
 import NotFound from '@/pages/mange/error/not-found'
+import { OrderRoutes } from '@/pages/mange/order/routes'
 import { ProductRoutes } from '@/pages/mange/product/routes'
 import { SettingsRoutes } from '@/pages/mange/settings/routes'
 
@@ -13,6 +14,7 @@ export const MangeRoutes: RouteObject[] = [{
   children: [
     ...ProductRoutes,
     ...SettingsRoutes,
+    ...OrderRoutes,
     { path: '/*', element: <NotFound /> }
   ]
 }]

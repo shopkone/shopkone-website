@@ -32,8 +32,8 @@ export default function Sider () {
       key: '/orders',
       children: [
         { label: t('所有订单'), key: 'orders' },
-        { label: t('草稿单'), key: 'Drafts' },
-        { label: t('弃单'), key: 'Abandoned checkouts' }
+        { label: t('草稿单'), key: 'drafts' },
+        { label: t('弃单'), key: 'abandoned checkouts' }
       ],
       icon: <IconArchive size={16} />
     },

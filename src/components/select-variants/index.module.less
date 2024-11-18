@@ -29,3 +29,19 @@
   cursor: default;
   padding-left: 4px;
 }
+
+.child {
+  animation: to-bottom 0.3s;
+  position: relative;
+}
+
+@keyframes to-bottom {
+  0% {
+    opacity: 0;
+    max-height: 0;
+  }
+  100% {
+    opacity: 1;
+    max-height: 50px;
+  }
+}

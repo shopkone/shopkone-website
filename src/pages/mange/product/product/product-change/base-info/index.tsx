@@ -1,14 +1,14 @@
 import { useTranslation } from 'react-i18next'
 import { Form, Input } from 'antd'
-import SCard from '@/components/s-card'
 
+import SCard from '@/components/s-card'
 import FormMedia from '@/pages/mange/product/product/product-change/base-info/form-media'
 
 export default function BaseInfo () {
   const { t } = useTranslation('product', { keyPrefix: 'product' })
 
   return (
-    <SCard  style={{ width: 612, flex: 1 }} bordered>
+    <SCard style={{ width: 612, flex: 1 }} bordered>
       <div>
         <Form.Item
           rules={[{ required: true, message: t('请输入商品标题') }]}
