@@ -28,6 +28,7 @@ export interface VariantsByIdsRes {
   rejected?: number
   received?: number
   is_deleted: boolean
+  price: number
 }
 
 const variantsByIds = async (data: VariantsByIdsReq) => {
@@ -44,6 +45,7 @@ export const useVariantsByIds = () => {
     if (!needGetIds.length) return
     const ret = await get.runAsync({ ids: needGetIds })
     setVariants([...ret, ...variants])
+    return ret
   }
 
   return { run, data: variants, loading: get.loading }

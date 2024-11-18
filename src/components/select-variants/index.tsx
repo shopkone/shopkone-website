@@ -178,7 +178,7 @@ export default function SelectVariants (props: SelectVariantsProps) {
             </Flex>
           </SRender>
           <SRender className={!row.is_parent ? styles.child : ''} render={!row.is_parent}>
-            <Flex className={'fit-width'} style={{ marginLeft: 20, cursor: 'pointer', height: 24 }} align={'center'} gap={12}>
+            <Flex className={'fit-width'} style={{ marginLeft: 22, cursor: 'pointer', height: 24 }} align={'center'} gap={12}>
               <Checkbox
                 disabled={getIsDisabled(row)}
                 checked={selected.includes(row.id)}

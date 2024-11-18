@@ -201,6 +201,7 @@ function STable (props: STableProps) {
               : undefined,
             onMouseUp: onRowClick
               ? (e) => {
+                  if (e.button) return
                   if (isCheckboxDom(e)) return
                   const main = document?.getElementById('shopkone-main')
                   if (main) {
