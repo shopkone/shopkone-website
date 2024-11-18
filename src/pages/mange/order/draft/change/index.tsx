@@ -1,9 +1,10 @@
 import { useTranslation } from 'react-i18next'
 import { IconTag } from '@tabler/icons-react'
-import { Button, Empty, Flex } from 'antd'
+import { Button, Flex } from 'antd'
 
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
+import SEmpty from '@/components/s-empty'
 import SelectVariants from '@/components/select-variants'
 import { useOpen } from '@/hooks/useOpen'
 
@@ -16,14 +17,14 @@ export default function OrderDraftChange () {
       <Flex gap={16}>
         <Flex gap={16} vertical className={'flex1'}>
           <SCard title={t('商品')}>
-            <Empty
-              description={t('请选择商品')}
-              style={{ paddingBottom: 16 }} image={<IconTag size={64} color={'#eee'} />}
+            <SEmpty
+              title={t('订单包含哪些商品')}
+              image={<IconTag size={52} color={'#eee'} />}
             >
-              <Button onClick={() => { selectProductInfo.edit([]) }} style={{ minWidth: 150 }} type={'primary'}>
+              <Button onClick={() => { selectProductInfo.edit([]) }} style={{ minWidth: 150 }} >
                 {t('选择商品')}
               </Button>
-            </Empty>
+            </SEmpty>
           </SCard>
 
           <SCard title={t('收款')}>
@@ -31,7 +32,11 @@ export default function OrderDraftChange () {
           </SCard>
         </Flex>
 
-        <SCard style={{ width: 320 }}>asd</SCard>
+        <Flex vertical gap={16}>
+          <SCard title={t('客户')} style={{ width: 320 }}>
+            asd
+          </SCard>
+        </Flex>
       </Flex>
 
       <SelectVariants info={selectProductInfo} />

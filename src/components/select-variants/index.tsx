@@ -140,9 +140,7 @@ export default function SelectVariants (props: SelectVariantsProps) {
               </Flex>
 
               <Flex
-                className={styles.down}
-                onMouseUp={e => { e.stopPropagation() }}
-                onClick={() => { setExpanded(expanded.includes(row.id) ? expanded.filter(i => i !== row.id) : [...expanded, row.id]) }}
+
                 align={'center'}
               >
                 <SRender render={row.image}>
@@ -155,11 +153,16 @@ export default function SelectVariants (props: SelectVariantsProps) {
                 </SRender>
                 <div style={{ marginLeft: 12 }}>
                   <div>{row.title}</div>
-                  <SRender style={{ userSelect: 'none' }} render={row.children?.length}>
-                    <Flex className={'tips'} align={'center'} gap={4}>
-                      {/*     <SRender render={row.variants?.find(i => selected.includes(i.id))}>
-                      {row.variants?.filter(i => selected.includes(i.id))?.length} selected<span />/<span />
-                    </SRender> */}
+                  <SRender
+                    style={{ userSelect: 'none' }} render={row.children?.length}
+                  >
+                    <Flex
+                      onMouseUp={e => { e.stopPropagation() }}
+                      onClick={() => { setExpanded(expanded.includes(row.id) ? expanded.filter(i => i !== row.id) : [...expanded, row.id]) }}
+                      className={`tips ${styles.down}`}
+                      align={'center'}
+                      gap={4}
+                    >
                       <div className={styles.downIcon}>{row.children?.length} variants</div>
                       <IconChevronDown
                         className={styles.downIcon}
