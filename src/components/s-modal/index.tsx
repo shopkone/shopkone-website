@@ -1,7 +1,8 @@
 import { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { IconInfoCircleFilled } from '@tabler/icons-react'
-import { App, Flex, Modal, ModalFuncProps, ModalProps, Typography } from 'antd'
+import { useMemoizedFn } from 'ahooks'
+import { App, Button, Flex, Modal, ModalFuncProps, ModalProps, Typography } from 'antd'
 
 export const useModal = () => {
   const modal = useRef<{
@@ -56,16 +57,45 @@ export const useModal = () => {
 
 // 分割线 SModal
 export interface SModalProps extends ModalProps {
+  extra?: React.ReactNode
 }
 
 export default function SModal (props: SModalProps) {
+  const { extra, ...rest } = props
+  const { t } = useTranslation('common', { keyPrefix: 'modal' })
+
+  const ExtraFooter = useMemoizedFn(() => {
+    return (
+      <Flex justify={'space-between'} align={'center'}>
+        {extra}
+        <Flex gap={16}>
+          <Button
+            onClick={rest?.onCancel}
+            {...rest.cancelButtonProps}
+          >
+            {rest.cancelText || t('取消')}
+          </Button>
+          <Button
+            onClick={rest?.onOk}
+            type={'primary'}
+            loading={rest?.confirmLoading}
+            {...props.okButtonProps}
+          >
+            {rest.okText || t('确定')}
+          </Button>
+        </Flex>
+      </Flex>
+    )
+  })
+
   return (
     <Modal
       centered
       width={550}
       destroyOnClose
       maskClosable={false}
-      {...props}
+      footer={extra ? <ExtraFooter /> : undefined}
+      {...rest}
       title={
         <Typography.Text style={{ maxWidth: Number(props.width || 550) - 100, fontSize: 14 }} ellipsis={{ tooltip: true }}>
           {props.title}

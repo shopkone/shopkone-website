@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import {
@@ -45,6 +45,7 @@ export default function MarketChange () {
   const currencyList = useCurrencyList()
   const currency = currencyList?.data?.find(c => c.code === info?.data?.currency_code)
   const shippingList = useRequest(ShippingZoneListApi, { manual: true })
+  const [isOpen, setIsIOpen] = useState(false)
 
   const options = [
     { label: t('今天'), value: 1 },
@@ -146,14 +147,34 @@ export default function MarketChange () {
     >
       <Flex gap={16} vertical>
         <SCard title={t('包含的国家/地区')}>
-          <Flex wrap={'wrap'} gap={12}>
+          <Flex align={'center'} wrap={'wrap'} gap={12}>
             {
-              countryList?.map(c => (
+              countryList?.filter((_, i) => isOpen || i < 8)?.map(c => (
                 <Flex align={'center'} gap={8} key={c.code} className={styles.country}>
                   <div style={{ backgroundImage: `url(${c.flag?.src})` }} className={styles.icon} />
                   <div>{c.name}</div>
                 </Flex>
               ))
+            }
+            <SRender render={(countryList?.length || 0) > 8} style={{ height: 24, width: '100%' }} />
+            {
+              (countryList?.length || 0) > 8 && (
+                <Flex gap={4} className={styles.more} align={'center'}>
+                  {t('共x个国家/地区', { x: countryList?.length })}
+                  <Button
+                    onClick={() => { setIsIOpen(!isOpen) }}
+                    style={{ fontSize: 13, position: 'relative', top: 1 }}
+                    type={'link'}
+                    size={'small'}
+                  >
+                    {isOpen ? t('收起') : t('展开全部')}
+                    <IconChevronDown
+                      style={{ transform: isOpen ? 'rotate(-180deg)' : 'rotate(0deg)' }}
+                      size={15}
+                    />
+                  </Button>
+                </Flex>
+              )
             }
           </Flex>
         </SCard>

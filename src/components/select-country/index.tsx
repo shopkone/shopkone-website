@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { IconSearch } from '@tabler/icons-react'
-import { useDebounceFn, useMemoizedFn } from 'ahooks'
+import { useMemoizedFn } from 'ahooks'
 import { Input, Tree, TreeDataNode } from 'antd'
 
 import { CountriesRes, useCountries, ZoneListOut } from '@/api/base/countries'
@@ -62,9 +62,9 @@ export default function SelectCountry (props: SelectCountryProps) {
     return continents
   }, [countries.data, disabled, value, onlyCountry])
 
-  const onFilter = useDebounceFn(() => {
+  const onFilter = useMemoizedFn(() => {
     workerRef?.current?.postMessage({ searchKey, tree })
-  }, { wait: 300 }).run
+  })
 
   useEffect(() => {
     workerRef.current = new Handle()
@@ -84,7 +84,7 @@ export default function SelectCountry (props: SelectCountryProps) {
   }, [searchKey])
 
   return (
-    <SLoading loading={countries.loading || (!filteredTree?.length && !searchKey)}>
+    <SLoading loading={countries.loading}>
       <div className={styles.container} style={{ border: borderless ? 'none' : undefined }}>
         <div style={{ padding: '12px', ...boxStyle, zIndex: 2, position: 'relative' }}>
           <Input
