@@ -98,7 +98,7 @@ export default function Page (props: PageProps) {
               </Tooltip>
             </SRender>
             <SRender render={!!title}>
-              <Typography.Text style={{ fontSize: 20, flex: 1, lineHeight: '28px', position: 'relative', top: 1 }}>
+              <Typography.Text style={{ fontSize: 20, flex: 1, lineHeight: '28px', position: 'relative', top: 1, fontWeight: 600 }}>
                 {title}
               </Typography.Text>
             </SRender>
