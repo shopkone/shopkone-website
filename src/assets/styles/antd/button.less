@@ -18,6 +18,13 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      transition: all 0.1s;
+    }
+    svg {
+      transition: all 0.1s;
+    }
+    &:active > span, &:active svg{
+      scale: 0.9;
     }
   }
 

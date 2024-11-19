@@ -70,7 +70,12 @@ export default function Market (props: MarketProps) {
         <div>{currency?.title || '-'}</div>
       </Flex>
 
-      <SelectMarket options={options} openInfo={marketOpen} />
+      <SelectMarket
+        onConfirm={(code) => { onChange?.(code) }}
+        selectedCountry={value || ''}
+        options={options}
+        openInfo={marketOpen}
+      />
     </SCard>
   )
 }

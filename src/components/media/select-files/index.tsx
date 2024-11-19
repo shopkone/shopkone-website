@@ -270,7 +270,7 @@ function SelectFiles (props: SelectFilesProps) {
               maxSize={20 * 1024 * 1024}
               accepts={['video', 'image', 'zip', 'audio']}
             >
-              <Flex ref={headerRef} gap={12}>
+              <Flex align={'center'} ref={headerRef} gap={12}>
                 <Button size={'small'}>{t('上传本地文件')}</Button>
                 <Button type={'text'} size={'small'}>{t('从URL添加素材')}</Button>
               </Flex>
