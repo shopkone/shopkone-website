@@ -7,6 +7,7 @@ import { MarketListApi } from '@/api/market/list'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
 import Market from '@/pages/mange/order/draft/change/market'
+import Payment from '@/pages/mange/order/draft/change/payment'
 import Products from '@/pages/mange/order/draft/change/products'
 
 export default function OrderDraftChange () {
@@ -32,9 +33,8 @@ export default function OrderDraftChange () {
               <Products currency={currency} />
             </Form.Item>
 
-            <SCard title={t('收款')}>
-              asd
-            </SCard>
+            <Payment currency={currency} />
+
           </Flex>
 
           <Flex vertical gap={16}>

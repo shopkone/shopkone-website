@@ -56,3 +56,22 @@
     transform: scale(1);
   }
 }
+
+.payment {
+  padding: 8px 0;
+}
+
+.paymentLabel {
+  flex: 1;
+  align-items: center;
+  display: flex;
+  &:after {
+    margin-left: 20px;
+    margin-right: 20px;
+    content: '';
+    display: block;
+    flex: 1;
+    border-bottom: 1px dashed var(--color-border-sec);
+    height: 1px;
+  }
+}

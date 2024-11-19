@@ -90,7 +90,7 @@ export default function EmailSignup () {
   })
 
   return (
-    <div>
+    <div style={{ marginTop: -12 }}>
       <Form.Item
         rules={[{ required: true, message: t('请输入邮箱') },
           {
