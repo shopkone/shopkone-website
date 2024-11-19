@@ -35,13 +35,6 @@ export default function MarketModal (props: MarketModalProps) {
     openInfo.close()
   }
 
-  const getName = (marketId: number) => {
-    const market = marketOptions?.find(m => m.value === marketId)
-    if (!market) return '--'
-    if (!market.is_main) return market?.label
-    return countries?.data?.find(c => c.code === market?.label)?.name
-  }
-
   const getDisabled = (marketId: number): string => {
     const item = marketOptions?.find(m => m.value === marketId)
     // 如果是主域名，但不是是此次，不想可以处理
@@ -109,7 +102,7 @@ export default function MarketModal (props: MarketModalProps) {
                       disabled={!!getDisabled(i.value)}
                       checked={value.includes(i.value)}
                     />
-                    {getName(i.value)}
+                    {i.label}
                   </Flex>
                 </Tooltip>
               ))

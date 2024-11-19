@@ -1,6 +1,6 @@
 export enum DiscountType {
-  ratio = 1,
-  fixed = 2
+  Ratio = 1,
+  Fixed = 2
 }
 
 export interface OrderVariant {
@@ -14,5 +14,7 @@ export interface OrderVariant {
   discount?: {
     type: DiscountType
     value: number
+    note?: string
   }
+  inventory?: number
 }

@@ -1,16 +1,20 @@
 import { useTranslation } from 'react-i18next'
+import { useRequest } from 'ahooks'
 import { Flex, Form } from 'antd'
 
+import { MarketListApi } from '@/api/market/list'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
+import Market from '@/pages/mange/order/draft/change/market'
 import Products from '@/pages/mange/order/draft/change/products'
 
 export default function OrderDraftChange () {
   const { t } = useTranslation('orders', { keyPrefix: 'drafts' })
   const [form] = Form.useForm()
+  const marketList = useRequest(MarketListApi)
 
   return (
-    <Page back={'/orders/drafts'} title={t('创建订单')} width={950}>
+    <Page loading={marketList.loading} back={'/orders/drafts'} title={t('创建订单')} width={950}>
       <Form form={form}>
         <Flex gap={16}>
           <Flex gap={16} vertical className={'flex1'}>
@@ -27,6 +31,9 @@ export default function OrderDraftChange () {
             <SCard title={t('客户')} style={{ width: 320 }}>
               asd
             </SCard>
+            <Form.Item className={'mb0'} name={'country_code'}>
+              <Market options={marketList.data || []} />
+            </Form.Item>
           </Flex>
         </Flex>
       </Form>

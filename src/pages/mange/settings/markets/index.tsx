@@ -82,7 +82,7 @@ export default function Markets () {
                     </SRender>
                     <Flex align={'flex-start'} vertical>
                       <Typography.Text style={{ width: 180 }} ellipsis={{ tooltip: true }} className={styles.name}>
-                        {item.is_main ? getCountry(item.name)?.name : item.name}
+                        {item.name}
                       </Typography.Text>
                       <SRender className={'tips'} render={item.is_main}>
                         {t('主要市场')}

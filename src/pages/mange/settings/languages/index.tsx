@@ -32,13 +32,6 @@ export default function Languages () {
   const openInfo = useOpen<string[]>([])
   const marketInfo = useOpen<{ marketIds: number[], languageId: number }>()
 
-  const getName = (marketName: string) => {
-    const market = markets?.data?.find(m => m.label === marketName)
-    if (!market) return '--'
-    if (!market.is_main) return market?.label
-    return countries?.data?.find(c => c.code === market?.label)?.name
-  }
-
   const onRemove = async (id: number) => {
     modal.confirm({
       title: t('确定删除吗？'),
@@ -86,9 +79,7 @@ export default function Languages () {
           {
             renderText(
               market_names?.length
-                ? market_names?.map((name) => (
-                  getName(name)
-                )).join('、')
+                ? market_names.join('、')
                 : ''
             )
           }
