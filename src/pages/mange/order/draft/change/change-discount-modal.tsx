@@ -82,6 +82,7 @@ export default function ChangeDiscountModal (props: ChangeDiscountModalProps) {
             <SSelect options={options} />
           </Form.Item>
           <Form.Item
+            required={false}
             rules={[{ required: true, message: t('请输入折扣额度') }]}
             name={'value'}
             className={'flex1'} label={t('折扣额度')}

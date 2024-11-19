@@ -167,13 +167,15 @@ export default function Domains () {
             </SRender>
           }
         >
-          <STable
-            rowKey={'ip'}
-            className={'table-border'}
-            borderless
-            columns={lockDomainsColumns}
-            data={blackIps?.data || []}
-          />
+          <SRender render={!!blackIps.data?.length}>
+            <STable
+              rowKey={'ip'}
+              className={'table-border'}
+              borderless
+              columns={lockDomainsColumns}
+              data={blackIps?.data || []}
+            />
+          </SRender>
           <SRender render={!blackIps.data?.length}>
             <Empty
               image={

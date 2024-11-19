@@ -8,6 +8,8 @@
   color: var(--color-text-secondary);
   font-size: 12px;
   text-decoration: line-through;
+  position: relative;
+  top: 1px;
 }
 
 .line {
@@ -43,7 +45,14 @@
 .selectedIcon {
   position: relative;
   top: 1px;
-  animation: scale-icon 0.3s ease-in-out;
+  animation: scale-icon 0.2s ease-in-out;
 }
 
-
+@keyframes scale-icon {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1);
+  }
+}

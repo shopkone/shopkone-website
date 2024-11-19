@@ -18,3 +18,8 @@ export interface OrderVariant {
   }
   inventory?: number
 }
+
+export interface OrderCountry {
+  country_code: string
+  currency_code: string
+}

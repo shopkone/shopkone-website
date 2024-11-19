@@ -1,8 +1,11 @@
+import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { IconPhoto, IconTag, IconTrash } from '@tabler/icons-react'
-import { useMemoizedFn } from 'ahooks'
+import { useMemoizedFn, useRequest } from 'ahooks'
 import { Button, Flex } from 'antd'
 
+import { CurrencyListRes } from '@/api/base/currency-list'
+import { GetExchangeRateApi } from '@/api/base/exchange-rate'
 import { FileType } from '@/api/file/add-file-record'
 import { DiscountType, OrderVariant } from '@/api/order/create-order'
 import { useVariantsByIds, VariantsByIdsRes } from '@/api/product/variants-by-ids'
@@ -17,21 +20,24 @@ import SelectVariants from '@/components/select-variants'
 import { InventoryPolicy } from '@/constant/product'
 import { useOpen } from '@/hooks/useOpen'
 import ChangeDiscountModal, { ChangeDiscountData } from '@/pages/mange/order/draft/change/change-discount-modal'
-import { roundPrice, useFormatPrice } from '@/utils/num'
+import { useManageState } from '@/pages/mange/state'
+import { formatPrice, roundPrice } from '@/utils/num'
 
 import styles from './index.module.less'
 
 export interface ProductsProps {
   onChange?: (value: OrderVariant[]) => void
   value?: OrderVariant[]
+  currency?: CurrencyListRes
 }
 
 export default function Products (props: ProductsProps) {
-  const { onChange, value } = props
+  const { onChange, value, currency } = props
   const { t } = useTranslation('orders', { keyPrefix: 'drafts' })
   const selectProductInfo = useOpen<number[]>()
   const { run, loading } = useVariantsByIds({ has_inventory: true })
-  const { loading: formatLoading, format } = useFormatPrice()
+  const exchangeRate = useRequest(GetExchangeRateApi, { manual: true })
+  const storeCurrencyCode = useManageState(state => state.shopInfo?.store_currency)
 
   const changeDiscountOpen = useOpen<ChangeDiscountData>()
 
@@ -55,15 +61,17 @@ export default function Products (props: ProductsProps) {
     return row.inventory_policy !== InventoryPolicy.Continue && row.inventory_tracking && big
   })
 
-  const calculateDiscountMoney = useMemoizedFn((row: OrderVariant) => {
-    if (row.discount?.type && row.discount?.value) {
+  const transformPrice = useMemoizedFn((row: OrderVariant) => {
+    const price = row.price * (exchangeRate?.data?.rate || 1)
+    if (row.discount?.type && row.discount.value) {
       if (row.discount.type === DiscountType.Fixed) {
-        return row.price - row.discount.value
+        const discountPrice = (row.discount?.value || 0) * (exchangeRate?.data?.rate || 1)
+        return roundPrice(price - discountPrice)
       } else {
-        return row.price * (1 - row.discount.value / 100)
+        return roundPrice(price * (1 - row.discount.value / 100))
       }
     } else {
-      return row.price
+      return roundPrice(price)
     }
   })
 
@@ -93,15 +101,16 @@ export default function Products (props: ProductsProps) {
                     discount: row.discount
                   })
                 }}
-                style={{ padding: 0 }} type={'link'} size={'small'}
+                style={{ padding: 0 }}
+                type={'link'} size={'small'}
               >
-                {format(roundPrice(calculateDiscountMoney(row)))}
+                {formatPrice(transformPrice(row), currency?.symbol)}
               </Button>
               <SRender
                 render={row.discount?.type ? row.discount?.value : null}
                 className={row.discount?.type && row.discount?.value ? styles.lineMoney : ''}
               >
-                {format(row.price)}
+                {formatPrice(roundPrice(row.price * (exchangeRate?.data?.rate || 1)), currency?.symbol)}
               </SRender>
             </Flex>
           </div>
@@ -136,7 +145,7 @@ export default function Products (props: ProductsProps) {
       code: 'price',
       name: 'price',
       render: (price: number, row: OrderVariant) => (
-        format(row.quantity * roundPrice(calculateDiscountMoney(row)))
+        formatPrice(roundPrice(row.quantity * transformPrice(row)), currency?.symbol)
       ),
       width: 130
     },
@@ -152,9 +161,18 @@ export default function Products (props: ProductsProps) {
     }
   ]
 
+  useEffect(() => {
+    if (!currency?.code || !storeCurrencyCode) return
+    if (currency?.code === storeCurrencyCode) {
+      exchangeRate.mutate({ rate: 1, timeStamp: exchangeRate?.data?.timeStamp || 0 })
+      return
+    }
+    exchangeRate.run({ from: storeCurrencyCode, to: currency.code })
+  }, [currency, storeCurrencyCode])
+
   return (
     <SCard
-      loading={formatLoading || loading}
+      loading={!currency || loading || exchangeRate.loading}
       extra={
         <Button onClick={() => { selectProductInfo.edit(value?.map(i => i.variant_id)) }} type={'link'} size={'small'} >
           {t('选择商品')}
