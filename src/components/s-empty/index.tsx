@@ -27,12 +27,11 @@ export default function SEmpty (props: EmptyProps) {
 
   useEffect(() => {
     if (!props.type) {
-      if (!props.image) {
+      if (props.image) {
         return
       }
-      props.type = 'err_404'
     }
-    emptyMap[props.type]?.().then(Component => {
+    emptyMap[props.type || 'err_404']?.().then(Component => {
       // @ts-expect-error
       Component && setImageComponent(Component)
     })
@@ -41,7 +40,7 @@ export default function SEmpty (props: EmptyProps) {
   return (
     <Flex gap={4} vertical style={{ height }} className={styles.container}>
       <div className={styles.image}>
-        {image}
+        {props.image || image}
       </div>
       <Flex gap={16} vertical align={'center'} justify={'center'}>
         <div className={styles.title}>{title}</div>
