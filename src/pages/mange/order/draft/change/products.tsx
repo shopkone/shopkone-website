@@ -133,7 +133,7 @@ export default function Products (props: ProductsProps) {
               min={1}
             />
             <SRender className={styles.err} render={checkIsOverInventory(row)}>
-              {t('最大可售库存为x，超出库存，无法下单', { x: row.inventory })}
+              {t('最大可售库存为x，无法下单', { x: row.inventory })}
             </SRender>
           </div>
         )

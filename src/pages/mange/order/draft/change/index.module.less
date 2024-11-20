@@ -58,20 +58,32 @@
 }
 
 .payment {
-  padding: 8px 0;
+  border-bottom: 1px dashed var(--color-border-sec);
+  margin-bottom: 4px;
+  padding: 8px 0 12px;
+  &:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+  }
+  &:hover .paymentLabel:after{
+    opacity: 1;
+  }
+}
+
+.paymentValue {
 }
 
 .paymentLabel {
-  flex: 1;
   align-items: center;
   display: flex;
+  flex: 1;
   &:after {
+    opacity: 0;
     margin-left: 20px;
     margin-right: 20px;
     content: '';
     display: block;
     flex: 1;
-    border-bottom: 1px dashed var(--color-border-sec);
     height: 1px;
   }
 }
