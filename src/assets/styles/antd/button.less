@@ -20,10 +20,10 @@
       align-items: center;
       transition: all 0.1s;
     }
-    svg {
+    & > * {
       transition: all 0.1s;
     }
-    &:active > span, &:active svg{
+    &:active > *{
       scale: 0.9;
     }
   }
@@ -102,20 +102,20 @@
   .shopkone-btn-default:not(:disabled) {
     &:hover {
       color: var(--color-text-primary);
-      background-color: #f2f2f2;
+      background-color: var(--color-disabled-bg);
     }
     &:active {
-      background-color: #dfdfde;
+      background-color: var(--color-disabled-border);
     }
   }
 
   .shopkone-btn-text:not(:disabled) {
     font-weight: 450;
     &:hover {
-      background-color: #f2f2f2;
+      background-color: var(--color-disabled-bg);
     }
     &:active {
-      background-color: #dfdfde;
+      background-color: var(--color-disabled-border);
     }
   }
 

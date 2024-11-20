@@ -22,3 +22,21 @@ export function getTextWidth (text: string, fontSize: number): number {
 
   return 0 // 如果无法创建 context，则返回 0
 }
+
+export const getUrl = (p: string, query?: Record<string, string>) => {
+  const params = p[0] === '/' ? p.slice(1) : p
+  // 1. 获取当前页面的query对象
+  const queryString = window.location.search
+  const queryParams = new URLSearchParams(queryString)
+  // 2. 添加query
+  if (query) {
+    Object.entries(query).forEach(([key, value]) => {
+      queryParams.set(key, value)
+    })
+  }
+  // 3. 转换为字符串query
+  const newQueryString = queryParams.toString()
+  // 4. 获取路劲
+  const pathArr = window.location.pathname.split('/').filter((_, i) => i < 2)
+  return `${pathArr.join('/')}/${params}?${newQueryString}`
+}

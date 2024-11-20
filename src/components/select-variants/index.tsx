@@ -7,6 +7,7 @@ import { Button, Checkbox, Flex } from 'antd'
 import { FileType } from '@/api/file/add-file-record'
 import { ProductListApi, ProductListReq, ProductListRes } from '@/api/product/list'
 import FileImage from '@/components/file-image'
+import SEmpty from '@/components/s-empty'
 import SLoading from '@/components/s-loading'
 import { sMessage } from '@/components/s-message'
 import SModal from '@/components/s-modal'
@@ -15,7 +16,9 @@ import STable, { STableProps } from '@/components/s-table'
 import Filters from '@/components/select-product/filters'
 import Status from '@/components/status'
 import { VariantStatus } from '@/constant/product'
+import { useNav } from '@/hooks/use-nav'
 import { UseOpenType } from '@/hooks/useOpen'
+import { getUrl } from '@/utils'
 import { formatPrice } from '@/utils/num'
 import { genId } from '@/utils/random'
 import { renderText } from '@/utils/render-text'
@@ -50,6 +53,7 @@ export default function SelectVariants (props: SelectVariantsProps) {
   const [showMoreLoading, setShowMoreLoading] = useState(false)
   const [expanded, setExpanded] = useState<number[]>([])
   const { t } = useTranslation('common', { keyPrefix: 'selectVariants' })
+  const nav = useNav()
 
   const getIsDisabled = (row: ProductVariants) => {
     if (disabled?.length === 200) return true
@@ -308,22 +312,28 @@ export default function SelectVariants (props: SelectVariantsProps) {
             columns={columns}
             data={renderList || []}
             onRowClick={onRowClick}
-            empty={{
-              title: t('没有可用的商品'),
-              actions: (
-                <Flex>
-                  <Button type={'primary'}>{t('添加商品')}</Button>
-                </Flex>
-              )
-            }}
-          />
+          >
+            <SEmpty compact title={t('没有可用的商品')}>
+              <Button
+                href={getUrl('/products/products')}
+                target={'_blank'}
+                type={'primary'}
+              >
+                {t('添加商品')}
+              </Button>
+            </SEmpty>
+          </STable>
           <SRender render={showMoreLoading}>
             <Flex ref={moreRef} justify={'center'} align={'center'} gap={12} style={{ paddingTop: 24, opacity: list.length ? 1 : 0 }}>
               <div><SLoading size={20} /></div>
               {t('加载中')}
             </Flex>
           </SRender>
-          <SRender style={{ display: 'flex', paddingTop: 24, justifyContent: 'center' }} render={!showMoreLoading} className={'fit-width secondary'}>
+          <SRender
+            style={{ display: 'flex', paddingTop: 24, justifyContent: 'center' }}
+            render={!showMoreLoading && productList.data?.total}
+            className={'fit-width secondary'}
+          >
             - {t('已经到底了')} -
           </SRender>
         </div>

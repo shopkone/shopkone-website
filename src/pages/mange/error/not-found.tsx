@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { Button, Flex } from 'antd'
 
-import styles from './index.module.less'
+import SEmpty from '@/components/s-empty'
 
 export interface NotFoundProps {
   veritcal?: boolean
@@ -14,16 +14,18 @@ export default function NotFound (props: NotFoundProps) {
   const nav = useNavigate()
 
   return (
-    <Flex gap={24} vertical={props.veritcal} align={'center'} justify={'center'} style={{ height: '100%' }}>
-      <div>asd</div>
-      <div>
-        <div className={styles.title}>{t('找不到页面')}</div>
-        <Flex align={'center'} style={{ fontSize: 14 }}>
-          {t('请检查网址并重试，或者你可以选择')}
-          <Button onClick={() => { nav('/') }} style={{ fontSize: 14, padding: 0 }} type={'link'} size={'small'}>
+    <Flex align={'center'} justify={'center'} className={'fit-width fit-height'}>
+      <div style={{ transform: 'scale(1.2)' }} className={'flex1'}>
+        <SEmpty
+          desc={t('请检查网址并重试，或者你可以选择')}
+          title={t('找不到页面')}
+          row
+          width={600}
+        >
+          <Button type={'primary'} onClick={() => { nav('/') }}>
             {t('回到首页')}
-          </Button>。
-        </Flex>
+          </Button>
+        </SEmpty>
       </div>
     </Flex>
   )

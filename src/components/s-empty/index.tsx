@@ -9,8 +9,11 @@ export interface EmptyProps {
   title?: string
   desc?: ReactNode
   image?: ReactNode
+  width?: number
   height?: number
   type?: keyof typeof emptyMap
+  row?: boolean
+  compact?: boolean
 }
 
 const emptyMap = {
@@ -24,7 +27,7 @@ export default function SEmpty (props: EmptyProps) {
 
   const defaultImage = ImageComponent || ''
 
-  const { title, desc, image = defaultImage, children, height } = props
+  const { title, desc, image = defaultImage, children, height, row, width, compact } = props
 
   useEffect(() => {
     if (!props.type) {
@@ -41,14 +44,32 @@ export default function SEmpty (props: EmptyProps) {
   return (
     <Flex
       gap={4}
-      vertical
-      style={{ height }}
-      className={classNames(styles.container, { [styles.customerImg]: !!props.image })}
+      vertical={!row}
+      style={{ height, maxWidth: width }}
+      className={
+      classNames(
+        styles.container,
+        { [styles.compact]: compact }
+      )
+      }
+      justify={row ? 'space-between' : undefined}
     >
-      <div className={styles.image}>
+      <div
+        className={classNames(
+          styles.image,
+          { [styles.customerImg]: !!props.image },
+          { [styles.rowImage]: row }
+        )}
+      >
         {props.image || image}
       </div>
-      <Flex gap={16} vertical align={'center'} justify={'center'}>
+      <Flex
+        style={{ order: 2, flex: row ? 1 : undefined }}
+        gap={compact ? 4 : 16}
+        vertical
+        align={row ? 'flex-start' : 'center'}
+        justify={'center'}
+      >
         <div className={styles.title}>{title}</div>
         <div className={styles.desc} style={{ fontSize: 13 }}>{desc}</div>
         <div style={{ marginTop: props.image ? 0 : 16 }}>
