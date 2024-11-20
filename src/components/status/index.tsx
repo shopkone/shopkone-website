@@ -22,8 +22,8 @@ export default function Status (props: StatusProps) {
       border: '#81c784' // 浅绿色边框，柔和且不刺眼
     },
     info: {
-      bg: '#e4ecff', // 贴近主题色 `#165cfa` 的淡蓝背景，确保视觉和谐
-      color: '#165cfa', // 主色调，明确传递信息状态
+      bg: '#e4ecff', // 贴近主题色 `#3478f5` 的淡蓝背景，确保视觉和谐
+      color: '#3478f5', // 主色调，明确传递信息状态
       border: '#709eff' // 比文字颜色稍浅的蓝色边框，确保层次感
     },
     warning: {
