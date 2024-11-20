@@ -174,16 +174,18 @@ export default function Products (props: ProductsProps) {
     <SCard
       loading={!currency || loading || exchangeRate.loading}
       extra={
-        <Button onClick={() => { selectProductInfo.edit(value?.map(i => i.variant_id)) }} type={'link'} size={'small'} >
-          {t('选择商品')}
-        </Button>
+        <SRender render={!!value?.length}>
+          <Button onClick={() => { selectProductInfo.edit(value?.map(i => i.variant_id)) }} type={'link'} size={'small'} >
+            {t('选择商品')}
+          </Button>
+        </SRender>
       }
       title={t('商品')}
     >
       <SRender render={!value?.length}>
         <SEmpty
-          title={t('订单包含哪些商品')}
-          image={<IconTag size={52} color={'#eee'} />}
+          desc={t('订单包含哪些商品')}
+          image={<IconTag size={64} color={'#eee'} />}
         >
           <Button onClick={() => { selectProductInfo.edit([]) }} style={{ minWidth: 150 }} >
             {t('选择商品')}

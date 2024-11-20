@@ -93,10 +93,10 @@ export default function Seo (props: SeoProps) {
             overlayInnerStyle={{ minWidth: 'unset' }}
             content={
               <Flex vertical gap={4}>
-                <Button type={'link'} style={{ textAlign: 'left', paddingLeft: 0 }}>
+                <Button size={'small'} type={'text'}>
                   {t('查看收录')}
                 </Button>
-                <Button style={{ textAlign: 'left', paddingLeft: 0 }} type={'link'}>
+                <Button size={'small'} type={'text'}>
                   {t('手动提交')}
                 </Button>
               </Flex>

@@ -1,5 +1,6 @@
 import { ReactNode, useEffect, useState } from 'react'
 import { Flex } from 'antd'
+import classNames from 'classnames'
 
 import styles from './index.module.less'
 
@@ -38,14 +39,19 @@ export default function SEmpty (props: EmptyProps) {
   }, [props.type])
 
   return (
-    <Flex gap={4} vertical style={{ height }} className={styles.container}>
+    <Flex
+      gap={4}
+      vertical
+      style={{ height }}
+      className={classNames(styles.container, { [styles.customerImg]: !!props.image })}
+    >
       <div className={styles.image}>
         {props.image || image}
       </div>
       <Flex gap={16} vertical align={'center'} justify={'center'}>
         <div className={styles.title}>{title}</div>
         <div className={styles.desc} style={{ fontSize: 13 }}>{desc}</div>
-        <div style={{ marginTop: 32 }}>
+        <div style={{ marginTop: props.image ? 0 : 16 }}>
           {children}
         </div>
       </Flex>

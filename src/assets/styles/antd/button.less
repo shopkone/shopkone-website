@@ -99,12 +99,23 @@
     height: 28px;
   }
 
-  .shopkone-btn-text:hover {
+  .shopkone-btn-default:not(:disabled) {
     &:hover {
-      background-color: var(--color-disabled-bg);
+      color: var(--color-text-primary);
+      background-color: #f2f2f2;
     }
     &:active {
-      background-color: #cccccc;
+      background-color: #dfdfde;
+    }
+  }
+
+  .shopkone-btn-text:not(:disabled) {
+    font-weight: 450;
+    &:hover {
+      background-color: #f2f2f2;
+    }
+    &:active {
+      background-color: #dfdfde;
     }
   }
 
