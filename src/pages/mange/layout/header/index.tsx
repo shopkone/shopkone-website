@@ -52,7 +52,9 @@ export default function Header () {
 
   return (
     <header className={styles.header}>
-      <Flex justify={'space-between'} align={'center'} className={styles.logo}>Shopkone</Flex>
+      <Flex justify={'space-between'} align={'center'} className={styles.logo}>
+        shopkimi
+      </Flex>
       <Flex justify={'space-between'} flex={1}>
         <div className={'flex1'} />
         <Flex flex={2} align={'center'} justify={'center'} className={styles.center} >

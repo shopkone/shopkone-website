@@ -26,7 +26,7 @@ import styles from './index.module.less'
 const INIT_DATA = {
   status: 2,
   inventory_tracking: true,
-  inventory_policy: 2,
+  inventory_policy: 1,
   spu: '',
   vendor: '',
   tags: [],

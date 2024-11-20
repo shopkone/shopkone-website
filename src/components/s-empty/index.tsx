@@ -19,7 +19,8 @@ export interface EmptyProps {
 const emptyMap = {
   err_404: async () => await import('@/assets/empty/err_404.svg').then(module => module.ReactComponent),
   empty_product: async () => await import('@/assets/empty/empty_product.svg').then(module => module.ReactComponent),
-  empty_order: async () => await import('@/assets/empty/empty_order.svg').then(module => module.ReactComponent)
+  empty_order: async () => await import('@/assets/empty/empty_order.svg').then(module => module.ReactComponent),
+  fail_search: async () => await import('@/assets/empty/fail_search.svg').then(module => module.ReactComponent)
 }
 
 export default function SEmpty (props: EmptyProps) {
@@ -35,7 +36,7 @@ export default function SEmpty (props: EmptyProps) {
         return
       }
     }
-    emptyMap[props.type || 'err_404']?.().then(Component => {
+    emptyMap[props.type || 'fail_search']?.().then(Component => {
       // @ts-expect-error
       Component && setImageComponent(Component)
     })
@@ -49,7 +50,8 @@ export default function SEmpty (props: EmptyProps) {
       className={
       classNames(
         styles.container,
-        { [styles.compact]: compact }
+        { [styles.compact]: compact },
+        { [styles.customer]: props.image }
       )
       }
       justify={row ? 'space-between' : undefined}

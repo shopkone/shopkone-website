@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next'
 import { Checkbox, Flex, Form, Radio } from 'antd'
-import SCard from '@/components/s-card'
 
 import Page from '@/components/page'
+import SCard from '@/components/s-card'
 import Seo from '@/components/seo'
 import { useInventoryPolicyOptions, VariantStatus } from '@/constant/product'
 import BaseInfo from '@/pages/mange/product/gift-card/product-change/base-info'
@@ -31,7 +31,7 @@ export default function ProductChange () {
           </Flex>
           <Flex vertical gap={16} style={{ width: 320 }}>
             <Status />
-            <SCard  title={t('库存管理')}>
+            <SCard title={t('库存管理')}>
               <Form.Item style={{ marginBottom: 8 }} name={'variant_type'}>
                 <Checkbox>{t('需要图片')}</Checkbox>
               </Form.Item>

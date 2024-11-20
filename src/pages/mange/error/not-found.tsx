@@ -17,6 +17,7 @@ export default function NotFound (props: NotFoundProps) {
     <Flex align={'center'} justify={'center'} className={'fit-width fit-height'}>
       <div style={{ transform: 'scale(1.2)' }} className={'flex1'}>
         <SEmpty
+          type={'err_404'}
           desc={t('请检查网址并重试，或者你可以选择')}
           title={t('找不到页面')}
           row
