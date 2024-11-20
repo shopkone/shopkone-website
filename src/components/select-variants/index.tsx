@@ -308,6 +308,14 @@ export default function SelectVariants (props: SelectVariantsProps) {
             columns={columns}
             data={renderList || []}
             onRowClick={onRowClick}
+            empty={{
+              title: t('没有可用的商品'),
+              actions: (
+                <Flex>
+                  <Button type={'primary'}>{t('添加商品')}</Button>
+                </Flex>
+              )
+            }}
           />
           <SRender render={showMoreLoading}>
             <Flex ref={moreRef} justify={'center'} align={'center'} gap={12} style={{ paddingTop: 24, opacity: list.length ? 1 : 0 }}>

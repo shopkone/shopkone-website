@@ -9,7 +9,6 @@ import classNames from 'classnames'
 import IconButton from '@/components/icon-button'
 import SLoading from '@/components/s-loading'
 import SRender from '@/components/s-render'
-import Empty, { EmptyProps } from '@/components/s-table/empty'
 import { sum } from '@/utils'
 
 import styles from './index.module.less'
@@ -36,13 +35,13 @@ export interface STableProps<T=any> extends Omit<BaseTableProps, omit> {
     onChange: (value: number[]) => void
   }
   loading?: boolean
-  empty?: EmptyProps
   borderless?: boolean
   page?: PaginationProps
   actions?: React.ReactNode
   onRowClick?: (row: T, rowIndex: number) => void
   fixPosition?: number
   rowClassName?: (row: any) => string
+  children?: React.ReactNode
 }
 
 function STable (props: STableProps) {
@@ -56,7 +55,7 @@ function STable (props: STableProps) {
     expand,
     stickyTop,
     loading = false,
-    empty,
+    children,
     borderless,
     init = true,
     page,
@@ -150,10 +149,8 @@ function STable (props: STableProps) {
     )
   }
 
-  if (!data.length && !loading && empty) {
-    return (
-      <Empty {...empty} />
-    )
+  if (!data.length && !loading && children) {
+    return children
   }
 
   return (

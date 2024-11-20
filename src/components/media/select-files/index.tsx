@@ -10,10 +10,10 @@ import { FileGroupListApi } from '@/api/file/file-group-list'
 import { FileListApi, FileListReq, FileListRes } from '@/api/file/file-list'
 import { UploadFileType } from '@/api/file/UploadFileType'
 import FileImage from '@/components/file-image'
+import SEmpty from '@/components/s-empty'
 import SLoading from '@/components/s-loading'
 import SModal from '@/components/s-modal'
 import SRender from '@/components/s-render'
-import Empty from '@/components/s-table/empty'
 import FilterCheckbox from '@/components/table-filter/filter-checkbox'
 import FilterNumberRange from '@/components/table-filter/filter-number-range'
 import FilterRadio from '@/components/table-filter/filter-radio'
@@ -279,23 +279,22 @@ function SelectFiles (props: SelectFilesProps) {
             <div className={styles.content}>
               <SRender className={styles.empty} render={!list?.length && !fileList.loading}>
                 <div style={{ width: 700 }}>
-                  <Empty
+                  <SEmpty
                     title={hasSearch ? t('未搜索到任何内容') : t('上传并管理您的素材')}
                     desc={hasSearch ? t('尝试修改搜索条件或上传新的素材') : ''}
-                    actions={
-                      <Flex gap={12}>
-                        <Upload
-                          onChange={onUpload}
-                          multiple
-                          maxSize={20 * 1024 * 1024}
-                          accepts={['video', 'image', 'zip', 'audio']}
-                        >
-                          <Button type={'primary'}>{t('上传本地文件')}</Button>
-                        </Upload>
-                        <Button>{t('从URL添加素材1')}</Button>
-                      </Flex>
-                      }
-                  />
+                  >
+                    <Flex gap={12}>
+                      <Upload
+                        onChange={onUpload}
+                        multiple
+                        maxSize={20 * 1024 * 1024}
+                        accepts={['video', 'image', 'zip', 'audio']}
+                      >
+                        <Button type={'primary'}>{t('上传本地文件')}</Button>
+                      </Upload>
+                      <Button>{t('从URL添加素材1')}</Button>
+                    </Flex>
+                  </SEmpty>
                 </div>
               </SRender>
               <Flex style={{ paddingBottom: 24 }} wrap={'wrap'} gap={9}>

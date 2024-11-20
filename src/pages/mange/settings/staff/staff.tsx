@@ -1,8 +1,9 @@
 import { useNavigate } from 'react-router-dom'
-import { Button, Flex } from 'antd'
-import SCard from '@/components/s-card'
+import { Button } from 'antd'
 
 import Page from '@/components/page'
+import SCard from '@/components/s-card'
+import SEmpty from '@/components/s-empty'
 import STable, { STableProps } from '@/components/s-table'
 
 export default function Staff () {
@@ -19,19 +20,17 @@ export default function Staff () {
     <Page title={'Staff'}>
       <SCard >
         <STable
-          empty={{
-            title: 'Invite staff to join the store',
-            desc: 'Effortlessly add staff and assign roles to boost your work efficiency.',
-            actions: (
-              <Flex>
-                <Button onClick={() => { nav('change') }} type={'primary'}>Add staff</Button>
-              </Flex>
-            )
-          }}
           style={{ width: 'calc(100% + 32px)', marginLeft: -16 }}
           columns={columns}
           data={[]}
-        />
+        >
+          <SEmpty
+            title={'Invite staff to join the store'}
+            desc={'Effortlessly add staff and assign roles to boost your work efficiency.'}
+          >
+            <Button onClick={() => { nav('change') }} type={'primary'}>Add staff</Button>
+          </SEmpty>
+        </STable>
       </SCard>
     </Page>
   )

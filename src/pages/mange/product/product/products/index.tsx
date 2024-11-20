@@ -12,6 +12,7 @@ import FileImage from '@/components/file-image'
 import IconButton from '@/components/icon-button'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
+import SEmpty from '@/components/s-empty'
 import SRender from '@/components/s-render'
 import STable, { STableProps } from '@/components/s-table'
 import { VariantStatus } from '@/constant/product'
@@ -205,34 +206,35 @@ export default function Products () {
           loading={list.loading}
           rowSelection={{ onChange: setSelected, value: selected }}
           init={!!list.data}
-          empty={{
-            title: t('新建并上架你的商品'),
-            desc: t('创建提示'),
-            actions: (
-              <Flex gap={12}>
-                <Button>
-                  <IconDownload className={'fpt1'} size={15} />
-                  <div>{t('导入')}</div>
-                </Button>
-                <Button>
-                  <IconDownload className={'fpt1'} size={15} />
-                  <div>{t('导入 Shopify')}</div>
-                </Button>
-                <Button
-                  onClick={() => {
-                    nav('change')
-                  }}
-                  type={'primary'}
-                >
-                  <IconPlus className={'fpt1'} size={15} />
-                  <div>{t('添加商品1')}</div>
-                </Button>
-              </Flex>
-            )
-          }}
           columns={columns}
           data={list?.data?.list || []}
-        />
+        >
+          <SEmpty
+            title={t('新建并上架你的商品')}
+            desc={t('创建提示')}
+            type={'empty_product'}
+          >
+            <Flex gap={12}>
+              <Button>
+                <IconDownload className={'fpt1'} size={15} />
+                <div>{t('导入')}</div>
+              </Button>
+              <Button>
+                <IconDownload className={'fpt1'} size={15} />
+                <div>{t('导入 Shopify')}</div>
+              </Button>
+              <Button
+                onClick={() => {
+                  nav('change')
+                }}
+                type={'primary'}
+              >
+                <IconPlus className={'fpt1'} size={15} />
+                <div>{t('添加商品1')}</div>
+              </Button>
+            </Flex>
+          </SEmpty>
+        </STable>
       </SCard>
     </Page>
   )
