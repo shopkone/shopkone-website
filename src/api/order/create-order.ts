@@ -11,6 +11,7 @@ export interface OrderVariant {
   image: string
   quantity: number
   price: number
+  cost_per_item?: number
   discount?: {
     type: DiscountType
     value: number

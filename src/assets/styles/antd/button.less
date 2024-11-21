@@ -23,7 +23,7 @@
     & > * {
       transition: all 0.1s;
     }
-    &:active > *{
+    &:not(:disabled):active > *{
       scale: 0.9;
     }
   }

@@ -33,6 +33,7 @@ export interface VariantsByIdsRes {
   received?: number
   is_deleted: boolean
   price: number
+  cost_per_item?: number
   inventory: number
   inventory_tracking: boolean
   inventory_policy: InventoryPolicy

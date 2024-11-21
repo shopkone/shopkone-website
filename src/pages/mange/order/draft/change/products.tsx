@@ -1,8 +1,8 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { IconPhoto, IconTag, IconTrash } from '@tabler/icons-react'
 import { useMemoizedFn, useRequest } from 'ahooks'
-import { Button, Flex } from 'antd'
+import { Button, Flex, Form } from 'antd'
 
 import { CurrencyListRes } from '@/api/base/currency-list'
 import { GetExchangeRateApi } from '@/api/base/exchange-rate'
@@ -38,6 +38,8 @@ export default function Products (props: ProductsProps) {
   const { run, loading } = useVariantsByIds({ has_inventory: true })
   const exchangeRate = useRequest(GetExchangeRateApi, { manual: true })
   const storeCurrencyCode = useManageState(state => state.shopInfo?.store_currency)
+  const form = Form.useFormInstance()
+  const hasErr = useRef(false)
 
   const changeDiscountOpen = useOpen<ChangeDiscountData>()
 
@@ -123,6 +125,9 @@ export default function Products (props: ProductsProps) {
       code: 'quantity',
       name: 'quantity',
       render: (quantity: number, row: VariantsByIdsRes & OrderVariant) => {
+        const isOver = checkIsOverInventory(row)
+        hasErr.current = isOver
+
         return (
           <div>
             <SInputNumber
@@ -132,7 +137,7 @@ export default function Products (props: ProductsProps) {
               required
               min={1}
             />
-            <SRender className={styles.err} render={checkIsOverInventory(row)}>
+            <SRender className={styles.err} render={isOver}>
               {t('最大可售库存为x，无法下单', { x: row.inventory })}
             </SRender>
           </div>
@@ -169,6 +174,18 @@ export default function Products (props: ProductsProps) {
     }
     exchangeRate.run({ from: storeCurrencyCode, to: currency.code })
   }, [currency, storeCurrencyCode])
+
+  useEffect(() => {
+    if (hasErr.current) return
+    let cost = 0
+    let price = 0
+    value?.forEach(row => {
+      cost = row.quantity * (row.cost_per_item || 0) + cost
+      price = transformPrice(row) * row.quantity + price
+    })
+    form.setFieldValue('cost_per_item', roundPrice(cost))
+    form.setFieldValue('total_price', roundPrice(price))
+  }, [value, exchangeRate?.data?.rate])
 
   return (
     <SCard
