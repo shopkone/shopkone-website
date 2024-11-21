@@ -1,6 +1,7 @@
 import axios from 'axios'
 import i18next from 'i18next'
 
+import { sMessage } from '@/components/s-message'
 import { getStorage, STORAGE_KEY } from '@/utils/storage-key'
 import { toLogin } from '@/utils/to-login'
 
@@ -24,11 +25,13 @@ service.interceptors.response.use(
       return res?.data?.data
     }
     if (res.data.code < 10000 && res.data.code !== 0) {
-      window.__info_modal({ content: res.data.message })
+      sMessage.warning(res.data.message)
+      // window.__info_modal({ content: res.data.message })
       return Promise.reject(res.data)
     }
     if (res?.data?.code !== 0) {
-      window.__info_modal({ content: res.data.message })
+      // window.__info_modal({ content: res.data.message })
+      sMessage.warning(res.data.message)
       return Promise.reject(res.data)
     }
     return res?.data?.data
@@ -37,7 +40,8 @@ service.interceptors.response.use(
     if (err?.response?.status === 401) {
       toLogin()
     } else {
-      window.__info_modal({ content: i18next.t('base.系统异常', { ns: 'common' }) })
+      sMessage.warning(i18next.t('base.系统异常', { ns: 'common' }))
+      // window.__info_modal({ content: i18next.t('base.系统异常', { ns: 'common' }) })
       throw new Error(err)
     }
   }

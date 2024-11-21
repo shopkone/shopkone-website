@@ -10,6 +10,7 @@ import { SendCodeApi } from '@/api/account/send-code'
 import SLoading from '@/components/s-loading'
 import SRender from '@/components/s-render'
 import styles from '@/pages/account/index.module.less'
+import { EMAIL_REG } from '@/utils/regular'
 import { setStorage, STORAGE_KEY } from '@/utils/storage-key'
 
 export default function EmailSignup () {
@@ -29,7 +30,6 @@ export default function EmailSignup () {
   const code: number = Form.useWatch('code', form)
 
   // 校验邮箱
-  const EMAIL_REG = /^[a-zA-Z0-9_.]+@[a-zA-Z0-9-]+[.a-zA-Z]+$/
 
   const isValidPwd = useMemo(() => {
     if (!password) return false

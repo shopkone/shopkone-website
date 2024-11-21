@@ -5,13 +5,13 @@ import { Button, Form, Input } from 'antd'
 import { LoginApi } from '@/api/account/login'
 import { useModal } from '@/components/s-modal'
 import styles from '@/pages/account/index.module.less'
+import { EMAIL_REG } from '@/utils/regular'
 import { setStorage, STORAGE_KEY } from '@/utils/storage-key'
 
 export default function EmailLogin () {
   const login = useRequest(LoginApi, { manual: true })
   const { t } = useTranslation('account', { keyPrefix: 'login' })
   const form = Form.useFormInstance()
-  const EMAIL_REG = /^[a-zA-Z0-9_.]+@[a-zA-Z0-9-]+[.a-zA-Z]+$/
   const password = Form.useWatch('password', form)
   const modal = useModal()
 
