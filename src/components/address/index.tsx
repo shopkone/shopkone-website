@@ -32,7 +32,7 @@ const INIT_DATA = {
   address2: '',
   city: '',
   company: '',
-  country: 'CN',
+  country: '',
   first_name: '',
   last_name: '',
   postal_code: '',
@@ -59,11 +59,11 @@ export default function Address (props: AddressProps) {
     onChange?.({ ...(initValues.current || {}), ...form.getFieldsValue() })
   }
 
-  const c = countries.data?.find(item => item.code === country)
+  const c = countries.data?.find(item => item.code === country) || countries.data?.find(i => i.code === 'US')
   const zoneOptions = useMemo(() => {
     const options = c?.zones?.map(item => ({ label: item.name, value: item.code }))
     const hasZone = form.getFieldValue('zone')
-    if (!hasZone && options?.length) {
+    if (!hasZone && options?.length && country) {
       form.setFieldValue('zone', options?.[0]?.value)
       onChangeHandler()
     }
@@ -156,7 +156,7 @@ export default function Address (props: AddressProps) {
               <Input rootClassName={'fit-width'} autoComplete={'off'} />
             </Form.Item>
           </Col>
-          <SRender render={!!zoneOptions?.length}>
+          <SRender render={!!zoneOptions?.length && country}>
             <Col span={12}>
               <Form.Item className={'flex1'} name={'zone'} label={c?.config?.zone}>
                 <SSelect

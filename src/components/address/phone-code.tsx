@@ -70,7 +70,7 @@ export default function PhoneCode (props: PhoneCodeProps) {
         />
         <Input
           value={value?.num}
-          prefix={`+${value?.prefix}`}
+          prefix={`+${value?.prefix || ''}`}
           onChange={onChangeNum}
         />
       </Flex>

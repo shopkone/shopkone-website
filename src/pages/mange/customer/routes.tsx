@@ -6,6 +6,6 @@ const CustomerChange = lazy(async () => await import('./change'))
 
 export const CustomerRoutes: RouteObject[] = [
   { path: '/customers/customers', element: <CustomerList /> },
-  { path: '/customers/change', element: <CustomerChange /> },
-  { path: '/customers/change:id', element: <CustomerChange /> }
+  { path: '/customers/customers/change/:id', element: <CustomerChange /> },
+  { path: '/customers/customers/change', element: <CustomerChange /> }
 ]

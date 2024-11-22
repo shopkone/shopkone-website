@@ -25,7 +25,6 @@ export interface CustomerCreateRes {
 
 export const EMAIL_EXIST_CODE = 9002
 export const PHONE_EXIST_CODE = 9003
-export const MUST_HAVE_ONE = 9001
 
 export const CustomerCreateApi = async (params: CustomerCreateReq) => {
   return await api<CustomerCreateRes>('/customer/create', params)
