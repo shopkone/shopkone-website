@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useRequest } from 'ahooks'
-import { Flex, Form, Input } from 'antd'
+import { Flex, Form, Input, Select } from 'antd'
 import cloneDeep from 'lodash/cloneDeep'
 
 import { CustomerCreateApi, EMAIL_EXIST_CODE, PHONE_EXIST_CODE } from '@/api/customer/create'
@@ -161,17 +161,29 @@ export default function CustomerChange () {
             </SCard>
 
             <Form.Item className={'mb0'} name={'address'}>
-              <Address hasName title={t('收货地址')} />
+              <Address companyNotFirst hasName title={t('收货地址')} companyNameLabel={t('公司名称')} />
             </Form.Item>
           </Flex>
 
           <Flex gap={16} vertical style={{ width: 320 }}>
-            <SCard className={'fit-width'} title={t('客户')}>
-              asd
+            <SCard className={'fit-width'} title={t('标签')}>
+              <Form.Item name={'tags'} className={'mb0'} label={t('标签')}>
+                <Select
+                  placeholder={t('添加标签内容，回车确定')}
+                  open={false}
+                  mode={'tags'}
+                  suffixIcon={null}
+                />
+              </Form.Item>
             </SCard>
 
-            <SCard className={'fit-width'} title={t('备注')}>
-              asd
+            <SCard
+              className={'fit-width'}
+              title={t('备注')}
+            >
+              <Form.Item className={'mb0'} name={'note'}>
+                <Input.TextArea autoSize={{ minRows: 4 }} />
+              </Form.Item>
             </SCard>
           </Flex>
         </Flex>

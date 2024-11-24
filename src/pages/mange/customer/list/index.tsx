@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
+import { IconDownload, IconPlus } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
-import { Button } from 'antd'
+import { Button, Flex } from 'antd'
 
 import { CustomerListApi, CustomerListReq, CustomerListRes } from '@/api/customer/list'
 import Page from '@/components/page'
@@ -26,7 +27,8 @@ export default function CustomerList () {
       render: (_, row: CustomerListRes) => {
         return [row.first_name, row.last_name].filter(Boolean).join(' ')
       },
-      lock: true
+      lock: true,
+      width: 200
     },
     {
       title: t('联系方式'),
@@ -34,12 +36,14 @@ export default function CustomerList () {
       name: 'concat',
       render: (_, row: CustomerListRes) => {
         return row.email || row.phone
-      }
+      },
+      width: 300
     },
     {
       title: t('邮箱订阅状态'),
       code: 'email_subscribe',
-      name: 'email_subscribe'
+      name: 'email_subscribe',
+      width: 150
     },
     {
       title: t('地区'),
@@ -49,12 +53,14 @@ export default function CustomerList () {
     {
       title: t('订单数量'),
       code: 'order_count',
-      name: 'order_count'
+      name: 'order_count',
+      width: 150
     },
     {
       title: t('消费金额'),
       code: 'cost_price',
-      name: 'cost_price'
+      name: 'cost_price',
+      width: 150
     }
   ]
 
@@ -73,7 +79,7 @@ export default function CustomerList () {
       }
       title={t('客户')}
     >
-      <SCard loading={list.loading} styles={{ body: { padding: '8px 0 0 0' } }}>
+      <SCard loading={!list.data} styles={{ body: { padding: '8px 0 0 0' } }}>
         <Filters />
         <STable
           page={{
@@ -84,7 +90,7 @@ export default function CustomerList () {
               setParams({ ...params, page, page_size })
             }
           }}
-          onRowClick={(row) => { nav(`change/${row.id}`) }}
+          onRowClick={(row) => { nav(`info/${row.id}`) }}
           columns={columns}
           data={list?.data?.list || []}
           rowSelection={{
@@ -93,8 +99,25 @@ export default function CustomerList () {
             width: 50
           }}
         >
-          <SEmpty type={'searching'}>
-            <Button type={'primary'}>{t('添加客户')}</Button>
+          <SEmpty
+            title={t('添加和管理你的客户')}
+            desc={t('在此添加和管理注册或下单的客户，你也可直接导入客户')}
+            type={'searching'}
+          >
+            <Flex align={'center'} gap={12}>
+              <Button>
+                <IconDownload className={'fpt1'} size={15} />
+                <div>{t('导入')}</div>
+              </Button>
+              <Button>
+                <IconDownload className={'fpt1'} size={15} />
+                <div>{t('导入 Shopify')}</div>
+              </Button>
+              <Button onClick={() => { nav('change') }} type={'primary'}>
+                <IconPlus className={'fpt1'} size={15} />
+                <div>{t('添加客户')}</div>
+              </Button>
+            </Flex>
           </SEmpty>
         </STable>
       </SCard>

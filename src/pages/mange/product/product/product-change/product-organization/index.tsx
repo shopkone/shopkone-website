@@ -27,6 +27,7 @@ export default function ProductOrganization () {
       </Form.Item>
       <Form.Item name={'tags'} className={'mb0'} label={t('标签')}>
         <Select
+          placeholder={t('添加标签内容，回车确定')}
           open={false}
           mode={'tags'}
           suffixIcon={null}

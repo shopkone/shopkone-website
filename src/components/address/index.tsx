@@ -23,6 +23,7 @@ export interface AddressProps {
   hiddenTitle?: boolean
   getFormInstance?: (v: FormInstance) => void
   title?: string
+  companyNotFirst?: boolean
 }
 
 const INIT_DATA = {
@@ -40,7 +41,7 @@ const INIT_DATA = {
 }
 
 export default function Address (props: AddressProps) {
-  const { companyNameLabel, hasEmail, loading, value, title, onChange, hasName, hiddenTitle, getFormInstance } = props
+  const { companyNameLabel, hasEmail, loading, value, title, onChange, hasName, hiddenTitle, getFormInstance, companyNotFirst } = props
   const { t } = useTranslation('common', { keyPrefix: 'address' })
 
   const [form] = Form.useForm()
@@ -125,17 +126,21 @@ export default function Address (props: AddressProps) {
     </Form.Item>
   )
 
+  const companyRender = (
+    <SRender render={companyNameLabel}>
+      <Col span={24}>
+        <Form.Item rules={[{ required: props.requiredName }]} name={'legal_business_name'} label={companyNameLabel}>
+          <Input autoComplete={'off'} />
+        </Form.Item>
+      </Col>
+    </SRender>
+  )
+
   return (
     <SCard title={hiddenTitle ? undefined : title || t('地址')} loading={cardLoading}>
       <Form initialValues={INIT_DATA} layout={'vertical'} form={form} onValuesChange={onChangeHandler}>
         <Row gutter={16}>
-          <SRender render={companyNameLabel}>
-            <Col span={24}>
-              <Form.Item rules={[{ required: props.requiredName }]} name={'legal_business_name'} label={companyNameLabel}>
-                <Input autoComplete={'off'} />
-              </Form.Item>
-            </Col>
-          </SRender>
+          {!companyNotFirst && companyRender}
 
           <Col span={24}>
             {countryRender}
@@ -171,6 +176,7 @@ export default function Address (props: AddressProps) {
           <Col span={(hasName && !!zoneOptions?.length) ? 24 : 12}>
             {postalCodeRender}
           </Col>
+
           <SRender render={hasName}>
             <Col span={12}>
               <Form.Item className={'flex1'} label={c?.config?.first_name} name={'first_name'}>
@@ -183,6 +189,8 @@ export default function Address (props: AddressProps) {
               </Form.Item>
             </Col>
           </SRender>
+
+          {companyNotFirst ? companyRender : null}
 
           <SRender render={hasEmail}>
             <Col span={12}>
