@@ -72,14 +72,13 @@ export default function Address (props: AddressProps) {
   }, [countries.data])
 
   const onChangeHandler = () => {
-    onChange?.({ ...(initValues.current || {}), ...form.getFieldsValue() })
+    onChange?.({ id: initValues?.current?.id, ...form.getFieldsValue() })
   }
 
   const c = countries.data?.find(item => item.code === country) || countries.data?.find(i => i.code === 'US')
   const zoneOptions = useMemo(() => {
     const options = c?.zones?.map(item => ({ label: item.name, value: item.code }))
-    const hasZone = form.getFieldValue('zone')
-    if (!hasZone && options?.length && country) {
+    if (options?.length && country) {
       form.setFieldValue('zone', options?.[0]?.value)
       onChangeHandler()
     }
@@ -97,7 +96,7 @@ export default function Address (props: AddressProps) {
 
   useEffect(() => {
     if (!phoneCodes.data || !country) return
-    if (country && !form.getFieldValue('phone')) {
+    if (country && !form.getFieldValue('phone')?.prefix) {
       const code = phoneCodes.data?.find(item => item.code === country)
       form.setFieldValue('phone', { country: code?.code || '', num: '', prefix: code?.prefix || '' })
       onChangeHandler()
@@ -109,7 +108,11 @@ export default function Address (props: AddressProps) {
   }, [form])
 
   const countryRender = (
-    <Form.Item name={'country'} label={c?.config?.country}>
+    <Form.Item
+      rules={[{ required: true, message: t('请选择国家') }]}
+      name={'country'}
+      label={c?.config?.country}
+    >
       <SSelect
         virtual={false}
         options={countryOptions}
@@ -165,6 +168,8 @@ export default function Address (props: AddressProps) {
       </Col>
     </SRender>
   )
+
+  console.log({ country })
 
   return (
     <SCard bordered={!borderless} title={hiddenTitle ? undefined : title || t('地址')} loading={cardLoading}>

@@ -59,7 +59,7 @@ export default function Payment (props: PaymentProps) {
               onClick={() => { discountOpen.edit(form.getFieldValue('discount')) }}
               disabled={!products?.length}
               type={'link'}
-              style={{ padding: 0, fontSize: 13, height: 16 }}
+              style={{ padding: 0, fontSize: 13, height: 16, marginLeft: -1 }}
             >
               {!products?.length ? t('折扣') : t('设置折扣')}
             </Button>
@@ -76,7 +76,7 @@ export default function Payment (props: PaymentProps) {
             <Button
               disabled={!products?.length}
               type={'link'}
-              style={{ padding: 0, fontSize: 13, height: 16 }}
+              style={{ padding: 0, fontSize: 13, height: 16, marginLeft: -1 }}
             >
               {!products?.length ? t('运费') : t('设置运费')}
             </Button>
@@ -93,13 +93,7 @@ export default function Payment (props: PaymentProps) {
           align={'center'}
         >
           <div className={styles.paymentLabel}>
-            <Button
-              disabled={!products?.length}
-              type={'link'}
-              style={{ padding: 0, fontSize: 13, height: 16 }}
-            >
-              {t('税费')}
-            </Button>
+            {t('税费')}
           </div>
           <Flex className={styles.paymentValue}>
             {currency?.code} {currency?.symbol}

@@ -7,5 +7,5 @@ export interface AddAddressReq {
 }
 
 export const AddAddressApi = async (params: AddAddressReq) => {
-  return await api('customer/add/address', params)
+  return await api<{ id: number }>('customer/add/address', params)
 }

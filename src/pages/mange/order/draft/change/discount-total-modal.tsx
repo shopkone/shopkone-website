@@ -42,6 +42,7 @@ export default function DiscountTotalModal (props: DiscountTotalModalProps) {
         onOk={onOk}
         title={t('设置折扣')}
         open={openInfo.open}
+        onCancel={openInfo.close}
         okButtonProps={{ disabled: !discount }}
       >
         <Form form={form} style={{ padding: 16 }} layout={'vertical'}>

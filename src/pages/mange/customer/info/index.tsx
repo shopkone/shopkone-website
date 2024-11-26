@@ -1,30 +1,31 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
-import { IconCake, IconDots, IconMail, IconPhone, IconUser, IconWorld } from '@tabler/icons-react'
+import { IconDots } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
-import { Button, Flex } from 'antd'
-import dayjs from 'dayjs'
+import { Button, Flex, Popover } from 'antd'
 
 import { useCountries } from '@/api/base/countries'
-import { useLanguageList } from '@/api/base/languages'
 import { AddressType } from '@/api/common/address'
-import { GenderType } from '@/api/customer/create'
 import { CustomerFreeTax, CustomerInfoApi, CustomerInfoRes, TaxFeeItem } from '@/api/customer/info'
+import { RemoveAddressApi } from '@/api/customer/remove-address'
+import { UpdateAddressApi, UpdateAddressReq } from '@/api/customer/update-address'
 import IconButton from '@/components/icon-button'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
+import { sMessage } from '@/components/s-message'
 import SRender from '@/components/s-render'
 import ShowMore from '@/components/show-more'
 import Status from '@/components/status'
 import { useOpen } from '@/hooks/useOpen'
 import AddressModal from '@/pages/mange/customer/info/address-modal'
+import CustomerBaseInfo from '@/pages/mange/customer/info/customer-base-info'
 import CustomerModal from '@/pages/mange/customer/info/customer-modal'
 import NoteModal from '@/pages/mange/customer/info/note-modal'
 import TagModal from '@/pages/mange/customer/info/tag-modal'
 import TaxModal from '@/pages/mange/customer/info/tax-modal'
 import { useManageState } from '@/pages/mange/state'
-import { formatAddress, formatPhone } from '@/utils/format'
+import { formatAddress } from '@/utils/format'
 import { genId } from '@/utils/random'
 
 import styles from './index.module.less'
@@ -33,6 +34,8 @@ export default function CustomerInfo () {
   const { t } = useTranslation('customers', { keyPrefix: 'info' })
   const id = Number(useParams().id)
   const info = useRequest(CustomerInfoApi, { manual: true })
+  const updateAddress = useRequest(UpdateAddressApi, { manual: true })
+  const removeAddress = useRequest(RemoveAddressApi, { manual: true })
   const countries = useCountries()
   const tagOpen = useOpen<string[]>()
   const noteOpen = useOpen<string>()
@@ -40,7 +43,7 @@ export default function CustomerInfo () {
   const customerOpen = useOpen<CustomerInfoRes>()
   const addressOpen = useOpen<AddressType>()
   const storeCountry = useManageState(state => state.shopInfo?.country)
-  const languages = useLanguageList()
+  const [openMore, setOpenMore] = useState(-1)
 
   useEffect(() => {
     if (!id) return
@@ -49,22 +52,24 @@ export default function CustomerInfo () {
 
   const name = [info?.data?.first_name, info?.data?.last_name].filter(Boolean).join(' ')
 
-  const genderColor = useMemo(() => {
-    if (info.data?.gender === GenderType.Female) {
-      return '#FF69B4'
-    } else if (info.data?.gender === GenderType.Male) {
-      return '#1E90FF'
-    } else {
-      return undefined
-    }
-  }, [info.data?.gender])
+  const onUpdateAddress = async (data: UpdateAddressReq) => {
+    await updateAddress.runAsync(data)
+    info.run({ id })
+    sMessage.success(t('设置成功'))
+  }
+
+  const onRemoveAddress = async (address_id: number) => {
+    await removeAddress.runAsync({ address_id })
+    info.run({ id })
+    sMessage.success(t('地址删除成功'))
+  }
 
   return (
     <Page
       back={'/customers/customers'}
       title={name}
       loadingHiddenBg={!info.data}
-      loading={!info.data || !countries.data || info.loading || !languages.data}
+      loading={!info.data || !countries.data || info.loading}
       width={950}
     >
       <Flex className={'fit-width'} gap={16}>
@@ -129,49 +134,7 @@ export default function CustomerInfo () {
             title={t('客户信息')}
             className={'fit-width'}
           >
-            <Flex style={{ marginTop: 4 }} vertical gap={12}>
-              <Flex align={'center'} className={styles.icon} gap={8}>
-                <IconUser
-                  size={15}
-                  color={genderColor}
-                />
-                <div className={'main-text'}>{name}</div>
-              </Flex>
-              <Flex align={'center'} className={styles.icon} gap={8}>
-                <IconMail size={14} />
-                {info?.data?.email
-                  ? (
-                    <div className={'main-text'}>{info?.data?.email}</div>
-                    )
-                  : t('暂无信息')}
-              </Flex>
-              <Flex align={'center'} className={styles.icon} gap={8}>
-                <IconPhone size={14} />
-                {info?.data?.phone?.num
-                  ? (
-                    <div className={'main-text'}>
-                      {formatPhone(info?.data?.phone)}
-                    </div>
-                    )
-                  : t('暂无信息')}
-              </Flex>
-
-              <SRender render={info?.data?.birthday}>
-                <Flex align={'center'} className={styles.icon} gap={8}>
-                  <IconCake size={14} />
-                  <div className={'main-text'}>{dayjs.unix(info?.data?.birthday || 0)?.format('YYYY-MM-DD')}</div>
-                </Flex>
-              </SRender>
-
-              <SRender render={info?.data?.language}>
-                <Flex align={'center'} className={styles.icon} gap={8}>
-                  <IconWorld size={14} />
-                  <div className={'main-text'}>
-                    {languages?.data?.find(l => l.value === info?.data?.language)?.label}
-                  </div>
-                </Flex>
-              </SRender>
-            </Flex>
+            <CustomerBaseInfo info={info?.data} />
 
             <Flex className={styles.item} align={'center'} justify={'space-between'}>
               <div className={styles.title}>{t('收货地址')}</div>
@@ -207,13 +170,54 @@ export default function CustomerInfo () {
                       address,
                       address.id === info?.data?.default_address_id ? <Status>{t('默认')}</Status> : ''
                     )}
-                    <Flex align={'center'} gap={4} justify={'flex-end'}>
+                    <Flex align={'center'} gap={8} justify={'flex-end'}>
                       <Button onClick={() => { addressOpen.edit(address) }} type={'link'} size={'small'}>
                         {t('编辑')}
                       </Button>
-                      <IconButton type={'text'} size={20}>
-                        <IconDots size={14} />
-                      </IconButton>
+                      <Popover
+                        open={openMore === address.id}
+                        onOpenChange={(open) => { setOpenMore(!open ? 0 : address.id) }}
+                        overlayInnerStyle={{ minWidth: 100, padding: 4 }}
+                        placement={'bottom'}
+                        trigger={'click'}
+                        arrow={false}
+                        content={
+                          <Flex onClick={() => { setOpenMore(0) }} vertical>
+                            <Button
+                              onClick={async () => { await onUpdateAddress({ customer_id: id, is_default: true, address }) }}
+                              type={'text'}
+                            >
+                              <Flex justify={'flex-start'} flex={1}>
+                                {t('设为默认地址')}
+                              </Flex>
+                            </Button>
+                            <Button
+                              onClick={async () => { await onRemoveAddress(address.id) }}
+                              style={{ fontWeight: 550 }}
+                              type={'text'}
+                              danger
+                            >
+                              <Flex justify={'flex-start'} flex={1}>{t('删除地址')}</Flex>
+                            </Button>
+                          </Flex>
+                        }
+                      >
+                        <IconButton
+                          loading={
+                            (
+                              updateAddress.loading ? updateAddress.params?.[0]?.address?.id === address.id : false
+                            ) ||
+                            (
+                              removeAddress.loading ? removeAddress.params?.[0]?.address_id === address.id : false
+                            )
+                        }
+                          style={{ backgroundColor: openMore === address.id ? '#cccccc' : undefined }}
+                          type={'text'}
+                          size={22}
+                        >
+                          <IconDots size={14} />
+                        </IconButton>
+                      </Popover>
                     </Flex>
                   </div>
                 )
