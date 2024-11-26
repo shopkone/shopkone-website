@@ -15,13 +15,12 @@ import { formatPhone } from '@/utils/format'
 
 export interface AddressSelectProps {
   address?: AddressType[]
-  openInfo: UseOpenType<number>
-  customerId: number
+  openInfo: UseOpenType<AddressType>
   onFresh: () => void
 }
 
 export default function AddressSelect (props: AddressSelectProps) {
-  const { address, openInfo, customerId, onFresh } = props
+  const { address, openInfo, onFresh } = props
   const [value, setValue] = useState<AddressType>()
   const { t } = useTranslation('orders', { keyPrefix: 'drafts' })
   const form = Form.useFormInstance()
@@ -42,14 +41,7 @@ export default function AddressSelect (props: AddressSelectProps) {
   }, [address])
 
   const onOk = async () => {
-    const find = addressOptions?.find(i => i.value === value?.id)
-    if (!find && value) {
-      const ret = await create.runAsync({ customer_id: customerId, address: value })
-      form.setFieldValue('address_id', ret?.id)
-    } else if (value) {
-      await update.runAsync({ address: value, customer_id: customerId, is_default: false })
-      form.setFieldValue('address_id', value?.id)
-    }
+    form.setFieldValue('address', value)
     onFresh()
     openInfo.close()
   }
@@ -60,8 +52,7 @@ export default function AddressSelect (props: AddressSelectProps) {
 
   useEffect(() => {
     if (!openInfo.open) return
-    const addr = address?.find(i => i.id === openInfo.data)
-    setValue(addr)
+    setValue(openInfo.data)
   }, [openInfo.open])
 
   return (

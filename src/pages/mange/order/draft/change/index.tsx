@@ -4,6 +4,7 @@ import { useRequest } from 'ahooks'
 import { Button, Flex, Form, Input, Select } from 'antd'
 
 import { useCurrencyList } from '@/api/base/currency-list'
+import { AddressType } from '@/api/common/address'
 import { CustomerInfoApi } from '@/api/customer/info'
 import { CustomerOptionsApi } from '@/api/customer/options'
 import { MarketListApi } from '@/api/market/list'
@@ -31,10 +32,10 @@ export default function OrderDraftChange () {
   const currency = currencies.data?.find(i => i.code === country?.currency_code)
   const customers = useRequest(CustomerOptionsApi)
   const customerInfo = useRequest(CustomerInfoApi, { manual: true })
-  const addressOpen = useOpen<number>()
+  const addressOpen = useOpen<AddressType>()
 
   const customer_id = Form.useWatch('customer_id', form)
-  const address_id = Form.useWatch('address_id', form)
+  const address = Form.useWatch('address', form)
 
   const customerOptions = useMemo(() => {
     if (!customers.data) return []
@@ -54,7 +55,7 @@ export default function OrderDraftChange () {
   const onChangeCustomerId = (customer_id: number) => {
     if (!customer_id) return
     customerInfo.runAsync({ id: customer_id }).then(res => {
-      form.setFieldValue('address_id', res?.address?.[0]?.id)
+      form.setFieldValue('address', res?.address?.[0])
     })
   }
 
@@ -103,7 +104,7 @@ export default function OrderDraftChange () {
                   <Flex className={styles.customerTitle} align={'center'} justify={'space-between'}>
                     <div>{t('收货地址')}</div>
                     <Button
-                      onClick={() => { addressOpen.edit(form.getFieldValue('address_id')) }}
+                      onClick={() => { addressOpen.edit(form.getFieldValue('address')) }}
                       style={{ fontWeight: 450, marginRight: -8 }}
                       type={'link'}
                       size={'small'}
@@ -116,19 +117,18 @@ export default function OrderDraftChange () {
                     onFresh={() => {
                       customerInfo.refresh()
                     }}
-                    customerId={customerInfo?.data?.id || customer_id}
                     openInfo={addressOpen}
                     address={customerInfo?.data?.address}
                   />
 
                   <Form.Item
                     style={{
-                      display: address_id ? undefined : 'none'
+                      display: address ? undefined : 'none'
                     }}
-                    name={'address_id'}
+                    name={'address'}
                     className={'mb0'}
                   >
-                    <AddressRender address={customerInfo?.data?.address} />
+                    <AddressRender />
                   </Form.Item>
 
                   <div className={styles.customerTitle}>{t('账单地址')}</div>
