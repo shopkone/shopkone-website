@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useRequest } from 'ahooks'
 import { Button, Flex, Form, Input, Select } from 'antd'
@@ -33,9 +33,18 @@ export default function OrderDraftChange () {
   const customers = useRequest(CustomerOptionsApi)
   const customerInfo = useRequest(CustomerInfoApi, { manual: true })
   const addressOpen = useOpen<AddressType>()
+  const [addressList, setAddressList] = useState<Record<string, AddressType[]>>()
 
   const customer_id = Form.useWatch('customer_id', form)
   const address = Form.useWatch('address', form)
+
+  const updateAddressList = (address?: AddressType[], customerId?: number) => {
+    if (!address) return
+    const list = addressList?.[customerId || customer_id] || []
+    const newList = [...list, ...address]
+    const l = [...new Set(newList.map(i => i.id))].map(i => newList.find(ii => ii.id === i))
+    setAddressList(prev => ({ ...prev, [customerId || customer_id]: l }))
+  }
 
   const customerOptions = useMemo(() => {
     if (!customers.data) return []
@@ -56,6 +65,7 @@ export default function OrderDraftChange () {
     if (!customer_id) return
     customerInfo.runAsync({ id: customer_id }).then(res => {
       form.setFieldValue('address', res?.address?.[0])
+      updateAddressList(res.address, res.id)
     })
   }
 
@@ -114,11 +124,11 @@ export default function OrderDraftChange () {
                   </Flex>
 
                   <AddressSelect
-                    onFresh={() => {
-                      customerInfo.refresh()
+                    onFresh={(address) => {
+                      updateAddressList(address ? [address] : [])
                     }}
                     openInfo={addressOpen}
-                    address={customerInfo?.data?.address}
+                    address={addressList?.[customer_id] || []}
                   />
 
                   <Form.Item
