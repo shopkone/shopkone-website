@@ -21,7 +21,8 @@ const emptyMap = {
   empty_product: async () => await import('@/assets/empty/empty_product.svg').then(module => module.ReactComponent),
   empty_order: async () => await import('@/assets/empty/empty_order.svg').then(module => module.ReactComponent),
   fail_search: async () => await import('@/assets/empty/fail_search.svg').then(module => module.ReactComponent),
-  searching: async () => await import('@/assets/empty/searching.svg').then(module => module.ReactComponent)
+  searching: async () => await import('@/assets/empty/searching.svg').then(module => module.ReactComponent),
+  empty_task: async () => await import('@/assets/empty/empty_task.svg').then(module => module.ReactComponent)
 }
 
 export default function SEmpty (props: EmptyProps) {

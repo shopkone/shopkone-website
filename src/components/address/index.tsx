@@ -24,6 +24,8 @@ export interface AddressProps {
   getFormInstance?: (v: FormInstance) => void
   title?: string
   companyNotFirst?: boolean
+  borderless?: boolean
+  firstName?: boolean
 }
 
 const INIT_DATA = {
@@ -41,7 +43,20 @@ const INIT_DATA = {
 }
 
 export default function Address (props: AddressProps) {
-  const { companyNameLabel, hasEmail, loading, value, title, onChange, hasName, hiddenTitle, getFormInstance, companyNotFirst } = props
+  const {
+    companyNameLabel,
+    hasEmail,
+    loading,
+    value,
+    title,
+    borderless,
+    onChange,
+    hasName,
+    hiddenTitle,
+    getFormInstance,
+    companyNotFirst,
+    firstName
+  } = props
   const { t } = useTranslation('common', { keyPrefix: 'address' })
 
   const [form] = Form.useForm()
@@ -136,11 +151,39 @@ export default function Address (props: AddressProps) {
     </SRender>
   )
 
+  const nameRender = (
+    <SRender render={hasName}>
+      <Col span={12}>
+        <Form.Item className={'flex1'} label={c?.config?.first_name} name={'first_name'}>
+          <Input autoComplete={'off'} />
+        </Form.Item>
+      </Col>
+      <Col span={12}>
+        <Form.Item className={'flex1'} label={c?.config?.last_name} name={'last_name'}>
+          <Input autoComplete={'off'} />
+        </Form.Item>
+      </Col>
+    </SRender>
+  )
+
   return (
-    <SCard title={hiddenTitle ? undefined : title || t('地址')} loading={cardLoading}>
+    <SCard bordered={!borderless} title={hiddenTitle ? undefined : title || t('地址')} loading={cardLoading}>
       <Form initialValues={INIT_DATA} layout={'vertical'} form={form} onValuesChange={onChangeHandler}>
         <Row gutter={16}>
+
           {!companyNotFirst && companyRender}
+
+          {firstName ? nameRender : companyRender}
+
+          {firstName
+            ? (
+              <Col span={24}>
+                <Form.Item className={'fit-width'} name={'phone'} label={c?.config?.phone}>
+                  <PhoneCode />
+                </Form.Item>
+              </Col>
+              )
+            : null}
 
           <Col span={24}>
             {countryRender}
@@ -177,18 +220,7 @@ export default function Address (props: AddressProps) {
             {postalCodeRender}
           </Col>
 
-          <SRender render={hasName}>
-            <Col span={12}>
-              <Form.Item className={'flex1'} label={c?.config?.first_name} name={'first_name'}>
-                <Input autoComplete={'off'} />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item className={'flex1'} label={c?.config?.last_name} name={'last_name'}>
-                <Input autoComplete={'off'} />
-              </Form.Item>
-            </Col>
-          </SRender>
+          {!firstName ? nameRender : null}
 
           {companyNotFirst ? companyRender : null}
 
@@ -200,11 +232,17 @@ export default function Address (props: AddressProps) {
             </Col>
           </SRender>
 
-          <Col span={12}>
-            <Form.Item className={'flex1'} name={'phone'} label={c?.config?.phone}>
-              <PhoneCode />
-            </Form.Item>
-          </Col>
+          {
+            !firstName
+              ? (
+                <Col span={12}>
+                  <Form.Item className={'flex1'} name={'phone'} label={c?.config?.phone}>
+                    <PhoneCode />
+                  </Form.Item>
+                </Col>
+                )
+              : null
+          }
         </Row>
       </Form>
     </SCard>

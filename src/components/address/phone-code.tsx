@@ -44,8 +44,8 @@ export default function PhoneCode (props: PhoneCodeProps) {
   }
 
   return (
-    <Flex>
-      <Flex gap={4}>
+    <Flex className={'fit-width'}>
+      <Flex gap={4} className={'fit-width'}>
         <SSelect
           showSearch
           virtual={false}
@@ -69,8 +69,9 @@ export default function PhoneCode (props: PhoneCodeProps) {
             )}
         />
         <Input
+          className={'fit-width'}
           value={value?.num}
-          prefix={`+${value?.prefix || ''}`}
+          prefix={`(+${value?.prefix || ''})`}
           onChange={onChangeNum}
         />
       </Flex>

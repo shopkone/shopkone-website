@@ -1,5 +1,9 @@
+import { ReactNode } from 'react'
+import { Flex } from 'antd'
+
 import { useCountries } from '@/api/base/countries'
-import { AddressType } from '@/api/common/address'
+import { AddressType, PhoneType } from '@/api/common/address'
+import { renderText } from '@/utils/render-text'
 
 export function formatFileSize (sizeInBytes: number): string {
   const units = ['B', 'KB', 'MB', 'GB', 'TB']
@@ -27,4 +31,32 @@ export const formatInfo = (countries: ReturnType<typeof useCountries>, address?:
     if (item === 'country') return country?.name
     return (address as any)[item] || ''
   }).filter(i => i?.trim()).join(' ')).filter(i => i?.trim()).join(', ') || '-'
+}
+
+export const formatPhone = (phone?: PhoneType): ReactNode => {
+  if (!phone?.num || !phone.prefix) return ''
+  return renderText(`+(${phone.prefix}) ${phone.num}`)
+}
+
+export const formatAddress = (address?: AddressType, extra?: ReactNode): ReactNode => {
+  if (!address) return ''
+  const { first_name, last_name, phone } = address
+  const { address1, address2, city, zone, country, company, postal_code } = address
+  const phoneStr = formatPhone(phone)
+  const zoneStr = [zone, postal_code].filter(Boolean).join(' ')
+  const nameStr = [first_name, last_name].filter(Boolean).join(' ')
+  return (
+    <div>
+      <Flex gap={8} align={'center'} style={{ fontWeight: 'bolder' }}>
+        {[nameStr, phoneStr].filter(Boolean).join(', ')}
+        {extra}
+      </Flex>
+      <div style={{ marginTop: 4 }}>
+        {[company].filter(Boolean).join(', ')}
+      </div>
+      <div style={{ marginTop: 4 }}>
+        {[address2, address1, city, zoneStr, country].filter(Boolean).join(', ')}
+      </div>
+    </div>
+  )
 }

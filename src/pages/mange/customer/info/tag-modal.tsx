@@ -1,9 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { IconPlus, IconTrash } from '@tabler/icons-react'
+import { useMemoizedFn, useRequest } from 'ahooks'
 import { Button, Flex, Input } from 'antd'
 
+import { CustomerUpdateTagsApi } from '@/api/customer/update-tags'
 import IconButton from '@/components/icon-button'
+import { sMessage } from '@/components/s-message'
 import SModal from '@/components/s-modal'
 import { UseOpenType } from '@/hooks/useOpen'
 import { genId } from '@/utils/random'
@@ -11,30 +14,42 @@ import { genId } from '@/utils/random'
 export interface TagModalProps {
   openInfo: UseOpenType<string[]>
   onFresh: () => void
+  customerId: number
 }
 
 export default function TagModal (props: TagModalProps) {
-  const { openInfo } = props
+  const { openInfo, customerId, onFresh } = props
   const { t } = useTranslation('customers', { keyPrefix: 'info' })
   const [value, setValue] = useState<Array<{ id: number, value: string }>>([])
   const ref = useRef<HTMLInputElement>(null)
   const inputRefs = useRef<Record<string, HTMLInputElement>>({})
+  const update = useRequest(CustomerUpdateTagsApi, { manual: true })
 
-  const onAddItem = () => {
+  const onAddItem = useMemoizedFn(() => {
     const id = genId()
     setValue([...value, { id, value: '' }])
     setTimeout(() => {
       ref?.current?.scrollTo({ top: 100000, behavior: 'smooth' })
-      inputRefs.current[id.toString()]?.focus()
+      setTimeout(() => {
+        inputRefs.current[id.toString()]?.focus()
+      }, 200)
     })
-  }
+  })
 
-  const onRemoveItem = (id: number) => {
+  const onRemoveItem = useMemoizedFn((id: number) => {
     setValue(value.filter(i => i.id !== id))
-  }
+  })
 
-  const onChange = (id: number, v: string) => {
+  const onChange = useMemoizedFn((id: number, v: string) => {
     setValue(value.map(i => i.id === id ? { ...i, value: v } : i))
+  })
+
+  const onOk = async () => {
+    const tags = value.map(i => i.value).filter(Boolean)
+    await update.runAsync({ id: customerId, tags: [...new Set(tags)] })
+    sMessage.success(t('更新成功'))
+    onFresh()
+    openInfo.close()
   }
 
   useEffect(() => {
@@ -45,16 +60,18 @@ export default function TagModal (props: TagModalProps) {
 
   return (
     <SModal
+      confirmLoading={update.loading}
       onCancel={openInfo.close}
       title={t('编辑标签')}
       open={openInfo.open}
       width={500}
+      onOk={onOk}
     >
       <Flex
         ref={ref}
         gap={8}
         vertical
-        style={{ padding: 16, height: 500, overflowY: 'auto' }}
+        style={{ padding: 16, height: 500, overflowY: 'auto', paddingBottom: 64 }}
       >
         {
             value.map((item) => (

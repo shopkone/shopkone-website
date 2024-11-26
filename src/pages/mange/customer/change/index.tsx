@@ -12,6 +12,7 @@ import SCard from '@/components/s-card'
 import SDatePicker from '@/components/s-date-picker'
 import { sMessage } from '@/components/s-message'
 import SSelect from '@/components/s-select'
+import { useNav } from '@/hooks/use-nav'
 import { isEqualHandle } from '@/utils/is-equal-handle'
 import { EMAIL_REG } from '@/utils/regular'
 
@@ -21,6 +22,7 @@ export default function CustomerChange () {
   const [isChange, setIsChange] = useState(false)
   const init = useRef<any>()
   const [form] = Form.useForm()
+  const nav = useNav()
 
   const genderOptions = [
     { label: t('未知'), value: 0 },
@@ -63,6 +65,7 @@ export default function CustomerChange () {
       throw new Error(err)
     })
     const values = form.getFieldsValue()
+    values.birthday = values.birthday?.unix()
     const ret = await create.runAsync(values).catch(res => {
       if (res.code === EMAIL_EXIST_CODE) {
         form.setFields([{ name: 'email', errors: [res.message] }])
@@ -74,6 +77,7 @@ export default function CustomerChange () {
     })
     if (ret.id) {
       sMessage.success(t('添加成功'))
+      nav(`/customers/customers/info/${ret.id}`)
     }
   }
 

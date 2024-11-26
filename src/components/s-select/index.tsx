@@ -31,14 +31,32 @@ export default function SSelect (props: SelectProps) {
         </>
       }
       removeIcon={(
-        <div style={{ position: 'relative', left: -8, top: -6, background: '#fdfdfd', width: 20 }}>
-          <IconButton size={20} type={'text'}>
-            <IconX color={'#333'} size={14} />
-          </IconButton>
-        </div>
+        props.mode !== undefined
+          ? undefined
+          : (
+            <div style={{
+              position: 'relative',
+              left: -8,
+              top: -6,
+              background: '#fdfdfd',
+              width: 20
+            }}
+            >
+              <IconButton size={20} type={'text'}>
+                <IconX color={'#333'} size={14} />
+              </IconButton>
+            </div>
+            )
       )}
       clearIcon={(
-        <div style={{ position: 'relative', left: -8, top: -6, background: '#fdfdfd', width: 20 }}>
+        <div style={{
+          position: 'relative',
+          left: -8,
+          top: -6,
+          background: '#fdfdfd',
+          width: 20
+        }}
+        >
           <IconButton size={20} type={'text'}>
             <IconX color={'#333'} size={14} />
           </IconButton>

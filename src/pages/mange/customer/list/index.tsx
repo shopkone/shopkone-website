@@ -5,6 +5,7 @@ import { IconDownload, IconPlus } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
 import { Button, Flex } from 'antd'
 
+import { useCountries } from '@/api/base/countries'
 import { CustomerListApi, CustomerListReq, CustomerListRes } from '@/api/customer/list'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
@@ -12,12 +13,14 @@ import SEmpty from '@/components/s-empty'
 import SRender from '@/components/s-render'
 import STable, { STableProps } from '@/components/s-table'
 import Filters from '@/pages/mange/customer/list/filters'
+import { renderText } from '@/utils/render-text'
 
 export default function CustomerList () {
   const { t } = useTranslation('customers', { keyPrefix: 'list' })
   const nav = useNavigate()
   const [params, setParams] = useState<CustomerListReq>({ page: 1, page_size: 20 })
   const list = useRequest(CustomerListApi, { manual: true })
+  const countries = useCountries()
 
   const columns: STableProps['columns'] = [
     {
@@ -35,7 +38,7 @@ export default function CustomerList () {
       code: 'concat',
       name: 'concat',
       render: (_, row: CustomerListRes) => {
-        return row.email || row.phone
+        return renderText(row.email || row.phone)
       },
       width: 300
     },
@@ -47,8 +50,12 @@ export default function CustomerList () {
     },
     {
       title: t('地区'),
-      code: 'area',
-      name: 'area'
+      code: 'address',
+      name: 'address',
+      render: (_, row: CustomerListRes) => {
+        const country = countries.data?.find(c => c.code === row.address?.country)
+        return renderText([row.address?.city, row.address?.zone, country?.name].filter(Boolean).join(' · '))
+      }
     },
     {
       title: t('订单数量'),
@@ -79,9 +86,10 @@ export default function CustomerList () {
       }
       title={t('客户')}
     >
-      <SCard loading={!list.data} styles={{ body: { padding: '8px 0 0 0' } }}>
+      <SCard loading={!list.data || !countries.data} styles={{ body: { padding: '8px 0 0 0' } }}>
         <Filters />
         <STable
+          loading={list.loading}
           page={{
             current: params.page,
             pageSize: params.page_size,

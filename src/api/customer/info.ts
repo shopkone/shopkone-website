@@ -1,10 +1,10 @@
 import { api } from '@/api/api'
-import { AddressType } from '@/api/common/address'
+import { AddressType, PhoneType } from '@/api/common/address'
 
 export interface TaxFeeItem {
+  id: number
   country_code: string
   zones: string[]
-  is_all: boolean
 }
 
 export interface CustomerFreeTax {
@@ -23,12 +23,14 @@ export interface CustomerInfoRes {
   last_name?: string
   email?: string
   note?: string
-  phone?: string
+  phone?: PhoneType
   gender?: number
   birthday?: number
   address: AddressType[]
   tags?: string[]
-  tax?: CustomerFreeTax
+  tax: CustomerFreeTax
+  language?: string
+  default_address_id?: number
 }
 
 export const CustomerInfoApi = async (params: CustomerInfoReq) => {
