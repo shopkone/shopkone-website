@@ -40,10 +40,15 @@ export default function OrderDraftChange () {
 
   const updateAddressList = (address?: AddressType[], customerId?: number) => {
     if (!address) return
-    const list = addressList?.[customerId || customer_id] || []
-    const newList = [...list, ...address]
-    const l = [...new Set(newList.map(i => i.id))].map(i => newList.find(ii => ii.id === i))
-    setAddressList(prev => ({ ...prev, [customerId || customer_id]: l }))
+    const newList = (addressList?.[customerId || customer_id] || [])?.map(i => {
+      const find = address.find(option => i.id === option.id)
+      return find || i
+    })
+    const list = address?.filter(option => {
+      const find = newList.find(i => i.id === option.id)
+      return !find
+    }) || []
+    setAddressList(prev => ({ ...prev, [customerId || customer_id]: [...newList, ...list] }))
   }
 
   const customerOptions = useMemo(() => {

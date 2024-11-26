@@ -133,10 +133,7 @@ export default function Address (props: AddressProps) {
 
   const postalCodeRender = (
     <Form.Item
-      rules={[{
-        pattern: new RegExp(c?.postal_code_config?.regex || ''),
-        message: t('邮编不合法', { name: `${c?.config?.postal_code || t('邮政编码')}`, code: PostalCodeMsg })
-      }]}
+      extra={PostalCodeMsg ? t('邮编提示', { code: PostalCodeMsg }) : undefined}
       name={'postal_code'}
       label={c?.config?.postal_code || t('邮政编码')}
     >
