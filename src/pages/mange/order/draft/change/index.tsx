@@ -56,13 +56,13 @@ export default function OrderDraftChange () {
   const calPrice = async () => {
     const values = form.getFieldsValue()
     if (!values) return
-    const { country, address, variants, customer_id } = values
+    const { country, address, variants, customer_id, discount } = values
     if (!variants?.length || !country) return
     await preCal.runAsync({
       variant_items: variants,
       address,
-      market_id: 1,
-      customer_id
+      customer_id,
+      discount
     })
     console.log(variants)
   }
@@ -109,7 +109,7 @@ export default function OrderDraftChange () {
               <Products currency={currency} />
             </Form.Item>
 
-            <Payment currency={currency} />
+            <Payment info={preCal?.data} currency={currency} />
 
           </Flex>
 

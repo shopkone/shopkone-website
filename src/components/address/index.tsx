@@ -72,7 +72,8 @@ export default function Address (props: AddressProps) {
   }, [countries.data])
 
   const onChangeHandler = () => {
-    onChange?.({ id: initValues?.current?.id, ...form.getFieldsValue() })
+    const v = { id: initValues?.current?.id, ...form.getFieldsValue() }
+    onChange?.(v)
   }
 
   const c = countries.data?.find(item => item.code === country) || countries.data?.find(i => i.code === 'US')

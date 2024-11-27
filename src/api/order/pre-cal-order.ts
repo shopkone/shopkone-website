@@ -8,10 +8,16 @@ export interface OrderPreBaseShippingFee {
   shipping_fee_id: number
 }
 
+export enum OrderDiscountType {
+  Percentage = 1,
+  Fixed = 2
+}
+
 export interface OrderPreBaseDiscount {
   id: number
   price: number
-  type: number
+  type: OrderDiscountType
+  note: string
 }
 
 export interface OrderPreBaseVariantItem {
@@ -21,13 +27,19 @@ export interface OrderPreBaseVariantItem {
 }
 
 export interface BasePreShippingFeePlan {
-  label: string
-  value: number
+  id: number
+  name: string
+  price: number
+}
+
+export interface OrderPreBaseTax {
+  name: string
+  rate: number
+  price: number
 }
 
 export interface OrderCalPreReq {
   variant_items: OrderPreBaseVariantItem[]
-  market_id: number
   discount?: OrderPreBaseDiscount
   address: AddressType
   customer_id?: number
@@ -42,6 +54,7 @@ export interface OrderCalPreRes {
   sum_price: number
   total: number
   shipping_fee_plans: BasePreShippingFeePlan[]
+  taxes: OrderPreBaseTax[]
 }
 
 export const OrderPreCalApi = async (data: OrderCalPreReq) => {
