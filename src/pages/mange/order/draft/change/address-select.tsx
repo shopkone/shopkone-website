@@ -31,6 +31,8 @@ export default function AddressSelect (props: AddressSelectProps) {
   const create = useRequest(AddAddressApi, { manual: true })
   const addrForm = useRef<FormInstance>()
 
+  // TODO: 切换丢失区域
+
   const addressOptions = useMemo(() => {
     return address?.map(i => {
       const { first_name, last_name, phone } = i
@@ -43,8 +45,6 @@ export default function AddressSelect (props: AddressSelectProps) {
       }
     }) || []
   }, [address])
-
-  console.log({ address })
 
   const onOk = async () => {
     await addrForm.current?.validateFields().catch(err => {
@@ -94,7 +94,7 @@ export default function AddressSelect (props: AddressSelectProps) {
             options={[{ value: -1, label: t('使用新地址') }, ...addressOptions]}
           />
         </div>
-        <div className={'line'} />
+        <div style={{ marginBottom: 1 }} className={'line'} />
       </SRender>
       <Address
         getFormInstance={f => { addrForm.current = f }}

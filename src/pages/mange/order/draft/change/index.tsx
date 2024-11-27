@@ -8,6 +8,7 @@ import { AddressType } from '@/api/common/address'
 import { CustomerInfoApi } from '@/api/customer/info'
 import { CustomerOptionsApi } from '@/api/customer/options'
 import { MarketListApi } from '@/api/market/list'
+import { OrderPreCalApi } from '@/api/order/pre-cal-order'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
 import SLoading from '@/components/s-loading'
@@ -34,6 +35,7 @@ export default function OrderDraftChange () {
   const customerInfo = useRequest(CustomerInfoApi, { manual: true })
   const addressOpen = useOpen<AddressType>()
   const [addressList, setAddressList] = useState<Record<string, AddressType[]>>()
+  const preCal = useRequest(OrderPreCalApi, { manual: true })
 
   const customer_id = Form.useWatch('customer_id', form)
   const address = Form.useWatch('address', form)
@@ -49,6 +51,24 @@ export default function OrderDraftChange () {
       return !find
     }) || []
     setAddressList(prev => ({ ...prev, [customerId || customer_id]: [...newList, ...list] }))
+  }
+
+  const calPrice = async () => {
+    const values = form.getFieldsValue()
+    if (!values) return
+    const { country, address, variants, customer_id } = values
+    if (!variants?.length || !country) return
+    await preCal.runAsync({
+      variant_items: variants,
+      address,
+      market_id: 1,
+      customer_id
+    })
+    console.log(variants)
+  }
+
+  const onValuesChange = () => {
+    calPrice()
   }
 
   const customerOptions = useMemo(() => {
@@ -82,7 +102,7 @@ export default function OrderDraftChange () {
       title={t('创建订单')}
       width={950}
     >
-      <Form layout={'vertical'} form={form}>
+      <Form onValuesChange={onValuesChange} layout={'vertical'} form={form}>
         <Flex gap={16}>
           <Flex gap={16} vertical className={'flex1'}>
             <Form.Item className={'mb0'} name={'variants'}>

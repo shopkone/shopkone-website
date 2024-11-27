@@ -11,6 +11,7 @@ import FileImage from '@/components/file-image'
 import IconButton from '@/components/icon-button'
 import Page from '@/components/page'
 import SCard from '@/components/s-card'
+import SEmpty from '@/components/s-empty'
 import SRender from '@/components/s-render'
 import STable, { STableProps } from '@/components/s-table'
 import { CollectionType } from '@/pages/mange/product/collections/change'
@@ -126,20 +127,6 @@ export default function Collections () {
           onRowClick={(row, rowIndex) => {
             nav(`/products/collections/change/${row.id}`)
           }}
-          empty={{
-            title: 'Group your products into categories',
-            desc: 'Use collections to organize your products into categories and galleries for your online store.',
-            actions: (
-              <Flex gap={8}>
-                <Button
-                  onClick={() => { nav('change') }}
-                  type={'primary'}
-                >
-                  {t('添加系列')}
-                </Button>
-              </Flex>
-            )
-          }}
           page={{
             total: list?.data?.total || 0,
             current: params.page,
@@ -148,7 +135,19 @@ export default function Collections () {
               setParams({ ...params, page, page_size })
             }
           }}
-        />
+        >
+          <SEmpty
+            title={'Group your products into categories'}
+            desc={'Use collections to organize your products into categories and galleries for your online store.'}
+          >
+            <Button
+              onClick={() => { nav('change') }}
+              type={'primary'}
+            >
+              {t('添加系列')}
+            </Button>
+          </SEmpty>
+        </STable>
       </SCard>
     </Page>
   )
