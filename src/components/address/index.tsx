@@ -82,6 +82,9 @@ export default function Address (props: AddressProps) {
     if (options?.length && country) {
       form.setFieldValue('zone', options?.[0]?.value)
       onChangeHandler()
+    } else if (options?.length === 0) {
+      form.setFieldValue('zone', '')
+      onChangeHandler()
     }
     return options || []
   }, [countries.data, country])
@@ -166,8 +169,6 @@ export default function Address (props: AddressProps) {
       </Col>
     </SRender>
   )
-
-  console.log({ country })
 
   return (
     <SCard bordered={!borderless} title={hiddenTitle ? undefined : title || t('地址')} loading={cardLoading}>

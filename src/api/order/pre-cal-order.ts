@@ -2,10 +2,11 @@ import { api } from '@/api/api'
 import { AddressType } from '@/api/common/address'
 
 export interface OrderPreBaseShippingFee {
-  free: boolean
-  name: string
-  price: number
-  shipping_fee_id: number
+  free?: boolean
+  customer?: boolean
+  name?: string
+  price?: number
+  shipping_fee_id?: number
 }
 
 export enum OrderDiscountType {
@@ -49,7 +50,7 @@ export interface OrderCalPreReq {
 export interface OrderCalPreRes {
   cost_price: number
   tax_price: number
-  shipping_price: number
+  shipping_fee: OrderPreBaseShippingFee
   discount_price: number
   sum_price: number
   total: number

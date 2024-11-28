@@ -94,8 +94,8 @@ export default function Products (props: ProductsProps) {
       name: 'id',
       width: 50,
       render: (_, row: ProductListByIdsRes) => (
-        <IconButton type={'text'} size={24}>
-          <IconTrash onClick={() => { onRemove(row.id) }} size={15} />
+        <IconButton onClick={() => { onRemove(row.id) }} type={'text'} size={24}>
+          <IconTrash size={15} />
         </IconButton>
       )
     }
@@ -138,7 +138,7 @@ export default function Products (props: ProductsProps) {
       </SRender>
 
       <SRender render={value?.length ? type === ShippingType.CustomerExpressDelivery : null}>
-        <div className={'tips'} style={{ marginBottom: 8 }}>
+        <div style={{ marginBottom: 8 }}>
           {t('已选商品', { x: value?.length })}
         </div>
         <STable
