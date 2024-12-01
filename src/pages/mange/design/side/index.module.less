@@ -1,6 +1,35 @@
 .side {
-  width: 260px;
+  width: 320px;
   background: #ffffff;
   border-right: 1px solid var(--color-border);
-  padding: 12px;
+  padding: 12px 8px;
+  overflow-y: auto;
+}
+
+
+.itemBtn {
+  padding: 6px 8px;
+  cursor: pointer;
+  border-radius: 8px;
+  margin: 2px 0;
+  flex: 1;
+  &:hover {
+    background-color: #f0f0f0;
+  }
+}
+
+.itemBtnActive {
+  background-color: #e8e8e8;
+}
+
+.block {
+  margin-left: 24px;
+  padding: 4px 8px;
+  margin-bottom: 4px;
+  cursor: pointer;
+  border-radius: 8px;
+  flex: 1;
+  &:hover {
+    background-color: #f0f0f0;
+  }
 }
