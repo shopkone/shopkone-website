@@ -80,9 +80,16 @@ export default function Sider () {
       icon: <IconTargetArrow size={16} />
     },
     {
-      label: t('博客'),
+      label: t('在线商店'),
       key: '/blog_posts',
-      icon: <IconNotebook size={16} />
+      icon: <IconNotebook size={16} />,
+      children: [
+        { label: t('店铺设计'), key: 'blog_posts' },
+        { label: t('博客'), key: 'blog_comments' },
+        { label: t('自定义页面'), key: 'blog_tags' },
+        { label: t('菜单导航'), key: 'blog_categories' },
+        { label: t('偏好设置'), key: 'blog_categories' }
+      ]
     },
     {
       label: t('设置'),

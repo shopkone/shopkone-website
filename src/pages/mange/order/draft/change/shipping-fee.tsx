@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMemoizedFn } from 'ahooks'
-import { Flex, Form, Input, Radio } from 'antd'
+import { Alert, Flex, Form, Input, Radio } from 'antd'
 
 import { useCurrencyList } from '@/api/base/currency-list'
 import { BasePreShippingFeePlan, OrderPreBaseShippingFee } from '@/api/order/pre-cal-order'
@@ -24,6 +24,8 @@ export default function ShippingFee (props: ShippingFeeProps) {
   const { t } = useTranslation('orders', { keyPrefix: 'drafts' })
   const storeCurrency = useManageState(state => state.shopInfo?.store_currency)
   const currencies = useCurrencyList()
+  const wrapForm = Form.useFormInstance()
+  const customerId = Form.useWatch('customer_id', wrapForm)
 
   const [form] = Form.useForm()
 
@@ -79,6 +81,12 @@ export default function ShippingFee (props: ShippingFeeProps) {
       onCancel={openInfo.close}
     >
       <div style={{ maxHeight: 500, overflow: 'auto', padding: 20 }}>
+        <SRender render={!customerId}>
+          <Alert
+            style={{ marginBottom: 12 }}
+            message={t('当填写客户收件地址后，可选择适用当地的运费方案。')}
+          />
+        </SRender>
         <Flex gap={12} vertical>
           {
             options?.map(opt => (
