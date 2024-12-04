@@ -71,10 +71,10 @@ export default function Upload (props: UploadProps) {
   }).join(',')
 
   const acceptMap = {
-    video: '视频',
-    image: '图片',
-    audio: '音频',
-    zip: '压缩包'
+    video: t('视频'),
+    image: t('图片'),
+    audio: t('音频'),
+    zip: t('压缩包')
   }
 
   const onClickHandle = () => {

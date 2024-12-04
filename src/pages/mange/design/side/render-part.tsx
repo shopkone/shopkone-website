@@ -20,6 +20,7 @@ export default function RenderPart (props: RenderPartProps) {
   const schemaList = useRequest(DesignSchemaListApi, { manual: true })
   const setEditing = useDesignState(state => state.setEditing)
   const editing = useDesignState(state => state.editing)
+  const iframe = useDesignState(state => state.iframe)
 
   useEffect(() => {
     if (!part?.sections) return
@@ -42,11 +43,13 @@ export default function RenderPart (props: RenderPartProps) {
     })
     setEditing({
       id,
-      name: section.type || '',
+      name: schema?.name || '',
       type: 'section',
       schema: settings || [],
-      parent: ''
+      parent: '',
+      part_name: part?.type
     })
+    iframe.send('SELECT', { id })
   }
 
   const setBlockEdit = (id: string, schema?: BlockSchema, block?: BlockData, parent?: string) => {
@@ -65,8 +68,10 @@ export default function RenderPart (props: RenderPartProps) {
       name: schema?.name || '',
       type: 'block',
       schema: settings || [],
-      parent
+      parent: parent || '',
+      part_name: part?.type || ''
     })
+    iframe.send('SELECT', { id: parent, blockId: id })
   }
 
   if (!part) return null
