@@ -7,8 +7,7 @@ export interface BlockUpdateReq {
   key: string
   value: any
 }
-export interface BlockUpdateRes {}
 
 export const BlockUpdateApi = async (params: BlockUpdateReq) => {
-  return await api<BlockUpdateRes>('/design/block/update', params)
+  return await api('/design/block/update', params)
 }

@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { IconPlus } from '@tabler/icons-react'
+import { MouseEventHandler } from 'react'
+import { IconPlus, IconX } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
 import { ColorPicker, Flex, Input, Select, Slider, Switch } from 'antd'
 import classNames from 'classnames'
@@ -7,6 +7,7 @@ import classNames from 'classnames'
 import { SettingSchema } from '@/api/design/schema-list'
 import { FileType } from '@/api/file/add-file-record'
 import { FileInfoApi, FileInfoRes } from '@/api/file/file-info'
+import IconButton from '@/components/icon-button'
 import SelectFiles from '@/components/media/select-files'
 import SInputNumber from '@/components/s-input-number'
 import SRender from '@/components/s-render'
@@ -16,26 +17,18 @@ import styles from './index.module.less'
 
 export interface Prop {
   setting: SettingSchema
-  onChange: (key: string, value: any) => void
+  value?: any
+  onChange?: (value: any) => void
 }
 
 function DCheckBox (props: Prop) {
-  const { setting, onChange } = props
-  const [value, setValue] = useState<boolean>()
-  useEffect(() => {
-    setValue(setting.__kimi_value)
-  }, [setting.__kimi_value])
-
-  useEffect(() => {
-    if (value === undefined) return
-    onChange(setting.id, value)
-  }, [value])
+  const { setting, onChange, value } = props
 
   return (
     <Flex className={styles.item} gap={12} justify={'space-between'} align={'center'}>
       <div>{setting.label.replace(':', ' ')}</div>
       <Switch
-        onChange={val => { setValue(val) }}
+        onChange={val => { onChange?.(val) }}
         value={value}
       />
     </Flex>
@@ -43,58 +36,28 @@ function DCheckBox (props: Prop) {
 }
 
 function DSelect (props: Prop) {
-  const { setting, onChange } = props
-  const [value, setValue] = useState<string>()
-  useEffect(() => {
-    setValue(setting.__kimi_value)
-  }, [setting.__kimi_value])
-  useEffect(() => {
-    if (value === setting.__kimi_value) return
-    if (value === undefined) return
-    onChange(setting.id, value)
-  }, [value])
+  const { setting, onChange, value } = props
   return (
     <Flex className={styles.item} gap={4} vertical>
       <div>{setting.label.replace(':', ' ')}</div>
-      <Select onChange={setValue} value={value} options={setting.options} />
+      <Select onChange={onChange} value={value} options={setting.options} />
     </Flex>
   )
 }
 
 function DText (props: Prop) {
-  const { setting, onChange } = props
-  const [value, setValue] = useState<string>()
-  useEffect(() => {
-    setValue(setting.__kimi_value)
-  }, [setting.__kimi_value])
-
-  useEffect(() => {
-    if (value === setting.__kimi_value) return
-    if (value === undefined) return
-    onChange(setting.id, value)
-  }, [value])
+  const { setting, onChange, value } = props
 
   return (
     <Flex className={styles.item} gap={4} vertical>
       <div>{setting.label.replace(':', ' ')}</div>
-      <Input value={value} onChange={e => { setValue(e.target.value) }} autoComplete={'off'} />
+      <Input value={value} onChange={e => { onChange?.(e.target.value) }} autoComplete={'off'} />
     </Flex>
   )
 }
 
 function DRange (props: Prop) {
-  const { setting, onChange } = props
-  const [value, setValue] = useState<number>()
-
-  useEffect(() => {
-    setValue(setting.__kimi_value)
-  }, [setting.__kimi_value])
-
-  useEffect(() => {
-    if (value === setting.__kimi_value) return
-    if (value === undefined) return
-    onChange(setting.id, value)
-  }, [value])
+  const { setting, onChange, value } = props
 
   return (
     <Flex className={styles.item} vertical>
@@ -104,12 +67,12 @@ function DRange (props: Prop) {
           min={setting.min}
           max={setting.max}
           step={setting.step}
-          onChange={val => { setValue(val) }}
+          onChange={val => { onChange?.(val) }}
           value={value}
           className={'flex1'}
         />
         <SInputNumber
-          onChange={val => { setValue(val) }}
+          onChange={val => { onChange?.(val) }}
           value={value}
           suffix={setting.unit}
           style={{ width: 80 }}
@@ -120,22 +83,13 @@ function DRange (props: Prop) {
 }
 
 function DTextArea (props: Prop) {
-  const { setting, onChange } = props
-  const [value, setValue] = useState<string>()
-  useEffect(() => {
-    setValue(setting.__kimi_value)
-  }, [setting.__kimi_value])
-  useEffect(() => {
-    if (value === setting.__kimi_value) return
-    if (value === undefined) return
-    onChange(setting.id, value)
-  }, [value])
+  const { setting, onChange, value } = props
   return (
     <Flex gap={4} className={styles.item} vertical>
       <div>{setting.label.replace(':', ' ')}</div>
       <Input.TextArea
         value={value}
-        onChange={e => { setValue(e.target.value) }}
+        onChange={e => { onChange?.(e.target.value) }}
         autoSize={{ minRows: 3, maxRows: 5 }}
       />
     </Flex>
@@ -143,22 +97,11 @@ function DTextArea (props: Prop) {
 }
 
 function DColor (props: Prop) {
-  const { setting, onChange } = props
-  const [value, setValue] = useState<string>()
-
-  useEffect(() => {
-    setValue(setting.__kimi_value)
-  }, [setting.__kimi_value])
-
-  useEffect(() => {
-    if (value === setting.__kimi_value) return
-    if (value === undefined) return
-    onChange(setting.id, value)
-  }, [value])
+  const { setting, onChange, value } = props
   return (
     <Flex className={styles.item} gap={4} vertical>
       <Flex gap={8} align={'center'}>
-        <ColorPicker value={value} onChange={v => { setValue(`#${v.toHex()}`) }} />
+        <ColorPicker value={value} onChange={v => { onChange?.(`#${v.toHex()}`) }} />
         <Flex vertical justify={'space-between'}>
           <div>{setting.label}</div>
           <span className={'tips'}>{value}</span>
@@ -169,14 +112,14 @@ function DColor (props: Prop) {
 }
 
 function DColorBackground (props: Prop) {
-  const { setting } = props
+  const { setting, value } = props
   return (
     <Flex className={styles.item} gap={4} vertical>
       <Flex gap={8} align={'center'}>
-        <ColorPicker defaultValue={'#1677ff'} />
+        <ColorPicker value={value} />
         <Flex vertical justify={'space-between'}>
           <div>{setting.label}</div>
-          <span className={'tips'}>{setting.__kimi_value}</span>
+          <span className={'tips'}>{value}</span>
         </Flex>
       </Flex>
     </Flex>
@@ -195,22 +138,21 @@ function DHeader (props: Prop) {
 }
 
 function DImagePicker (props: Prop) {
-  const { setting, onChange } = props
+  const { setting, onChange, value } = props
   const openInfo = useOpen<number[]>([])
   const fileInfo = useRequest(FileInfoApi, { manual: true })
-  const [value, setValue] = useState<FileInfoRes>()
 
-  useEffect(() => {
-    setValue(setting.__kimi_value)
-  }, [setting.__kimi_value])
+  const onCancel: MouseEventHandler<HTMLElement> = (e) => {
+    e.stopPropagation()
+    onChange?.(undefined)
+  }
 
-  useEffect(() => {
-    if (value === setting.__kimi_value) return
-    if (value === undefined) return
-    const aspect_ratio = (value?.width || 0) / (value?.height || 1)
+  const changHandle = (params: FileInfoRes) => {
+    const aspect_ratio = (params?.width || 0) / (params?.height || 1)
     const presentation = { focal_point: '50.0% 50.0%' }
-    onChange(setting.id, { ...value, aspect_ratio, media_type: 'image', src: value?.path, presentation })
-  }, [value])
+    const v = { ...params, aspect_ratio, media_type: 'image', src: params?.path, presentation }
+    onChange?.(v.src ? v : '')
+  }
 
   return (
     <div>
@@ -227,8 +169,13 @@ function DImagePicker (props: Prop) {
           </Flex>
         </SRender>
         <SRender onClick={() => { openInfo.edit() }} className={styles.imgContainer} render={value?.path}>
+          <div className={styles.iconX}>
+            <IconButton onClick={onCancel} size={24}>
+              <IconX size={16} />
+            </IconButton>
+          </div>
           <img
-            style={{ height: 'auto', width: 250, maxHeight: 250 }}
+            style={{ height: 'auto', maxWidth: 250, maxHeight: 250 }}
             src={value?.path || ''}
             alt={''}
           />
@@ -238,7 +185,7 @@ function DImagePicker (props: Prop) {
         onConfirm={async (v) => {
           if (!v[0]) return
           const ret = await fileInfo.runAsync({ id: v[0] })
-          setValue(ret)
+          changHandle(ret)
           openInfo.close()
         }}
         info={openInfo}
@@ -259,33 +206,23 @@ function DParagraph (props: Prop) {
 }
 
 function DLinkList (props: Prop) {
-  const { setting } = props
+  const { setting, value } = props
   return (
     <div className={styles.item}>
       <div>{setting.label.replace(':', ' ')}</div>
-      <div>{setting.__kimi_value}</div>
+      <div>{value}</div>
     </div>
   )
 }
 
 function DRichText (props: Prop) {
-  const { setting, onChange } = props
-  const [value, setValue] = useState<string>()
+  const { setting, onChange, value } = props
 
-  useEffect(() => {
-    setValue(setting.__kimi_value)
-  }, [setting.__kimi_value])
-
-  useEffect(() => {
-    if (value === setting.__kimi_value) return
-    if (value === undefined) return
-    onChange(setting.id, value)
-  }, [value])
   return (
     <div className={styles.item}>
       <div>{setting.label.replace(':', ' ')}</div>
       <Input.TextArea
-        onChange={e => { setValue(e.target.value) }}
+        onChange={e => { onChange?.(e.target.value) }}
         value={value}
         autoSize={{ minRows: 3, maxRows: 5 }}
       />
@@ -294,25 +231,14 @@ function DRichText (props: Prop) {
 }
 
 function DHtmlEditor (props: Prop) {
-  const { setting, onChange } = props
-  const [value, setValue] = useState<string>()
-  useEffect(() => {
-    if (!setting.__kimi_value) {
-      setValue(setting.__kimi_value)
-    }
-  }, [setting.__kimi_value])
+  const { setting, onChange, value } = props
 
-  useEffect(() => {
-    if (value === setting.__kimi_value) return
-    if (value === undefined) return
-    onChange(setting.id, value)
-  }, [value])
   return (
     <Flex vertical gap={4} className={styles.item}>
       <div>{setting.label.replace(':', ' ')}</div>
       <Input.TextArea
         value={value}
-        onChange={e => { setValue(e.target.value) }}
+        onChange={e => { onChange?.(e.target.value) }}
         autoSize={{ minRows: 3, maxRows: 5 }}
       />
     </Flex>
