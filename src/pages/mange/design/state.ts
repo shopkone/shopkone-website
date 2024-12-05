@@ -13,7 +13,13 @@ export interface DesignState {
     parent: string
     part_name: string
   }
-  contentFreshFlag: number
+  update?: {
+    block_id?: string
+    section_id?: string
+    part_name: string
+    key: string
+    value: any
+  }
   iframe: {
     send: (key: string, data?: any) => void
   }
@@ -22,8 +28,8 @@ export interface DesignState {
 interface DesignAction {
   setDevice: (device: DesignState['device']) => void
   setEditing: (editing: DesignState['editing']) => void
-  setContentFresh: () => void
   initIFrame: (iframe: RefObject<HTMLIFrameElement>) => void
+  setUpdate: (update: DesignState['update']) => void
 }
 
 export const useDesignState = create<DesignState & DesignAction>((set, get, store) => ({
@@ -34,9 +40,9 @@ export const useDesignState = create<DesignState & DesignAction>((set, get, stor
   setEditing: (editing) => {
     set({ editing })
   },
-  contentFreshFlag: 0,
-  setContentFresh: () => {
-    set({ contentFreshFlag: get().contentFreshFlag + 1 })
+
+  setUpdate: (update) => {
+    set({ update })
   },
 
   iframe: {

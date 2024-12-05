@@ -21,6 +21,7 @@ export default function RenderPart (props: RenderPartProps) {
   const setEditing = useDesignState(state => state.setEditing)
   const editing = useDesignState(state => state.editing)
   const iframe = useDesignState(state => state.iframe)
+  const update = useDesignState(state => state.update)
 
   useEffect(() => {
     if (!part?.sections) return
@@ -73,6 +74,16 @@ export default function RenderPart (props: RenderPartProps) {
     })
     iframe.send('SELECT', { id: parent, blockId: id })
   }
+
+  useEffect(() => {
+    if (!update?.section_id || (part?.type !== update?.part_name)) return
+    if (!part?.sections) return
+    if (update.block_id) {
+      part.sections[update?.section_id].blocks[update.block_id].settings[update.key] = update.value
+    } else {
+      part.sections[update?.section_id].settings[update.key] = update.value
+    }
+  }, [update?.value, update?.key])
 
   if (!part) return null
 

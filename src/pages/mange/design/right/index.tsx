@@ -38,7 +38,13 @@ export default function Right () {
         value
       })
     }
-    state.setContentFresh()
+    state.setUpdate({
+      section_id: state?.editing?.parent || state?.editing?.id,
+      block_id: state?.editing?.id,
+      key,
+      value,
+      part_name: state.editing?.part_name || ''
+    })
   }, { wait: 400 }).run
 
   const onValuesChange = (item: Record<string, any>) => {

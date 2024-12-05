@@ -22,18 +22,20 @@ export default function Content () {
   }, [state.device])
 
   useEffect(() => {
-    if (!state.contentFreshFlag) return
+    if (!state.update?.section_id) return
     render.runAsync({
       section_id: state.editing?.parent || state?.editing?.id || '',
       part_name: state.editing?.part_name || ''
     }).then(res => {
-      state.iframe.send('FRESH', { html: res.html, sectionId: state.editing?.parent || state?.editing?.id })
+      state.iframe.send('FRESH', {
+        html: res.html,
+        sectionId: state.editing?.parent || state?.editing?.id
+      })
     })
-  }, [state.contentFreshFlag])
+  }, [state.update?.value, state.update?.key])
 
   useEffect(() => {
     if (!ref.current) return
-    console.log('INIT')
     state.initIFrame(ref)
   }, [ref])
 
