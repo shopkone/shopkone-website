@@ -113,9 +113,10 @@ export default function SortableItem (props: SortableItemProps) {
         </Flex>
       </Flex>
       {
-        (item.parent_id !== draggingItem?.parent_id) && !!item?.links?.length && (
-        <SortableContext strategy={verticalListSortingStrategy} items={item.links || []} >
-          {
+         !!item?.links?.length && (
+           <div className={styles.container} style={{ height: (item.parent_id === draggingItem?.parent_id) ? 0 : undefined }}>
+             <SortableContext strategy={verticalListSortingStrategy} items={item.links || []} >
+               {
                 item.links?.map(j => (
                   <SortableItem
                     info={info}
@@ -127,8 +128,9 @@ export default function SortableItem (props: SortableItemProps) {
                   />
                 ))
               }
-        </SortableContext>
-        )
+             </SortableContext>
+           </div>
+         )
       }
     </div>
   )
