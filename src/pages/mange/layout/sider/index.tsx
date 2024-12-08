@@ -81,13 +81,13 @@ export default function Sider () {
     },
     {
       label: t('在线商店'),
-      key: '/blog_posts',
+      key: 'online',
       icon: <IconNotebook size={16} />,
       children: [
         { label: t('店铺设计'), key: 'blog_posts' },
         { label: t('博客'), key: 'blog_comments' },
         { label: t('自定义页面'), key: 'blog_tags' },
-        { label: t('菜单导航'), key: 'blog_categories' },
+        { label: t('菜单导航'), key: 'nav_list' },
         { label: t('偏好设置'), key: 'blog_categories' }
       ]
     },

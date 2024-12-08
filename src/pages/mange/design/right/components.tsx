@@ -1,16 +1,18 @@
 import { MouseEventHandler } from 'react'
 import { IconPlus, IconX } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
-import { ColorPicker, Flex, Input, Select, Slider, Switch } from 'antd'
+import { ColorPicker, Flex, Input, Radio, Select, Slider, Switch } from 'antd'
 import classNames from 'classnames'
 
 import { SettingSchema } from '@/api/design/schema-list'
 import { FileType } from '@/api/file/add-file-record'
 import { FileInfoApi, FileInfoRes } from '@/api/file/file-info'
+import { NavListApi } from '@/api/online/navList'
 import IconButton from '@/components/icon-button'
 import SelectFiles from '@/components/media/select-files'
 import SInputNumber from '@/components/s-input-number'
 import SRender from '@/components/s-render'
+import SSelect from '@/components/s-select'
 import { useOpen } from '@/hooks/useOpen'
 
 import styles from './index.module.less'
@@ -144,7 +146,7 @@ function DImagePicker (props: Prop) {
 
   const onCancel: MouseEventHandler<HTMLElement> = (e) => {
     e.stopPropagation()
-    onChange?.(undefined)
+    onChange?.('')
   }
 
   const changHandle = (params: FileInfoRes) => {
@@ -206,12 +208,18 @@ function DParagraph (props: Prop) {
 }
 
 function DLinkList (props: Prop) {
-  const { setting, value } = props
+  const { setting, value, onChange } = props
+  const list = useRequest(NavListApi)
   return (
-    <div className={styles.item}>
+    <Flex vertical gap={4} className={styles.item}>
       <div>{setting.label.replace(':', ' ')}</div>
-      <div>{value}</div>
-    </div>
+      <SSelect
+        value={value}
+        onChange={val => { onChange?.(val) }}
+        options={list.data?.map(v => ({ label: v.title, value: `shopkimi://menu/${v.handle}` }) || [])}
+        loading={list.loading}
+      />
+    </Flex>
   )
 }
 
@@ -246,11 +254,25 @@ function DHtmlEditor (props: Prop) {
 }
 
 function DUrl (props: Prop) {
-  const { setting } = props
+  const { setting, value } = props
   return (
     <Flex gap={4} vertical className={styles.item}>
       <div>{setting.label.replace(':', ' ')}</div>
-      还没有实现 URL
+      还没有实现 URL{value}
+    </Flex>
+  )
+}
+
+function DRadio (props: Prop) {
+  const { setting, onChange, value } = props
+  return (
+    <Flex gap={4} vertical className={styles.item}>
+      <div>{setting.label.replace(':', ' ')}</div>
+      <Radio.Group
+        options={setting.options}
+        onChange={e => { onChange?.(e.target.value) }}
+        value={value}
+      />
     </Flex>
   )
 }
@@ -269,5 +291,6 @@ export default {
   html: DHtmlEditor,
   url: DUrl,
   link_list: DLinkList,
-  richtext: DRichText
+  richtext: DRichText,
+  radio: DRadio
 }

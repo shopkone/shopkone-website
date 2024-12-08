@@ -35,9 +35,9 @@ export default function RenderPart (props: RenderPartProps) {
     if (!section) return
     const settings: SettingSchema[] = schema?.settings || []
     Object.keys(part?.sections[id]?.settings || {})?.forEach(i => {
-      const setting = settings.find(ii => ii.id === i)
+      const setting = settings?.find(ii => ii.id === i)
       if (!setting) return
-      setting.__kimi_value = part?.sections[id]?.settings[i]
+      setting.__kimi_value = part?.sections[id]?.settings?.[i]
       if (setting.__kimi_value === undefined) {
         setting.__kimi_value = setting.default
       }
@@ -57,9 +57,9 @@ export default function RenderPart (props: RenderPartProps) {
     if (!block || !schema) return
     const settings: SettingSchema[] = schema?.settings || []
     Object.keys(block.settings || {}).forEach(i => {
-      const setting = settings.find(ii => ii.id === i)
+      const setting = settings?.find(ii => ii.id === i)
       if (!setting) return
-      setting.__kimi_value = block.settings[i]
+      setting.__kimi_value = block?.settings[i]
       if (setting?.__kimi_value === undefined) {
         setting.__kimi_value = setting.default
       }
@@ -78,7 +78,7 @@ export default function RenderPart (props: RenderPartProps) {
   useEffect(() => {
     if (!update?.section_id || (part?.type !== update?.part_name)) return
     if (!part?.sections) return
-    if (update.block_id) {
+    if (update.block_id && part.sections[update?.section_id].blocks[update.block_id]) {
       part.sections[update?.section_id].blocks[update.block_id].settings[update.key] = update.value
     } else {
       part.sections[update?.section_id].settings[update.key] = update.value

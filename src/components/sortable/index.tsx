@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
   closestCenter,
   DndContext,
@@ -23,10 +23,11 @@ export interface SortableProps<T> {
   items: Array<ItemType<T>>
   onChange: (v: Array<ItemType<T>>) => void
   draggingClassName?: string
+  onMoving?: (v?: ItemType<T>) => void
 }
 
 export default function Sortable<T> (props: SortableProps<T>) {
-  const { children, items, onChange } = props
+  const { children, items, onChange, onMoving } = props
 
   const [activeId, setActiveId] = useState(0)
 
@@ -55,6 +56,10 @@ export default function Sortable<T> (props: SortableProps<T>) {
   })
 
   const nodes = useMemo(() => children(items, activeId), [items, activeId])
+
+  useEffect(() => {
+    onMoving?.(items?.find(item => item.id === activeId))
+  }, [activeId])
 
   return (
     <DndContext

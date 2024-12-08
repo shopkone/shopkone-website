@@ -1,0 +1,33 @@
+.item {
+  padding: 8px 12px;
+  margin-top: 16px;
+  border: 1px solid var(--color-border);
+  background-color: #fafafa;
+  border-radius: 4px;
+}
+
+.dragging {
+  position: relative;
+  overflow: hidden;
+  border: none;
+  &:before {
+    content: '';
+    position: absolute;
+    inset: 1px;
+    background-color: #fff;
+    z-index: 2;
+  }
+}
+
+.bg {
+  border-color: #bbb;
+  box-shadow: 0 0 4px #bbb;
+  cursor: grabbing;
+  *{
+    cursor: grabbing !important;
+  }
+}
+
+.btn {
+  cursor: grab;
+}

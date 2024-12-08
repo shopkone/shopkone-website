@@ -66,8 +66,8 @@ export default function Right () {
       <Flex className={styles.title}>
         {state.editing?.name}
       </Flex>
-      <Form onValuesChange={onValuesChange} form={form}>
-        <Flex gap={28} vertical className={styles.right}>
+      <Form className={styles.right} onValuesChange={onValuesChange} form={form}>
+        <Flex gap={28} vertical>
           {
             state?.editing?.schema?.map((i, index) => {
               const Component = (components as any)[i?.type]
