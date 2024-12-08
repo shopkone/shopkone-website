@@ -5,19 +5,19 @@ import { arrayMove, SortableContext } from '@dnd-kit/sortable'
 import { useMemoizedFn } from 'ahooks'
 
 import { NavItemType } from '@/api/online/navInfo'
-import { useOpen } from '@/hooks/useOpen'
+import { UseOpenType } from '@/hooks/useOpen'
 import AddModal from '@/pages/mange/online/nav-list/change/add-modal'
 import SortableItem from '@/pages/mange/online/nav-list/change/sortable-item'
 
 export interface NestedSortableProps {
   value?: NavItemType[]
   onChange?: (value: NavItemType[]) => void
+  openInfo: UseOpenType<NavItemType>
 }
 
 export default function NestedSortable (props: NestedSortableProps) {
-  const { value, onChange } = props
+  const { value, onChange, openInfo } = props
   const [dragging, setDragging] = useState<NavItemType>()
-  const openInfo = useOpen<NavItemType>()
 
   const sensors = useSensors(
     useSensor(MouseSensor, { activationConstraint: { distance: 8 } }),

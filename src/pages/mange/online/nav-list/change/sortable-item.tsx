@@ -22,7 +22,7 @@ export interface SortableItemProps {
   info: UseOpenType<NavItemType>
 }
 
-const DEFAULT_ITEM = {
+export const DEFAULT_ITEM = {
   id: 0,
   title: '',
   url: ''

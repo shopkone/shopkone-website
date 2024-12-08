@@ -2,26 +2,29 @@ import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import { useMemoizedFn, useRequest } from 'ahooks'
-import { Card, Form, Input } from 'antd'
+import { Button, Card, Form, Input } from 'antd'
 import cloneDeep from 'lodash/cloneDeep'
 
-import { NavInfoApi } from '@/api/online/navInfo'
+import { NavInfoApi, NavItemType } from '@/api/online/navInfo'
 import { NavUpdateApi } from '@/api/online/navUpdate'
 import Page from '@/components/page'
 import { sMessage } from '@/components/s-message'
 import { useNav } from '@/hooks/use-nav'
+import { useOpen } from '@/hooks/useOpen'
 import NestedSortable from '@/pages/mange/online/nav-list/change/nested-sortable'
+import { DEFAULT_ITEM } from '@/pages/mange/online/nav-list/change/sortable-item'
 import { isEqualHandle } from '@/utils/is-equal-handle'
 
 export default function NavChange () {
   const id = Number(useParams().id)
   const info = useRequest(NavInfoApi, { manual: true })
   const nav = useNav()
-  const { t } = useTranslation('online', { keyPrefix: 'nav_list' })
+  const { t } = useTranslation('online', { keyPrefix: 'nav' })
   const [form] = Form.useForm()
   const [isChange, setIsChange] = useState(false)
   const update = useRequest(NavUpdateApi, { manual: true })
   const init = useRef()
+  const openInfo = useOpen<NavItemType>()
 
   const onOk = async () => {
     await form.validateFields()
@@ -73,9 +76,20 @@ export default function NavChange () {
           </Form.Item>
         </Card>
 
-        <Card style={{ marginTop: 16 }} title={t('编辑菜单项')}>
+        <Card
+          extra={
+            <Button
+              onClick={() => { openInfo.edit({ ...DEFAULT_ITEM, parent_id: 0, levels: 1 }) }}
+              style={{ marginRight: 0 }} size={'small'} type={'link'}
+            >
+              {t('添加菜单项')}
+            </Button>
+          }
+          style={{ marginTop: 16 }}
+          title={t('编辑菜单项')}
+        >
           <Form.Item name={'links'}>
-            <NestedSortable />
+            <NestedSortable openInfo={openInfo} />
           </Form.Item>
         </Card>
       </Form>

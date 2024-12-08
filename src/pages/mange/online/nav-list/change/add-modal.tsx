@@ -15,7 +15,7 @@ export interface AddModalProps {
 
 export default function AddModal (props: AddModalProps) {
   const { info, onConfirm } = props
-  const { t } = useTranslation('online', { keyPrefix: 'nav_list' })
+  const { t } = useTranslation('online', { keyPrefix: 'nav' })
   const [form] = Form.useForm()
 
   const title = info?.data?.title ? t('编辑菜单项') : t('添加菜单项')
