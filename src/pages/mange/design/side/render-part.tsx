@@ -30,27 +30,31 @@ export default function RenderPart (props: RenderPartProps) {
   }, [part?.sections])
 
   const setSectionEdit = (id: string, schema?: SectionSchema) => {
-    const section = part?.sections[id]
-    if (id === editing?.id) return
-    if (!section) return
-    const settings: SettingSchema[] = schema?.settings || []
-    Object.keys(part?.sections[id]?.settings || {})?.forEach(i => {
-      const setting = settings?.find(ii => ii.id === i)
-      if (!setting) return
-      setting.__kimi_value = part?.sections[id]?.settings?.[i]
-      if (setting.__kimi_value === undefined) {
-        setting.__kimi_value = setting.default
-      }
-    })
-    setEditing({
-      id,
-      name: schema?.name || '',
-      type: 'section',
-      schema: settings || [],
-      parent: '',
-      part_name: part?.type
-    })
-    iframe.send('SELECT', { id })
+    try {
+      const section = part?.sections?.[id]
+      if (id === editing?.id) return
+      if (!section) return
+      const settings: SettingSchema[] = schema?.settings || []
+      Object.keys(part?.sections?.[id]?.settings || {})?.forEach(i => {
+        const setting = settings?.find(ii => ii.id === i)
+        if (!setting) return
+        setting.__kimi_value = part?.sections?.[id]?.settings?.[i]
+        if (setting.__kimi_value === undefined) {
+          setting.__kimi_value = setting.default
+        }
+      })
+      setEditing({
+        id,
+        name: schema?.name || '',
+        type: 'section',
+        schema: settings || [],
+        parent: '',
+        part_name: part?.type
+      })
+      iframe.send('SELECT', { id })
+    } catch {
+      console.log('渲染异常')
+    }
   }
 
   const setBlockEdit = (id: string, schema?: BlockSchema, block?: BlockData, parent?: string) => {
@@ -59,7 +63,7 @@ export default function RenderPart (props: RenderPartProps) {
     Object.keys(block.settings || {}).forEach(i => {
       const setting = settings?.find(ii => ii.id === i)
       if (!setting) return
-      setting.__kimi_value = block?.settings[i]
+      setting.__kimi_value = block?.settings?.[i]
       if (setting?.__kimi_value === undefined) {
         setting.__kimi_value = setting.default
       }
@@ -78,7 +82,7 @@ export default function RenderPart (props: RenderPartProps) {
   useEffect(() => {
     if (!update?.section_id || (part?.type !== update?.part_name)) return
     if (!part?.sections) return
-    if (update.block_id && part.sections[update?.section_id].blocks[update.block_id]) {
+    if (update?.block_id && part.sections[update?.section_id]?.blocks?.[update.block_id]) {
       part.sections[update?.section_id].blocks[update.block_id].settings[update.key] = update.value
     } else {
       part.sections[update?.section_id].settings[update.key] = update.value
@@ -92,8 +96,8 @@ export default function RenderPart (props: RenderPartProps) {
       <div>{part.name}</div>
       <div>
         {part?.order?.map(key => {
-          const section = part.sections[key]
-          const sectionSchema = schemaList?.data?.find(i => i.type === section.type)
+          const section = part.sections?.[key]
+          const sectionSchema = schemaList?.data?.find(i => i.type === section?.type)
           if (!section) return null
           return (
             <div key={key}>
@@ -120,7 +124,7 @@ export default function RenderPart (props: RenderPartProps) {
               <div>
                 {
                   section?.block_order?.map((blockKey) => {
-                    const block = section.blocks[blockKey]
+                    const block = section?.blocks?.[blockKey]
                     const blockSchema = sectionSchema?.blocks.find(i => i.type === block.type)
                     return (
                       <div

@@ -1,38 +1,43 @@
-.item {
-  padding: 8px 12px;
-  margin-top: 16px;
+.card {
   border: 1px solid var(--color-border);
-  background-color: #fafafa;
-  border-radius: 4px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.item {
+  background-color: #fff;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.inner {
+  padding: 8px;
+  &:hover {
+    background-color: var(--color-bg-secondary);
+  }
+}
+
+.last {
+  border-bottom: none;
 }
 
 .dragging {
   position: relative;
-  overflow: hidden;
-  border: 1px dashed var(--color-primary);
-  &:before {
-    content: '';
+  border-top: 1px solid var(--color-primary);
+  border-bottom: 1px solid var(--color-primary);
+  &:after {
     position: absolute;
+    content: "";
+    display: block;
     inset: 0;
-    background-color: #b0c9f8;
-    z-index: 2;
+    background-color: #a6c1fe;
   }
+}
+
+.bgWrap {
+  background-color: transparent;
 }
 
 .bg {
-  border-color: #bbb;
-  box-shadow: 0 0 4px #bbb;
-  cursor: grabbing;
-  *{
-    cursor: grabbing !important;
-  }
-}
-
-.btn {
-  cursor: grab;
-}
-
-.container {
-  overflow: hidden;
-  transition: height 0.3s;
+  border-radius: 4px;
+  border: 1px solid var(--color-border);
 }

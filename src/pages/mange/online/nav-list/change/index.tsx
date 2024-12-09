@@ -64,7 +64,7 @@ export default function NavChange () {
     <Page
       onCancel={onCancel}
       loading={info.loading}
-      width={800}
+      width={750}
       isChange={isChange}
       onOk={onOk}
       back={'/online/nav_list'}
@@ -88,7 +88,7 @@ export default function NavChange () {
           style={{ marginTop: 16 }}
           title={t('编辑菜单项')}
         >
-          <Form.Item name={'links'}>
+          <Form.Item className={'mb0'} name={'links'}>
             <NestedSortable openInfo={openInfo} />
           </Form.Item>
         </Card>

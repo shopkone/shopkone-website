@@ -1,10 +1,10 @@
 import { api } from '@/api/api'
 
 export interface PartData {
-  name: string
-  type: string
-  order: string[]
-  sections: Record<string, SectionData>
+  name?: string
+  type?: string
+  order?: string[]
+  sections?: Record<string, SectionData>
 }
 
 export interface SectionData {

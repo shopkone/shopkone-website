@@ -6,17 +6,17 @@ import { SettingSchema } from '@/api/design/schema-list'
 export interface DesignState {
   device: 'mobile' | 'desktop' | 'pad' | 'fill'
   editing?: {
-    id: string
-    schema: SettingSchema[]
-    name: string
-    type: 'section' | 'block'
-    parent: string
-    part_name: string
+    id?: string
+    schema?: SettingSchema[]
+    name?: string
+    type?: 'section' | 'block'
+    parent?: string
+    part_name?: string
   }
   update?: {
     block_id?: string
     section_id?: string
-    part_name: string
+    part_name?: string
     key: string
     value: any
   }

@@ -4,6 +4,7 @@ import { useRequest } from 'ahooks'
 import { ColorPicker, Flex, Input, Radio, Select, Slider, Switch } from 'antd'
 import classNames from 'classnames'
 
+import { CollectionOptionsApi } from '@/api/collection/options'
 import { SettingSchema } from '@/api/design/schema-list'
 import { FileType } from '@/api/file/add-file-record'
 import { FileInfoApi, FileInfoRes } from '@/api/file/file-info'
@@ -135,6 +136,23 @@ function DHeader (props: Prop) {
       <div className={'line'} />
       <div className={styles.headerText}>{setting.content?.replaceAll(':', ' ')}</div>
       <div className={'line'} />
+    </Flex>
+  )
+}
+
+function DCollection (props: Prop) {
+  const { setting, value, onChange } = props
+
+  const options = useRequest(CollectionOptionsApi)
+
+  return (
+    <Flex className={styles.item} gap={4} vertical>
+      <div>{setting.label.replace(':', ' ')}</div>
+      <SSelect
+        options={options?.data?.map(i => ({ label: i.label, value: `shopkimi://collection/${i.value}` }))}
+        value={value}
+        onChange={onChange}
+      />
     </Flex>
   )
 }
@@ -292,5 +310,6 @@ export default {
   url: DUrl,
   link_list: DLinkList,
   richtext: DRichText,
-  radio: DRadio
+  radio: DRadio,
+  collection: DCollection
 }
