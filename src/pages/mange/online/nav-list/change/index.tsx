@@ -11,8 +11,7 @@ import Page from '@/components/page'
 import { sMessage } from '@/components/s-message'
 import { useNav } from '@/hooks/use-nav'
 import { useOpen } from '@/hooks/useOpen'
-import NestedSortable from '@/pages/mange/online/nav-list/change/nested-sortable'
-import { DEFAULT_ITEM } from '@/pages/mange/online/nav-list/change/sortable-item'
+import Grab from '@/pages/mange/online/nav-list/change/grab'
 import { isEqualHandle } from '@/utils/is-equal-handle'
 
 export default function NavChange () {
@@ -79,7 +78,6 @@ export default function NavChange () {
         <Card
           extra={
             <Button
-              onClick={() => { openInfo.edit({ ...DEFAULT_ITEM, parent_id: 0, levels: 1 }) }}
               style={{ marginRight: 0 }} size={'small'} type={'link'}
             >
               {t('添加菜单项')}
@@ -89,7 +87,7 @@ export default function NavChange () {
           title={t('编辑菜单项')}
         >
           <Form.Item className={'mb0'} name={'links'}>
-            <NestedSortable openInfo={openInfo} />
+            <Grab />
           </Form.Item>
         </Card>
       </Form>
