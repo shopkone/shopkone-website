@@ -6,15 +6,16 @@ import { iOS } from '../utilities'
 
 import { Props as TreeItemProps, TreeItem } from './tree-item'
 
-interface Props extends TreeItemProps {
+interface Props extends Omit<TreeItemProps, 'id'> {
   id: string
   title: string
+  firstLevelsCount: number
 }
 
 const animateLayoutChanges: AnimateLayoutChanges = ({ isSorting, wasDragging }) =>
   !(isSorting || wasDragging)
 
-export function SortableTreeItem ({ id, depth, title, ...props }: Props) {
+export function SortableTreeItem ({ id, depth, title, firstLevelsCount, ...props }: Props) {
   const {
     attributes,
     isDragging,
@@ -46,6 +47,7 @@ export function SortableTreeItem ({ id, depth, title, ...props }: Props) {
         ...attributes,
         ...listeners
       }}
+      firstLevelsCount={firstLevelsCount}
       title={title}
       {...props}
     />

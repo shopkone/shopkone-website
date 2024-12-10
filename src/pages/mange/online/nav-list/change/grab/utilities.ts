@@ -1,6 +1,8 @@
 import { arrayMove } from '@dnd-kit/sortable'
 
-import type { FlattenedItem, TreeItem, TreeItems } from './types'
+import { NavItemType } from '@/api/online/navInfo'
+
+import type { FlattenedItem, TreeItems } from './types'
 
 export const iOS = /iPad|iPhone|iPod/.test(navigator.platform)
 
@@ -24,7 +26,8 @@ export function getProjection (
   const dragDepth = getDragDepth(dragOffset, indentationWidth)
   const projectedDepth = activeItem.depth + dragDepth
   const maxDepth = getMaxDepth({
-    previousItem
+    previousItem,
+    currentItem: newItems[overItemIndex]
   })
   const minDepth = getMinDepth({ nextItem })
   let depth = projectedDepth
@@ -59,7 +62,22 @@ export function getProjection (
   }
 }
 
-function getMaxDepth ({ previousItem }: { previousItem: FlattenedItem }) {
+function getMaxDepth (
+  { previousItem, currentItem }:
+  { previousItem: FlattenedItem, currentItem: FlattenedItem }
+) {
+  let currentMax = 1
+  if (currentItem?.links?.length) {
+    currentMax = 2
+    const hasNext = currentItem?.links?.some(i => i.links?.length)
+    if (hasNext) {
+      currentMax = 3
+    }
+  }
+  console.log(currentMax, (previousItem?.depth))
+  if (currentMax + (previousItem?.depth) > 2) {
+    return previousItem.depth
+  }
   if (previousItem) {
     return previousItem.depth + 1
   }
@@ -84,7 +102,7 @@ function flatten (
     return [
       ...acc,
       { ...item, parentId, depth, index },
-      ...flatten(item.children, item.id, depth + 1)
+      ...flatten(item.links, item.id, depth + 1)
     ]
   }, [])
 }
@@ -94,39 +112,39 @@ export function flattenTree (items: TreeItems): FlattenedItem[] {
 }
 
 export function buildTree (flattenedItems: FlattenedItem[]): TreeItems {
-  const root: TreeItem = { id: 'root', children: [], title: '' }
-  const nodes: Record<string, TreeItem> = { [root.id]: root }
-  const items = flattenedItems.map((item) => ({ ...item, children: [] }))
+  const root: NavItemType = { id: 'root', links: [], title: '', url: '' }
+  const nodes: Record<string, NavItemType> = { [root.id]: root }
+  const items = flattenedItems.map((item) => ({ ...item, links: [] }))
 
   for (const item of items) {
-    const { id, children, title } = item
+    const { id, links, title, url } = item
     const parentId = item.parentId ?? root.id
     const parent = nodes[parentId] ?? findItem(items, parentId)
 
-    nodes[id] = { id, children, title }
-    parent.children.push(item)
+    nodes[id] = { id, links, title, url }
+    parent.links.push(item)
   }
 
-  return root.children
+  return root.links
 }
 
-export function findItem (items: TreeItem[], itemId: string) {
+export function findItem (items: NavItemType[], itemId: string) {
   return items.find(({ id }) => id === itemId)
 }
 
 export function findItemDeep (
   items: TreeItems,
   itemId: string
-): TreeItem | undefined {
+): NavItemType | undefined {
   for (const item of items) {
-    const { id, children } = item
+    const { id, links } = item
 
     if (id === itemId) {
       return item
     }
 
-    if (children.length) {
-      const child = findItemDeep(children, itemId)
+    if (links.length) {
+      const child = findItemDeep(links, itemId)
 
       if (child) {
         return child
@@ -145,8 +163,8 @@ export function removeItem (items: TreeItems, id: string) {
       continue
     }
 
-    if (item.children.length) {
-      item.children = removeItem(item.children, id)
+    if (item.links.length) {
+      item.links = removeItem(item.links, id)
     }
 
     newItems.push(item)
@@ -155,11 +173,11 @@ export function removeItem (items: TreeItems, id: string) {
   return newItems
 }
 
-export function setProperty<T extends keyof TreeItem> (
+export function setProperty<T extends keyof NavItemType> (
   items: TreeItems,
   id: string,
   property: T,
-  setter: (value: TreeItem[T]) => TreeItem[T]
+  setter: (value: NavItemType[T]) => NavItemType[T]
 ) {
   for (const item of items) {
     if (item.id === id) {
@@ -167,18 +185,18 @@ export function setProperty<T extends keyof TreeItem> (
       continue
     }
 
-    if (item.children.length) {
-      item.children = setProperty(item.children, id, property, setter)
+    if (item.links.length) {
+      item.links = setProperty(item.links, id, property, setter)
     }
   }
 
   return [...items]
 }
 
-function countChildren (items: TreeItem[], count = 0): number {
-  return items.reduce((acc, { children }) => {
-    if (children.length) {
-      return countChildren(children, acc + 1)
+function countChildren (items: NavItemType[], count = 0): number {
+  return items.reduce((acc, { links }) => {
+    if (links.length) {
+      return countChildren(links, acc + 1)
     }
 
     return acc + 1
@@ -192,7 +210,7 @@ export function getChildCount (items: TreeItems, id: string) {
 
   const item = findItemDeep(items, id)
 
-  return item ? countChildren(item.children) : 0
+  return item ? countChildren(item.links) : 0
 }
 
 export function removeChildrenOf (items: FlattenedItem[], ids: string[]) {
@@ -200,7 +218,7 @@ export function removeChildrenOf (items: FlattenedItem[], ids: string[]) {
 
   return items.filter((item) => {
     if (item.parentId && excludeParentIds.includes(item.parentId)) {
-      if (item.children.length) {
+      if (item.links.length) {
         excludeParentIds.push(item.id)
       }
       return false

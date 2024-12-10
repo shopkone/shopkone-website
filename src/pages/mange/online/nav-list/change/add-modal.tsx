@@ -9,8 +9,8 @@ import { UseOpenType } from '@/hooks/useOpen'
 import { genId } from '@/utils/random'
 
 export interface AddModalProps {
-  info: UseOpenType<NavItemType>
-  onConfirm: (value: NavItemType) => void
+  info: UseOpenType<{ item?: NavItemType, isEdit: boolean }>
+  onConfirm: (value: { item: NavItemType, isEdit: boolean }) => void
 }
 
 export default function AddModal (props: AddModalProps) {
@@ -18,21 +18,28 @@ export default function AddModal (props: AddModalProps) {
   const { t } = useTranslation('online', { keyPrefix: 'nav' })
   const [form] = Form.useForm()
 
-  const title = info?.data?.title ? t('编辑菜单项') : t('添加菜单项')
+  const title = info?.data?.isEdit ? t('编辑菜单项') : t('添加菜单项')
 
   const onChange = async () => {
     await form.validateFields()
-    onConfirm({
-      ...info.data,
-      ...form.getFieldsValue(),
-      id: info?.data?.id || genId()
-    })
+    const values = form.getFieldsValue()
+    if (info.data?.isEdit && info.data.item) {
+      onConfirm({ item: { ...info.data.item, title: values.title }, isEdit: true })
+    } else {
+      const newItem = { id: genId().toString(), title: values.title, url: values.url || '/', links: [] }
+      const item = info.data?.item || { id: '', links: [], title: '', url: '' }
+      onConfirm({ item: { ...item, links: item.links.concat(newItem) }, isEdit: false })
+    }
     info.close()
   }
 
   useEffect(() => {
     if (!info.open) return
-    form.setFieldsValue(info?.data || {})
+    if (info.data?.isEdit) {
+      form.setFieldsValue(info?.data?.item || {})
+    } else {
+      form.setFieldsValue({ title: '' })
+    }
   }, [info.open])
 
   return (

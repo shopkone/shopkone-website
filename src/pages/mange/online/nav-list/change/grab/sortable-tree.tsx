@@ -17,10 +17,14 @@ import {
   useSensors
 } from '@dnd-kit/core'
 import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
+import cloneDeep from 'lodash/cloneDeep'
 
+import { NavItemType } from '@/api/online/navInfo'
+import { UseOpenType } from '@/hooks/useOpen'
+import AddModal from '@/pages/mange/online/nav-list/change/add-modal'
 import { SortableTreeItem } from '@/pages/mange/online/nav-list/change/grab/tree-item'
 
-import { FlattenedItem, SensorContext, TreeItem } from './types'
+import { FlattenedItem, SensorContext } from './types'
 import {
   buildTree,
   flattenTree,
@@ -39,6 +43,7 @@ const measuring = {
 
 const dropAnimation: DropAnimation = {
   ...defaultDropAnimation,
+  // @ts-expect-error
   dragSourceOpacity: 0.5
 }
 
@@ -47,8 +52,10 @@ interface Props {
   indentationWidth?: number
   indicator?: boolean
   removable?: boolean
-  value?: TreeItem[]
-  onChange?: (value: TreeItem[]) => void
+  value?: NavItemType[]
+  onChange?: (value: NavItemType[]) => void
+  openInfo: UseOpenType<{ item?: NavItemType, isEdit: boolean }>
+  list: NavItemType[]
 }
 
 export function SortableTree ({
@@ -56,10 +63,11 @@ export function SortableTree ({
   indicator,
   indentationWidth = 20,
   removable,
-  value,
-  onChange
+  value: items = [],
+  onChange,
+  list,
+  openInfo
 }: Props) {
-  const [items, setItems] = useState(() => value || [])
   const [activeId, setActiveId] = useState<string | null>(null)
   const [overId, setOverId] = useState<string | null>(null)
   const [offsetLeft, setOffsetLeft] = useState(0)
@@ -68,11 +76,16 @@ export function SortableTree ({
     overId: string
   } | null>(null)
 
+  const setItems = (fn?: ((v: NavItemType[]) => NavItemType[])) => {
+    const list = fn?.(items)
+    onChange?.(cloneDeep(list) || [])
+  }
+
   const flattenedItems = useMemo(() => {
     const flattenedTree = flattenTree(items)
     const collapsedItems = flattenedTree.reduce<string[]>(
-      (acc, { children, collapsed, id }) =>
-        collapsed && children.length ? [...acc, id] : acc,
+      (acc, { links, collapsed, id }) =>
+        collapsed && links.length ? [...acc, id] : acc,
       []
     )
 
@@ -99,6 +112,29 @@ export function SortableTree ({
     useSensor(PointerSensor)
   )
 
+  const Change = (oldList: NavItemType[], item: NavItemType): NavItemType[] => {
+    return oldList.map((navItem) => {
+      if (navItem.id === item.id) {
+        return item
+      } else if (navItem.links && navItem.links.length > 0) {
+        return { ...navItem, links: Change(navItem.links, item) }
+      } else {
+        return navItem
+      }
+    })
+  }
+
+  const onChangeItem = (r: { item?: NavItemType, isEdit: boolean }) => {
+    const { item, isEdit } = r
+    if (!item) return
+    if (!item.id && item?.links?.[0]) {
+      onChange?.([...items, item?.links?.[0]])
+      return
+    }
+    const newList = Change(list, item)
+    onChange?.(newList || [])
+  }
+
   const sortedIds = useMemo(() => flattenedItems.map(({ id }) => id), [
     flattenedItems
   ])
@@ -114,7 +150,7 @@ export function SortableTree ({
   }, [flattenedItems, offsetLeft])
 
   const announcements: any = {
-    onDragStart (id: number) {
+    onDragStart (id: string) {
       return `Picked up ${id}.`
     },
     onDragMove (id: string, overId: string) {
@@ -133,6 +169,7 @@ export function SortableTree ({
 
   return (
     <DndContext
+      /* @ts-expect-error */
       announcements={announcements}
       sensors={sensors}
       collisionDetection={closestCenter}
@@ -144,8 +181,11 @@ export function SortableTree ({
       onDragCancel={handleDragCancel}
     >
       <SortableContext items={sortedIds} strategy={verticalListSortingStrategy}>
-        {flattenedItems.map(({ id, children, collapsed, depth, title }) => (
+        {flattenedItems.map(({ id, links, collapsed, depth, title, ...rest }) => (
           <SortableTreeItem
+            onAdd={() => { openInfo.edit({ item: { id, title, links, ...rest }, isEdit: false }) }}
+            onEdit={() => { openInfo.edit({ item: { id, title, links, ...rest }, isEdit: true }) }}
+            firstLevelsCount={items.length || 0}
             title={title}
             key={id}
             id={id}
@@ -153,9 +193,9 @@ export function SortableTree ({
             depth={id === activeId && projected ? projected.depth : depth}
             indentationWidth={indentationWidth}
             indicator={indicator}
-            collapsed={Boolean(collapsed && children.length)}
+            collapsed={Boolean(collapsed && links.length)}
             onCollapse={
-              collapsible && children.length
+              collapsible && links.length
                 ? () => { handleCollapse(id) }
                 : undefined
             }
@@ -170,6 +210,7 @@ export function SortableTree ({
             {activeId && activeItem
               ? (
                 <SortableTreeItem
+                  firstLevelsCount={0}
                   id={activeId}
                   title={activeItem.title}
                   depth={activeItem.depth}
@@ -184,11 +225,13 @@ export function SortableTree ({
           document.body
         )}
       </SortableContext>
+
+      <AddModal info={openInfo} onConfirm={onChangeItem} />
     </DndContext>
   )
 
   function handleDragStart ({ active: { id: activeId } }: DragStartEvent) {
-    setActiveId(activeId?.toString() || '')
+    setActiveId(activeId.toString() || '')
     setOverId(activeId?.toString() || '')
 
     const activeItem = flattenedItems.find(({ id }) => id === activeId)
@@ -196,7 +239,7 @@ export function SortableTree ({
     if (activeItem) {
       setCurrentPosition({
         parentId: activeItem.parentId,
-        overId: activeId.toString() || ''
+        overId: activeId?.toString() || ''
       })
     }
 
@@ -228,7 +271,7 @@ export function SortableTree ({
       const sortedItems = arrayMove(clonedItems, activeIndex, overIndex)
       const newItems = buildTree(sortedItems)
 
-      setItems(newItems)
+      setItems(() => newItems)
     }
   }
 

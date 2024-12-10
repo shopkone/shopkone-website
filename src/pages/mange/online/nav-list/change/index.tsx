@@ -23,7 +23,7 @@ export default function NavChange () {
   const [isChange, setIsChange] = useState(false)
   const update = useRequest(NavUpdateApi, { manual: true })
   const init = useRef()
-  const openInfo = useOpen<NavItemType>()
+  const openInfo = useOpen<{ item?: NavItemType, isEdit: boolean }>()
 
   const onOk = async () => {
     await form.validateFields()
@@ -78,6 +78,7 @@ export default function NavChange () {
         <Card
           extra={
             <Button
+              onClick={() => { openInfo.edit({ isEdit: false }) }}
               style={{ marginRight: 0 }} size={'small'} type={'link'}
             >
               {t('添加菜单项')}
@@ -87,7 +88,7 @@ export default function NavChange () {
           title={t('编辑菜单项')}
         >
           <Form.Item className={'mb0'} name={'links'}>
-            <Grab />
+            <Grab list={info.data?.links || []} openInfo={openInfo} />
           </Form.Item>
         </Card>
       </Form>

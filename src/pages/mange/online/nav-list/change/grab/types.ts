@@ -1,15 +1,10 @@
 import type { MutableRefObject } from 'react'
 
-export interface TreeItem {
-  id: string
-  children: TreeItem[]
-  title: string
-  collapsed?: boolean
-}
+import { NavItemType } from '@/api/online/navInfo'
 
-export type TreeItems = TreeItem[]
+export type TreeItems = NavItemType[]
 
-export interface FlattenedItem extends TreeItem {
+export interface FlattenedItem extends NavItemType {
   parentId: null | string
   depth: number
   index: number

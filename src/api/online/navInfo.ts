@@ -5,12 +5,11 @@ export interface NavInfoReq {
 }
 
 export interface NavItemType {
-  id: number
+  id: string
   title: string
   url: string
-  parent_id: number
-  levels: number
-  links?: NavItemType[]
+  links: NavItemType[]
+  collapsed?: boolean
 }
 
 export interface NavInfoRes {
