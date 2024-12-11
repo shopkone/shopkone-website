@@ -11,7 +11,7 @@ import STable, { STableProps } from '@/components/s-table'
 import { useNav } from '@/hooks/use-nav'
 
 export default function NavList () {
-  const { t } = useTranslation('online', { keyPrefix: 'nav_list' })
+  const { t } = useTranslation('online', { keyPrefix: 'nav' })
   const list = useRequest(NavListApi)
   const nav = useNav()
 
@@ -47,8 +47,8 @@ export default function NavList () {
     <Page
       title={t('菜单导航')}
       header={(
-        <Flex>
-          <Button>{t('添加导航')}</Button>
+        <Flex onClick={() => { nav('add') }}>
+          <Button type={'primary'}>{t('添加导航')}</Button>
         </Flex>
       )}
     >

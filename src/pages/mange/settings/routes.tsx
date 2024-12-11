@@ -24,6 +24,9 @@ const MarketLanguages = lazy(async () => await import('./markets/languages'))
 const MarketPriceAdjust = lazy(async () => await import('./markets/price-adjust'))
 const MarketShipping = lazy(async () => await import('./markets/shipping'))
 const Languages = lazy(async () => await import('./languages'))
+const Transactions = lazy(async () => await import('./transactions'))
+const CheckoutPage = lazy(async () => await import('./checkout-page'))
+const Terms = lazy(async () => await import('./terms'))
 
 export const SettingsRoutes: RouteObject[] = [
   { element: <General />, path: '/settings/general' },
@@ -63,5 +66,10 @@ export const SettingsRoutes: RouteObject[] = [
   { element: <MarketPriceAdjust />, path: '/settings/markets/price-adjust/:id' },
   { element: <MarketShipping />, path: '/settings/markets/shipping/:id' },
 
-  { element: <Languages />, path: '/settings/languages' }
+  { element: <Languages />, path: '/settings/languages' },
+
+  { element: <Transactions />, path: '/settings/transactions' },
+  { element: <CheckoutPage />, path: '/settings/checkout_page' },
+
+  { element: <Terms />, path: '/settings/terms' }
 ]

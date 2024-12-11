@@ -1,0 +1,56 @@
+.title {
+  font-weight: 600;
+  margin-top: 16px;
+  margin-bottom: 4px;
+  &:first-child {
+    margin-top: 0;
+  }
+}
+
+.card {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 16px;
+  margin-top: 8px;
+  margin-bottom: 12px;
+  border: 1px solid var(--color-border);
+  margin-right: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.1s;
+  .name {
+    font-weight: 600;
+  }
+  .desc {
+    margin-top: 8px;
+    color: var(--color-text-secondary);
+    text-align: center;
+  }
+  &:hover {
+    border-color: var(--color-primary);
+    background-color: #2d6adf20;
+    color: var(--color-primary);
+    .desc {
+      color: var(--color-primary);
+    }
+  }
+}
+
+.active {
+  border-color: var(--color-primary);
+  background-color: #2d6adf20;
+  color: var(--color-primary);
+  .desc {
+    color: var(--color-primary);
+  }
+}
+
+.radio {
+  margin-top: 12px;
+  gap: 12px;
+  display: flex;
+  flex-direction: column;
+}

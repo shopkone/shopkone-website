@@ -2,46 +2,67 @@ import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import { useMemoizedFn, useRequest } from 'ahooks'
-import { Button, Card, Form, Input } from 'antd'
+import { Card, Form, Input } from 'antd'
 import cloneDeep from 'lodash/cloneDeep'
 
+import { NavCreateApi } from '@/api/online/navCreate'
 import { NavInfoApi, NavItemType } from '@/api/online/navInfo'
 import { NavUpdateApi } from '@/api/online/navUpdate'
 import Page from '@/components/page'
 import { sMessage } from '@/components/s-message'
 import { useNav } from '@/hooks/use-nav'
-import { useOpen } from '@/hooks/useOpen'
 import Grab from '@/pages/mange/online/nav-list/change/grab'
 import { isEqualHandle } from '@/utils/is-equal-handle'
+import { genId } from '@/utils/random'
 
 export default function NavChange () {
   const id = Number(useParams().id)
   const info = useRequest(NavInfoApi, { manual: true })
-  const nav = useNav()
   const { t } = useTranslation('online', { keyPrefix: 'nav' })
   const [form] = Form.useForm()
   const [isChange, setIsChange] = useState(false)
   const update = useRequest(NavUpdateApi, { manual: true })
+  const create = useRequest(NavCreateApi, { manual: true })
   const init = useRef()
-  const openInfo = useOpen<{ item?: NavItemType, isEdit: boolean }>()
+  const nav = useNav()
 
   const onOk = async () => {
     await form.validateFields()
     const values = form.getFieldsValue()
-    await update.runAsync({ ...info.data, ...values, id })
-    sMessage.success(t('更新成功'))
+    if (id) {
+      await update.runAsync({ ...info.data, ...values, id })
+      sMessage.success(t('更新成功'))
+      const res = await info.refreshAsync()
+      form.setFieldsValue(res)
+      onValuesChange(true)
+    } else {
+      const ret = await create.runAsync({ ...values, handle: genId().toString() })
+      sMessage.success(t('添加成功'))
+      nav(`/online/nav_list/change/${ret.id}`)
+    }
     setIsChange(false)
-    const res = await info.refreshAsync()
-    form.setFieldsValue(res)
-    onValuesChange(true)
+  }
+
+  // @ts-expect-error
+  const formatLink = (links: NavItemType[]) => {
+    return links.map(item => {
+      const { links, url, id, title } = item
+      return {
+        id,
+        title,
+        url,
+        links: links && links.length > 0 ? formatLink(links) : []
+      }
+    })
   }
 
   const onValuesChange = (force?: boolean) => {
-    const values = form.getFieldsValue(true)
+    const values = cloneDeep(form.getFieldsValue(true))
     if (!init.current || force === true) {
       init.current = cloneDeep(values)
       return
     }
+    values.links = values.links?.length ? formatLink(values.links) : values.links
     const isSame = isEqualHandle(values, init.current)
     setIsChange(!isSame)
   }
@@ -61,6 +82,7 @@ export default function NavChange () {
 
   return (
     <Page
+      title={id ? t('菜单导航') : t('添加菜单导航')}
       onCancel={onCancel}
       loading={info.loading}
       width={750}
@@ -70,27 +92,22 @@ export default function NavChange () {
     >
       <Form onValuesChange={onValuesChange} form={form}>
         <Card title={t('导航名称')}>
-          <Form.Item name={'title'}>
+          <Form.Item
+            required={false}
+            rules={[{ required: true, message: t('请输入导航名称') }]}
+            name={'title'}
+          >
             <Input />
           </Form.Item>
         </Card>
 
-        <Card
-          extra={
-            <Button
-              onClick={() => { openInfo.edit({ isEdit: false }) }}
-              style={{ marginRight: 0 }} size={'small'} type={'link'}
-            >
-              {t('添加菜单项')}
-            </Button>
-          }
-          style={{ marginTop: 16 }}
-          title={t('编辑菜单项')}
+        <Form.Item
+          required={false}
+          rules={[{ required: true, message: t('请添加菜单项') }]}
+          className={'mb0'} name={'links'}
         >
-          <Form.Item className={'mb0'} name={'links'}>
-            <Grab list={info.data?.links || []} openInfo={openInfo} />
-          </Form.Item>
-        </Card>
+          <Grab />
+        </Form.Item>
       </Form>
     </Page>
   )

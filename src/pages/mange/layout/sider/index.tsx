@@ -107,8 +107,9 @@ export default function Sider () {
         { label: '地点', key: 'locations' },
         { label: '物流', key: 'shipping' },
         { label: '通知', key: 'notifications' },
-        { label: '订单设置', key: 'order_settings' },
+        { label: '交易设置', key: 'transactions' },
         { label: '结账页设置', key: 'checkout_page' },
+        { label: t('服务条款'), key: 'terms' },
         { label: '元字段', key: 'metafields' },
         { label: '素材中心', key: 'files' },
         { label: '操作日志', key: 'activity_log' }

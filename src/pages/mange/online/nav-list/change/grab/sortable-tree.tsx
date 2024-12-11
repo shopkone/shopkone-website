@@ -55,7 +55,6 @@ interface Props {
   value?: NavItemType[]
   onChange?: (value: NavItemType[]) => void
   openInfo: UseOpenType<{ item?: NavItemType, isEdit: boolean }>
-  list: NavItemType[]
 }
 
 export function SortableTree ({
@@ -65,7 +64,6 @@ export function SortableTree ({
   removable,
   value: items = [],
   onChange,
-  list,
   openInfo
 }: Props) {
   const [activeId, setActiveId] = useState<string | null>(null)
@@ -125,14 +123,14 @@ export function SortableTree ({
   }
 
   const onChangeItem = (r: { item?: NavItemType, isEdit: boolean }) => {
-    const { item, isEdit } = r
+    const { item } = r
     if (!item) return
     if (!item.id && item?.links?.[0]) {
-      onChange?.([...items, item?.links?.[0]])
+      onChange?.(cloneDeep([...items, item?.links?.[0]]))
       return
     }
-    const newList = Change(list, item)
-    onChange?.(newList || [])
+    const newList = Change(items, item)
+    onChange?.(cloneDeep(newList || []))
   }
 
   const sortedIds = useMemo(() => flattenedItems.map(({ id }) => id), [

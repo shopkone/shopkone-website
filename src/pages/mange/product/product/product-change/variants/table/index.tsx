@@ -1,8 +1,10 @@
 import React, { ReactNode, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
+import { IconTag } from '@tabler/icons-react'
 import { Button, Flex, Form } from 'antd'
 
+import SEmpty from '@/components/s-empty'
 import SRender from '@/components/s-render'
 import STable from '@/components/s-table'
 import { Option, Variant } from '@/pages/mange/product/product/product-change/variants/state'
@@ -119,16 +121,21 @@ export default function Table (props: TableProps) {
           data={filterGroup}
           useVirtual={variants.length > 30}
           expand={{ value: expandedRowKeys, onChange: setExpandedRowKeys }}
-          empty={{
-            title: t('添加你的商品款式'),
-            desc: <span style={{ fontSize: 13 }}>{t('设置商品选项（如尺寸、颜色）以添加不同款式。')}</span>,
-            actions: (
-              <Flex align={'center'} justify={'center'}>
-                <Button type={'primary'} onClick={onOpenOptions}>{t('添加款式')}</Button>
-              </Flex>
-            )
-          }}
-        />
+        >
+          <SEmpty
+            image={<IconTag style={{ marginBottom: 16 }} size={80} color={'#eee'} />}
+            title={t('添加你的商品款式')}
+          >
+            <div style={{ marginTop: -20 }}>
+              {t('设置商品选项（如尺寸、颜色）以添加不同款式。')}
+            </div>
+            <Flex justify={'center'}>
+              <Button style={{ marginTop: 32 }} type={'primary'} onClick={onOpenOptions}>
+                {t('添加款式')}
+              </Button>
+            </Flex>
+          </SEmpty>
+        </STable>
       </SRender>
     </div>
   )
