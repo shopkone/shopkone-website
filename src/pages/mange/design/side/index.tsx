@@ -1,8 +1,7 @@
 import { useRequest } from 'ahooks'
 
 import { DesignDataListApi } from '@/api/design/data-list'
-import SLoading from '@/components/s-loading'
-import RenderPart from '@/pages/mange/design/side/render-part'
+import Settings from '@/pages/mange/design/settings'
 import { useDesignState } from '@/pages/mange/design/state'
 
 import styles from './index.module.less'
@@ -17,11 +16,13 @@ export default function Side () {
 
   return (
     <div style={hiddenStyle} className={styles.side}>
-      <SLoading loading={data.loading}>
+      <div className={styles.header}>主页</div>
+      {/*     <SLoading loading={data.loading}>
         <RenderPart part={data.data?.header_data} />
         <RenderPart part={data.data?.current_page_data} />
         <RenderPart part={data.data?.footer_data} />
-      </SLoading>
+      </SLoading> */}
+      <Settings />
     </div>
   )
 }

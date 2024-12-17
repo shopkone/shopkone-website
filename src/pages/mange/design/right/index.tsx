@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useDebounceFn, useRequest } from 'ahooks'
 import { Flex, Form } from 'antd'
 
@@ -13,6 +13,7 @@ export default function Right () {
   const state = useDesignState(state => state)
   const updateBlock = useRequest(BlockUpdateApi, { manual: true })
   const updateSection = useRequest(SectionUpdateApi, { manual: true })
+  const ref = useRef<HTMLDivElement>(null)
 
   const [form] = Form.useForm()
 
@@ -59,6 +60,7 @@ export default function Right () {
       settings[i.id] = i.__kimi_value
     })
     form.setFieldsValue(settings)
+    ref.current?.scrollTo?.({ top: 0, behavior: 'smooth' })
   }, [state.editing])
 
   return (
@@ -66,21 +68,23 @@ export default function Right () {
       <Flex className={styles.title}>
         {state.editing?.name}
       </Flex>
-      <Form className={styles.right} onValuesChange={onValuesChange} form={form}>
-        <Flex gap={28} vertical>
-          {
-            state?.editing?.schema?.map((i, index) => {
-              const Component = (components as any)[i?.type]
-              if (!Component) return <div key={index}>{i.type}</div>
-              return (
-                <Form.Item name={i.id} key={i.id}>
-                  <Component setting={i} />
-                </Form.Item>
-              )
-            })
-          }
-        </Flex>
-      </Form>
+      <div ref={ref} className={styles.right}>
+        <Form onValuesChange={onValuesChange} form={form}>
+          <Flex gap={16} vertical>
+            {
+              state?.editing?.schema?.map((i, index) => {
+                const Component = (components as any)[i?.type]
+                if (!Component) return <div key={index}>{i.type}</div>
+                return (
+                  <Form.Item noStyle className={'mb0'} name={i.id} key={i.id}>
+                    <Component isFirst={index === 0} setting={i} />
+                  </Form.Item>
+                )
+              })
+            }
+          </Flex>
+        </Form>
+      </div>
     </Flex>
   )
 }

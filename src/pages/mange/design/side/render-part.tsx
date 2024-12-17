@@ -1,12 +1,13 @@
-import { useEffect } from 'react'
-import { IconChevronRight } from '@tabler/icons-react'
+import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { IconChevronRight, IconCirclePlus, IconEye, IconGripVertical, IconTrash } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
-import { Flex } from 'antd'
+import { Button, Flex, Typography } from 'antd'
 import classNames from 'classnames'
 
 import { BlockData, PartData } from '@/api/design/data-list'
 import { BlockSchema, DesignSchemaListApi, SectionSchema, SettingSchema } from '@/api/design/schema-list'
-import IconButton from '@/components/icon-button'
+import SRender from '@/components/s-render'
 import { useDesignState } from '@/pages/mange/design/state'
 
 import styles from './index.module.less'
@@ -16,20 +17,25 @@ export interface RenderPartProps {
 }
 
 export default function RenderPart (props: RenderPartProps) {
+  const { t } = useTranslation('design')
   const { part } = props
   const schemaList = useRequest(DesignSchemaListApi, { manual: true })
   const setEditing = useDesignState(state => state.setEditing)
   const editing = useDesignState(state => state.editing)
   const iframe = useDesignState(state => state.iframe)
   const update = useDesignState(state => state.update)
+  const [expandId, setExpandId] = useState<string[]>([])
 
-  useEffect(() => {
-    if (!part?.sections) return
-    const t = Object.values(part.sections).map(i => i.type)
-    schemaList.run({ type: t })
-  }, [part?.sections])
+  const onExpand = (key: string) => {
+    if (expandId.includes(key)) {
+      setExpandId(expandId.filter(i => i !== key))
+    } else {
+      setExpandId([...expandId, key])
+    }
+  }
 
   const setSectionEdit = (id: string, schema?: SectionSchema) => {
+    setExpandId([...expandId, id])
     try {
       const section = part?.sections?.[id]
       if (id === editing?.id) return
@@ -51,13 +57,13 @@ export default function RenderPart (props: RenderPartProps) {
         parent: '',
         part_name: part?.type
       })
-      iframe.send('SELECT', { id })
+      iframe.send('SELECT', { id, name: schema?.name })
     } catch {
       console.log('渲染异常')
     }
   }
 
-  const setBlockEdit = (id: string, schema?: BlockSchema, block?: BlockData, parent?: string) => {
+  const setBlockEdit = (id: string, schema?: BlockSchema, block?: BlockData, parent?: string, sectionSchema?: SectionSchema) => {
     if (!block || !schema) return
     const settings: SettingSchema[] = schema?.settings || []
     Object.keys(block.settings || {}).forEach(i => {
@@ -76,7 +82,7 @@ export default function RenderPart (props: RenderPartProps) {
       parent: parent || '',
       part_name: part?.type || ''
     })
-    iframe.send('SELECT', { id: parent, blockId: id })
+    iframe.send('SELECT', { id: parent, blockId: id, name: sectionSchema?.name })
   }
 
   useEffect(() => {
@@ -89,11 +95,17 @@ export default function RenderPart (props: RenderPartProps) {
     }
   }, [update?.value, update?.key])
 
+  useEffect(() => {
+    if (!part?.sections) return
+    const t = Object.values(part.sections).map(i => i.type)
+    schemaList.run({ type: t })
+  }, [part?.sections])
+
   if (!part) return null
 
   return (
     <div>
-      <div>{part.name}</div>
+      <div className={styles.title}>{part.name || t('模板')}</div>
       <div>
         {part?.order?.map(key => {
           const section = part.sections?.[key]
@@ -101,47 +113,119 @@ export default function RenderPart (props: RenderPartProps) {
           if (!section) return null
           return (
             <div key={key}>
-              <Flex align={'center'}>
-                <IconButton type={'text'} size={24}>
-                  <IconChevronRight size={14} />
-                </IconButton>
+              <Flex
+                className={
+                classNames(
+                  styles.item,
+                  { [styles.itemBtnActive]: editing?.id === key && editing.type === 'section' }
+                )
+                } style={{ marginLeft: 12 }} align={'center'} justify={'center'}
+              >
+                <Button
+                  className={styles.btn}
+                  onClick={() => { onExpand(key) }} type={'text'}
+                  style={{ padding: '0 1px', marginRight: 4, borderRadius: 6 }}
+                >
+                  <IconChevronRight
+                    className={expandId.includes(key)
+                      ? styles.activeSection
+                      : styles.icon}
+                    size={14}
+                  />
+                </Button>
+                <Button
+                  className={classNames(styles.btn)}
+                  type={'text'}
+                  style={{ padding: '0 1px', marginRight: 4, borderRadius: 6, height: 22 }}
+                >
+                  <IconGripVertical size={15} />
+                </Button>
+
                 <div
-                  className={
-                    classNames(styles.itemBtn, { [styles.itemBtnActive]: editing?.id === key && editing.type === 'section' })
-                  }
+                  className={classNames(styles.itemBtn)}
                   onClick={() => {
                     setSectionEdit(key, sectionSchema)
                   }}
                 >
-                  <Flex align={'center'} flex={1}>
-                    <span>
+                  <Flex justify={'space-between'} align={'center'} flex={1}>
+                    <Typography.Text ellipsis={{ tooltip: true }} className={styles.text}>
                       {schemaList?.data?.find(i => i.type === section.type)?.name}
-                    </span>
+                    </Typography.Text>
+                    <div className={styles.actions}>
+                      <Flex align={'center'} gap={4} flex={1} justify={'right'}>
+                        <Button
+                          className={styles.btn}
+                          type={'text'}
+                          style={{ padding: '0 2px', marginRight: 4, borderRadius: 6, height: 22 }}
+                        >
+                          <IconTrash size={15} />
+                        </Button>
+                        <Button
+                          className={styles.btn}
+                          type={'text'}
+                          style={{ padding: '0 2px', marginRight: 4, borderRadius: 6, height: 22, marginTop: 1 }}
+                        >
+                          <IconEye size={17} />
+                        </Button>
+                      </Flex>
+                    </div>
                   </Flex>
                 </div>
               </Flex>
 
-              <div>
-                {
-                  section?.block_order?.map((blockKey) => {
-                    const block = section?.blocks?.[blockKey]
-                    const blockSchema = sectionSchema?.blocks.find(i => i.type === block.type)
-                    return (
-                      <div
-                        onClick={() => { setBlockEdit(blockKey, blockSchema, block, key) }}
-                        className={
-                        classNames(
-                          styles.block,
-                          { [styles.itemBtnActive]: editing?.id === blockKey && editing.parent === key && editing.type === 'block' })
-                        }
-                        key={blockKey}
-                      >
-                        {blockSchema?.name}
-                      </div>
-                    )
-                  })
-                }
-              </div>
+              <SRender render={expandId.includes(key)}>
+                <div>
+                  {
+                    section?.block_order?.map((blockKey) => {
+                      const block = section?.blocks?.[blockKey]
+                      const blockSchema = sectionSchema?.blocks.find(i => i.type === block.type)
+                      return (
+                        <Flex
+                          align={'center'}
+                          onClick={() => {
+                            setBlockEdit(blockKey, blockSchema, block, key, sectionSchema)
+                          }}
+                          className={
+                            classNames(
+                              styles.block,
+                              { [styles.itemBtnActive]: editing?.id === blockKey && editing.parent === key && editing.type === 'block' })
+                          }
+                          key={blockKey}
+                        >
+                          <Button
+                            className={styles.btn}
+                            type={'text'}
+                            style={{ padding: '0 2px', marginRight: 4, borderRadius: 6, height: 22 }}
+                          >
+                            <IconGripVertical size={15} />
+                          </Button>
+                          {blockSchema?.name}
+                          <Flex className={styles.actions} align={'center'} gap={4} flex={1} justify={'right'}>
+                            <Button
+                              className={styles.btn}
+                              type={'text'}
+                              style={{ padding: '0 2px', marginRight: 4, borderRadius: 6, height: 22 }}
+                            >
+                              <IconTrash size={15} />
+                            </Button>
+                            <Button
+                              className={styles.btn}
+                              type={'text'}
+                              style={{ padding: '0 2px', marginRight: 4, borderRadius: 6, height: 22, marginTop: 1 }}
+                            >
+                              <IconEye size={17} />
+                            </Button>
+                          </Flex>
+                        </Flex>
+                      )
+                    })
+                  }
+                  <Flex align={'center'} gap={8} className={`primary-text ${styles.block}`}>
+                    <IconCirclePlus size={15} style={{ marginTop: 2, marginLeft: 4 }} />
+                    <div>{t('添加分区')}</div>
+                  </Flex>
+                </div>
+              </SRender>
             </div>
           )
         })}

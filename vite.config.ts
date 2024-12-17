@@ -1,9 +1,9 @@
-import {defineConfig} from 'vite'
-import {visualizer} from 'rollup-plugin-visualizer'
+import { defineConfig } from 'vite'
+import { visualizer } from 'rollup-plugin-visualizer'
 import path from 'path'
 import react from '@vitejs/plugin-react'
 import svgr from '@svgr/rollup'
-import {Plugin as importToCDN} from "vite-plugin-cdn-import"
+import { Plugin as importToCDN } from 'vite-plugin-cdn-import'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -36,6 +36,7 @@ export default defineConfig({
       }
     },
     host:"0.0.0.0",
+    cors:true
   },
   build: {
     target: 'es2015',

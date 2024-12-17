@@ -1,17 +1,17 @@
-import { MouseEventHandler } from 'react'
+import { MouseEventHandler, useEffect } from 'react'
 import { IconPlus, IconX } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
-import { ColorPicker, Flex, Input, Radio, Select, Slider, Switch } from 'antd'
-import classNames from 'classnames'
+import { ColorPicker, Flex, Input, Radio, Slider, Switch } from 'antd'
 
 import { CollectionOptionsApi } from '@/api/collection/options'
 import { SettingSchema } from '@/api/design/schema-list'
 import { FileType } from '@/api/file/add-file-record'
-import { FileInfoApi, FileInfoRes } from '@/api/file/file-info'
+import { FileInfoApi } from '@/api/file/file-info'
 import { NavListApi } from '@/api/online/navList'
 import IconButton from '@/components/icon-button'
 import SelectFiles from '@/components/media/select-files'
 import SInputNumber from '@/components/s-input-number'
+import SLoading from '@/components/s-loading'
 import SRender from '@/components/s-render'
 import SSelect from '@/components/s-select'
 import { useOpen } from '@/hooks/useOpen'
@@ -20,6 +20,7 @@ import styles from './index.module.less'
 
 export interface Prop {
   setting: SettingSchema
+  isFirst: boolean
   value?: any
   onChange?: (value: any) => void
 }
@@ -30,10 +31,7 @@ function DCheckBox (props: Prop) {
   return (
     <Flex className={styles.item} gap={12} justify={'space-between'} align={'center'}>
       <div>{setting.label.replace(':', ' ')}</div>
-      <Switch
-        onChange={val => { onChange?.(val) }}
-        value={value}
-      />
+      <Switch onChange={val => { onChange?.(val) }} value={value} />
     </Flex>
   )
 }
@@ -41,9 +39,9 @@ function DCheckBox (props: Prop) {
 function DSelect (props: Prop) {
   const { setting, onChange, value } = props
   return (
-    <Flex className={styles.item} gap={4} vertical>
-      <div>{setting.label.replace(':', ' ')}</div>
-      <Select onChange={onChange} value={value} options={setting.options} />
+    <Flex className={styles.item} gap={4} align={'center'} justify={'space-between'}>
+      <div className={styles.label}>{setting.label.replace(':', ' ')}</div>
+      <SSelect allowClear style={{ width: 160 }} onChange={onChange} value={value} options={setting.options} />
     </Flex>
   )
 }
@@ -52,7 +50,7 @@ function DText (props: Prop) {
   const { setting, onChange, value } = props
 
   return (
-    <Flex className={styles.item} gap={4} vertical>
+    <Flex className={styles.item} gap={4} >
       <div>{setting.label.replace(':', ' ')}</div>
       <Input value={value} onChange={e => { onChange?.(e.target.value) }} autoComplete={'off'} />
     </Flex>
@@ -63,24 +61,22 @@ function DRange (props: Prop) {
   const { setting, onChange, value } = props
 
   return (
-    <Flex className={styles.item} vertical>
-      <div>{setting.label.replace(':', ' ')}</div>
-      <Flex align={'center'} gap={16}>
-        <Slider
-          min={setting.min}
-          max={setting.max}
-          step={setting.step}
-          onChange={val => { onChange?.(val) }}
-          value={value}
-          className={'flex1'}
-        />
-        <SInputNumber
-          onChange={val => { onChange?.(val) }}
-          value={value}
-          suffix={setting.unit}
-          style={{ width: 80 }}
-        />
-      </Flex>
+    <Flex gap={4} justify={'space-between'} align={'center'}>
+      <div className={styles.label}>{setting.label.replace(':', ' ')}</div>
+      <Slider
+        style={{ flex: 1 }}
+        min={setting.min}
+        max={setting.max}
+        step={setting.step}
+        onChange={val => { onChange?.(val) }}
+        value={value}
+      />
+      <SInputNumber
+        onChange={val => { onChange?.(val) }}
+        value={value}
+        suffix={setting.unit}
+        style={{ width: 80 }}
+      />
     </Flex>
   )
 }
@@ -88,12 +84,17 @@ function DRange (props: Prop) {
 function DTextArea (props: Prop) {
   const { setting, onChange, value } = props
   return (
-    <Flex gap={4} className={styles.item} vertical>
-      <div>{setting.label.replace(':', ' ')}</div>
+    <Flex gap={4} className={styles.item}>
+      <div className={styles.label}>{setting.label.replace(':', ' ')}</div>
       <Input.TextArea
         value={value}
-        onChange={e => { onChange?.(e.target.value) }}
-        autoSize={{ minRows: 3, maxRows: 5 }}
+        onChange={e => {
+          onChange?.(e.target.value)
+        }}
+        autoSize={{
+          minRows: 3,
+          maxRows: 5
+        }}
       />
     </Flex>
   )
@@ -102,41 +103,66 @@ function DTextArea (props: Prop) {
 function DColor (props: Prop) {
   const { setting, onChange, value } = props
   return (
-    <Flex className={styles.item} gap={4} vertical>
-      <Flex gap={8} align={'center'}>
-        <ColorPicker value={value} onChange={v => { onChange?.(`#${v.toHex()}`) }} />
-        <Flex vertical justify={'space-between'}>
-          <div>{setting.label}</div>
-          <span className={'tips'}>{value}</span>
-        </Flex>
-      </Flex>
+    <Flex className={styles.color} justify={'space-between'} gap={8} align={'center'}>
+      <div className={styles.label}>{setting.label}</div>
+      <ColorPicker
+        showText
+        className={styles.colorInput}
+        value={value}
+        onChange={v => {
+          onChange?.(`#${v.toHex()}`)
+        }}
+      />
+      <div className={styles.closeX}>
+        <IconButton
+          onClick={() => { onChange?.('') }}
+          type={'text'}
+          size={20}
+        >
+          <IconX size={14} />
+        </IconButton>
+      </div>
     </Flex>
   )
 }
 
 function DColorBackground (props: Prop) {
-  const { setting, value } = props
+  const {
+    setting,
+    onChange,
+    value
+  } = props
   return (
-    <Flex className={styles.item} gap={4} vertical>
-      <Flex gap={8} align={'center'}>
-        <ColorPicker value={value} />
-        <Flex vertical justify={'space-between'}>
-          <div>{setting.label}</div>
-          <span className={'tips'}>{value}</span>
-        </Flex>
-      </Flex>
+    <Flex className={styles.color} justify={'space-between'} gap={8} align={'center'}>
+      <div className={styles.label}>{setting.label}</div>
+      <ColorPicker
+        allowClear
+        showText
+        className={styles.colorInput}
+        value={value}
+        onChange={v => { onChange?.(`#${v.toHex()}`) }}
+      />
+      <div className={styles.closeX}>
+        <IconButton onClick={() => { onChange?.('') }} type={'text'} size={20}>
+          <IconX size={14} />
+        </IconButton>
+      </div>
     </Flex>
   )
 }
 
 function DHeader (props: Prop) {
-  const { setting } = props
+  const { setting, isFirst } = props
   return (
-    <Flex className={classNames(styles.item, styles.header)} gap={24} align={'center'}>
-      <div className={'line'} />
-      <div className={styles.headerText}>{setting.content?.replaceAll(':', ' ')}</div>
-      <div className={'line'} />
-    </Flex>
+    <div
+      style={{
+        borderTop: isFirst ? 'none' : undefined,
+        paddingTop: isFirst ? 0 : undefined
+      }}
+      className={styles.headerText}
+    >
+      {setting.content?.replaceAll(':', ' ')}
+    </div>
   )
 }
 
@@ -146,8 +172,8 @@ function DCollection (props: Prop) {
   const options = useRequest(CollectionOptionsApi)
 
   return (
-    <Flex className={styles.item} gap={4} vertical>
-      <div>{setting.label.replace(':', ' ')}</div>
+    <Flex className={styles.item} gap={4}>
+      <div className={styles.label}>{setting.label.replace(':', ' ')}</div>
       <SSelect
         options={options?.data?.map(i => ({ label: i.label, value: `shopkimi://collection/${i.value}` }))}
         value={value}
@@ -167,45 +193,57 @@ function DImagePicker (props: Prop) {
     onChange?.('')
   }
 
-  const changHandle = (params: FileInfoRes) => {
-    const aspect_ratio = (params?.width || 0) / (params?.height || 1)
-    const presentation = { focal_point: '50.0% 50.0%' }
-    const v = { ...params, aspect_ratio, media_type: 'image', src: params?.path, presentation }
-    onChange?.(v.src ? v : '')
-  }
+  useEffect(() => {
+    if (typeof value !== 'string') return
+    if (!value?.includes('shopkimi://media/')) return
+    const id = value?.replaceAll('shopkimi://media/', '')
+    if (!Number(id)) return
+    fileInfo.run({ id: Number(id) })
+  }, [value])
 
   return (
-    <div>
-      <Flex className={styles.item} gap={4} vertical>
-        <div>{setting.label.replace(':', ' ')}</div>
-        <SRender render={!value?.path}>
-          <Flex
-            onClick={() => { openInfo.edit() }}
-            align={'center'}
-            justify={'center'}
-            className={styles.imageBtn}
-          >
-            <IconPlus />
-          </Flex>
-        </SRender>
-        <SRender onClick={() => { openInfo.edit() }} className={styles.imgContainer} render={value?.path}>
-          <div className={styles.iconX}>
-            <IconButton onClick={onCancel} size={24}>
-              <IconX size={16} />
-            </IconButton>
-          </div>
-          <img
-            style={{ height: 'auto', maxWidth: 250, maxHeight: 250 }}
-            src={value?.path || ''}
-            alt={''}
-          />
-        </SRender>
+    <div className={'fit-width'}>
+      <Flex className={styles.item} gap={4}>
+        <div className={styles.label}>{setting.label.replace(':', ' ')}</div>
+        <div style={{ flex: 1 }}>
+          <SLoading loading={fileInfo.loading}>
+            <SRender render={!value}>
+              <Flex
+                flex={1}
+                onClick={() => { openInfo.edit() }}
+                align={'center'}
+                justify={'center'}
+                className={styles.imageBtn}
+              >
+                <IconPlus />
+              </Flex>
+            </SRender>
+            <SRender onClick={() => { openInfo.edit() }} className={styles.imgContainer} render={value}>
+              <div className={styles.iconX}>
+                <IconButton onClick={onCancel} size={24}>
+                  <IconX size={16} />
+                </IconButton>
+              </div>
+              <img
+                style={{
+                  height: 'auto',
+                  maxWidth: 200,
+                  maxHeight: 200
+                }}
+                src={fileInfo?.data?.path || ''}
+                alt={''}
+              />
+            </SRender>
+          </SLoading>
+        </div>
       </Flex>
       <SelectFiles
         onConfirm={async (v) => {
-          if (!v[0]) return
-          const ret = await fileInfo.runAsync({ id: v[0] })
-          changHandle(ret)
+          if (!v[0]) {
+            onChange?.('')
+          } else {
+            onChange?.(`shopkimi://media/${v[0]}`)
+          }
           openInfo.close()
         }}
         info={openInfo}
@@ -219,7 +257,7 @@ function DImagePicker (props: Prop) {
 function DParagraph (props: Prop) {
   const { setting } = props
   return (
-    <div style={{ marginBottom: -12, color: '#666' }} className={styles.item}>
+    <div style={{ color: '#666' }}>
       {setting.content}
     </div>
   )
@@ -229,8 +267,8 @@ function DLinkList (props: Prop) {
   const { setting, value, onChange } = props
   const list = useRequest(NavListApi)
   return (
-    <Flex vertical gap={4} className={styles.item}>
-      <div>{setting.label.replace(':', ' ')}</div>
+    <Flex gap={4} className={styles.item}>
+      <div className={styles.label}>{setting.label.replace(':', ' ')}</div>
       <SSelect
         value={value}
         onChange={val => { onChange?.(val) }}
@@ -246,7 +284,7 @@ function DRichText (props: Prop) {
 
   return (
     <div className={styles.item}>
-      <div>{setting.label.replace(':', ' ')}</div>
+      <div className={styles.label}>{setting.label.replace(':', ' ')}</div>
       <Input.TextArea
         onChange={e => { onChange?.(e.target.value) }}
         value={value}
@@ -260,8 +298,8 @@ function DHtmlEditor (props: Prop) {
   const { setting, onChange, value } = props
 
   return (
-    <Flex vertical gap={4} className={styles.item}>
-      <div>{setting.label.replace(':', ' ')}</div>
+    <Flex gap={4} className={styles.item}>
+      <div className={styles.label}>{setting.label.replace(':', ' ')}</div>
       <Input.TextArea
         value={value}
         onChange={e => { onChange?.(e.target.value) }}
@@ -274,8 +312,8 @@ function DHtmlEditor (props: Prop) {
 function DUrl (props: Prop) {
   const { setting, value } = props
   return (
-    <Flex gap={4} vertical className={styles.item}>
-      <div>{setting.label.replace(':', ' ')}</div>
+    <Flex gap={4} className={styles.item}>
+      <div className={styles.label}>{setting.label.replace(':', ' ')}</div>
       还没有实现 URL{value}
     </Flex>
   )
@@ -284,8 +322,8 @@ function DUrl (props: Prop) {
 function DRadio (props: Prop) {
   const { setting, onChange, value } = props
   return (
-    <Flex gap={4} vertical className={styles.item}>
-      <div>{setting.label.replace(':', ' ')}</div>
+    <Flex gap={4} className={styles.item}>
+      <div className={styles.label}>{setting.label.replace(':', ' ')}</div>
       <Radio.Group
         options={setting.options}
         onChange={e => { onChange?.(e.target.value) }}
