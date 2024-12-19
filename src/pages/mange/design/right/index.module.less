@@ -88,6 +88,10 @@
   line-height: 16px;
 }
 
+.color {
+  position: relative;
+}
+
 .colorInput {
   width: 160px;
   justify-content: left;
@@ -96,11 +100,20 @@
 
 .closeX {
   position: absolute;
-  right: 28px;
+  right: 4px;
+  bottom: 0;
+  top: 48%;
   opacity: 0;
+  transform: translateY(-50%);
 }
 
 .color:hover .closeX {
   opacity: 1;
+}
+
+.radioGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 

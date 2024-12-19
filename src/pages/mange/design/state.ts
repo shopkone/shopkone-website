@@ -1,7 +1,7 @@
 import { RefObject } from 'react'
 import { create } from 'zustand/react'
 
-import { SettingSchema } from '@/api/design/schema-list'
+import { SectionSchema, SettingSchema } from '@/api/design/schema-list'
 
 export interface DesignState {
   device: 'mobile' | 'desktop' | 'pad' | 'fill'
@@ -23,6 +23,7 @@ export interface DesignState {
   iframe: {
     send: (key: string, data?: any) => void
   }
+  settingRight?: SectionSchema
 }
 
 interface DesignAction {
@@ -30,6 +31,7 @@ interface DesignAction {
   setEditing: (editing: DesignState['editing']) => void
   initIFrame: (iframe: RefObject<HTMLIFrameElement>) => void
   setUpdate: (update: DesignState['update']) => void
+  updateSettingRight: (p: DesignState['settingRight']) => void
 }
 
 export const useDesignState = create<DesignState & DesignAction>((set, get, store) => ({
@@ -54,5 +56,9 @@ export const useDesignState = create<DesignState & DesignAction>((set, get, stor
       iframe.current?.contentWindow?.postMessage({ type: 'SHOPKIMI_' + key, data }, '*')
     }
     set({ iframe: { send } })
+  },
+
+  updateSettingRight: (params) => {
+    set({ settingRight: params })
   }
 }))

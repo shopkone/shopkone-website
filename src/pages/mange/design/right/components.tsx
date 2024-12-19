@@ -30,7 +30,7 @@ function DCheckBox (props: Prop) {
 
   return (
     <Flex className={styles.item} gap={12} justify={'space-between'} align={'center'}>
-      <div>{setting.label.replace(':', ' ')}</div>
+      <div className={styles.label}>{setting.label.replace(':', ' ')}</div>
       <Switch onChange={val => { onChange?.(val) }} value={value} />
     </Flex>
   )
@@ -50,8 +50,10 @@ function DText (props: Prop) {
   const { setting, onChange, value } = props
 
   return (
-    <Flex className={styles.item} gap={4} >
-      <div>{setting.label.replace(':', ' ')}</div>
+    <Flex justify={'space-between'}gap={4} vertical>
+      <div style={{ width: 'auto' }} className={styles.label}>
+        {setting.label.replace(':', ' ')}
+      </div>
       <Input value={value} onChange={e => { onChange?.(e.target.value) }} autoComplete={'off'} />
     </Flex>
   )
@@ -84,8 +86,10 @@ function DRange (props: Prop) {
 function DTextArea (props: Prop) {
   const { setting, onChange, value } = props
   return (
-    <Flex gap={4} className={styles.item}>
-      <div className={styles.label}>{setting.label.replace(':', ' ')}</div>
+    <Flex gap={4} className={styles.item} vertical>
+      <div className={styles.label} style={{ width: 'auto' }}>
+        {setting.label.replace(':', ' ')}
+      </div>
       <Input.TextArea
         value={value}
         onChange={e => {
@@ -109,6 +113,7 @@ function DColor (props: Prop) {
         showText
         className={styles.colorInput}
         value={value}
+        style={{ width: 160 }}
         onChange={v => {
           onChange?.(`#${v.toHex()}`)
         }}
@@ -136,6 +141,7 @@ function DColorBackground (props: Prop) {
     <Flex className={styles.color} justify={'space-between'} gap={8} align={'center'}>
       <div className={styles.label}>{setting.label}</div>
       <ColorPicker
+        style={{ width: 160 }}
         allowClear
         showText
         className={styles.colorInput}
@@ -175,6 +181,7 @@ function DCollection (props: Prop) {
     <Flex className={styles.item} gap={4}>
       <div className={styles.label}>{setting.label.replace(':', ' ')}</div>
       <SSelect
+        style={{ width: 160 }}
         options={options?.data?.map(i => ({ label: i.label, value: `shopkimi://collection/${i.value}` }))}
         value={value}
         onChange={onChange}
@@ -322,9 +329,10 @@ function DUrl (props: Prop) {
 function DRadio (props: Prop) {
   const { setting, onChange, value } = props
   return (
-    <Flex gap={4} className={styles.item}>
+    <Flex justify={'space-between'} gap={4} className={styles.item}>
       <div className={styles.label}>{setting.label.replace(':', ' ')}</div>
       <Radio.Group
+        className={styles.radioGroup}
         options={setting.options}
         onChange={e => { onChange?.(e.target.value) }}
         value={value}
