@@ -22,6 +22,7 @@ export interface DesignState {
   }
   iframe: {
     send: (key: string, data?: any) => void
+    onMessage: ((this: WindowEventHandlers, ev: MessageEvent) => any) | null | undefined
   }
   settingRight?: SectionSchema
 }
@@ -49,13 +50,17 @@ export const useDesignState = create<DesignState & DesignAction>((set, get, stor
 
   iframe: {
     send: (key, data) => {
+    },
+    onMessage: (e) => {
     }
   },
   initIFrame: (iframe) => {
     const send = (key: string, data?: any) => {
       iframe.current?.contentWindow?.postMessage({ type: 'SHOPKIMI_' + key, data }, '*')
     }
-    set({ iframe: { send } })
+    const onMessage = () => {
+    }
+    set({ iframe: { send, onMessage } })
   },
 
   updateSettingRight: (params) => {

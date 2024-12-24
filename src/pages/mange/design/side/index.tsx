@@ -1,6 +1,7 @@
-import { useRequest } from 'ahooks'
+import { useLocation } from 'react-router-dom'
 
-import { DesignDataListApi } from '@/api/design/data-list'
+import SRender from '@/components/s-render'
+import SectionSide from '@/pages/mange/design/section-side'
 import Settings from '@/pages/mange/design/settings'
 import { useDesignState } from '@/pages/mange/design/state'
 
@@ -8,7 +9,7 @@ import styles from './index.module.less'
 
 export default function Side () {
   const state = useDesignState(state => state)
-  const data = useRequest(DesignDataListApi)
+  const { search } = useLocation()
 
   const hiddenStyle = state.device === 'fill'
     ? { width: 0, opacity: 0 }
@@ -17,12 +18,12 @@ export default function Side () {
   return (
     <div style={hiddenStyle} className={styles.side}>
       <div className={styles.header}>主页</div>
-      {/*     <SLoading loading={data.loading}>
-        <RenderPart part={data.data?.header_data} />
-        <RenderPart part={data.data?.current_page_data} />
-        <RenderPart part={data.data?.footer_data} />
-      </SLoading> */}
-      <Settings />
+      <SRender render={search.includes('section') || !search}>
+        <SectionSide />
+      </SRender>
+      <SRender render={search?.includes('global')}>
+        <Settings />
+      </SRender>
     </div>
   )
 }

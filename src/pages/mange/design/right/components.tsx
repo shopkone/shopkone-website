@@ -95,10 +95,7 @@ function DTextArea (props: Prop) {
         onChange={e => {
           onChange?.(e.target.value)
         }}
-        autoSize={{
-          minRows: 3,
-          maxRows: 5
-        }}
+        autoSize={{ minRows: 3, maxRows: 5 }}
       />
     </Flex>
   )
@@ -211,10 +208,12 @@ function DImagePicker (props: Prop) {
   return (
     <div className={'fit-width'}>
       <Flex className={styles.item} gap={4}>
-        <div className={styles.label}>{setting.label.replace(':', ' ')}</div>
+        <div className={styles.label}>
+          {setting.label.replace(':', ' ')}
+        </div>
         <div style={{ flex: 1 }}>
-          <SLoading loading={fileInfo.loading}>
-            <SRender render={!value}>
+          <SLoading loading={fileInfo.loading} foreShow>
+            <SRender render={!fileInfo?.data || !value}>
               <Flex
                 flex={1}
                 onClick={() => { openInfo.edit() }}
@@ -225,7 +224,7 @@ function DImagePicker (props: Prop) {
                 <IconPlus />
               </Flex>
             </SRender>
-            <SRender onClick={() => { openInfo.edit() }} className={styles.imgContainer} render={value}>
+            <SRender onClick={() => { openInfo.edit() }} className={styles.imgContainer} render={value ? fileInfo?.data : null}>
               <div className={styles.iconX}>
                 <IconButton onClick={onCancel} size={24}>
                   <IconX size={16} />
@@ -234,7 +233,7 @@ function DImagePicker (props: Prop) {
               <img
                 style={{
                   height: 'auto',
-                  maxWidth: 200,
+                  maxWidth: 154,
                   maxHeight: 200
                 }}
                 src={fileInfo?.data?.path || ''}
