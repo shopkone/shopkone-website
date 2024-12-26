@@ -4,16 +4,16 @@ import { useRequest } from 'ahooks'
 import { DesignDataListApi } from '@/api/design/data-list'
 import SLoading from '@/components/s-loading'
 import RenderPart from '@/pages/mange/design/side/render-part'
-import { useDesignState } from '@/pages/mange/design/state'
 
 export default function SectionSide () {
-  const data = useRequest(DesignDataListApi)
-
-  const iframe = useDesignState(state => state.iframe)
-  console.log(iframe.onMessage)
+  const data = useRequest(DesignDataListApi, { manual: true })
 
   useEffect(() => {
-    iframe.onMessage = () => {}
+    window.addEventListener('message', function (e) {
+      if (e?.data?.type !== 'SHOPKIMI_READY') return
+      if (!e?.data?.data) return
+      data.run({ page: e.data.data })
+    })
   }, [])
 
   return (

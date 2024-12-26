@@ -29,6 +29,6 @@ export interface DesignDataListRes {
   setting_data: SettingDataType
 }
 
-export const DesignDataListApi = async () => {
-  return await api<DesignDataListRes>('/design/data/list')
+export const DesignDataListApi = async (params: { page: string }) => {
+  return await api<DesignDataListRes>('/design/data/list', params)
 }
