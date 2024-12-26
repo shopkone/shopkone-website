@@ -7,7 +7,7 @@ import SInputNumber from '@/components/s-input-number'
 import SModal from '@/components/s-modal'
 import { UseOpenType } from '@/hooks/useOpen'
 import { useManageState } from '@/pages/mange/state'
-import { roundPrice } from '@/utils/num'
+import { formatPrice } from '@/utils/num'
 
 export interface DiscountTotalModalProps {
   openInfo: UseOpenType<OrderPreBaseDiscount>
@@ -39,7 +39,7 @@ export default function DiscountTotalModal (props: DiscountTotalModalProps) {
 
   return (
     <div>
-      {roundPrice(value?.price || 0)}
+      {formatPrice(value?.price || 0)}
       <SModal
         onOk={onOk}
         title={t('设置折扣')}
@@ -53,7 +53,7 @@ export default function DiscountTotalModal (props: DiscountTotalModalProps) {
               {
                 validator: async (_, value) => {
                   if (value > price) {
-                    return await Promise.reject(t('折扣金额不能大于商品金额', { x: `${currencyList?.data?.find(i => i.code === storeCurrency)?.symbol}${price}` }))
+                    return await Promise.reject(t('折扣金额不能大于商品金额', { x: `${formatPrice(price, currencyList?.data?.find(i => i.code === storeCurrency)?.symbol)}` }))
                   } else {
                     await Promise.resolve()
                   }

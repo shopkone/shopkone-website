@@ -16,7 +16,6 @@ import STable, { STableProps } from '@/components/s-table'
 import Filters from '@/components/select-product/filters'
 import Status from '@/components/status'
 import { VariantStatus } from '@/constant/product'
-import { useNav } from '@/hooks/use-nav'
 import { UseOpenType } from '@/hooks/useOpen'
 import { getUrl } from '@/utils'
 import { formatPrice } from '@/utils/num'
@@ -53,7 +52,6 @@ export default function SelectVariants (props: SelectVariantsProps) {
   const [showMoreLoading, setShowMoreLoading] = useState(false)
   const [expanded, setExpanded] = useState<number[]>([])
   const { t } = useTranslation('common', { keyPrefix: 'selectVariants' })
-  const nav = useNav()
 
   const getIsDisabled = (row: ProductVariants) => {
     if (disabled?.length === 200) return true
@@ -69,7 +67,7 @@ export default function SelectVariants (props: SelectVariantsProps) {
     const max = Math.max(...list)
     const min = Math.min(...list)
     if (min === max) {
-      return `$${max}`
+      return formatPrice(min, '$')
     }
     return `${[formatPrice(min, '$'), formatPrice(max, '$')].join(' - ')}`
   }
@@ -79,7 +77,7 @@ export default function SelectVariants (props: SelectVariantsProps) {
     return list.map(item => {
       const children = (item.variants?.map(variant => ({
         id: variant.id,
-        price: `$${variant.price || 0}`,
+        price: formatPrice(variant.price, '$'),
         inventory: `${variant.quantity || 0}`,
         image: variant.image,
         title: variant?.name?.map(i => i.value)?.join(' - ')

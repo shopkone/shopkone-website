@@ -1,4 +1,4 @@
-import { memo, useEffect, useState } from 'react'
+import { memo, useEffect, useMemo, useState } from 'react'
 import { useMemoizedFn } from 'ahooks'
 import { Input, InputProps } from 'antd'
 
@@ -39,6 +39,19 @@ function SInputNumber (props: SInputNumberProps) {
 
   const [num, setNum] = useState<string>()
 
+  const formatNum = (num?: number) => {
+    if (typeof num !== 'number') return num
+    if (!money) return num
+    return num * 100
+  }
+
+  const formatStr = (str?: string) => {
+    if (typeof str === 'undefined') return str
+    if (!/^-?\d+(\.\d+)?$/.test(str)) return str
+    if (!money) return str
+    return (Number(str) * 100).toString()
+  }
+
   const onChangeHandle: InputProps['onChange'] = useMemoizedFn((e) => {
     let str = e.target.value
     const reg = new RegExp(`^[0-9]+(\\.[0-9]{0,${precision}})?$`)
@@ -57,29 +70,29 @@ function SInputNumber (props: SInputNumberProps) {
     if (str?.[0] === '0' && str?.[1] !== '.' && str.length > 1) {
       str = str.slice(1)
     }
-    setNum(str)
+    setNum(formatStr(str))
     if (str?.[str.length - 1] === '.') {
       return
     }
-    onChange?.(num)
+    onChange?.(formatNum(num))
   })
 
   useEffect(() => {
     setNum(typeof value === 'number' ? value.toString() : undefined)
   }, [value])
 
-  useEffect(() => {
-    if (focus) return
-    if (min > (value || 0) || (required && value === undefined)) {
-      onChange?.(min)
-    }
-  }, [focus])
+  const renderValue = useMemo(() => {
+    if (typeof num === 'undefined') return num
+    if (!/^-?\d+(\.\d+)?$/.test(num)) return num
+    if (!money) return num
+    return (Number(num) / 100).toString()
+  }, [num, money])
 
   return (
     <Input
       onFocus={(min || required) ? () => { setFocus(true) } : undefined}
       onBlur={(min || required) ? () => { setFocus(false) } : undefined}
-      value={num}
+      value={renderValue}
       style={{ width: '100%' }}
       autoComplete={'off'}
       onChange={onChangeHandle}

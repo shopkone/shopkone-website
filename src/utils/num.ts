@@ -1,6 +1,3 @@
-import { useCurrencyList } from '@/api/base/currency-list'
-import { useManageState } from '@/pages/mange/state'
-
 export const roundPrice = (value: number): number => {
   if (!value) return 0
   const price = Math.round((value || 0) * 100) / 100
@@ -8,8 +5,9 @@ export const roundPrice = (value: number): number => {
   return price
 }
 
-export function formatPrice (x?: string | number, symbol = '') {
-  if (typeof x === 'undefined' || x === '') return ''
+export function formatPrice (price?: string | number, symbol = '') {
+  if (typeof price === 'undefined' || price === '') return ''
+  const x = Number(price) / 100
   // 千分位
   const str = x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
   // 两位小数点
@@ -18,16 +16,4 @@ export function formatPrice (x?: string | number, symbol = '') {
     return symbol + str + '.00'
   }
   return symbol + arr[0] + '.' + arr[1].padEnd(2, '0')
-}
-
-export function useFormatPrice () {
-  const code = useManageState(state => state.shopInfo?.store_currency)
-  const loading = useManageState(state => state.shopInfoLoading)
-  const currencies = useCurrencyList()
-  return {
-    format: (price: number) => {
-      return formatPrice(price, currencies?.data?.find(i => i.code === code)?.symbol)
-    },
-    loading: currencies.loading || loading
-  }
 }

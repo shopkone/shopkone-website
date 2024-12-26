@@ -26,22 +26,13 @@ export default function VariantsSettings () {
           <TypeChanger />
         </Form.Item>
 
-        <Form.Item
-          name={'inventory_tracking'}
-          style={{ marginTop: -8 }}
-        >
+        <Form.Item name={'inventory_tracking'} style={{ marginTop: -8 }}>
           <TrackType />
         </Form.Item>
         {
           inventoryTracking
             ? (
-              <Form.Item
-                name={'inventory_policy'}
-                style={{
-                  marginBottom: 0,
-                  marginTop: -12
-                }}
-              >
+              <Form.Item name={'inventory_policy'} style={{ marginBottom: 0, marginTop: -12 }}>
                 <Radio.Group className={styles.group} options={tackOptions} />
               </Form.Item>
               )

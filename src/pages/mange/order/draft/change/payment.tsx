@@ -8,6 +8,7 @@ import { useOpen } from '@/hooks/useOpen'
 import DiscountTotalModal from '@/pages/mange/order/draft/change/discount-total-modal'
 import ShippingFee from '@/pages/mange/order/draft/change/shipping-fee'
 import { useManageState } from '@/pages/mange/state'
+import { formatPrice } from '@/utils/num'
 
 import styles from './index.module.less'
 
@@ -37,8 +38,7 @@ export default function Payment (props: PaymentProps) {
             {t('成本价')}
           </div>
           <Flex className={styles.paymentValue} align={'center'}>
-            {storeCurrency?.code} {storeCurrency?.symbol}
-            {info?.cost_price}
+            {storeCurrency?.code} {formatPrice(info?.cost_price, storeCurrency?.symbol)}
           </Flex>
         </Flex>
         <Flex className={styles.payment} justify={'space-between'} align={'center'}>
@@ -46,8 +46,7 @@ export default function Payment (props: PaymentProps) {
             {t('小计')}
           </div>
           <Flex className={styles.paymentValue} align={'center'}>
-            {currency?.code} {currency?.symbol}
-            {info?.sum_price}
+            {currency?.code} {formatPrice(info?.sum_price, currency?.symbol)}
           </Flex>
         </Flex>
         <Flex className={styles.payment} justify={'space-between'} align={'center'}>
@@ -74,14 +73,8 @@ export default function Payment (props: PaymentProps) {
             </div>
           </div>
           <Flex className={styles.paymentValue} align={'center'}>
-            - {currency?.code} {currency?.symbol}
-            <Form.Item
-              style={{
-                height: 18,
-                position: 'relative',
-                top: -7
-              }} className={'mb0'} name={'discount'}
-            >
+            - {currency?.code}
+            <Form.Item style={{ height: 18, position: 'relative', top: -7 }} className={'mb0'} name={'discount'}>
               <DiscountTotalModal price={info?.sum_price || 0} openInfo={discountOpen} />
             </Form.Item>
           </Flex>
@@ -92,12 +85,7 @@ export default function Payment (props: PaymentProps) {
               disabled={!products?.length}
               type={'link'}
               onClick={() => { shippingOpen.edit(info?.shipping_fee) }}
-              style={{
-                padding: 0,
-                fontSize: 13,
-                height: 16,
-                marginLeft: -1
-              }}
+              style={{ padding: 0, fontSize: 13, height: 16, marginLeft: -1 }}
             >
               {!products?.length ? t('运费') : t('设置运费')}
             </Button>
@@ -116,10 +104,7 @@ export default function Payment (props: PaymentProps) {
           </Flex>
         </Flex>
         <Flex
-          style={{
-            borderBottom: 'none',
-            marginBottom: 0
-          }}
+          style={{ borderBottom: 'none', marginBottom: 0 }}
           className={styles.payment}
           justify={'space-between'}
           align={'center'}
@@ -152,8 +137,7 @@ export default function Payment (props: PaymentProps) {
             {t('合计')}
           </div>
           <Flex className={styles.paymentValue}>
-            {currency?.code} {currency?.symbol}
-            <div>{info?.total}</div>
+            {currency?.code} {formatPrice(info?.total, currency?.symbol)}
           </Flex>
         </Flex>
       </Flex>
