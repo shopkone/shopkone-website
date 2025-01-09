@@ -158,10 +158,7 @@ function DHeader (props: Prop) {
   const { setting, isFirst } = props
   return (
     <div
-      style={{
-        borderTop: isFirst ? 'none' : undefined,
-        paddingTop: isFirst ? 0 : undefined
-      }}
+      style={{ borderTop: isFirst ? 'none' : undefined, paddingTop: isFirst ? 0 : undefined }}
       className={styles.headerText}
     >
       {setting.content?.replaceAll(':', ' ')}

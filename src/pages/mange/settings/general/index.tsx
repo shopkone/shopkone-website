@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useRequest } from 'ahooks'
 import { Checkbox, Flex, Form, FormInstance, Input } from 'antd'
-import isEqual from 'lodash/isEqual'
+import cloneDeep from 'lodash/cloneDeep'
 
 import { useCurrencyList } from '@/api/base/currency-list'
 import { useTimezoneList } from '@/api/base/timezone-list'
@@ -15,6 +15,8 @@ import { sMessage } from '@/components/s-message'
 import SSelect from '@/components/s-select'
 import Uploader from '@/pages/mange/settings/general/uploader'
 import { useManageState } from '@/pages/mange/state'
+import { isEqualHandle } from '@/utils/is-equal-handle'
+import { EMAIL_REG } from '@/utils/regular'
 
 export default function General () {
   const general = useRequest(ShopGeneralApi)
@@ -26,7 +28,7 @@ export default function General () {
   const orderIdPrefix = Form.useWatch('order_id_prefix', form)
   const orderIdSuffix = Form.useWatch('order_id_suffix', form)
   const manageState = useManageState()
-
+  const init = useRef<any>()
   const addressForm = useRef<FormInstance>()
 
   const [isChange, setIsChange] = useState(false)
@@ -40,9 +42,13 @@ export default function General () {
     { label: t("例如 123'456.65"), value: '123\'456.65' }
   ]
 
-  const onValuesChange = (_: any, allValues: any) => {
-    if (!allValues?.address?.phone || !general.data) return
-    const isSame = isEqual(allValues, general.data)
+  const onValuesChange = (force?: boolean) => {
+    const values = form.getFieldsValue(true)
+    if (!init.current || force === true || !values?.address) {
+      init.current = cloneDeep(values)
+      return
+    }
+    const isSame = isEqualHandle(values, init.current)
     setIsChange(!isSame)
   }
 
@@ -65,7 +71,7 @@ export default function General () {
   useEffect(() => {
     if (!general.data) return
     form.setFieldsValue(general.data)
-    onValuesChange(undefined, form.getFieldsValue())
+    onValuesChange(true)
   }, [general.data])
 
   return (
@@ -81,13 +87,40 @@ export default function General () {
           <SCard loading={general.loading} title={t('商店信息')}>
             <Flex gap={48}>
               <Flex vertical flex={3}>
-                <Form.Item name={'store_name'} className={'flex1'} label={t('商店名称')}>
+                <Form.Item
+                  name={'store_name'}
+                  className={'flex1'}
+                  label={t('商店名称')}
+                  rules={[{
+                    required: true,
+                    message: t('请输入商店名称')
+                  }]}
+                >
                   <Input autoComplete={'off'} />
                 </Form.Item>
-                <Form.Item name={'store_owner_email'} extra={t('如果有需要，Shopkone 会通过此邮箱来联系您。')} className={'flex1'} label={t('店主邮箱')}>
+                <Form.Item
+                  name={'store_owner_email'}
+                  extra={t('如果有需要，Shopkone 会通过此邮箱来联系您。')}
+                  className={'flex1'}
+                  label={t('店主邮箱')}
+                  rules={[{ required: true, message: t('请输入邮箱') },
+                    {
+                      pattern: EMAIL_REG,
+                      message: t('请输入有效的邮箱')
+                    }]}
+                >
                   <Input autoComplete={'off'} />
                 </Form.Item>
-                <Form.Item name={'customer_service_email'} extra={t('此邮箱将作为商店联系顾客的默认邮箱')} label={t('客服邮箱')}>
+                <Form.Item
+                  rules={[{ required: true, message: t('请输入邮箱') },
+                    {
+                      pattern: EMAIL_REG,
+                      message: t('请输入有效的邮箱')
+                    }]}
+                  name={'customer_service_email'}
+                  extra={t('此邮箱将作为商店联系顾客的默认邮箱')}
+                  label={t('客服邮箱')}
+                >
                   <Input autoComplete={'off'} />
                 </Form.Item>
               </Flex>
@@ -139,7 +172,7 @@ export default function General () {
             <Form.Item name={'order_id_suffix'} label={t('后缀')}>
               <Input autoComplete={'off'} />
             </Form.Item>
-            <div>{t('您的订单 ID 将显示为')}{orderIdPrefix}1001{orderIdSuffix}, {orderIdPrefix}1002{orderIdSuffix}, {orderIdPrefix}1003{orderIdSuffix} ...</div>
+            <div>{t('您的订单 ID 将显示为')}{orderIdPrefix}1001{orderIdSuffix}, {orderIdPrefix}1002{orderIdSuffix}, {orderIdPrefix}1003{orderIdSuffix}</div>
           </SCard>
           <SCard loading={general.loading} title={t('密码保护')}>
             <div className={'tips'} style={{ marginTop: -8, marginBottom: 12 }}>

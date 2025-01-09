@@ -72,7 +72,7 @@ export default function Address (props: AddressProps) {
   }, [countries.data])
 
   const onChangeHandler = () => {
-    const v = { id: initValues?.current?.id, ...form.getFieldsValue() }
+    const v = { id: initValues?.current?.id, ...form.getFieldsValue(true) }
     onChange?.(v)
   }
 
@@ -175,7 +175,7 @@ export default function Address (props: AddressProps) {
       <Form initialValues={INIT_DATA} layout={'vertical'} form={form} onValuesChange={onChangeHandler}>
         <Row gutter={16}>
 
-          {!companyNotFirst && companyRender}
+          {companyNotFirst ? companyRender : null}
 
           {firstName ? nameRender : companyRender}
 

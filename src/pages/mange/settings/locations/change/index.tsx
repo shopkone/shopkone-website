@@ -43,7 +43,7 @@ export default function Change () {
   const renderFooter = useDebounce(!!id && info?.data, { wait: 100 })
 
   const onValuesChange = () => {
-    const values = form.getFieldsValue()
+    const values = form.getFieldsValue(true)
     if (!init.current?.address?.phone?.country) {
       init.current = values
       return
