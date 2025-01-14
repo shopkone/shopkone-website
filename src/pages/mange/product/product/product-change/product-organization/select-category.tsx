@@ -26,7 +26,9 @@ export default function SelectCategory (props: SelectCategoryProps) {
       <SSelect
         value={selectLabel}
         open={false}
-        onDropdownVisibleChange={v => { v && selectCategoriesInfo.edit(value) }}
+        onDropdownVisibleChange={v => {
+          v && selectCategoriesInfo.edit(value)
+        }}
       />
 
       <Categories data={data} onConfirm={onSelectCategories} info={selectCategoriesInfo} />

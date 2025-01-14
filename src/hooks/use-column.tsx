@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { IconGripVertical, IconMenu2 } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
-import { Button, Checkbox, Flex, Popover } from 'antd'
+import { Checkbox, Flex, Popover } from 'antd'
 import classNames from 'classnames'
 import isEqual from 'lodash/isEqual'
 
@@ -111,10 +111,7 @@ export const useColumn = (local: UseColumnType[], type: UserColumnType) => {
                         onChange(cols.map(i => i.id === newItem.id ? newItem : i))
                       }}
                     />
-                    <Flex
-                      align={'center'}
-                      flex={1}
-                    >
+                    <Flex align={'center'} flex={1}>
                       <span
                         onClick={() => {
                           if (item.required) return
@@ -126,15 +123,15 @@ export const useColumn = (local: UseColumnType[], type: UserColumnType) => {
                         {item.nick}
                       </span>
                     </Flex>
-                    <Button
+                    <IconButton
                       disabled={item.required}
                       style={{ cursor: isBg ? 'grabbing' : undefined }}
                       className={styles.btn}
                       type={'text'}
-                      size={'small'}
+                      size={24}
                     >
-                      <IconGripVertical style={{ position: 'relative', left: -4 }} size={14} />
-                    </Button>
+                      <IconGripVertical size={14} />
+                    </IconButton>
                   </Flex>
                 </ItemSortable>
               </SRender>

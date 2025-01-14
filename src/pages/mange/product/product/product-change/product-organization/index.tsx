@@ -23,7 +23,7 @@ export default function ProductOrganization () {
         <Input autoComplete={'off'} />
       </Form.Item>
       <Form.Item name={'collections'} label={t('系列')}>
-        <SSelect loading={options.loading} options={options.data || []} />
+        <SSelect mode={'multiple'} loading={options.loading} options={options.data || []} />
       </Form.Item>
       <Form.Item name={'tags'} className={'mb0'} label={t('标签')}>
         <Select
