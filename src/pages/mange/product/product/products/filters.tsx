@@ -1,4 +1,5 @@
 import { ReactNode, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { IconArrowsSort, IconFilter, IconMenu2, IconSearch } from '@tabler/icons-react'
 import { Button, Flex, Input } from 'antd'
 
@@ -24,6 +25,7 @@ export interface FiltersProps {
 export default function Filters (props: FiltersProps) {
   const { onChange, value } = props
   const [labels, setLabels] = useState<Record<string, ReactNode>>({})
+  const { t } = useTranslation('product', { keyPrefix: 'product' })
 
   const options = [
     { value: FileType.Image, label: 'Image' },
@@ -35,10 +37,9 @@ export default function Filters (props: FiltersProps) {
   return (
     <div>
       <Flex gap={4} className={styles.btns}>
-        <Button type={'text'} size={'small'}>All</Button>
-        <Button type={'text'} size={'small'}>Active</Button>
-        <Button type={'text'} size={'small'}>Draft</Button>
-        <Button type={'text'} size={'small'}>Archived</Button>
+        <Button type={'text'} size={'small'}>{t('全部')}</Button>
+        <Button type={'text'} size={'small'}>{t('已上架')}</Button>
+        <Button type={'text'} size={'small'}>{t('已下架')}</Button>
       </Flex>
       <div className={'line'} style={{ margin: '8px 0' }} />
       <Flex style={{ margin: 8 }} align={'center'} justify={'space-between'}>
@@ -47,14 +48,11 @@ export default function Filters (props: FiltersProps) {
             <Input
               value={value?.keyword}
               onChange={(e) => {
-                onChange?.({
-                  ...value,
-                  keyword: e.target.value
-                })
+                onChange?.({ ...value, keyword: e.target.value })
               }}
               allowClear
               prefix={<IconSearch size={15} className={styles['filter-icon']} />}
-              placeholder={'Searching all products'}
+              placeholder={t('搜索商品')}
               size={'small'}
               style={{
                 width: 250

@@ -129,9 +129,11 @@ export default function Products () {
       width: 150,
       render: (status: VariantStatus) => (
         <Flex
-          style={{ cursor: 'default' }} onClick={e => {
+          style={{ cursor: 'default' }}
+          onMouseUp={e => {
             e.stopPropagation()
-          }} align={'center'} gap={8}
+          }}
+          align={'center'} gap={8}
         >
           <Switch size={'small'} checked={status === VariantStatus.Published} />
           <SRender style={{ fontSize: 12, position: 'relative', top: 1 }} render={status === VariantStatus.Published}>
@@ -150,12 +152,24 @@ export default function Products () {
       render: () => (
         <Flex justify={'center'} align={'center'} style={{ marginLeft: -6, cursor: 'default' }} onClick={e => { e.stopPropagation() }} gap={12}>
           <Tooltip title={t('预览1')}>
-            <IconButton size={26} type={'text'}>
+            <IconButton
+              onMouseUp={e => {
+                e.stopPropagation()
+              }}
+              size={26}
+              type={'text'}
+            >
               <IconEye size={17} />
             </IconButton>
           </Tooltip>
           <Tooltip title={t('复制1')}>
-            <IconButton size={26} type={'text'}>
+            <IconButton
+              onMouseUp={e => {
+                e.stopPropagation()
+              }}
+              size={26}
+              type={'text'}
+            >
               <IconCopy size={13} />
             </IconButton>
           </Tooltip>
