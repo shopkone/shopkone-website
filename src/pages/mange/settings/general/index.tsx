@@ -100,7 +100,7 @@ export default function General () {
                 </Form.Item>
                 <Form.Item
                   name={'store_owner_email'}
-                  extra={t('如果有需要，Shopkone 会通过此邮箱来联系您。')}
+                  extra={t('如果有需要，Shopkimi 会通过此邮箱来联系您。')}
                   className={'flex1'}
                   label={t('店主邮箱')}
                   rules={[{ required: true, message: t('请输入邮箱') },

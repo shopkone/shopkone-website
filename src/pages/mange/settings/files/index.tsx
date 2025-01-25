@@ -200,7 +200,7 @@ export default function Files () {
   const onBatchDelete = () => {
     modal.confirm({
       title: t('删除1', { count: selected?.length }),
-      content: t('此操作无法撤销，文件将从您 Shopkone 商店的所有位置移除。'), // 'This can’t be undone. The files will be removed from all places they’re being used in your Shopkone store.'
+      content: t('此操作无法撤销，文件将从您 Shopkimi 商店的所有位置移除。'), // 'This can’t be undone. The files will be removed from all places they’re being used in your Shopkimi store.'
       okButtonProps: { type: 'primary', danger: true },
       okText: t('删除2'), // 'Delete'
       onOk: async () => {
@@ -223,7 +223,7 @@ export default function Files () {
   useEffect(() => {
     if (groupId !== params.group_id) {
       setParams({ ...params, group_id: groupId, page: 1 })
-      document?.getElementById('shopkone-main')?.scrollTo({ top: 0 })
+      document?.getElementById('shopkimi-main')?.scrollTo({ top: 0 })
     }
   }, [groupId])
 

@@ -7,7 +7,7 @@ import styles from './index.module.less'
 
 export default function Main () {
   return (
-    <main id={'shopkone-main'} className={styles.main}>
+    <main id={'shopkimi-main'} className={styles.main}>
       <Suspense fallback={<SLoading />}>
         <Outlet />
       </Suspense>

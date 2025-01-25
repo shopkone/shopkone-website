@@ -43,7 +43,7 @@ export default function Content () {
         ref={ref}
         style={{ width }}
         className={styles.iframe}
-        src={'http://shopkone:3000'}
+        src={'http://shopkimi:3000'}
       />
     </Flex>
   )

@@ -30,8 +30,8 @@ export default defineConfig({
         target: 'http://127.0.0.1:8080',
         changeOrigin: true,
       },
-      "http://shopkone-guigu.us-west-1.aliyuncs.com": {
-        target: "http://shopkone-guigu.us-west-1.aliyuncs.com",
+      "http://shopkimi-guigu.us-west-1.aliyuncs.com": {
+        target: "http://shopkimi-guigu.us-west-1.aliyuncs.com",
         changeOrigin: true,
       }
     },

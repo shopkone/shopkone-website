@@ -104,7 +104,7 @@ export default function ConnectDomain (props: ConnectDomainProps) {
               extra={t('输入你想要连接的域名')}
               style={{ display: current ? 'none' : undefined }}
             >
-              <Input placeholder={t('例如 shopkone.com')} autoComplete={'off'} />
+              <Input placeholder={t('例如 shopkimi.com')} autoComplete={'off'} />
             </Form.Item>
             <SRender render={current}>
               {domain}

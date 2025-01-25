@@ -198,7 +198,7 @@ export default function LocalChange () {
                             onClick={() => {
                               add(getItem())
                               setTimeout(() => {
-                                document.getElementById('shopkone-main')?.scrollTo({ left: 0, top: fields.length * 2000, behavior: 'smooth' })
+                                document.getElementById('shopkimi-main')?.scrollTo({ left: 0, top: fields.length * 2000, behavior: 'smooth' })
                               })
                             }}
                           >

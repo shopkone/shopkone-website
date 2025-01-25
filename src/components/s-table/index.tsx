@@ -123,10 +123,10 @@ function STable (props: STableProps) {
   const isCheckboxDom = useMemoizedFn((e: any) => {
     const className = (e?.target)?.className?.split?.(' ') || []
     const chldren = (e?.target)?.children?.[0]?.className?.split?.(' ') || []
-    if (chldren?.[0] === 'shopkone-checkbox-wrapper') {
+    if (chldren?.[0] === 'shopkimi-checkbox-wrapper') {
       return true
     }
-    if (className?.[0] === 'shopkone-checkbox-input') {
+    if (className?.[0] === 'shopkimi-checkbox-input') {
       return true
     }
     return false
@@ -134,7 +134,7 @@ function STable (props: STableProps) {
 
   useEffect(() => {
     return () => {
-      const main = document?.getElementById('shopkone-main')
+      const main = document?.getElementById('shopkimi-main')
       if (main) {
         main.onmousemove = null
       }
@@ -188,7 +188,7 @@ function STable (props: STableProps) {
               ? (e) => {
                   if (isCheckboxDom(e)) return
                   offsetRef.current = 0
-                  const main = document?.getElementById('shopkone-main')
+                  const main = document?.getElementById('shopkimi-main')
                   if (main) {
                     main.onmousemove = (e) => {
                       offsetRef.current = sum(Math.abs(e.offsetY), Math.abs(e.offsetX), offsetRef.current) || 0
@@ -200,7 +200,7 @@ function STable (props: STableProps) {
               ? (e) => {
                   if (e.button) return
                   if (isCheckboxDom(e)) return
-                  const main = document?.getElementById('shopkone-main')
+                  const main = document?.getElementById('shopkimi-main')
                   if (main) {
                     main.onmousemove = null
                   }
@@ -246,7 +246,7 @@ function STable (props: STableProps) {
             {...page}
             onChange={(...p) => {
               if (p?.[0] !== page?.current || p?.[1] < Number(page?.pageSize || 0)) {
-                document?.getElementById('shopkone-main')?.scrollTo({ top: 0 })
+                document?.getElementById('shopkimi-main')?.scrollTo({ top: 0 })
               }
               page?.onChange?.(...p)
             }}

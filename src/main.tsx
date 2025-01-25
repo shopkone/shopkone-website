@@ -28,7 +28,7 @@ if (dom) {
           }
         }}
         locale={zh_CN}
-        prefixCls={'shopkone'}
+        prefixCls={'shopkimi'}
       >
         <App>
           <Pages />

@@ -15,7 +15,7 @@ export interface DomainListRes {
   id: number
   status: DomainStatus
   is_main: boolean
-  is_shopkone: boolean
+  is_shopkimi: boolean
   domain: string
 }
 

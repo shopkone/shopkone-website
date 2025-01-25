@@ -10,10 +10,10 @@ const filterZones = (zones: TreeDataNode[], searchKey: string): TreeDataNode[] =
 const filterCountries = (countries: TreeDataNode[], searchKey: string): TreeDataNode[] => {
   return countries?.map(node => {
     if (typeof node.title !== 'string') return { ...node, children: [] }
-    if (node.title.toUpperCase().includes(searchKey.toUpperCase())) return { ...node, children: node.children?.length ? node.children : [{ key: 'SHOPKONE', title: 'SHOPKONE' }] }
+    if (node.title.toUpperCase().includes(searchKey.toUpperCase())) return { ...node, children: node.children?.length ? node.children : [{ key: 'SHOPKIMI', title: 'SHOPKIMI' }] }
     return { ...node, children: filterZones(node.children || [], searchKey) }
   }).filter(node => node.children?.length).map(node => {
-    return { ...node, children: node.children?.[0]?.key === 'SHOPKONE' ? [] : node.children }
+    return { ...node, children: node.children?.[0]?.key === 'SHOPKIMI' ? [] : node.children }
   }) || []
 }
 
