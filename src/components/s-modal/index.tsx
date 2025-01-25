@@ -25,7 +25,7 @@ export const useModal = () => {
       return icon
     }
     return (
-      <Flex align={'center'} className={'shopkone-modal-confirm-icon'}>
+      <Flex align={'center'} className={'shopkimi-modal-confirm-icon'}>
         <IconInfoCircleFilled size={20} color={'#3478f5'} />
       </Flex>
     )

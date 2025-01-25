@@ -67,7 +67,7 @@ export default function Page (props: PageProps) {
   }, [resetLoading])
 
   useEffect(() => {
-    document.getElementById('shopkone-main')?.scrollTo?.({ top: 0 })
+    document.getElementById('shopkimi-main')?.scrollTo?.({ top: 0 })
   }, [])
 
   useEffect(() => {

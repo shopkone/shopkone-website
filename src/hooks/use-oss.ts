@@ -7,7 +7,7 @@ import { useManageState } from '@/pages/mange/state'
 
 export const useOss = () => {
   const REGION = 'oss-cn-shenzhen' // 存储区域
-  const BUCKET = 'shopkone' // 存储空间
+  const BUCKET = 'shopkimi' // 存储空间
 
   const client = useRef<OSS>(null)
 

@@ -1,23 +1,18 @@
+import { IconArrowsSort, IconFilter, IconMenu2 } from '@tabler/icons-react'
+import { Button, Flex } from 'antd'
 import { ReactNode, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { IconArrowsSort, IconFilter, IconMenu2, IconSearch } from '@tabler/icons-react'
-import { Button, Flex, Input } from 'antd'
 
 import { FileType } from '@/api/file/add-file-record'
 import IconButton from '@/components/icon-button'
-import FilterCheckbox from '@/components/table-filter/filter-checkbox'
-import FilterNumberRange, { FilterNumberRangeProps } from '@/components/table-filter/filter-number-range'
-import FilterRadio from '@/components/table-filter/filter-radio'
 import FilterLabels from '@/components/table-filter/FilterLabels'
 
+import { VariantStatus } from '@/constant/product'
 import styles from './index.module.less'
 
 export interface FiltersProps {
   value?: {
-    keyword?: string
-    file_size?: FilterNumberRangeProps['value']
-    file_type?: number[]
-    used?: number
+    status: VariantStatus
   }
   onChange?: (value: FiltersProps['value']) => void
 }
@@ -37,102 +32,15 @@ export default function Filters (props: FiltersProps) {
   return (
     <div>
       <Flex gap={4} className={styles.btns}>
-        <Button type={'text'} size={'small'}>{t('全部')}</Button>
+        <Button          type={'text'} size={'small'}>{t('全部')}</Button>
         <Button type={'text'} size={'small'}>{t('已上架')}</Button>
         <Button type={'text'} size={'small'}>{t('已下架')}</Button>
       </Flex>
       <div className={'line'} style={{ margin: '8px 0' }} />
       <Flex style={{ margin: 8 }} align={'center'} justify={'space-between'}>
         <Flex align={'center'} gap={20}>
-          <div>
-            <Input
-              value={value?.keyword}
-              onChange={(e) => {
-                onChange?.({ ...value, keyword: e.target.value })
-              }}
-              allowClear
-              prefix={<IconSearch size={15} className={styles['filter-icon']} />}
-              placeholder={t('搜索商品')}
-              size={'small'}
-              style={{
-                width: 250
-              }}
-            />
-          </div>
-          <Flex
-            align={'center'}
-            gap={8}
-          >
-
-            <FilterRadio
-              options={[
-                {
-                  label: 'Used',
-                  value: 1
-                },
-                {
-                  label: 'Unused',
-                  value: 2
-                }
-              ]}
-              value={value?.used}
-              onChange={(v) => {
-                onChange?.({
-                  ...value,
-                  used: Number(v || 0)
-                })
-              }}
-              onLabelChange={(l) => {
-                setLabels({
-                  ...labels,
-                  used: l
-                })
-              }}
-            >
-              Collections
-            </FilterRadio>
-
-            <FilterCheckbox
-              options={options}
-              onChange={(v) => {
-                onChange?.({
-                  ...value,
-                  file_type: v.map(i => Number(i || 0))
-                })
-              }}
-              value={value?.file_type}
-              onLabelChange={(l) => {
-                setLabels({
-                  ...labels,
-                  file_type: l
-                })
-              }}
-            >
-              Tags
-            </FilterCheckbox>
-
-            <FilterNumberRange
-              maxLabel={'Max price'}
-              minLabel={'Min price'}
-              unit={'$'}
-              prefix
-              onChange={(v) => {
-                onChange?.({
-                  ...value,
-                  file_size: v
-                })
-              }}
-              onLabelChange={(l) => {
-                setLabels({
-                  ...labels,
-                  file_size: l
-                })
-              }}
-              value={value?.file_size || {}}
-            >
-              Price range
-            </FilterNumberRange>
-
+          <Flex align={'center'} gap={8}>
+            asd
           </Flex>
         </Flex>
 
