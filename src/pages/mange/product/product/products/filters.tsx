@@ -3,7 +3,6 @@ import { Button, Flex } from 'antd'
 import { ReactNode, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { FileType } from '@/api/file/add-file-record'
 import IconButton from '@/components/icon-button'
 import FilterLabels from '@/components/table-filter/FilterLabels'
 
@@ -22,13 +21,6 @@ export default function Filters (props: FiltersProps) {
   const [labels, setLabels] = useState<Record<string, ReactNode>>({})
   const { t } = useTranslation('product', { keyPrefix: 'product' })
 
-  const options = [
-    { value: FileType.Image, label: 'Image' },
-    { value: FileType.Video, label: 'Video' },
-    { value: FileType.Audio, label: 'Audio' },
-    { value: FileType.Other, label: 'Other' }
-  ]
-
   return (
     <div>
       <Flex gap={4} className={styles.btns}>
@@ -40,7 +32,8 @@ export default function Filters (props: FiltersProps) {
       <Flex style={{ margin: 8 }} align={'center'} justify={'space-between'}>
         <Flex align={'center'} gap={20}>
           <Flex align={'center'} gap={8}>
-            asd
+            <div>asd</div>
+            <div>asd</div>
           </Flex>
         </Flex>
 
