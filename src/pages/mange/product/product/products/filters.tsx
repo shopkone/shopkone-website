@@ -9,10 +9,12 @@ import FilterLabels from '@/components/table-filter/FilterLabels'
 import { VariantStatus } from '@/constant/product'
 import styles from './index.module.less'
 
+type ValueType = {
+  status: VariantStatus | 0
+}
+
 export interface FiltersProps {
-  value?: {
-    status: VariantStatus
-  }
+  value?: ValueType
   onChange?: (value: FiltersProps['value']) => void
 }
 
@@ -21,12 +23,35 @@ export default function Filters (props: FiltersProps) {
   const [labels, setLabels] = useState<Record<string, ReactNode>>({})
   const { t } = useTranslation('product', { keyPrefix: 'product' })
 
+  const onChangeHandle = (field: keyof ValueType, v: ValueType[keyof ValueType]) => {
+    onChange?.({ ...value, [field]: v })
+  }
+
   return (
     <div>
       <Flex gap={4} className={styles.btns}>
-        <Button          type={'text'} size={'small'}>{t('全部')}</Button>
-        <Button type={'text'} size={'small'}>{t('已上架')}</Button>
-        <Button type={'text'} size={'small'}>{t('已下架')}</Button>
+        <Button
+          className={styles.activeBtn}
+          onClick={() => { onChangeHandle('status', 0) }}
+          type={'text'}
+          size={'small'}
+        >
+          {t('全部')}
+        </Button>
+        <Button
+          onClick={() => { onChangeHandle('status', VariantStatus.Published) }} 
+          type={'text'}
+          size={'small'}
+        >
+          {t('已上架')}
+          </Button>
+        <Button 
+          type={'text'} 
+          size={'small'}
+          onClick={() => { onChangeHandle('status', VariantStatus.Draft) }} 
+        >
+          {t('已下架')}
+        </Button>
       </Flex>
       <div className={'line'} style={{ margin: '8px 0' }} />
       <Flex style={{ margin: 8 }} align={'center'} justify={'space-between'}>

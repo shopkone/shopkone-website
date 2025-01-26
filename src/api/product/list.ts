@@ -7,10 +7,10 @@ export interface ProductListReq extends PageReq {
   collections?: number[]
   tags?: string[]
   track_inventory?: number
-  keyword?: string
+  keyword?: string 
   type?: string
   collection_id?: number
-  status?: VariantStatus
+  status: VariantStatus | 0
   price_range?: FilterNumberRangeProps['value']
   exclude_ids?: number[]
   include_ids?: number[]

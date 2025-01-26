@@ -18,15 +18,8 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      transition: all 0.1s;
     }
-    & > * {
-      transition: all 0.1s;
-    }
-    &:not(:disabled):active > *{
-      scale: 0.9;
-    }
-  }
+}
 
   .shopkimi-btn-loading {
     position: relative;
@@ -38,17 +31,8 @@
       display: inline-block;
       margin-right: 0;
       opacity: 1;
-      * {
-        svg {
-          scale: 1.2;
-        }
-        opacity: 1;
-      }
     }
-    &.shopkimi-btn-lg .shopkimi-btn-loading-icon{
-      scale: 1.5;
-    }
-  }
+ }
 
   .shopkimi-btn-sm {
     padding: 3px 8px;
