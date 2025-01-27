@@ -9,6 +9,7 @@ import { CollectionOptionsApi } from '@/api/collection/options'
 import IconButton from '@/components/icon-button'
 import SSelect from '@/components/s-select'
 import FilterCheckbox from '@/components/table-filter/filter-checkbox'
+import FilterNumberRange from '@/components/table-filter/filter-number-range'
 import FilterLabels from '@/components/table-filter/FilterLabels'
 import { VariantStatus } from '@/constant/product'
 
@@ -19,6 +20,7 @@ interface ValueType {
   type: string
   keyword: string
   collections: number[]
+  price_range: FilterNumberRangeProps['value']
 }
 
 export interface FiltersProps {
@@ -39,6 +41,7 @@ export default function Filters (props: FiltersProps) {
   const keywords = useMemo(() => ([
     { label: t('商品标题'), value: 'title' },
     { label: t('商品SPU'), value: 'spu' },
+    { label: t('商品标签'), value: 'tag' },
     { label: t('变体名称'), value: 'variant_name' },
     { label: t('SKU'), value: 'variant_sku' }
   ]), [t])
@@ -102,19 +105,21 @@ export default function Filters (props: FiltersProps) {
               onChangeHandle('collections', v)
             }}
             value={value?.collections}
+            onLabelChange={(l) => { setLabels({ ...labels, collections: l }) }}
           >
             {t('筛选系列')}
           </FilterCheckbox>
 
-          <FilterCheckbox
-            options={collections?.data || []}
-            onChange={(v) => {
-              onChangeHandle('collections', v)
-            }}
-            value={value?.collections}
+          <FilterNumberRange
+            maxLabel={t('最低价')}
+            minLabel={t('最高价')}
+            unit={'MB'}
+            onChange={(v) => { onChangeHandle('price_range', v) }}
+            onLabelChange={(price_range) => { setLabels({ ...labels, price_range }) }}
+            value={value?.price_range || {}}
           >
-            {t('筛选标签')}
-          </FilterCheckbox>
+            {t('售价区间')}
+          </FilterNumberRange>
         </Flex>
 
         <Flex className={styles.actions} gap={12}>

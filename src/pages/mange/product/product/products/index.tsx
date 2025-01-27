@@ -133,14 +133,17 @@ export default function Products () {
       title: t('状态1'),
       code: 'status',
       name: 'status',
-      width: 150,
+      width: 100,
+      align: 'center',
       render: (status: VariantStatus) => (
         <Flex
           style={{ cursor: 'default' }}
           onMouseUp={e => {
             e.stopPropagation()
           }}
-          align={'center'} gap={8}
+          align={'center'}
+          gap={8}
+          justify={'center'}
         >
           <Switch size={'small'} checked={status === VariantStatus.Published} />
           <SRender style={{ fontSize: 12, position: 'relative', top: 1 }} render={status === VariantStatus.Published}>

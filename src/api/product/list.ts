@@ -5,12 +5,11 @@ import { VariantName } from '@/pages/mange/product/product/product-change/varian
 
 export interface ProductListReq extends PageReq {
   collections: number[]
-  tags?: string[]
   track_inventory?: number
   keyword: string
   type: string
   status: VariantStatus | 0
-  price_range?: FilterNumberRangeProps['value']
+  price_range: FilterNumberRangeProps['value']
   exclude_ids?: number[]
   include_ids?: number[]
 }

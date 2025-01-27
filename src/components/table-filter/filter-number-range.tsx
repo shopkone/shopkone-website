@@ -67,9 +67,10 @@ const FilterNumberRange = (props: FilterNumberRangeProps) => {
 
   return (
     <FilterBase showLabel={label} open={open} setOpen={setOpen} label={children} onClear={label ? onClear : undefined}>
-      <Form style={{ width: 250 }} layout={'vertical'}>
+      <Form style={{ width: 250 }} colon={false}>
         <Form.Item style={{ marginBottom: 8 }} label={`${minLabel}`}>
           <SInputNumber
+            size={'small'}
             value={tempValue?.min}
             onChange={(v) => { onChangeHandle?.({ min: v, max: tempValue?.max }) }}
             suffix={prefix ? undefined : unit}
@@ -78,6 +79,7 @@ const FilterNumberRange = (props: FilterNumberRangeProps) => {
         </Form.Item>
         <Form.Item className={'mb0'} label={`${maxLabel}`}>
           <SInputNumber
+            size={'small'}
             value={tempValue?.max}
             onChange={(v) => { onChangeHandle?.({ min: tempValue?.min, max: v }) }}
             suffix={prefix ? undefined : unit}
