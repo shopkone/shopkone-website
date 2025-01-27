@@ -167,6 +167,8 @@ function SelectFiles (props: SelectFilesProps) {
     }
   }, [list])
 
+  const renderView = !hasSearch && !list?.length && !fileList.loading
+
   return (
     <SModal
       className={styles.modal}
@@ -174,6 +176,7 @@ function SelectFiles (props: SelectFilesProps) {
       width={936}
       onCancel={info.close}
       destroyOnClose={true}
+      loading={fileList?.loading ? !list.length : false}
       footer={
         (
           <Flex justify={'space-between'}>
@@ -202,7 +205,7 @@ function SelectFiles (props: SelectFilesProps) {
     >
       <Flex vertical style={{ height: '70vh' }}>
         <SRender
-          render={!(!hasSearch && !list?.length && !fileList.loading)}
+          render={!renderView}
           className={classNames([styles.header, { [styles.shadow]: !showShadow && (fileList.loading || list?.length) }])}
         >
           <div className={styles.mb12}>
@@ -256,49 +259,51 @@ function SelectFiles (props: SelectFilesProps) {
           <FilterLabels style={{ marginTop: 12 }} labels={labels} value={params} onChange={setParams} />
         </SRender>
 
-        <div className={styles.bottom}>
-          <SLoading foreShow size={28} loading={(fileList.loading || fileGroupList.loading) ? (!inViewport) : false}>
-            <Upload
-              style={!(fileList.loading || list?.length) ? hiddenStyle : undefined}
-              vertical
-              gap={4}
-              justify={'center'}
-              align={'center'}
-              className={`${styles.container} ${styles.upload}`}
-              onChange={onUpload}
-              multiple
-              maxSize={20 * 1024 * 1024}
-              accepts={['video', 'image', 'zip', 'audio']}
-            >
-              <Flex align={'center'} ref={headerRef} gap={12}>
-                <Button size={'small'}>{t('上传本地文件')}</Button>
-                <Button type={'text'} size={'small'}>{t('从URL添加素材')}</Button>
-              </Flex>
-            </Upload>
+        <SRender render={renderView}>
+          <div className={styles.bottom}>
+            <SLoading foreShow size={28} loading={(fileList.loading || fileGroupList.loading) ? (!inViewport) : false}>
+              <Upload
+                style={!(fileList.loading || list?.length) ? hiddenStyle : undefined}
+                vertical
+                gap={4}
+                justify={'center'}
+                align={'center'}
+                className={`${styles.container} ${styles.upload}`}
+                onChange={onUpload}
+                multiple
+                maxSize={20 * 1024 * 1024}
+                accepts={['video', 'image', 'zip', 'audio']}
+              >
+                <Flex align={'center'} ref={headerRef} gap={12}>
+                  <Button size={'small'}>{t('上传本地文件')}</Button>
+                  <Button type={'text'} size={'small'}>{t('从URL添加素材')}</Button>
+                </Flex>
+              </Upload>
 
-            <div className={styles.content}>
-              <SRender className={styles.empty} render={!list?.length && !fileList.loading}>
-                <div style={{ width: 700 }}>
-                  <SEmpty
-                    title={hasSearch ? t('未搜索到任何内容') : t('上传并管理您的素材')}
-                    desc={hasSearch ? t('尝试修改搜索条件或上传新的素材') : ''}
-                  >
-                    <Flex gap={12}>
-                      <Upload
-                        onChange={onUpload}
-                        multiple
-                        maxSize={20 * 1024 * 1024}
-                        accepts={['video', 'image', 'zip', 'audio']}
-                      >
-                        <Button type={'primary'}>{t('上传本地文件')}</Button>
-                      </Upload>
-                      <Button>{t('从URL添加素材1')}</Button>
-                    </Flex>
-                  </SEmpty>
-                </div>
-              </SRender>
-              <Flex style={{ paddingBottom: 24 }} wrap={'wrap'} gap={9}>
-                {
+              <div className={styles.content}>
+                <SRender className={styles.empty} render={!list?.length && !fileList.loading}>
+                  <div style={{ width: 700 }}>
+                    <SEmpty
+                      row
+                      title={hasSearch ? t('未搜索到任何内容') : t('上传并管理您的素材')}
+                      desc={hasSearch ? t('尝试修改搜索条件或上传新的素材') : ''}
+                    >
+                      <Flex gap={12}>
+                        <Upload
+                          onChange={onUpload}
+                          multiple
+                          maxSize={20 * 1024 * 1024}
+                          accepts={['video', 'image', 'zip', 'audio']}
+                        >
+                          <Button type={'primary'}>{t('上传本地文件')}</Button>
+                        </Upload>
+                        <Button>{t('从URL添加素材1')}</Button>
+                      </Flex>
+                    </SEmpty>
+                  </div>
+                </SRender>
+                <Flex style={{ paddingBottom: 24 }} wrap={'wrap'} gap={9}>
+                  {
                     list?.map(item => (
                       <Flex
                         onClick={() => {
@@ -381,22 +386,23 @@ function SelectFiles (props: SelectFilesProps) {
                       </Flex>
                     ))
                   }
-              </Flex>
-              <SRender style={{ paddingTop: 24, paddingBottom: 48 }} render={showMoreLoading ? (!isUploading && list?.length) : null}>
-                <Flex ref={moreRef} gap={12} justify={'center'} align={'center'}>
-                  <div><SLoading size={24} /></div>
-                  <div style={{ fontWeight: '550' }}>{t('加载中')}</div>
                 </Flex>
-              </SRender>
-              <SRender style={{ paddingTop: 24, paddingBottom: 48 }} render={showMoreLoading ? isUploading : null}>
-                <Flex gap={12} justify={'center'} align={'center'}>
-                  <div><SLoading size={24} /></div>
-                  <div style={{ fontWeight: '550' }}>{t('请等待上传完成...')}</div>
-                </Flex>
-              </SRender>
-            </div>
-          </SLoading>
-        </div>
+                <SRender style={{ paddingTop: 24, paddingBottom: 48 }} render={showMoreLoading ? (!isUploading && list?.length) : null}>
+                  <Flex ref={moreRef} gap={12} justify={'center'} align={'center'}>
+                    <div><SLoading size={24} /></div>
+                    <div style={{ fontWeight: '550' }}>{t('加载中')}</div>
+                  </Flex>
+                </SRender>
+                <SRender style={{ paddingTop: 24, paddingBottom: 48 }} render={showMoreLoading ? isUploading : null}>
+                  <Flex gap={12} justify={'center'} align={'center'}>
+                    <div><SLoading size={24} /></div>
+                    <div style={{ fontWeight: '550' }}>{t('请等待上传完成...')}</div>
+                  </Flex>
+                </SRender>
+              </div>
+            </SLoading>
+          </div>
+        </SRender>
       </Flex>
     </SModal>
 

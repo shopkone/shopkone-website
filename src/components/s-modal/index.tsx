@@ -4,6 +4,8 @@ import { IconInfoCircleFilled } from '@tabler/icons-react'
 import { useMemoizedFn } from 'ahooks'
 import { App, Button, Flex, Modal, ModalFuncProps, ModalProps, Typography } from 'antd'
 
+import SLoading from '@/components/s-loading'
+
 export const useModal = () => {
   const modal = useRef<{
     confirm: (props: ModalFuncProps) => void
@@ -61,7 +63,7 @@ export interface SModalProps extends ModalProps {
 }
 
 export default function SModal (props: SModalProps) {
-  const { extra, ...rest } = props
+  const { extra, children, loading, ...rest } = props
   const { t } = useTranslation('common', { keyPrefix: 'modal' })
 
   const ExtraFooter = useMemoizedFn(() => {
@@ -101,6 +103,10 @@ export default function SModal (props: SModalProps) {
           {props.title}
         </Typography.Text>
       }
-    />
+    >
+      <SLoading loading={loading}>
+        {children}
+      </SLoading>
+    </Modal>
   )
 }

@@ -17,7 +17,7 @@ export default function FilterLabels (props: FiltersProps) {
     <Flex {...rest} gap={16}>
       {
         Object.keys(labels).filter(i => labels[i]).map(key => (
-          <Status type={'info'} key={key}>
+          <Status style={{ padding: '10px 6px' }} type={'info'} key={key}>
             {labels[key]}
             <IconX
               className={styles.clearBtn}

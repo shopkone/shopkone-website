@@ -9,9 +9,10 @@ import { CollectionOptionsApi } from '@/api/collection/options'
 import IconButton from '@/components/icon-button'
 import SSelect from '@/components/s-select'
 import FilterCheckbox from '@/components/table-filter/filter-checkbox'
-import FilterNumberRange from '@/components/table-filter/filter-number-range'
+import FilterNumberRange, { FilterNumberRangeProps } from '@/components/table-filter/filter-number-range'
 import FilterLabels from '@/components/table-filter/FilterLabels'
 import { VariantStatus } from '@/constant/product'
+import { useManageState } from '@/pages/mange/state'
 
 import styles from './index.module.less'
 
@@ -33,6 +34,7 @@ export default function Filters (props: FiltersProps) {
   const [labels, setLabels] = useState<Record<string, ReactNode>>({})
   const { t } = useTranslation('product', { keyPrefix: 'product' })
   const collections = useRequest(CollectionOptionsApi)
+  const shopInfo = useManageState(state => state.shopInfo)
 
   const onChangeHandle = (field: keyof ValueType, v: ValueType[keyof ValueType]) => {
     onChange?.({ ...value, [field]: v } as any)
@@ -113,7 +115,7 @@ export default function Filters (props: FiltersProps) {
           <FilterNumberRange
             maxLabel={t('最低价')}
             minLabel={t('最高价')}
-            unit={'MB'}
+            unit={shopInfo?.store_currency || ''}
             onChange={(v) => { onChangeHandle('price_range', v) }}
             onLabelChange={(price_range) => { setLabels({ ...labels, price_range }) }}
             value={value?.price_range || {}}
@@ -135,7 +137,12 @@ export default function Filters (props: FiltersProps) {
         </Flex>
       </Flex>
 
-      <FilterLabels style={{ marginTop: 12 }} labels={labels} value={value} onChange={onChange} />
+      <FilterLabels
+        style={{ margin: 12 }}
+        labels={labels}
+        value={value}
+        onChange={onChange}
+      />
     </div>
   )
 }
