@@ -1,10 +1,10 @@
+import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
 import { IconAlertCircleFilled, IconCopy, IconDownload, IconEye, IconPhoto, IconPlus } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
 import { Button, Flex, Switch, Tooltip } from 'antd'
 import dayjs from 'dayjs'
-import { useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router-dom'
 
 import { FileType } from '@/api/file/add-file-record'
 import { ProductListApi, ProductListReq, ProductListRes } from '@/api/product/list'
@@ -22,8 +22,15 @@ import { renderText } from '@/utils/render-text'
 
 export default function Products () {
   const nav = useNavigate()
-  const [params, setParams] = useState<ProductListReq>({ page: 1, page_size: 20, status: 0 })
-  const list = useRequest(ProductListApi, { manual: true })
+  const [params, setParams] = useState<ProductListReq>({
+    page: 1,
+    page_size: 20,
+    status: 0,
+    type: 'title',
+    keyword: '',
+    collections: []
+  })
+  const list = useRequest(ProductListApi, { manual: true, debounceWait: 300 })
   const [selected, setSelected] = useState<number[]>([])
   const { t } = useTranslation('product', { keyPrefix: 'product' })
 
@@ -201,8 +208,9 @@ export default function Products () {
       title={t('商品')}
     >
       <SCard styles={{ body: { padding: '8px 0' } }}>
-        <Filters 
+        <Filters
           value={params}
+          onChange={p => { setParams({ ...params, ...p }) }}
         />
         <STable
           page={{

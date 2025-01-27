@@ -4,12 +4,11 @@ import { VariantStatus } from '@/constant/product'
 import { VariantName } from '@/pages/mange/product/product/product-change/variants/state'
 
 export interface ProductListReq extends PageReq {
-  collections?: number[]
+  collections: number[]
   tags?: string[]
   track_inventory?: number
-  keyword?: string 
-  type?: string
-  collection_id?: number
+  keyword: string
+  type: string
   status: VariantStatus | 0
   price_range?: FilterNumberRangeProps['value']
   exclude_ids?: number[]
