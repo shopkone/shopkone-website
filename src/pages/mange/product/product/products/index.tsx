@@ -28,7 +28,8 @@ export default function Products () {
     status: 0,
     type: 'title',
     keyword: '',
-    collections: []
+    collections: [],
+    price_range: { }
   })
   const list = useRequest(ProductListApi, { manual: true, debounceWait: 300 })
   const [selected, setSelected] = useState<number[]>([])

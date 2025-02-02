@@ -84,7 +84,7 @@ export default function Sider () {
       key: 'online',
       icon: <IconNotebook size={16} />,
       children: [
-        { label: t('店铺设计'), key: 'blog_posts' },
+        { label: t('店铺设计'), key: 'design' },
         { label: t('博客'), key: 'blog_comments' },
         { label: t('自定义页面'), key: 'blog_tags' },
         { label: t('菜单导航'), key: 'nav_list' },
@@ -129,7 +129,6 @@ export default function Sider () {
         defaultOpenKeys={[openKey]}
         selectedKeys={[activeKey]}
         onClick={onClick}
-        prefix={'asd'}
         mode={'inline'}
         items={menus}
       />
