@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate } from 'react-router-dom'
 import {
@@ -17,7 +18,7 @@ import styles from './index.module.less'
 export default function Sider () {
   const nav = useNavigate()
   const location = useLocation()
-  const openKey = `/${location.pathname?.split('/')[1]}`
+  const [openKey, setOpenKey] = useState(`/${location.pathname?.split('/')[1]}`)
   const activeKey = `${location.pathname?.split('/')[2] || ''}`
   const { t } = useTranslation('common', { keyPrefix: 'side' })
 
@@ -123,11 +124,18 @@ export default function Sider () {
     nav(path)
   }
 
+  const onOpenKeys: MenuProps['onOpenChange'] = (v) => {
+    const lastKey = v?.pop()
+    setOpenKey(lastKey || '')
+  }
+
   return (
     <nav className={styles.sider}>
       <Menu
         defaultOpenKeys={[openKey]}
         selectedKeys={[activeKey]}
+        openKeys={openKey ? [openKey] : []}
+        onOpenChange={onOpenKeys}
         onClick={onClick}
         mode={'inline'}
         items={menus}
