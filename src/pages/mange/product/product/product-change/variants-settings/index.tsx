@@ -18,21 +18,19 @@ export default function VariantsSettings () {
   return (
     <SCard
       className={styles.container}
-      style={{ height: inventoryTracking ? 230 : 135 }}
-      title={t('变体设置')}
     >
       <div>
         <Form.Item name={'variant_type'}>
           <TypeChanger />
         </Form.Item>
 
-        <Form.Item name={'inventory_tracking'} style={{ marginTop: -8 }}>
+        <Form.Item name={'inventory_tracking'} style={{ marginTop: -8 }} className={'mb0'}>
           <TrackType />
         </Form.Item>
         {
           inventoryTracking
             ? (
-              <Form.Item name={'inventory_policy'} style={{ marginBottom: 0, marginTop: -12 }}>
+              <Form.Item name={'inventory_policy'} style={{ marginBottom: 0, marginTop: 8 }}>
                 <Radio.Group className={styles.group} options={tackOptions} />
               </Form.Item>
               )

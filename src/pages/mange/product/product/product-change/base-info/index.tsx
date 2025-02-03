@@ -18,7 +18,7 @@ export default function BaseInfo () {
           <Input autoComplete={'off'} placeholder={t('短袖T恤')} />
         </Form.Item>
         <Form.Item name={'description'} label={t('商品描述')}>
-          <Input.TextArea autoSize={{ minRows: 4, maxRows: 4 }} />
+          <Input.TextArea autoSize={{ minRows: 8 }} />
         </Form.Item>
         <FormMedia />
       </div>
