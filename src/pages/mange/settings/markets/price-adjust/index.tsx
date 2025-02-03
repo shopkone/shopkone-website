@@ -233,11 +233,11 @@ export default function PriceAdjust () {
       }
     },
     {
-      title: t('款式'),
+      title: t('变体'),
       code: 'variants',
       name: 'variants',
       render: (variants: ProductListRes['variants']) => {
-        return t('x个款式', { x: variants?.length })
+        return t('x个变体', { x: variants?.length })
       },
       width: 100
     },

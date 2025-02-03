@@ -143,9 +143,9 @@ export default function Variants (props: VariantsProps) {
         style={{ margin: isFull ? '16px 24px' : undefined }}
         title={
           <Flex gap={8} align={'center'}>
-            <div>{t('款式')}</div>
+            <div>{t('变体')}</div>
             <div style={{ fontWeight: 400, fontSize: 12, position: 'relative', top: 1 }}>
-              {variants?.length > 1 ? t('x个款式', { x: variants?.length }) : ''}
+              {variants?.length > 1 ? t('x个变体', { x: variants?.length }) : ''}
             </div>
           </Flex>
         }

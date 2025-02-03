@@ -16,7 +16,7 @@ import { VariantType } from '@/constant/product'
 import BaseInfo from '@/pages/mange/product/product/product-change/base-info'
 import ProductOrganization from '@/pages/mange/product/product/product-change/product-organization'
 import Status from '@/pages/mange/product/product/product-change/status'
-import Variants from '@/pages/mange/product/product/product-change/variants'
+import VariantSet from '@/pages/mange/product/product/product-change/variant-set'
 import { useProductChange, Variant } from '@/pages/mange/product/product/product-change/variants/state'
 import VariantsSettings from '@/pages/mange/product/product/product-change/variants-settings'
 import { isEqualHandle } from '@/utils/is-equal-handle'
@@ -196,14 +196,15 @@ export default function ProductChangeInner (props: ProductChangeInnerProps) {
               </Flex>
             </Flex>
             <Form.Item name={'variants'}>
-              <Variants
+              <VariantSet />
+              {/* <Variants
                 setLoaded={() => { setLoaded(true) }}
                 onValueChange={onValuesChange}
                 onResetLoading={setResetLoading}
                 remoteVariants={remoteVariants}
                 resetFlag={resetFlag}
                 setIsChange={setIsVariantChange}
-              />
+              /> */}
             </Form.Item>
           </Flex>
         </Flex>

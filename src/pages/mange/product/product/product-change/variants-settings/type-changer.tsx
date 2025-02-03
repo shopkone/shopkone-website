@@ -39,7 +39,7 @@ export default function TypeChanger (props: TypeChangerProps) {
     }
     modal.confirm({
       title: t('确认要切换吗？'), // 使用翻译
-      content: t('切换到单一款式模式将清除当前款式设置'), // 使用翻译
+      content: t('切换到单一变体模式将清除当前变体设置'), // 使用翻译
       onOk: () => {
         onChange?.(v)
       },

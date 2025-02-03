@@ -56,7 +56,7 @@ export default function ColumnVariant (props: ColumnVariantProps) {
             </div>
             <Flex align={'center'} gap={8}>
               <div className={'secondary'}>
-                {t('款式数', { count: row.children?.length })}
+                {t('变体数', { count: row.children?.length })}
               </div>
               <IconChevronDown
                 className={styles.icon}

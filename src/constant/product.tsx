@@ -8,8 +8,8 @@ export enum VariantType {
 }
 
 export const useVariantTypeOptions = (t: TFunction) => [
-  { label: t('单个款式'), value: VariantType.Single }, // 将 'Single' 翻译为 '单一'
-  { label: t('多款式'), value: VariantType.Multiple } // 将 'Multiple' 翻译为 '多个'
+  { label: t('单个变体'), value: VariantType.Single }, // 将 'Single' 翻译为 '单一'
+  { label: t('多变体'), value: VariantType.Multiple } // 将 'Multiple' 翻译为 '多个'
 ]
 
 // 变体状态

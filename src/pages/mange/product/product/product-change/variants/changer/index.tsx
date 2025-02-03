@@ -108,7 +108,7 @@ export default function Changer (props: ChangerProps) {
       return
     }
     if (count > 500) {
-      sMessage.warning(t('抱歉，所有属性/款式项最大数量为500个！'))
+      sMessage.warning(t('抱歉，所有属性/变体项最大数量为500个！'))
       return
     }
     onChangeLoading(true)
@@ -126,19 +126,19 @@ export default function Changer (props: ChangerProps) {
     const errs: Array<{ id: number, msg: string }> = []
     options.forEach(option => {
       if (!option.name) {
-        errs.push({ id: option.id, msg: t('请输入款式名称') })
+        errs.push({ id: option.id, msg: t('请输入变体名称') })
       }
       if (options.find(item => item.name === option.name && item.id !== option.id)) {
-        errs.push({ id: option.id, msg: t('款式名称重复') })
+        errs.push({ id: option.id, msg: t('变体名称重复') })
       }
       option.values.forEach((v, index) => {
         const isLast = index === option.values.length - 1
         if (isLast && option.values.length !== 1) return
         if (!v.value) {
-          errs.push({ id: v.id, msg: t('请输入款式值') })
+          errs.push({ id: v.id, msg: t('请输入变体值') })
         }
         if (option.values.find(v2 => v2.value === v.value && v2.id !== v.id)) {
-          errs.push({ id: v.id, msg: t('款式值重复') })
+          errs.push({ id: v.id, msg: t('变体值重复') })
         }
       })
     })
@@ -189,7 +189,7 @@ export default function Changer (props: ChangerProps) {
       style={{ overflow: 'hidden' }}
       title={
         <Flex style={{ overflow: 'hidden' }} align={'center'} justify={'space-between'}>
-          <span>{info?.data?.length ? t('编辑款式') : t('添加款式')}</span>
+          <span>{info?.data?.length ? t('编辑变体') : t('添加变体')}</span>
           <Button
             style={{ width: 24 }}
             onClick={info.close}
@@ -306,7 +306,7 @@ export default function Changer (props: ChangerProps) {
                 </SRender>
                 <SRender render={true}>
                   <div className={styles.content}>
-                    <div className={styles.label}>{t('款式名称')}</div>
+                    <div className={styles.label}>{t('变体名称')}</div>
                     <Input
                       value={option.name}
                       className={classNames({ [styles.errInput]: getErrorMsg(option.id) })}
@@ -321,7 +321,7 @@ export default function Changer (props: ChangerProps) {
                     >
                       {getErrorMsg(option.id)}
                     </div>
-                    <div className={styles.label} style={{ marginTop: 6 }}>{t('款式值')}</div>
+                    <div className={styles.label} style={{ marginTop: 6 }}>{t('变体值')}</div>
                     <Sortable<Option['values'][number]>
                       over={(k) => (
                         <Flex align={'center'} className={styles.di}>
@@ -459,7 +459,7 @@ export default function Changer (props: ChangerProps) {
       <SRender render={options.length < 5}>
         <Button style={{ background: '#f7f7f7' }} onClick={onAdd} block>
           <Flex align={'center'} justify={'center'} gap={8}>
-            <IconPlus size={13} />{t('添加款式选项')}
+            <IconPlus size={13} />{t('添加变体选项')}
           </Flex>
         </Button>
       </SRender>

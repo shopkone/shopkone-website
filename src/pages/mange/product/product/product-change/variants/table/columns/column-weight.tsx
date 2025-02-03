@@ -35,7 +35,7 @@ export default function ColumnWeight (props: ColumnWeightProps) {
   return (
     <div>
       <SRender render={row?.children?.length}>
-        <Tooltip title={t('同时修改x个款式', { count: row?.children?.length })}>
+        <Tooltip title={t('同时修改x个变体', { count: row?.children?.length })}>
           <SInputNumber
             onChange={v => { onChangeWeight(v || null) }}
             value={getWeightRange(row?.children?.map(i => i.weight) as any)?.value}

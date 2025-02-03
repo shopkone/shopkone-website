@@ -124,14 +124,14 @@ export default function Table (props: TableProps) {
         >
           <SEmpty
             image={<IconTag style={{ marginBottom: 16 }} size={80} color={'#eee'} />}
-            title={t('添加你的商品款式')}
+            title={t('添加你的商品变体')}
           >
             <div style={{ marginTop: -20 }}>
-              {t('设置商品选项（如尺寸、颜色）以添加不同款式。')}
+              {t('设置商品选项（如尺寸、颜色）以添加不同变体。')}
             </div>
             <Flex justify={'center'}>
               <Button style={{ marginTop: 32 }} type={'primary'} onClick={onOpenOptions}>
-                {t('添加款式')}
+                {t('添加变体')}
               </Button>
             </Flex>
           </SEmpty>
