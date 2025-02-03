@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { IconAlertCircleFilled, IconCopy, IconDownload, IconEye, IconPhoto, IconPlus } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
 import { Button, Flex, Switch, Tooltip } from 'antd'
+import classNames from 'classnames'
 import dayjs from 'dayjs'
 
 import { FileType } from '@/api/file/add-file-record'
@@ -19,6 +20,8 @@ import { VariantStatus } from '@/constant/product'
 import Filters from '@/pages/mange/product/product/products/filters'
 import { formatPrice } from '@/utils/num'
 import { renderText } from '@/utils/render-text'
+
+import styles from './index.module.less'
 
 export default function Products () {
   const nav = useNavigate()
@@ -50,7 +53,17 @@ export default function Products () {
               <IconPhoto color={'#ddd'} />
             </Flex>
           </SRender>
-          <div>{row.title}</div>
+          <Flex gap={5} align={'center'} justify={'center'}>
+            <div
+              className={
+                classNames(
+                  styles.dot,
+                  row.status === VariantStatus.Draft && styles.unPublishDot
+                )
+              }
+            />
+            {row.title}
+          </Flex>
         </Flex>
       ),
       width: 400,
@@ -144,7 +157,6 @@ export default function Products () {
           }}
           align={'center'}
           gap={8}
-          justify={'center'}
         >
           <Switch size={'small'} checked={status === VariantStatus.Published} />
           <SRender style={{ fontSize: 12, position: 'relative', top: 1 }} render={status === VariantStatus.Published}>
@@ -198,7 +210,6 @@ export default function Products () {
 
   return (
     <Page
-      bottom={64}
       header={
         <SRender render={list?.data?.list?.length}>
           <Flex gap={8}>
@@ -211,12 +222,14 @@ export default function Products () {
       }
       title={t('商品')}
     >
-      <SCard styles={{ body: { padding: '8px 0' } }}>
+      <SCard styles={{ body: { padding: '8px 0 0 0' } }}>
         <Filters
           value={params}
           onChange={p => { setParams({ ...params, ...p }) }}
         />
         <STable
+          minHeight={60}
+          borderless
           page={{
             current: params.page,
             pageSize: params.page_size,

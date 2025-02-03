@@ -20,6 +20,7 @@ export interface STableProps<T=any> extends Omit<BaseTableProps, omit> {
   data: BaseTableProps['dataSource']
   width?: number
   hasHeader?: boolean
+  minHeight?: number
   rowKey?: string
   style?: React.CSSProperties
   init?: boolean
@@ -59,6 +60,7 @@ function STable (props: STableProps) {
     borderless,
     init = true,
     page,
+    minHeight,
     actions,
     onRowClick,
     rowClassName,
@@ -67,6 +69,10 @@ function STable (props: STableProps) {
 
   const { t } = useTranslation('common', { keyPrefix: 'table' })
   const offsetRef = useRef(0)
+
+  const id = useMemo(() => {
+    return Math.random().toString(36).slice(2)
+  }, [])
 
   const columns = useMemo(() => {
     if (!rowSelection?.value?.length) return cols
@@ -141,6 +147,12 @@ function STable (props: STableProps) {
     }
   }, [])
 
+  const styleInner = `
+    #table_${id} .art-table-body {
+      min-height: ${minHeight}vh;
+    }
+  `
+
   if (!init) {
     return (
       <SLoading loading size={36}>
@@ -160,14 +172,16 @@ function STable (props: STableProps) {
         {
           [styles.borderless]: borderless,
           [styles.selected]: rowSelection?.value?.length,
-          [styles.rowClick]: onRowClick
+          [styles.rowClick]: onRowClick,
+          [styles.minHeight]: minHeight
         },
         styles.table
       )
       }
       style={{ width, ...style }}
     >
-      <div style={{ position: 'relative' }}>
+      <style>{styleInner}</style>
+      <div id={`table_${id}`} style={{ position: 'relative' }}>
         <SRender render={props.loading}>
           <div className={styles.loadingWrap} />
         </SRender>

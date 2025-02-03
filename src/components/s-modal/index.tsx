@@ -63,7 +63,7 @@ export interface SModalProps extends ModalProps {
 }
 
 export default function SModal (props: SModalProps) {
-  const { extra, children, loading, ...rest } = props
+  const { extra, children, loading = false, ...rest } = props
   const { t } = useTranslation('common', { keyPrefix: 'modal' })
 
   const ExtraFooter = useMemoizedFn(() => {

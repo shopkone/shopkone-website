@@ -7,11 +7,9 @@
   margin-left: 8px;
 }
 
-.actions {
-  svg {
+.actions svg{
     color: #333;
     position: relative;
-  }
 }
 
 .activeBtn {
@@ -20,12 +18,23 @@
 
 .compact :global {
   .shopkimi-select-selector {
-    border-right: 0 !important;
     border-bottom-right-radius: 0 !important;
     border-top-right-radius: 0 !important;
   }
   .shopkimi-input-affix-wrapper {
+    border-left: 0 !important;
     border-bottom-left-radius: 0 !important;
     border-top-left-radius: 0 !important;
   }
+}
+
+.dot {
+  width: 5px;
+  height: 5px;
+  background: var(--color-success);
+  border-radius: 1px;
+}
+
+.unPublishDot {
+  background: var(--color-text-third);
 }

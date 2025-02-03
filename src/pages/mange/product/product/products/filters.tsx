@@ -77,7 +77,7 @@ export default function Filters (props: FiltersProps) {
         </Button>
       </Flex>
       <div className={'line'} style={{ margin: '8px 0' }} />
-      <Flex style={{ margin: 8 }} align={'center'} justify={'space-between'}>
+      <Flex style={{ margin: '12px 8px' }} align={'center'} justify={'space-between'}>
         <Flex align={'center'} gap={20}>
           <Flex className={styles.compact} align={'center'} gap={0}>
             <SSelect
