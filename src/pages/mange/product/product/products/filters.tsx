@@ -55,7 +55,7 @@ export default function Filters (props: FiltersProps) {
 
   return (
     <div>
-      <Flex style={{ margin: '4px 8px 12px 8px' }} align={'center'} justify={'space-between'}>
+      <Flex className={styles.filter} align={'center'} justify={'space-between'}>
         <Flex align={'center'} gap={20}>
           <Segmented
             className={styles.segmented}
