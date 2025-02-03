@@ -229,7 +229,6 @@ export default function Products () {
         />
         <STable
           minHeight={60}
-          borderless
           page={{
             current: params.page,
             pageSize: params.page_size,

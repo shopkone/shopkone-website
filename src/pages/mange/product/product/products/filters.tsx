@@ -2,8 +2,7 @@ import { ReactNode, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { IconArrowsSort, IconFilter, IconMenu2, IconSearch } from '@tabler/icons-react'
 import { useRequest } from 'ahooks'
-import { Button, Flex, Input } from 'antd'
-import classNames from 'classnames'
+import { Flex, Input, Segmented } from 'antd'
 
 import { CollectionOptionsApi } from '@/api/collection/options'
 import IconButton from '@/components/icon-button'
@@ -48,37 +47,22 @@ export default function Filters (props: FiltersProps) {
     { label: t('SKU'), value: 'variant_sku' }
   ]), [t])
 
+  const statusOptions = useMemo(() => ([
+    { label: t('全部'), value: 0 },
+    { label: t('已发布'), value: VariantStatus.Published },
+    { label: t('草稿'), value: VariantStatus.Draft }
+  ]), [t])
+
   return (
     <div>
-      <Flex gap={4} className={styles.btns}>
-        <Button
-          className={classNames(value?.status === 0 && styles.activeBtn)}
-          onClick={() => { onChangeHandle('status', 0) }}
-          type={'text'}
-          size={'small'}
-        >
-          {t('全部')}
-        </Button>
-        <Button
-          className={classNames(value?.status === VariantStatus.Published && styles.activeBtn)}
-          onClick={() => { onChangeHandle('status', VariantStatus.Published) }}
-          type={'text'}
-          size={'small'}
-        >
-          {t('已上架')}
-        </Button>
-        <Button
-          className={classNames(value?.status === VariantStatus.Draft && styles.activeBtn)}
-          type={'text'}
-          size={'small'}
-          onClick={() => { onChangeHandle('status', VariantStatus.Draft) }}
-        >
-          {t('已下架')}
-        </Button>
-      </Flex>
-      <div className={'line'} style={{ margin: '8px 0' }} />
-      <Flex style={{ margin: '12px 8px' }} align={'center'} justify={'space-between'}>
+      <Flex style={{ margin: '4px 8px 12px 8px' }} align={'center'} justify={'space-between'}>
         <Flex align={'center'} gap={20}>
+          <Segmented
+            className={styles.segmented}
+            onChange={(v) => { onChangeHandle('status', v as any) }}
+            options={statusOptions}
+          />
+          <div className={styles.line} />
           <Flex className={styles.compact} align={'center'} gap={0}>
             <SSelect
               onChange={(value) => { onChangeHandle('type', value) }}
