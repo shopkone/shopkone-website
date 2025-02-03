@@ -14,11 +14,11 @@ import SRender from '@/components/s-render'
 import Seo from '@/components/seo'
 import { VariantType } from '@/constant/product'
 import BaseInfo from '@/pages/mange/product/product/product-change/base-info'
+import OtherSettings from '@/pages/mange/product/product/product-change/other-settings'
 import ProductOrganization from '@/pages/mange/product/product/product-change/product-organization'
 import Status from '@/pages/mange/product/product/product-change/status'
 import VariantSet from '@/pages/mange/product/product/product-change/variant-set'
 import { useProductChange, Variant } from '@/pages/mange/product/product/product-change/variants/state'
-import VariantsSettings from '@/pages/mange/product/product/product-change/variants-settings'
 import { isEqualHandle } from '@/utils/is-equal-handle'
 
 import styles from './index.module.less'
@@ -185,7 +185,7 @@ export default function ProductChangeInner (props: ProductChangeInnerProps) {
             <Flex gap={16}>
               <Flex vertical gap={16}>
                 <BaseInfo />
-                <VariantsSettings />
+                <OtherSettings />
               </Flex>
               <Flex vertical style={{ width: 320 }} gap={16}>
                 <Status />

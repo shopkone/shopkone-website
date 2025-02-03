@@ -3,12 +3,12 @@ import { Form, Radio } from 'antd'
 
 import SCard from '@/components/s-card'
 import { useInventoryPolicyOptions } from '@/constant/product'
-import TrackType from '@/pages/mange/product/product/product-change/variants-settings/track-type'
-import TypeChanger from '@/pages/mange/product/product/product-change/variants-settings/type-changer'
+import TrackType from '@/pages/mange/product/product/product-change/other-settings/track-type'
+import TypeChanger from '@/pages/mange/product/product/product-change/other-settings/type-changer'
 
 import styles from './index.module.less'
 
-export default function VariantsSettings () {
+export default function OtherSettings () {
   const { t } = useTranslation('product', { keyPrefix: 'product' })
   const tackOptions = useInventoryPolicyOptions(t)
 
@@ -30,7 +30,7 @@ export default function VariantsSettings () {
         {
           inventoryTracking
             ? (
-              <Form.Item name={'inventory_policy'} style={{ marginBottom: 0, marginTop: 8 }}>
+              <Form.Item name={'inventory_policy'} style={{ marginBottom: 0, marginTop: 6 }}>
                 <Radio.Group className={styles.group} options={tackOptions} />
               </Form.Item>
               )
