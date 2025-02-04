@@ -114,7 +114,7 @@ export default function Products () {
                   <div>{t('x在售', { x: row.variants?.reduce((sum, variant) => sum + variant.quantity, 0) })}</div>
                   <SRender render={row.variants?.length !== 1}>
                     <span style={{ padding: '0 6px', transform: 'scale(1.5)' }}>·</span>
-                    {t('x个变体1', { x: row.variants?.length || 0 })}
+                    {t('x个款式1', { x: row.variants?.length || 0 })}
                   </SRender>
                 </Flex>
                 <Flex

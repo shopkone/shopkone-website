@@ -5,12 +5,14 @@ import { useModal } from '@/components/s-modal'
 import { useVariantTypeOptions, VariantType } from '@/constant/product'
 import { Variant } from '@/pages/mange/product/product/product-change/variants/state'
 
+import styles from '../index.module.less'
+
 export interface TypeChangerProps {
   onChange?: (type: VariantType) => void
   value?: VariantType
 }
 
-export default function TypeChanger (props: TypeChangerProps) {
+export default function Index (props: TypeChangerProps) {
   const { value, onChange } = props
   const modal = useModal()
   const form = Form.useFormInstance()
@@ -39,7 +41,7 @@ export default function TypeChanger (props: TypeChangerProps) {
     }
     modal.confirm({
       title: t('确认要切换吗？'), // 使用翻译
-      content: t('切换到单一变体模式将清除当前变体设置'), // 使用翻译
+      content: t('切换到单一款式模式将清除当前款式设置'), // 使用翻译
       onOk: () => {
         onChange?.(v)
       },
@@ -48,12 +50,12 @@ export default function TypeChanger (props: TypeChangerProps) {
   }
 
   return (
-    <Radio.Group
-      value={value}
-      onChange={e => {
-        onChangeHandle(e.target.value)
-      }}
-      options={translatedOptions}
-    />
+    <div className={styles.inner}>
+      <Radio.Group
+        onChange={(v) => { onChangeHandle(v.target.value) }}
+        value={value}
+        options={translatedOptions}
+      />
+    </div>
   )
 }

@@ -103,7 +103,7 @@ export default function useColumns (params: ColumnsParams) {
   const cols: UseColumnType[] = [
     {
       title: <ColumnTitle t={t} expands={expands} setExpands={setExpands} variants={variants} variantType={variantType} />,
-      nick: t('变体'),
+      nick: t('款式'),
       code: 'variant',
       name: 'variant',
       render: (text, record: Variant) => {
@@ -292,7 +292,7 @@ export default function useColumns (params: ColumnsParams) {
         return (
           <div>
             <SRender render={row?.children?.length}>
-              <Tooltip title={t('移除x个变体', { n: row?.children?.length })}>
+              <Tooltip title={t('移除x个款式', { n: row?.children?.length })}>
                 <Button onClick={() => { onRemove(row) }} style={{ height: 32 }} size={'small'} type={'text'}>
                   <IconTrash size={16} />
                 </Button>

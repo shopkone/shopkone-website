@@ -1,8 +1,7 @@
 import { useTranslation } from 'react-i18next'
-import { Form, Radio } from 'antd'
+import { Form } from 'antd'
 
 import SCard from '@/components/s-card'
-import { useInventoryPolicyOptions } from '@/constant/product'
 import TrackType from '@/pages/mange/product/product/product-change/other-settings/track-type'
 import TypeChanger from '@/pages/mange/product/product/product-change/other-settings/type-changer'
 
@@ -10,32 +9,24 @@ import styles from './index.module.less'
 
 export default function OtherSettings () {
   const { t } = useTranslation('product', { keyPrefix: 'product' })
-  const tackOptions = useInventoryPolicyOptions(t)
-
-  const form = Form.useFormInstance()
-  const inventoryTracking = Form.useWatch('inventory_tracking', form)
 
   return (
     <SCard
       className={styles.container}
     >
       <div>
-        <Form.Item name={'variant_type'}>
+        <Form.Item label={t('款式类型')} name={'variant_type'}>
           <TypeChanger />
         </Form.Item>
 
-        <Form.Item name={'inventory_tracking'} style={{ marginTop: -8 }} className={'mb0'}>
+        <Form.Item
+          label={t('库存策略')}
+          name={'inventory_tracking'}
+          className={'mb0'}
+        >
           <TrackType />
         </Form.Item>
-        {
-          inventoryTracking
-            ? (
-              <Form.Item name={'inventory_policy'} style={{ marginBottom: 0, marginTop: 6 }}>
-                <Radio.Group className={styles.group} options={tackOptions} />
-              </Form.Item>
-              )
-            : null
-        }
+
       </div>
     </SCard>
   )

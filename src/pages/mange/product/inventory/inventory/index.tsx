@@ -36,7 +36,7 @@ export default function Inventory () {
 
   const columns: STableProps['columns'] = [
     {
-      title: t('商品变体'),
+      title: t('商品款式'),
       code: 'product',
       name: 'product',
       render: (_, row: InventoryListRes) => (

@@ -1,5 +1,5 @@
-import { useRef } from 'react'
-import { useMemoizedFn, useMount, useRequest } from 'ahooks'
+import { useEffect, useRef } from 'react'
+import { useMemoizedFn, useRequest } from 'ahooks'
 import OSS from 'ali-oss'
 
 import { GetUploadTokenApi } from '@/api/file/get-upload-token'
@@ -37,17 +37,18 @@ export const useOss = () => {
     return { url: (ret.res as any)?.requestUrls?.[0]?.split('?')?.[0] }
   }
 
-  useMount(async () => {
-    const key = await fetToken()
-    // @ts-expect-error
-    client.current = new OSS({
-      region: REGION,
-      ...key,
-      bucket: BUCKET,
-      refreshSTSToken: fetToken,
-      timeout: 60 * 60 * 1000
+  useEffect(() => {
+    fetToken().then(key => {
+      // @ts-expect-error
+      client.current = new OSS({
+        region: REGION,
+        ...key,
+        bucket: BUCKET,
+        refreshSTSToken: fetToken,
+        timeout: 60 * 60 * 1000
+      })
     })
-  })
+  }, [])
 
   return { run }
 }

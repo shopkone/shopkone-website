@@ -43,7 +43,7 @@ export default function Filters (props: FiltersProps) {
     { label: t('商品标题'), value: 'title' },
     { label: t('商品SPU'), value: 'spu' },
     { label: t('商品标签'), value: 'tag' },
-    { label: t('变体名称'), value: 'variant_name' },
+    { label: t('款式名称'), value: 'variant_name' },
     { label: t('SKU'), value: 'variant_sku' }
   ]), [t])
 

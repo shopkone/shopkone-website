@@ -1,7 +1,7 @@
 /*
 type VariantListByIdsReq struct {
-  g.Meta `path:"/product/variant/list-by-ids" method:"post" summary:"根据变体ID列表获取变体列表" tags:"Product"`
-  Ids    []uint `json:"ids" v:"required" dc:"变体ID列表"`
+  g.Meta `path:"/product/variant/list-by-ids" method:"post" summary:"根据款式ID列表获取款式列表" tags:"Product"`
+  Ids    []uint `json:"ids" v:"required" dc:"款式ID列表"`
 }
 type VariantListByIdsRes struct {
   Id           uint   `json:"id"`

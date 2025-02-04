@@ -99,7 +99,7 @@ export default function SelectProduct (props: SelectProductProps) {
                   }}
                 >·
                 </span>
-                {t('x种变体', { count: row.variants?.length || 0 })}
+                {t('x种款式', { count: row.variants?.length || 0 })}
               </SRender>
             </Flex>
             <Flex style={{ color: '#856404', display: !someInStock ? 'flex' : 'none' }} align={'center'} gap={4}>
