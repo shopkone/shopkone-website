@@ -3,7 +3,7 @@ import { Form, Radio } from 'antd'
 
 import { useModal } from '@/components/s-modal'
 import { useVariantTypeOptions, VariantType } from '@/constant/product'
-import { Variant } from '@/pages/mange/product/product/product-change/variants/state'
+import { Variant } from '@/pages/mange/product/product/product-change/variant-set/state'
 
 import styles from '../index.module.less'
 

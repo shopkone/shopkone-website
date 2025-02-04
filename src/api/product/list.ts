@@ -1,7 +1,7 @@
 import { api, PageReq, PageRes } from '@/api/api'
 import { FilterNumberRangeProps } from '@/components/table-filter/filter-number-range'
 import { VariantStatus } from '@/constant/product'
-import { VariantName } from '@/pages/mange/product/product/product-change/variants/state'
+import { VariantName } from '@/pages/mange/product/product/product-change/variant-set/state'
 
 export interface ProductListReq extends PageReq {
   collections: number[]

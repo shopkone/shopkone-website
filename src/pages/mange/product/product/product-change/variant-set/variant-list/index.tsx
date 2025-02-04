@@ -10,16 +10,16 @@ import SInputNumber from '@/components/s-input-number'
 import SRender from '@/components/s-render'
 import SSelect from '@/components/s-select'
 import STable, { STableProps } from '@/components/s-table'
+import { Variant, VariantName } from '@/pages/mange/product/product/product-change/variant-set/state'
 import { OptionValue } from '@/pages/mange/product/product/product-change/variant-set/variant-options/option-item'
 import * as worker from '@/pages/mange/product/product/product-change/variant-set/worker'
-import { Variant, VariantName } from '@/pages/mange/product/product/product-change/variants/state'
 import { useManageState } from '@/pages/mange/state'
 
 import styles from './index.module.less'
 
 export interface VariantListProps {
   variants: Variant[]
-  onChangeVariants: (variants: Variant[]) => void
+  onChangeVariants?: (variants: Variant[]) => void
 }
 
 export default function VariantList (props: VariantListProps) {
@@ -70,7 +70,7 @@ export default function VariantList (props: VariantListProps) {
 
   useEffect(() => {
     worker.toListWorker.onmessage = (e) => {
-      onChangeVariants(e.data.variants || [])
+      onChangeVariants?.(e.data.variants || [])
       setOptions(e.data.options?.filter((i: any) => i.label) || [])
     }
   }, [])

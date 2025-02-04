@@ -6,10 +6,10 @@ import { Button } from 'antd'
 
 import SCard from '@/components/s-card'
 import SRender from '@/components/s-render'
+import { Variant } from '@/pages/mange/product/product/product-change/variant-set/state'
 import OptionItem, {
   OptionValue
 } from '@/pages/mange/product/product/product-change/variant-set/variant-options/option-item'
-import { Variant } from '@/pages/mange/product/product/product-change/variants/state'
 import { genId } from '@/utils/random'
 
 import * as worker from '../worker'

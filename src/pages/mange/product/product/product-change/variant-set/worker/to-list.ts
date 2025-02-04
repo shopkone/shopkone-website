@@ -1,5 +1,5 @@
+import { VariantName } from '@/pages/mange/product/product/product-change/variant-set/state'
 import { genVariant } from '@/pages/mange/product/product/product-change/variant-set/worker/gen-variant'
-import { VariantName } from '@/pages/mange/product/product/product-change/variants/state'
 import { genId } from '@/utils/random'
 
 self.onmessage = e => {

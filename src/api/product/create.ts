@@ -1,7 +1,7 @@
 import { api } from '@/api/api'
 import { SeoType } from '@/components/seo/edit'
 import { InventoryPolicy, VariantStatus, VariantType } from '@/constant/product'
-import { Variant } from '@/pages/mange/product/product/product-change/variants/state'
+import { Variant } from '@/pages/mange/product/product/product-change/variant-set/state'
 
 export interface ProductCreateReq {
   title: string

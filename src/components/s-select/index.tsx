@@ -48,20 +48,22 @@ export default function SSelect (props: SelectProps) {
             </div>
             )
       )}
-      clearIcon={(
-        <div style={{
-          position: 'relative',
-          left: -8,
-          top: -6,
-          background: '#fdfdfd',
-          width: 20
-        }}
-        >
-          <IconButton size={20} type={'text'}>
-            <IconX color={'#333'} size={14} />
-          </IconButton>
-        </div>
-      )}
+      allowClear={{
+        clearIcon: (
+          <div style={{
+            position: 'relative',
+            left: -8,
+            top: -6,
+            background: '#fdfdfd',
+            width: 20
+          }}
+          >
+            <IconButton size={20} type={'text'}>
+              <IconX color={'#333'} size={14} />
+            </IconButton>
+          </div>
+        )
+      }}
       {...props}
       virtual={false}
       labelRender={(props.showSearch && focus) ? props.value : props.labelRender}

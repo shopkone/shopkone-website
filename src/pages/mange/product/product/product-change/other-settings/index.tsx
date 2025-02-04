@@ -22,9 +22,16 @@ export default function OtherSettings () {
         <Form.Item
           label={t('库存策略')}
           name={'inventory_tracking'}
-          className={'mb0'}
         >
           <TrackType />
+        </Form.Item>
+
+        <Form.Item
+          label={t('库存地点')}
+          name={'enabled_location_ids'}
+          className={'mb0'}
+        >
+          asd
         </Form.Item>
 
       </div>

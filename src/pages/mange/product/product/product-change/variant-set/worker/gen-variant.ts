@@ -1,4 +1,4 @@
-import { Variant, VariantName } from '@/pages/mange/product/product/product-change/variants/state'
+import { Variant, VariantName } from '@/pages/mange/product/product/product-change/variant-set/state'
 import { genId } from '@/utils/random'
 
 export const genVariant = (name: VariantName[]): Variant => ({
