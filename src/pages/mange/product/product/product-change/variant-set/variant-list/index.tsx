@@ -17,8 +17,13 @@ import { useManageState } from '@/pages/mange/state'
 
 import styles from './index.module.less'
 
-export default function VariantList () {
-  const [variants, setVariants] = useState<Variant[]>([])
+export interface VariantListProps {
+  variants: Variant[]
+  onChangeVariants: (variants: Variant[]) => void
+}
+
+export default function VariantList (props: VariantListProps) {
+  const { variants, onChangeVariants } = props
   const [options, setOptions] = useState<OptionValue[]>([])
   const { t } = useTranslation('product', { keyPrefix: 'product' })
   const [selected, setSelected] = useState<number[]>([])
@@ -65,7 +70,7 @@ export default function VariantList () {
 
   useEffect(() => {
     worker.toListWorker.onmessage = (e) => {
-      setVariants(e.data.variants || [])
+      onChangeVariants(e.data.variants || [])
       setOptions(e.data.options?.filter((i: any) => i.label) || [])
     }
   }, [])

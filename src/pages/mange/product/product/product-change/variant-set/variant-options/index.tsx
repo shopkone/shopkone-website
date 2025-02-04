@@ -9,13 +9,19 @@ import SRender from '@/components/s-render'
 import OptionItem, {
   OptionValue
 } from '@/pages/mange/product/product/product-change/variant-set/variant-options/option-item'
+import { Variant } from '@/pages/mange/product/product/product-change/variants/state'
 import { genId } from '@/utils/random'
 
 import * as worker from '../worker'
 
 import styles from './index.module.less'
 
-export default function VariantOptions () {
+export interface VariantOptionsProps {
+  variants: Variant[]
+}
+
+export default function VariantOptions (props: VariantOptionsProps) {
+  const { variants } = props
   const { t } = useTranslation('product', { keyPrefix: 'product' })
   const [options, setOptions] = useState<OptionValue[]>([])
 
@@ -37,7 +43,7 @@ export default function VariantOptions () {
   }
 
   const toList = useDebounceFn(() => {
-    worker.toListWorker.postMessage(options)
+    worker.toListWorker.postMessage({ options, variants })
   }, { wait: 500 })
 
   useEffect(() => {

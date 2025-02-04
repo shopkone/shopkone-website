@@ -3,16 +3,25 @@ import { VariantName } from '@/pages/mange/product/product/product-change/varian
 import { genId } from '@/utils/random'
 
 self.onmessage = e => {
-  const data = e.data
-  const result = generateVariants(data)
-  const variants = result.map(item => {
+  const { options, variants: oldVariants } = e.data
+  const result = generateVariants(options)
+  let variants = result.map(item => {
     const name: VariantName[] = []
     Object.keys(item).forEach(key => {
       name.push({ label: key, value: item[key], id: genId() })
     })
     return genVariant(name)
   })
-  self.postMessage({ variants, options: data })
+  variants = variants.map((item: any) => {
+    const oldVariant = oldVariants.find((oldVariant: any) => {
+      const oldName = oldVariant.name.map((name: any) => name.value).join('-')
+      const newName = item.name.map((name: any) => name.value).join('-')
+      return oldName === newName
+    })
+    if (oldVariant) return oldVariant
+    return item
+  })
+  self.postMessage({ variants, options })
 }
 
 function generateVariants (options: Array<{ label: string, values: string[] }>): any[] {
