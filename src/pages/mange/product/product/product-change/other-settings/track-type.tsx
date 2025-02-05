@@ -34,7 +34,7 @@ export default function TrackType (props: TrackTypeProps) {
       {
         inventoryTracking
           ? (
-            <Form.Item name={'inventory_policy'} style={{ marginBottom: 0, marginTop: 6 }}>
+            <Form.Item name={'inventory_policy'} style={{ marginBottom: 0, marginTop: 12 }}>
               <Radio.Group className={styles.group} options={tackOptions} />
             </Form.Item>
             )

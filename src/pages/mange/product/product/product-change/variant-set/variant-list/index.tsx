@@ -1,19 +1,17 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { IconMaximize } from '@tabler/icons-react'
-import { Flex, Input } from 'antd'
+import { Flex } from 'antd'
 
-import { useCurrencyList } from '@/api/base/currency-list'
 import IconButton from '@/components/icon-button'
 import SCard from '@/components/s-card'
-import SInputNumber from '@/components/s-input-number'
 import SRender from '@/components/s-render'
 import SSelect from '@/components/s-select'
-import STable, { STableProps } from '@/components/s-table'
-import { Variant, VariantName } from '@/pages/mange/product/product/product-change/variant-set/state'
+import STable from '@/components/s-table'
+import { Variant } from '@/pages/mange/product/product/product-change/variant-set/state'
+import { UseColumns } from '@/pages/mange/product/product/product-change/variant-set/variant-list/use-columns'
 import { OptionValue } from '@/pages/mange/product/product/product-change/variant-set/variant-options/option-item'
 import * as worker from '@/pages/mange/product/product/product-change/variant-set/worker'
-import { useManageState } from '@/pages/mange/state'
 
 import styles from './index.module.less'
 
@@ -27,46 +25,7 @@ export default function VariantList (props: VariantListProps) {
   const [options, setOptions] = useState<OptionValue[]>([])
   const { t } = useTranslation('product', { keyPrefix: 'product' })
   const [selected, setSelected] = useState<number[]>([])
-  const shopInfo = useManageState(state => state.shopInfo)
-  const currencies = useCurrencyList()
-  const currency = currencies?.data?.find(item => item.code === shopInfo?.store_currency)
-
-  const columns: STableProps['columns'] = [
-    {
-      title: t('款式'),
-      name: 'name',
-      code: 'name',
-      width: 230,
-      lock: true,
-      render: (names: VariantName[]) => {
-        return names.map((name) => name.value).join(' - ')
-      }
-    },
-    {
-      title: t('售价'),
-      name: 'price',
-      code: 'price',
-      width: 140,
-      render: (price) => (
-        <SInputNumber
-          value={price}
-          money
-          prefix={`${currency?.code}${currency?.symbol}`}
-        />
-      )
-    },
-    {
-      title: t('库存'),
-      name: 'inventory',
-      code: 'inventory',
-      width: 100,
-      render: () => (
-        <div style={{ marginRight: 8 }}>
-          <Input />
-        </div>
-      )
-    }
-  ]
+  const columns = UseColumns({ onChange: onChangeVariants, value: variants })
 
   useEffect(() => {
     worker.toListWorker.onmessage = (e) => {
@@ -87,8 +46,8 @@ export default function VariantList (props: VariantListProps) {
           {
               options.map(option => (
                 <SSelect
-                  style={{ flex: 1 }}
                   allowClear
+                  style={{ flex: 1 }}
                   placeholder={option.label}
                   key={option.id}
                   size={'small'}
@@ -99,7 +58,7 @@ export default function VariantList (props: VariantListProps) {
             }
         </Flex>
         <Flex gap={12} align={'center'}>
-          <SSelect value={'所有地点'} size={'small'} />
+          <SSelect allowClear value={'所有地点'} size={'small'} />
           <div>
             <IconButton size={26}>
               <IconMaximize size={16} />

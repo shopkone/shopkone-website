@@ -1,12 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { IconCirclePlus } from '@tabler/icons-react'
 import { useDebounceFn } from 'ahooks'
-import { Button } from 'antd'
+import { Button, Form } from 'antd'
 
 import SCard from '@/components/s-card'
 import SRender from '@/components/s-render'
-import { Variant } from '@/pages/mange/product/product/product-change/variant-set/state'
 import OptionItem, {
   OptionValue
 } from '@/pages/mange/product/product/product-change/variant-set/variant-options/option-item'
@@ -17,16 +16,17 @@ import * as worker from '../worker'
 import styles from './index.module.less'
 
 export interface VariantOptionsProps {
-  variants: Variant[]
+  value?: OptionValue[]
+  onChange?: (options: OptionValue[]) => void
 }
 
 export default function VariantOptions (props: VariantOptionsProps) {
-  const { variants } = props
+  const { value = [], onChange } = props
   const { t } = useTranslation('product', { keyPrefix: 'product' })
-  const [options, setOptions] = useState<OptionValue[]>([])
+  const form = Form.useFormInstance()
 
   const onChangeHandle = (option: OptionValue) => {
-    setOptions(options.map(item => {
+    onChange?.(value.map(item => {
       if (item.id === option.id) {
         return option
       }
@@ -35,31 +35,32 @@ export default function VariantOptions (props: VariantOptionsProps) {
   }
 
   const onAddHandle = () => {
-    setOptions([...options, { label: '', values: [''], id: genId() }])
+    onChange?.([...value, { label: '', values: [''], id: genId() }])
   }
 
   const onRemoveHandle = (optionId: number) => {
-    setOptions(options.filter(item => item.id !== optionId))
+    onChange?.(value.filter(item => item.id !== optionId))
   }
 
   const toList = useDebounceFn(() => {
-    worker.toListWorker.postMessage({ options, variants })
+    const variants = form.getFieldValue('variants')
+    worker.toListWorker.postMessage({ options: value, variants })
   }, { wait: 500 })
 
   useEffect(() => {
-    setOptions([{ label: '', values: [''], id: genId() }])
+    onChange?.([{ label: '', values: [''], id: genId() }])
   }, [])
 
   useEffect(() => {
     toList.run()
-  }, [options])
+  }, [value])
 
   return (
     <SCard title={t('款式选项')} bodyStyle={{ padding: 0 }}>
       {
-          options.map((option, index) => (
+          value.map((option, index) => (
             <OptionItem
-              length={options.length}
+              length={value.length}
               onRemove={() => { onRemoveHandle(option.id) }}
               onChange={onChangeHandle}
               option={option}
@@ -67,7 +68,7 @@ export default function VariantOptions (props: VariantOptionsProps) {
             />
           ))
         }
-      <SRender render={options.length < 3}>
+      <SRender render={value.length < 3}>
         <div style={{ padding: 8 }}>
           <Button className={styles.btn} onClick={onAddHandle}>
             <IconCirclePlus size={14} />

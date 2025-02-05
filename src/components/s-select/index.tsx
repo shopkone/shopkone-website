@@ -6,7 +6,14 @@ import IconButton from '@/components/icon-button'
 import SLoading from '@/components/s-loading'
 import SRender from '@/components/s-render'
 
-export default function SSelect (props: SelectProps) {
+import styles from './index.module.less'
+
+export interface SSelectProps extends Omit<SelectProps, 'allowClear'> {
+  allowClear?: boolean
+}
+
+export default function SSelect (props: SSelectProps) {
+  const { allowClear, ...rest } = props
   const [focus, setFocus] = useState(false)
 
   return (
@@ -34,37 +41,25 @@ export default function SSelect (props: SelectProps) {
         props.mode !== undefined
           ? undefined
           : (
-            <div style={{
-              position: 'relative',
-              left: -8,
-              top: -6,
-              background: '#fdfdfd',
-              width: 20
-            }}
-            >
-              <IconButton size={20} type={'text'}>
-                <IconX color={'#333'} size={14} />
+            <div className={styles.clearIcon}>
+              <IconButton size={14} type={'text'}>
+                <IconX color={'#333'} size={13} />
               </IconButton>
             </div>
             )
       )}
-      allowClear={{
-        clearIcon: (
-          <div style={{
-            position: 'relative',
-            left: -8,
-            top: -6,
-            background: '#fdfdfd',
-            width: 20
-          }}
-          >
-            <IconButton size={20} type={'text'}>
-              <IconX color={'#333'} size={14} />
-            </IconButton>
-          </div>
-        )
-      }}
-      {...props}
+      allowClear={allowClear
+        ? {
+            clearIcon: (
+              <div className={styles.clearIcon}>
+                <IconButton size={14} type={'link'}>
+                  <IconX color={'#333'} size={13} />
+                </IconButton>
+              </div>
+            )
+          }
+        : undefined}
+      {...rest}
       virtual={false}
       labelRender={(props.showSearch && focus) ? props.value : props.labelRender}
     />

@@ -50,9 +50,7 @@ export default function ProductChangeInner (props: ProductChangeInnerProps) {
   const [form] = Form.useForm()
 
   const [isChange, setIsChange] = useState(false)
-  const [isVariantChange, setIsVariantChange] = useState(false)
   const [resetFlag, setResetFlag] = useState(0)
-  const [resetLoading, setResetLoading] = useState(false)
   const [remoteVariants, setRemoteVariants] = useState<Variant[]>([])
   const init = useRef<any>()
   const create = useRequest(ProductCreateApi, { manual: true })
@@ -60,7 +58,6 @@ export default function ProductChangeInner (props: ProductChangeInnerProps) {
   const update = useRequest(ProductUpdateApi, { manual: true })
   const setInfo = useProductChange(state => state.setInfo)
   const { id } = useParams()
-  const [loaded, setLoaded] = useState(false)
   const { t } = useTranslation('product', { keyPrefix: 'product' })
 
   const onOK = async () => {
@@ -152,11 +149,10 @@ export default function ProductChangeInner (props: ProductChangeInnerProps) {
 
   return (
     <Page
-      resetLoading={resetLoading}
-      loading={info.loading || resetLoading || loaded || resetLoading}
+      loading={info.loading}
       onOk={onOK}
       onCancel={onCancel}
-      isChange={isChange || isVariantChange}
+      isChange={isChange}
       title={id ? (info?.data?.title || '--') : t('添加商品')}
       back={'/products/products'}
       width={950}
@@ -179,7 +175,6 @@ export default function ProductChangeInner (props: ProductChangeInnerProps) {
       }
     >
       <Form onValuesChange={onValuesChange} className={styles.container} form={form} layout={'vertical'}>
-        <Form.Item name={'label_images'} style={{ margin: 0, padding: 0, width: 0, height: 0, overflow: 'hidden' }} />
         <Flex gap={16}>
           <Flex vertical gap={16} flex={1}>
             <Flex gap={16}>
@@ -195,9 +190,7 @@ export default function ProductChangeInner (props: ProductChangeInnerProps) {
                 </Form.Item>
               </Flex>
             </Flex>
-            <Form.Item name={'variants'}>
-              <VariantSet />
-            </Form.Item>
+            <VariantSet />
           </Flex>
         </Flex>
       </Form>

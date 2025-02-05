@@ -17,7 +17,7 @@ export interface ProductCreateReq {
   variants: Variant[]
   scheduled_at: number
   inventory_tracking: number
-  label_images: Array<{ label: string, value: string, image_id: number }>
+  product_options: Array<{ label: string, value: string, image_id: number }>
 }
 export interface ProductCreateRes {
   id: number

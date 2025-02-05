@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { Form } from 'antd'
 
 import SCard from '@/components/s-card'
+import InventoryLocation from '@/pages/mange/product/product/product-change/other-settings/inventory-location'
 import TrackType from '@/pages/mange/product/product/product-change/other-settings/track-type'
 import TypeChanger from '@/pages/mange/product/product/product-change/other-settings/type-changer'
 
@@ -31,7 +32,7 @@ export default function OtherSettings () {
           name={'enabled_location_ids'}
           className={'mb0'}
         >
-          asd
+          <InventoryLocation />
         </Form.Item>
 
       </div>

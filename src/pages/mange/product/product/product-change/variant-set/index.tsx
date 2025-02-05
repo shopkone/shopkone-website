@@ -1,22 +1,17 @@
-import { useTranslation } from 'react-i18next'
+import { Form } from 'antd'
 
-import { Variant } from '@/pages/mange/product/product/product-change/variant-set/state'
-import VariantList from '@/pages/mange/product/product/product-change/variant-set/variant-list'
+import VariantOut from '@/pages/mange/product/product/product-change/variant-set/variant-list/variant-out'
 import VariantOptions from '@/pages/mange/product/product/product-change/variant-set/variant-options'
 
-export interface VariantSetProps {
-  value?: Variant[]
-  onChange?: (variants: Variant[]) => void
-}
-
-export default function VariantSet (props: VariantSetProps) {
-  const { value, onChange } = props
-  const { t } = useTranslation('product', { keyPrefix: 'product' })
-
+export default function VariantSet () {
   return (
     <div style={{ width: 612 }}>
-      <VariantOptions variants={value || []} />
-      <VariantList variants={value || []} onChangeVariants={onChange} />
+      <Form.Item name={'product_options'}>
+        <VariantOptions />
+      </Form.Item>
+      <Form.Item className={'mb0'} name={'variants'}>
+        <VariantOut />
+      </Form.Item>
     </div>
   )
 }
