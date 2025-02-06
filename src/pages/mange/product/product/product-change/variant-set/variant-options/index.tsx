@@ -15,61 +15,51 @@ import * as worker from '../worker'
 
 import styles from './index.module.less'
 
-export interface VariantOptionsProps {
-  value?: OptionValue[]
-  onChange?: (options: OptionValue[]) => void
-}
-
-export default function VariantOptions (props: VariantOptionsProps) {
-  const { value = [], onChange } = props
+export default function VariantOptions () {
   const { t } = useTranslation('product', { keyPrefix: 'product' })
   const form = Form.useFormInstance()
+  const options = Form.useWatch('product_options', form) || []
 
   const onChangeHandle = (option: OptionValue) => {
-    onChange?.(value.map(item => {
-      if (item.id === option.id) {
-        return option
-      }
-      return item
-    }))
   }
 
   const onAddHandle = () => {
-    onChange?.([...value, { label: '', values: [''], id: genId() }])
+    form.setFieldValue?.('product_options', [...options, { label: '', values: [''], id: genId() }])
   }
 
   const onRemoveHandle = (optionId: number) => {
-    onChange?.(value.filter(item => item.id !== optionId))
   }
 
   const toList = useDebounceFn(() => {
     const variants = form.getFieldValue('variants')
-    worker.toListWorker.postMessage({ options: value, variants })
+    worker.toListWorker.postMessage({ options, variants })
   }, { wait: 500 })
 
   useEffect(() => {
-    onChange?.([{ label: '', values: [''], id: genId() }])
+    form.setFieldValue?.('product_options', [{ label: '', values: [''], id: genId() }])
   }, [])
 
   useEffect(() => {
     toList.run()
-  }, [value])
+  }, [options])
 
   return (
-    <SCard title={t('款式选项')} bodyStyle={{ padding: 0 }}>
-      {
-          value.map((option, index) => (
-            <OptionItem
-              length={value.length}
-              onRemove={() => { onRemoveHandle(option.id) }}
-              onChange={onChangeHandle}
-              option={option}
-              key={option.id}
-            />
-          ))
+    <SCard title={t('款式选项')} styles={{ body: { padding: 0 } }}>
+      <Form.List name={'product_options'}>
+        {
+          (fields, { add, remove }) => (
+            <div>
+              {
+                fields.map(field => (
+                  <OptionItem name={field.name} key={field.name} />
+                ))
+              }
+            </div>
+          )
         }
-      <SRender render={value.length < 3}>
-        <div style={{ padding: 8 }}>
+      </Form.List>
+      <SRender render={options.length < 3}>
+        <div style={{ paddingLeft: 12, paddingBottom: 12 }}>
           <Button className={styles.btn} onClick={onAddHandle}>
             <IconCirclePlus size={14} />
             {t('添加其它选项')}

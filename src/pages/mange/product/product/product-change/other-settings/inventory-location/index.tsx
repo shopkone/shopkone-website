@@ -17,7 +17,7 @@ export default function InventoryLocation () {
 
   const options = useMemo(() => {
     return location.data?.map(item => {
-      return { label: item.name, value: item.id, disabled: enabled_location_ids?.length === 1 }
+      return { label: item.name, value: item.id, disabled: enabled_location_ids?.length === 1 && enabled_location_ids[0] === item.id }
     })
   }, [location.data, enabled_location_ids])
 

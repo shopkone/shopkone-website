@@ -45,7 +45,9 @@ export default function UploadTask (props: UploadTaskProps) {
   }
 
   useEffect(() => {
-    const waitTasks = tasks.filter(item => item.status === 'wait' && !waitUploading.current.find(i => i.uuid === item.uuid))
+    const waitTasks = tasks.filter(item => {
+      return item.status === 'wait' && !waitUploading.current.find(i => i.uuid === item.uuid)
+    })
     waitUploading.current = [...waitUploading.current, ...waitTasks]
 
     if (!loadingRef.current && waitUploading.current.length > 0) {

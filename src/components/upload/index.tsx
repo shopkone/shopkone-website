@@ -50,10 +50,10 @@ export default function Upload (props: UploadProps) {
   const { t } = useTranslation('common', { keyPrefix: 'upload' })
 
   const directoryProps = {
-    webkitdirectory: directory ? '' : false,
-    mozdirectory: directory ? '' : false,
-    directory: directory ? '' : false,
-    odirectory: directory ? '' : false
+    webkitdirectory: directory ? '' : 'false',
+    mozdirectory: directory ? '' : 'false',
+    directory: directory ? '' : 'false',
+    odirectory: directory ? '' : 'false'
   }
 
   const accept = accepts?.map(item => {

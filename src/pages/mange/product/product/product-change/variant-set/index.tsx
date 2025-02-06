@@ -6,9 +6,7 @@ import VariantOptions from '@/pages/mange/product/product/product-change/variant
 export default function VariantSet () {
   return (
     <div style={{ width: 612 }}>
-      <Form.Item name={'product_options'}>
-        <VariantOptions />
-      </Form.Item>
+      <VariantOptions />
       <Form.Item className={'mb0'} name={'variants'}>
         <VariantOut />
       </Form.Item>

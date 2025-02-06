@@ -103,8 +103,8 @@ export default function ProductChangeInner (props: ProductChangeInnerProps) {
       }
       return
     }
-    const newValues = { ...values, variants: undefined, options: undefined, seo: { ...values.seo, id: 0 } }
-    const oldValues = { ...init.current, variants: undefined, options: undefined, seo: { ...init.current.seo, id: 0 } }
+    const newValues = { ...values, seo: { ...values.seo, id: 0 } }
+    const oldValues = { ...init.current, seo: { ...init.current.seo, id: 0 } }
     const isSame = isEqualHandle(newValues, oldValues)
     setIsChange(!isSame)
   }

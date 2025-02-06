@@ -35,7 +35,7 @@ export function UseColumns (props: UseColumnsProps) {
       code: 'name',
       width: 230,
       lock: true,
-      render: (names: VariantName[]) => {
+      render: (names: VariantName[], row) => {
         return names.map((name) => name.value).join(' - ')
       }
     },
