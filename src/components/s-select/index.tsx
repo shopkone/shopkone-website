@@ -26,9 +26,9 @@ export default function SSelect (props: SSelectProps) {
           <SRender render={!props.loading}>
             {
             (focus && props.showSearch)
-              ? <IconSearch size={15} color={'#646a73c0'} />
+              ? <IconSearch size={15} color={'#646a73'} />
               : (
-                <IconChevronDown size={15} color={'#646a73c0'} />
+                <IconChevronDown className={styles.downIcon} size={15} color={'#646a73'} />
                 )
             }
           </SRender>

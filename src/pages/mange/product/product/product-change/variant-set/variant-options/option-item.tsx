@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { IconGripVertical } from '@tabler/icons-react'
-import { Flex, Form, Input } from 'antd'
+import { Button, Flex, Form, Input } from 'antd'
 
 import IconButton from '@/components/icon-button'
 import OptionValues from '@/pages/mange/product/product/product-change/variant-set/variant-options/option-values'
@@ -45,6 +45,11 @@ export default function OptionItem (props: OptionItemProps) {
       >
         <OptionValues />
       </Form.Item>
+
+      <Flex justify={'space-between'} className={styles.actions}>
+        <Button danger>{t('删除')}</Button>
+        <Button type={'primary'}>{t('完成')}</Button>
+      </Flex>
     </div>
   )
 }

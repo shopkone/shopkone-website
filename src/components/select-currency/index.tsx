@@ -1,10 +1,9 @@
 import { useMemo } from 'react'
-import { SelectProps } from 'antd'
 
 import { useCurrencyList } from '@/api/base/currency-list'
-import SSelect from '@/components/s-select'
+import SSelect, { SSelectProps } from '@/components/s-select'
 
-export interface SelectCurrencyProps extends SelectProps {}
+export interface SelectCurrencyProps extends SSelectProps {}
 
 export default function SelectCurrency (props: SelectCurrencyProps) {
   const currencyList = useCurrencyList()

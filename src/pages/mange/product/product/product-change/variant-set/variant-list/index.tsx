@@ -39,7 +39,7 @@ export default function VariantList (props: VariantListProps) {
       <Flex gap={20} align={'center'} justify={'space-between'}>
         <Flex wrap={'wrap'} gap={8} align={'center'}>
           <SRender render={options.length}>
-            <div className={styles.label} style={{ flexShrink: 0 }}>
+            <div className={styles.label} style={{ flexShrink: 0, marginBottom: -1 }}>
               {t('筛选')}
             </div>
           </SRender>
@@ -47,7 +47,7 @@ export default function VariantList (props: VariantListProps) {
               options.map(option => (
                 <SSelect
                   allowClear
-                  style={{ flex: 1 }}
+                  style={{ flex: 1, minWidth: 100 }}
                   placeholder={option.label}
                   key={option.id}
                   size={'small'}

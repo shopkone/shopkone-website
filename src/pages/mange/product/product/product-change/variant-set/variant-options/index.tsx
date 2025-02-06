@@ -44,7 +44,7 @@ export default function VariantOptions () {
   }, [options])
 
   return (
-    <SCard title={t('款式选项')} styles={{ body: { padding: 0 } }}>
+    <SCard title={t('款式选项')} styles={{ body: { padding: 0, paddingTop: 16 } }}>
       <Form.List name={'product_options'}>
         {
           (fields, { add, remove }) => (
@@ -59,7 +59,7 @@ export default function VariantOptions () {
         }
       </Form.List>
       <SRender render={options.length < 3}>
-        <div style={{ paddingLeft: 12, paddingBottom: 12 }}>
+        <div style={{ paddingLeft: 12, paddingBottom: 12, marginTop: 12 }}>
           <Button className={styles.btn} onClick={onAddHandle}>
             <IconCirclePlus size={14} />
             {t('添加其它选项')}
