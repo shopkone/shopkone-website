@@ -1,4 +1,4 @@
-import { IconGripVertical } from '@tabler/icons-react'
+import { IconGripVertical, IconTrash } from '@tabler/icons-react'
 import { Flex, Input } from 'antd'
 
 import IconButton from '@/components/icon-button'
@@ -13,9 +13,18 @@ export default function OptionValues (props: OptionValue) {
   const { value = [], onChange } = props
 
   const onChangeHandle = (index: number, v: string) => {
-    const newValue = value.map((item, i) => {
+    let newValue = value.map((item, i) => {
       return i === index ? v : item
     })
+    const lastValue = value[value.length - 1]
+    if (lastValue) {
+      newValue = [...newValue, '']
+    }
+    onChange?.(newValue)
+  }
+
+  const onRemove = (index: number) => {
+    const newValue = value.filter((item, i) => i !== index)
     onChange?.(newValue)
   }
 
@@ -32,6 +41,11 @@ export default function OptionValues (props: OptionValue) {
             <Input
               onChange={e => { onChangeHandle(index, e.target.value) }}
               value={item}
+              suffix={
+                <IconButton onClick={() => { onRemove(index) }} disabled={(index + 1) === value.length} size={20} type={'text'}>
+                  <IconTrash size={13} />
+                </IconButton>
+              }
             />
           </Flex>
         ))

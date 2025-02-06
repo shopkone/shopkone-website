@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { IconMaximize } from '@tabler/icons-react'
-import { Flex } from 'antd'
+import { IconMaximize, IconTag } from '@tabler/icons-react'
+import { Empty, Flex } from 'antd'
 
 import IconButton from '@/components/icon-button'
 import SCard from '@/components/s-card'
@@ -36,14 +36,26 @@ export default function VariantList (props: VariantListProps) {
 
   return (
     <SCard title={t('款式设置')} style={{ marginTop: 16 }}>
-      <Flex gap={20} align={'center'} justify={'space-between'}>
-        <Flex wrap={'wrap'} gap={8} align={'center'}>
-          <SRender render={options.length}>
-            <div className={styles.label} style={{ flexShrink: 0, marginBottom: -1 }}>
-              {t('筛选')}
-            </div>
-          </SRender>
-          {
+      <SRender render={!variants?.length}>
+        <Empty
+          image={<IconTag size={48} color={'#ddd'} />}
+          style={{ paddingBottom: 32 }}
+          description={(
+            <Flex style={{ marginTop: -16, fontSize: 14 }} vertical gap={12}>
+              {t('请设置款式选项')}
+            </Flex>
+          )}
+        />
+      </SRender>
+      <SRender render={variants.length}>
+        <Flex gap={20} align={'center'} justify={'space-between'}>
+          <Flex wrap={'wrap'} gap={8} align={'center'}>
+            <SRender render={options.length}>
+              <div className={styles.label} style={{ flexShrink: 0, marginBottom: -1 }}>
+                {t('筛选')}
+              </div>
+            </SRender>
+            {
               options.map(option => (
                 <SSelect
                   allowClear
@@ -51,28 +63,29 @@ export default function VariantList (props: VariantListProps) {
                   placeholder={option.label}
                   key={option.id}
                   size={'small'}
-                  options={option.values.map(value => ({ label: value, value }))}
+                  options={option.values.map(value => ({ label: value, value })).filter(i => i.value)}
                   dropdownStyle={{ minWidth: 200 }}
                 />
               ))
             }
+          </Flex>
+          <Flex gap={12} align={'center'}>
+            <SSelect allowClear value={'所有地点'} size={'small'} />
+            <div>
+              <IconButton size={26}>
+                <IconMaximize size={16} />
+              </IconButton>
+            </div>
+          </Flex>
         </Flex>
-        <Flex gap={12} align={'center'}>
-          <SSelect allowClear value={'所有地点'} size={'small'} />
-          <div>
-            <IconButton size={26}>
-              <IconMaximize size={16} />
-            </IconButton>
-          </div>
-        </Flex>
-      </Flex>
 
-      <STable
-        style={{ marginTop: 8, marginLeft: -16, marginRight: -16 }}
-        data={variants}
-        columns={columns}
-        rowSelection={{ onChange: setSelected, value: selected }}
-      />
+        <STable
+          style={{ marginTop: 8, marginLeft: -16, marginRight: -16 }}
+          data={variants}
+          columns={columns}
+          rowSelection={{ onChange: setSelected, value: selected }}
+        />
+      </SRender>
     </SCard>
   )
 }

@@ -31,11 +31,7 @@ export default function OptionItem (props: OptionItemProps) {
             <IconGripVertical size={13} />
           </IconButton>
         </div>
-        <Form.Item
-          label={t('选项名称')}
-          name={[name, 'label']}
-          className={'flex1 mb0'}
-        >
+        <Form.Item label={t('选项名称')} name={[name, 'label']} className={'flex1 mb0'}>
           <Input />
         </Form.Item>
       </Flex>
