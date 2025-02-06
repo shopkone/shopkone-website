@@ -27,9 +27,6 @@ export default function VariantOptions () {
     form.setFieldValue?.('product_options', [...options, { label: '', values: [''], id: genId() }])
   }
 
-  const onRemoveHandle = (optionId: number) => {
-  }
-
   const toList = useDebounceFn(() => {
     const variants = form.getFieldValue('variants')
     worker.toListWorker.postMessage({ options, variants })
@@ -51,7 +48,12 @@ export default function VariantOptions () {
             <div>
               {
                 fields.map(field => (
-                  <OptionItem name={field.name} key={field.name} />
+                  <OptionItem
+                    length={fields.length}
+                    onRemove={() => { remove(field.name) }}
+                    name={field.name}
+                    key={field.name}
+                  />
                 ))
               }
             </div>

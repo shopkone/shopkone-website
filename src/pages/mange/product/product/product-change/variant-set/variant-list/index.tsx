@@ -35,7 +35,7 @@ export default function VariantList (props: VariantListProps) {
   }, [])
 
   return (
-    <SCard title={t('多款式')} style={{ marginTop: 16 }}>
+    <SCard title={t('款式设置')} style={{ marginTop: 16 }}>
       <Flex gap={20} align={'center'} justify={'space-between'}>
         <Flex wrap={'wrap'} gap={8} align={'center'}>
           <SRender render={options.length}>

@@ -15,10 +15,12 @@ export interface OptionValue {
 
 export interface OptionItemProps {
   name: number
+  onRemove?: () => void
+  length: number
 }
 
 export default function OptionItem (props: OptionItemProps) {
-  const { name } = props
+  const { name, onRemove, length } = props
   const { t } = useTranslation('product', { keyPrefix: 'product' })
 
   return (
@@ -47,7 +49,7 @@ export default function OptionItem (props: OptionItemProps) {
       </Form.Item>
 
       <Flex justify={'space-between'} className={styles.actions}>
-        <Button danger>{t('删除')}</Button>
+        <Button disabled={length === 1} onClick={onRemove} danger>{t('删除')}</Button>
         <Button type={'primary'}>{t('完成')}</Button>
       </Flex>
     </div>
