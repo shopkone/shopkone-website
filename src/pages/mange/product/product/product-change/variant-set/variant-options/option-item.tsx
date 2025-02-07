@@ -40,7 +40,25 @@ export default function OptionItem (props: OptionItemProps) {
             <IconGripVertical size={14} />
           </IconButton>
         </div>
-        <Form.Item label={t('选项名称')} name={[name, 'label']} className={'flex1 mb0'}>
+        <Form.Item
+          rules={[{
+            validator: async (rule, value) => {
+              if (!value) {
+                throw new Error(t('请输入选项名称'))
+              }
+              const options = form.getFieldValue(['product_options'])
+              // 名称不能重复
+              const list = options.filter((item: any) => item.label === value)
+              if (list.length > 1) {
+                throw new Error(t('选项名称不能重复'))
+              }
+              await Promise.resolve()
+            }
+          }]}
+          label={t('选项名称')}
+          name={[name, 'label']}
+          className={'flex1 mb0'}
+        >
           <Input autoComplete={'off'} />
         </Form.Item>
       </Flex>

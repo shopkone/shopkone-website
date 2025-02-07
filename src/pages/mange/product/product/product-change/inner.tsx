@@ -50,8 +50,6 @@ export default function ProductChangeInner (props: ProductChangeInnerProps) {
   const [form] = Form.useForm()
 
   const [isChange, setIsChange] = useState(false)
-  const [resetFlag, setResetFlag] = useState(0)
-  const [remoteVariants, setRemoteVariants] = useState<Variant[]>([])
   const init = useRef<any>()
   const create = useRequest(ProductCreateApi, { manual: true })
   const info = useRequest(ProductInfoApi, { manual: true })
@@ -67,7 +65,11 @@ export default function ProductChangeInner (props: ProductChangeInnerProps) {
     if (values.scheduled_at) {
       values.scheduled_at = (values.scheduled_at as Dayjs).unix()
     }
-    values?.variants?.forEach((variant: Variant) => {
+    if (!values?.variants?.length) {
+      sMessage.warning(t('请至少设置一个款式'))
+      return
+    }
+    values?.variants?.forEach((variant: Variant, index: number) => {
       if (variant.children?.length) {
         variants.push(...variant.children)
       } else {
@@ -111,7 +113,6 @@ export default function ProductChangeInner (props: ProductChangeInnerProps) {
 
   const onCancel = () => {
     form.setFieldsValue(init.current)
-    setResetFlag(resetFlag + 1)
     setIsChange(false)
   }
 
@@ -134,7 +135,6 @@ export default function ProductChangeInner (props: ProductChangeInnerProps) {
       }
       form.setFieldsValue(values)
       init.current = values
-      setRemoteVariants(info.data.variants)
     } else {
       form.setFieldsValue(INIT_DATA)
       init.current = form.getFieldsValue()

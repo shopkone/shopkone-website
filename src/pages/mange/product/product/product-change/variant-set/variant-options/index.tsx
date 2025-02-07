@@ -29,7 +29,10 @@ export default function VariantOptions () {
 
   const toList = useDebounceFn(() => {
     const variants = form.getFieldValue('variants')
-    worker.toListWorker.postMessage({ options, variants })
+    form.validateFields().then(res => {
+      worker.toListWorker.postMessage({ options, variants })
+    }).catch(err => {
+    })
   }, { wait: 500 })
 
   useEffect(() => {
