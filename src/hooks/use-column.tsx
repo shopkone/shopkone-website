@@ -86,10 +86,7 @@ export const useColumn = (local: UseColumnType[], type: UserColumnType) => {
       overlayInnerStyle={{ padding: 0, overflow: 'hidden' }}
       placement={'bottomRight'}
       content={
-        <Sortable<ColumnItem>
-          onChange={onChange}
-          items={renderCols}
-        >
+        <Sortable<ColumnItem> onChange={onChange} items={renderCols}>
           {
             (items, id, isBg) => items?.map((item, index) => (
               <SRender key={item.id} render={!item.forceHidden}>

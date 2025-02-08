@@ -25,8 +25,8 @@
 
 .values {
   .value {
-    margin-bottom: 8px;
-    margin-left: 16px;
+    margin-bottom: 10px;
+    margin-left: 40px;
   }
   .valueInput {
     margin-bottom: 0 !important;
@@ -34,7 +34,27 @@
     margin-right: 12px;
   }
   .valueLabel {
-    margin-bottom: 6px;
+    margin-bottom: 8px;
     margin-left: 42px;
+  }
+  .valueDragBtn {
+    margin-bottom: -25px;
+    position: relative;
+    left: 14px;
+    * {
+      cursor: grab !important;
+    }
+    [disabled] {
+      cursor: not-allowed !important;
+    }
+  }
+  .dragging {
+    position: relative;
+    z-index: 999;
+    .valueDragBtn {
+      * {
+        cursor: grabbing !important;
+      }
+    }
   }
 }

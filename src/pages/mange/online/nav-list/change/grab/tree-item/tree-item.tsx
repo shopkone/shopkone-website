@@ -73,7 +73,12 @@ export const TreeItem = forwardRef<HTMLDivElement, Props>(
         {...props}
       >
         <div className={styles.TreeItem} ref={ref} style={style}>
-          <IconButton type={'text'} {...handleProps} style={{ marginRight: 4 }} size={24}>
+          <IconButton
+            type={'text'}
+            {...handleProps}
+            style={{ marginRight: 4, cursor: 'grab' }}
+            size={24}
+          >
             <IconGripVertical size={14} />
           </IconButton>
           {onCollapse

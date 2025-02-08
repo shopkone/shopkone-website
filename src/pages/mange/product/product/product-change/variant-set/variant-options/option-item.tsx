@@ -4,6 +4,8 @@ import { useThrottleFn } from 'ahooks'
 import { Button, Flex, Form, Input } from 'antd'
 
 import IconButton from '@/components/icon-button'
+import ItemSortable from '@/components/sortable/sortable-item'
+import DragWrapper from '@/pages/mange/product/product/product-change/variant-set/variant-options/drag-wrapper'
 
 import styles from './index.module.less'
 
@@ -31,6 +33,8 @@ export default function OptionItem (props: OptionItemProps) {
       add('')
     }
   }, { wait: 300 }).run
+
+  const onSwap = () => {}
 
   return (
     <div className={styles.item}>
@@ -65,60 +69,70 @@ export default function OptionItem (props: OptionItemProps) {
 
       <Form.List name={[name, 'values']}>
         {
-          (fields, { remove, add }) => (
-            <div className={styles.values}>
-              <div className={styles.valueLabel}>{t('款式值')}</div>
-              {
-                fields.map((field, index) => (
-                  <Flex align={'center'} key={field.name} className={styles.value}>
-                    <div style={{ width: 24 }}>
-                      <IconButton type={'text'} size={20}>
-                        <IconGripVertical size={14} />
-                      </IconButton>
-                    </div>
-                    <Form.Item
-                      rules={[{
-                        validator: async (rule, value) => {
-                          const values = form.getFieldValue(['product_options', name, 'values'])
-                          if (index !== (fields.length - 1) && !value) {
-                            await Promise.reject(t('请输入款式值'))
+            (fields, { remove, add }) => (
+              <DragWrapper onChange={onSwap} items={fields.map(item => ({ ...item, name: item.name + 1 }))}>
+                <div className={styles.values}>
+                  <div className={styles.valueLabel}>{t('款式值')}</div>
+                  {
+                      fields.map((field, index) => (
+                        <ItemSortable
+                          disabled={fields.length - 1 === index}
+                          handle={
+                            <div className={styles.valueDragBtn}>
+                              <IconButton disabled={fields.length - 1 === index} type={'text'} size={20}>
+                                <IconGripVertical size={14} />
+                              </IconButton>
+                            </div>
                           }
-                          if (values.indexOf(value) !== values.lastIndexOf(value)) {
-                            throw new Error(t('款式值不能重复'))
-                          }
-                          await Promise.resolve()
-                        }
-                      }]}
-                      className={styles.valueInput}
-                      name={field.name}
-                    >
-                      <Input
-                        onChange={() => {
-                          onChangeHandle(add)
-                        }}
-                        placeholder={t('款式值')}
-                        autoComplete={'off'}
-                        suffix={
-                          <IconButton
-                            disabled={fields.length - 1 === index}
-                            onClick={() => {
-                              remove(field.name)
-                              form.validateFields()
-                            }}
-                            type={'text'}
-                            size={20}
-                          >
-                            <IconTrash size={13} />
-                          </IconButton>
-                        }
-                      />
-                    </Form.Item>
-                  </Flex>
-                ))
-              }
-            </div>
-          )
-        }
+                          draggingClassName={styles.dragging}
+                          rowKey={field.name + 1}
+                          index={index}
+                          key={field.name + 1}
+                        >
+                          <Flex align={'center'} key={field.name} className={styles.value}>
+                            <Form.Item
+                              rules={[{
+                                validator: async (rule, value) => {
+                                  const values = form.getFieldValue(['product_options', name, 'values'])
+                                  if (index !== (fields.length - 1) && !value) {
+                                    await Promise.reject(t('请输入款式值'))
+                                  }
+                                  if (values.indexOf(value) !== values.lastIndexOf(value)) {
+                                    throw new Error(t('款式值不能重复'))
+                                  }
+                                  await Promise.resolve()
+                                }
+                              }]}
+                              className={styles.valueInput}
+                              name={field.name}
+                            >
+                              <Input
+                                onChange={() => { onChangeHandle(add) }}
+                                placeholder={t('款式值')}
+                                autoComplete={'off'}
+                                suffix={
+                                  <IconButton
+                                    disabled={fields.length - 1 === index}
+                                    onClick={() => {
+                                      remove(field.name)
+                                      form.validateFields()
+                                    }}
+                                    type={'text'}
+                                    size={20}
+                                  >
+                                    <IconTrash size={13} />
+                                  </IconButton>
+                                }
+                              />
+                            </Form.Item>
+                          </Flex>
+                        </ItemSortable>
+                      ))
+                    }
+                </div>
+              </DragWrapper>
+            )
+          }
       </Form.List>
 
       <Flex justify={'space-between'} className={styles.actions}>
