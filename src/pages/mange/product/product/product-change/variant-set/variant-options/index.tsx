@@ -77,6 +77,7 @@ export default function VariantOptions (props: VariantOptionsProps) {
           items={value}
           setActiveId={setActiveId}
           activeId={activeId}
+          draggingClassName={styles.labelDraggingWrapper}
         >
           {
             value?.map((item, index) => (

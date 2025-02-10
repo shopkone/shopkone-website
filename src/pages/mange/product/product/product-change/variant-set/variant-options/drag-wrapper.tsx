@@ -11,10 +11,11 @@ export interface DragWrapperProps<T> {
   items: Array<ItemType<T>>
   setActiveId: (id: number) => void
   activeId: number
+  draggingClassName?: string
 }
 
 export default function DragWrapper<T> (props: DragWrapperProps<T>) {
-  const { children, items, onChange, setActiveId, activeId } = props
+  const { children, items, onChange, setActiveId, activeId, draggingClassName } = props
 
   const onDragStart = useMemoizedFn((e: DragStartEvent) => {
     setActiveId?.(Number(e.active.id || -1))
@@ -52,7 +53,9 @@ export default function DragWrapper<T> (props: DragWrapperProps<T>) {
       </SortableContext>
 
       <DragOverlay adjustScale={false}>
-        {activeItem}
+        <div className={draggingClassName}>
+          {activeItem}
+        </div>
       </DragOverlay>
     </DndContext>
   )

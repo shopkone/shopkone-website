@@ -43,14 +43,13 @@
   }
   .item {
     position: relative;
-    &:before {
-      z-index: 2;
+    overflow: hidden;
+    border: none;
+    &:after {
+      content: '';
       position: absolute;
-      background: firebrick;
-      left: 0;
-      right: 0;
-      top: 0;
-      bottom: 0;
+      inset: 0;
+      background: #f8f8f8;
     }
   }
 }
@@ -98,10 +97,48 @@
   padding: 8px 12px;
   width: 100%;
   cursor: pointer;
+  transition: all 0.1s;
+  .tag {
+    transition: all 0.1s;
+  }
   &:hover {
     background: #e1e3e5a0;
     .tag {
       background: #fff;
     }
+  }
+}
+
+.labelDraggingWrapper {
+  * {
+    cursor: grabbing !important;
+  }
+  .item {
+    border: 1px solid var(--color-border);
+  }
+}
+
+.valueDraggingWrapper {
+  background: #fff;
+  border-radius: 6px;
+  cursor: grabbing;
+  height: 32px;
+  border: 1px solid var(--color-border);
+  :global .shopkimi-input-affix-wrapper {
+    border: none !important;
+  }
+}
+
+.valueDragging {
+  opacity: 0;
+  &:after {
+    border-radius: 6px;
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: #ddd;
+  }
+  .valueDragBtn {
+    opacity: 0;
   }
 }

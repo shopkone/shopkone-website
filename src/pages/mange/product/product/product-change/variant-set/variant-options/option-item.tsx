@@ -107,6 +107,7 @@ export default function OptionItem (props: OptionItemProps) {
               items={value.values}
               activeId={active}
               setActiveId={setActive}
+              draggingClassName={styles.valueDraggingWrapper}
             >
               {
                 value.values.map((item, index) => (
@@ -120,7 +121,7 @@ export default function OptionItem (props: OptionItemProps) {
                           </IconButton>
                         </div>
                       }
-                      draggingClassName={styles.dragging}
+                      draggingClassName={styles.valueDragging}
                       index={index}
                       rowKey={item.id}
                       key={item.id}
