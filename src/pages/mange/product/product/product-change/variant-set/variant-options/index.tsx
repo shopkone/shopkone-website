@@ -1,11 +1,17 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useParams } from 'react-router-dom'
 import { IconCirclePlus } from '@tabler/icons-react'
 import { useDebounceFn } from 'ahooks'
 import { Button, Form } from 'antd'
 
 import SCard from '@/components/s-card'
 import SRender from '@/components/s-render'
+import DragWrapper from '@/pages/mange/product/product/product-change/variant-set/variant-options/drag-wrapper'
+import {
+  ErrorObj,
+  getOptionErrors
+} from '@/pages/mange/product/product/product-change/variant-set/variant-options/error-handle'
 import OptionItem, {
   OptionValue
 } from '@/pages/mange/product/product/product-change/variant-set/variant-options/option-item'
@@ -15,55 +21,80 @@ import * as worker from '../worker'
 
 import styles from './index.module.less'
 
-export default function VariantOptions () {
+export interface VariantOptionsProps {
+  value?: OptionValue[]
+  onChange?: (value: OptionValue[]) => void
+}
+
+export default function VariantOptions (props: VariantOptionsProps) {
+  const { value = [], onChange } = props
   const { t } = useTranslation('product', { keyPrefix: 'product' })
   const form = Form.useFormInstance()
-  const options = Form.useWatch('product_options', form) || []
+  const { id } = useParams()
+  const [errs, setErrs] = useState<ErrorObj[]>([])
+  const [activeId, setActiveId] = useState(-1)
 
   const onChangeHandle = (option: OptionValue) => {
+    const newValue = value?.map(item => {
+      return option.id === item.id ? option : item
+    })
+    onChange?.(newValue || [])
   }
 
+  const onSwap = (list: OptionValue[]) => {}
+
   const onAddHandle = () => {
-    form.setFieldValue?.('product_options', [...options, { label: '', values: [''], id: genId() }])
+    const newValue = { id: genId(), label: '', values: [{ id: genId(), value: '' }] }
+    onChange?.([...value, newValue])
   }
 
   const toList = useDebounceFn(() => {
+    const errors = getOptionErrors(value, t)
+    setErrs(errors)
+    if (errors?.length) return
     const variants = form.getFieldValue('variants')
-    form.validateFields().then(res => {
-      worker.toListWorker.postMessage({ options, variants })
-    }).catch(err => {
+    const optionsInput = value.map(item => {
+      return { ...item, values: item.values.filter(i => i.value) }
     })
+    worker.toListWorker.postMessage({ options: optionsInput, variants })
   }, { wait: 500 })
 
   useEffect(() => {
-    form.setFieldValue?.('product_options', [{ label: '', values: [''], id: genId() }])
-  }, [])
+    toList.run()
+  }, [value])
 
   useEffect(() => {
-    toList.run()
-  }, [options])
+    if (!id) {
+      onAddHandle()
+    }
+  }, [id])
 
   return (
     <SCard title={t('款式选项')} styles={{ body: { padding: 0, paddingTop: 16 } }}>
-      <Form.List name={'product_options'}>
-        {
-          (fields, { add, remove }) => (
-            <div>
-              {
-                fields.map(field => (
-                  <OptionItem
-                    length={fields.length}
-                    onRemove={() => { remove(field.name) }}
-                    name={field.name}
-                    key={field.name}
-                  />
-                ))
-              }
-            </div>
-          )
-        }
-      </Form.List>
-      <SRender render={options.length < 3}>
+      <div>
+        <DragWrapper<OptionValue>
+          onChange={onSwap}
+          items={value}
+          setActiveId={setActiveId}
+          activeId={activeId}
+        >
+          {
+            value?.map((item, index) => (
+              <OptionItem
+                dragging={activeId >= 0}
+                index={index}
+                errors={errs}
+                onChange={onChangeHandle}
+                value={item}
+                key={item.id}
+                length={value?.length || 0} onRemove={() => { }}
+              />
+            ))
+          }
+        </DragWrapper>
+      </div>
+
+      <SRender render={(value?.length || 0) < 3}>
         <div style={{ paddingLeft: 12, paddingBottom: 12, marginTop: 12 }}>
           <Button className={styles.btn} onClick={onAddHandle}>
             <IconCirclePlus size={14} />

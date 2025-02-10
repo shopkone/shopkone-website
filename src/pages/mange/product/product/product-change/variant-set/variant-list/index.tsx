@@ -35,7 +35,7 @@ export default function VariantList (props: VariantListProps) {
   }, [])
 
   return (
-    <SCard title={t('款式设置')} style={{ marginTop: 16 }}>
+    <SCard title={t('款式设置')}>
       <SRender render={!variants?.length}>
         <Empty
           image={<IconTag size={48} color={'#ddd'} />}
@@ -63,7 +63,8 @@ export default function VariantList (props: VariantListProps) {
                   placeholder={option.label}
                   key={option.id}
                   size={'small'}
-                  options={option.values.map(value => ({ label: value, value })).filter(i => i.value)}
+                  fieldNames={{ value: 'id', label: 'value' }}
+                  options={option.values}
                   dropdownStyle={{ minWidth: 200 }}
                 />
               ))

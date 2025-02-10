@@ -1,39 +1,41 @@
-import { useState } from 'react'
-import { closestCenter, DndContext, DragStartEvent } from '@dnd-kit/core'
+import { closestCenter, DndContext, DragOverlay, DragStartEvent } from '@dnd-kit/core'
 import type { DragCancelEvent, DragEndEvent } from '@dnd-kit/core/dist/types'
 import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { useMemoizedFn } from 'ahooks'
 
-type ItemType<T> = T & { name: number }
+type ItemType<T> = T & { id: number }
 
 export interface DragWrapperProps<T> {
   children: React.ReactNode
   onChange: (v: Array<ItemType<T>>) => void
   items: Array<ItemType<T>>
+  setActiveId: (id: number) => void
+  activeId: number
 }
 
 export default function DragWrapper<T> (props: DragWrapperProps<T>) {
-  const { children, items, onChange } = props
-  const [activeId, setActiveId] = useState(-1)
+  const { children, items, onChange, setActiveId, activeId } = props
 
   const onDragStart = useMemoizedFn((e: DragStartEvent) => {
-    setActiveId(Number(e.active.id || -1))
+    setActiveId?.(Number(e.active.id || -1))
   })
 
   const onDragEnd = useMemoizedFn((e: DragEndEvent) => {
     const { active, over } = e
     if (active.id !== over?.id) {
-      const oldIndex = items.findIndex(item => item.name === active.id)
-      const newIndex = items.findIndex(item => item.name === over?.id)
+      const oldIndex = items.findIndex(item => item.id === active.id)
+      const newIndex = items.findIndex(item => item.id === over?.id)
       const list = arrayMove(items, oldIndex, newIndex)
       onChange(list)
     }
-    setActiveId(-1)
+    setActiveId?.(-1)
   })
 
   const onDragCancel = useMemoizedFn((e: DragCancelEvent) => {
-    setActiveId(-1)
+    setActiveId?.(-1)
   })
+
+  const activeItem = (children as any).find((item: any) => item.key === activeId?.toString())
 
   return (
     <DndContext
@@ -43,11 +45,15 @@ export default function DragWrapper<T> (props: DragWrapperProps<T>) {
       onDragCancel={onDragCancel}
     >
       <SortableContext
-        items={items.map(item => item.name)}
+        items={items.map(item => item.id)}
         strategy={verticalListSortingStrategy}
       >
         {children}
       </SortableContext>
+
+      <DragOverlay adjustScale={false}>
+        {activeItem}
+      </DragOverlay>
     </DndContext>
   )
 }
