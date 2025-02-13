@@ -25,6 +25,7 @@ export default function VariantList (props: VariantListProps) {
   const [options, setOptions] = useState<OptionValue[]>([])
   const { t } = useTranslation('product', { keyPrefix: 'product' })
   const [selected, setSelected] = useState<number[]>([])
+  const [filter, setFilter] = useState<Record<string, string>>({})
   const columns = UseColumns({ onChange: onChangeVariants, value: variants })
 
   useEffect(() => {

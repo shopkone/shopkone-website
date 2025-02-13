@@ -41,7 +41,9 @@ export default function VariantOptions (props: VariantOptionsProps) {
     onChange?.(newValue || [])
   }
 
-  const onSwap = (list: OptionValue[]) => {}
+  const onSwap = (list: OptionValue[]) => {
+    onChange?.(list)
+  }
 
   const onAddHandle = () => {
     const newValue = { id: genId(), label: '', values: [{ id: genId(), value: '' }] }
